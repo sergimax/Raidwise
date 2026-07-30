@@ -14,6 +14,28 @@ export const holyPriestBis: BuiltInSpecBis = {
   spec: "Holy",
   presets: [
     {
+      id: "kingdom-with-variants",
+      name: "Kingdom. With variants",
+      slots: [
+        { slot: 0, itemIds: [51261] }, // Head: Sanctified Crimson Acolyte Hood
+        { slot: 1, itemIds: [50609] }, // Neck: Bone Sentinel's Amulet
+        { slot: 2, itemIds: [51264] }, // Shoulder: Sanctified Crimson Acolyte Shoulderpads
+        { slot: 3, itemIds: [54583] }, // Back: Cloak of Burning Dusk
+        { slot: 4, itemIds: [50717, 51263] }, // Chest: Sanguine Silk Robes / Sanctified Crimson Acolyte Robe
+        { slot: 5, itemIds: [54582] }, // Wrist: Bracers of Fiery Night
+        { slot: 6, itemIds: [51260] }, // Hands: Sanctified Crimson Acolyte Gloves
+        { slot: 7, itemIds: [50702] }, // Waist: Lingering Illness
+        { slot: 8, itemIds: [51262] }, // Legs: Sanctified Crimson Acolyte Leggings
+        { slot: 9, itemIds: [50699] }, // Feet: Plague Scientist's Boots
+        { slot: 10, itemIds: [54585] }, // Finger 1: Ring of Phased Regeneration
+        { slot: 11, itemIds: [50636] }, // Finger 2: Memory of Malygos
+        { slot: 12, itemIds: [54589] }, // Trinket 1: Glowing Twilight Scale
+        { slot: 13, itemIds: [47432, 50366] }, // Trinket 2: Solace of the Fallen / Althor's Abacus
+        { slot: 14, itemIds: [50731] }, // Main hand: Archus, Greatstaff of Antonidas
+        { slot: 16, itemIds: [50631] }, // Ranged: Nightmare Ender
+      ],
+    },
+    {
       id: "warmane-mercy-empowered-renew-spec",
       name: "Empowered Renew Spec (Warmane · Mercy)",
       slots: [
