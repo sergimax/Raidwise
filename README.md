@@ -2,7 +2,7 @@
 
 **English** | [Русский](README.ru.md)
 
-Web app to track which raid cooldowns each character has used per dungeon (WotLK-focused).
+Web app to track raid cooldowns per character and dungeon, with BiS gear hints and raid signup helpers (WotLK-focused).
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
