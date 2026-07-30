@@ -24,6 +24,7 @@ type CharacterSpecGearImportSectionProps = {
   locale: ItemTooltipLocale;
   t: TranslateFn;
   hideHeader?: boolean;
+  compact?: boolean;
 };
 
 export function CharacterSpecGearImportSection({
@@ -37,6 +38,7 @@ export function CharacterSpecGearImportSection({
   locale,
   t,
   hideHeader = false,
+  compact = false,
 }: CharacterSpecGearImportSectionProps) {
   const [wowsimsImportText, setWowsimsImportText] = useState("");
   const [importNotice, setImportNotice] = useState("");
@@ -101,8 +103,11 @@ export function CharacterSpecGearImportSection({
     wowsimsImportText,
   ]);
 
+  const fieldSize = compact ? "small" : "medium";
+  const listVariant = compact ? "caption" : "body2";
+
   return (
-    <Stack spacing={1}>
+    <Stack spacing={compact ? 0.75 : 1}>
       {!hideHeader ? (
         spec ? (
           <SpecOptionLabel
@@ -116,8 +121,8 @@ export function CharacterSpecGearImportSection({
         )
       ) : null}
       {storedGearSummary ? (
-        <Stack spacing={0.5}>
-          <Typography variant="body2">
+        <Stack spacing={0.25}>
+          <Typography variant={listVariant} color="text.secondary">
             {t("characterEdit.storedGear")}
             {storedGearSummary.averageItemLevel !== undefined
               ? t("characterEdit.avgIlvl", {
@@ -127,15 +132,27 @@ export function CharacterSpecGearImportSection({
           </Typography>
           <Box
             component="ul"
-            sx={{ m: 0, pl: 2.5, maxHeight: 160, overflowY: "auto" }}
+            sx={{
+              m: 0,
+              pl: compact ? 1.75 : 2.5,
+              maxHeight: compact ? 132 : 160,
+              overflowY: "auto",
+              columnCount: compact ? { xs: 1, sm: 2 } : undefined,
+              columnGap: compact ? 1.5 : undefined,
+            }}
           >
             {sortedGearItems.map((item) => (
               <Typography
                 key={`${item.slot}-${item.id}`}
                 component="li"
-                variant="body2"
+                variant={listVariant}
+                sx={
+                  compact
+                    ? { breakInside: "avoid", lineHeight: 1.35, py: 0.1 }
+                    : undefined
+                }
               >
-                <StoredGearItemLine item={item} />
+                <StoredGearItemLine item={item} dense={compact} />
               </Typography>
             ))}
           </Box>
@@ -157,14 +174,15 @@ export function CharacterSpecGearImportSection({
           setImportNotice("");
         }}
         multiline
-        minRows={2}
-        maxRows={4}
+        minRows={compact ? 1 : 2}
+        maxRows={compact ? 3 : 4}
+        size={fieldSize}
         placeholder={t("characterEdit.wsePlaceholder")}
-        helperText={t("characterEdit.wseHelper")}
+        helperText={compact ? undefined : t("characterEdit.wseHelper")}
         fullWidth
         slotProps={{
           input: {
-            sx: { py: 1 },
+            sx: { py: compact ? 0.5 : 1 },
           },
         }}
       />
@@ -172,11 +190,12 @@ export function CharacterSpecGearImportSection({
         direction="row"
         spacing={1}
         useFlexGap
-        sx={{ flexWrap: "wrap" }}
+        sx={{ flexWrap: "wrap", alignItems: "center" }}
       >
         <Button
           type="button"
           variant="outlined"
+          size={fieldSize}
           onClick={handleImportGear}
           disabled={wowsimsImportText.trim() === ""}
         >
@@ -187,14 +206,20 @@ export function CharacterSpecGearImportSection({
             type="button"
             variant="outlined"
             color="error"
+            size={fieldSize}
             onClick={handleClearGear}
           >
             {t("characterEdit.clearGearButton")}
           </Button>
         ) : null}
+        {compact ? (
+          <Typography variant="caption" color="text.secondary">
+            {t("characterEdit.wseHelper")}
+          </Typography>
+        ) : null}
       </Stack>
       {importNotice ? (
-        <Typography variant="body2" color="success.main">
+        <Typography variant={listVariant} color="success.main">
           {importNotice}
         </Typography>
       ) : null}

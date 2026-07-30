@@ -190,13 +190,21 @@ function CharacterEditDialogContent({
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <DialogTitle>{t("characterEdit.title")}</DialogTitle>
-      <DialogContent>
-        <Stack spacing={2} sx={{ pt: 1 }}>
-          <Box>
+      <DialogTitle sx={{ pb: 1 }}>{t("characterEdit.title")}</DialogTitle>
+      <DialogContent sx={{ pt: 0.5 }}>
+        <Stack spacing={1.25} sx={{ pt: 0.5 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 1,
+              columnGap: 1.5,
+            }}
+          >
             <Typography
               variant="subtitle1"
-              sx={characterNameDisplaySx(character.class)}
+              sx={{ ...characterNameDisplaySx(character.class), lineHeight: 1.2 }}
             >
               {character.name}
             </Typography>
@@ -204,14 +212,14 @@ function CharacterEditDialogContent({
               <ClassOptionLabel
                 characterClass={character.class}
                 variant="body2"
-                iconSize={18}
+                iconSize={16}
               />
             ) : null}
           </Box>
           {character.class ? (
             <Stack
               direction={{ xs: "column", md: "row" }}
-              spacing={{ xs: 2, md: 3 }}
+              spacing={{ xs: 1.5, md: 2 }}
               divider={
                 <Divider
                   flexItem

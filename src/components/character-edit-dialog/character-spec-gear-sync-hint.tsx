@@ -13,7 +13,7 @@ export function CharacterSpecGearSyncHint({
 }: CharacterSpecGearSyncHintProps) {
   if (hints.suggestImportGear) {
     return (
-      <Alert severity="info" sx={{ py: 0.25 }}>
+      <Alert severity="info" sx={{ py: 0, px: 1, "& .MuiAlert-message": { py: 0.5 } }}>
         {t("characterEdit.suggestImportGear")}
       </Alert>
     );
@@ -21,7 +21,7 @@ export function CharacterSpecGearSyncHint({
 
   if (hints.suggestUpdateGearScore) {
     return (
-      <Alert severity="info" sx={{ py: 0.25 }}>
+      <Alert severity="info" sx={{ py: 0, px: 1, "& .MuiAlert-message": { py: 0.5 } }}>
         {t("characterEdit.suggestUpdateGearScore")}
       </Alert>
     );

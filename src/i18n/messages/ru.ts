@@ -100,7 +100,6 @@ export const ruMessages: Messages = {
   },
   characterEdit: {
     title: "Изменить персонажа",
-    importGear: "Импорт экипировки из аддона WowSimsExporter (экспорт /wse export)",
     mainSpecGear: "Экипировка основного спека",
     offSpecGear: "Экипировка второго спека",
     storedGear: "Сохранённая экипировка",

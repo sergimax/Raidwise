@@ -35,6 +35,8 @@ export type CharacterSingleSpecGearFieldsProps = {
   classSpecs: readonly string[];
   disabled: boolean;
   layout?: "row" | "column";
+  size?: "small" | "medium";
+  showHelperText?: boolean;
   onSpecChange: (value: string) => void;
   onGearScoreTextChange: (value: string) => void;
 };
@@ -50,6 +52,8 @@ export function CharacterSingleSpecGearFields({
   classSpecs,
   disabled,
   layout = "row",
+  size = "medium",
+  showHelperText = true,
   onSpecChange,
   onGearScoreTextChange,
 }: CharacterSingleSpecGearFieldsProps) {
@@ -61,11 +65,15 @@ export function CharacterSingleSpecGearFields({
 
   return (
     <Stack spacing={0.5}>
-      <Typography variant="body2" color="text.secondary">
+      <Typography
+        variant={size === "small" ? "caption" : "body2"}
+        color="text.secondary"
+        sx={size === "small" ? { fontWeight: 600, letterSpacing: 0.02 } : undefined}
+      >
         {label}
       </Typography>
-      <Stack direction={fieldsDirection} spacing={2}>
-        <FormControl sx={{ flex: 1 }} disabled={disabled}>
+      <Stack direction={fieldsDirection} spacing={size === "small" ? 1 : 2}>
+        <FormControl size={size} sx={{ flex: 1, minWidth: 0 }} disabled={disabled}>
           <InputLabel id={specLabelId}>{t("common.spec")}</InputLabel>
           <Select
             labelId={specLabelId}
@@ -94,7 +102,7 @@ export function CharacterSingleSpecGearFields({
               <em>{t("common.none")}</em>
             </MenuItem>
             {classSpecs.map((option) => (
-              <MenuItem key={option} value={option}>
+              <MenuItem key={option} value={option} dense={size === "small"}>
                 {characterClass === "" ? (
                   option
                 ) : (
@@ -115,9 +123,12 @@ export function CharacterSingleSpecGearFields({
             onGearScoreTextChange(event.target.value);
           }}
           autoComplete="off"
-          helperText={t("characterForm.gearScoreHelper")}
+          size={size}
+          helperText={
+            showHelperText ? t("characterForm.gearScoreHelper") : undefined
+          }
           disabled={disabled}
-          sx={{ flex: 1 }}
+          sx={{ flex: size === "small" ? "0 0 8.5rem" : 1, minWidth: 0 }}
         />
       </Stack>
     </Stack>
