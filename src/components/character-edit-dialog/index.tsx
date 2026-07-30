@@ -22,6 +22,7 @@ import { characterNameDisplaySx } from "../../utils/character-display.ts";
 import { hideExternalWowTooltips } from "../../utils/hide-external-wow-tooltips.ts";
 import { ClassOptionLabel } from "../class-option-label/index.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
+import { CharacterAlsoOwnedGearSection } from "./character-also-owned-gear-section.tsx";
 import { CharacterSpecGearColumn } from "./character-spec-gear-column.tsx";
 import {
   attachGearToSpec,
@@ -83,6 +84,9 @@ function CharacterEditDialogContent({
       initialValues.offSpec,
       initialValues.offGearScoreText,
     ),
+  );
+  const [alsoOwnedItemIds, setAlsoOwnedItemIds] = useState<number[]>(
+    () => character.alsoOwnedItemIds ?? [],
   );
   const [error, setError] = useState("");
 
@@ -165,10 +169,12 @@ function CharacterEditDialogContent({
             offGearLoadedForSpec,
           ),
         ),
+        alsoOwnedItemIds,
       });
       onClose();
     },
     [
+      alsoOwnedItemIds,
       character.class,
       character.id,
       locale,
@@ -298,6 +304,15 @@ function CharacterEditDialogContent({
               />
             </Stack>
           ) : null}
+          <Divider />
+          <CharacterAlsoOwnedGearSection
+            itemIds={alsoOwnedItemIds}
+            onItemIdsChange={setAlsoOwnedItemIds}
+            onError={setError}
+            onClearError={() => setError("")}
+            locale={locale}
+            t={t}
+          />
           {error ? <FormErrorMessage message={error} /> : null}
         </Stack>
       </DialogContent>
