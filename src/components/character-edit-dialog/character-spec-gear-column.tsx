@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useMemo } from "react";
 import { specsForClass } from "../../data/class-specs.ts";
 import type { ItemTooltipLocale } from "../../constants/item-tooltips.ts";
@@ -65,7 +65,7 @@ export function CharacterSpecGearColumn({
   );
 
   return (
-    <Stack spacing={1.5} sx={{ flex: 1, minWidth: 0 }}>
+    <Stack spacing={1} sx={{ flex: 1, minWidth: 0 }}>
       <CharacterSingleSpecGearFields
         label={roleLabel}
         spec={spec}
@@ -76,14 +76,13 @@ export function CharacterSpecGearColumn({
         characterClass={characterClass}
         classSpecs={classSpecs}
         disabled={false}
-        layout="column"
+        layout="row"
+        size="small"
+        showHelperText={false}
         onSpecChange={onSpecChange}
         onGearScoreTextChange={onGearScoreTextChange}
       />
       <CharacterSpecGearSyncHint hints={syncHints} t={t} />
-      <Typography variant="body2" color="text.secondary">
-        {t("characterEdit.importGear")}
-      </Typography>
       <CharacterSpecGearImportSection
         label={importSectionLabel}
         spec={spec || undefined}
@@ -95,6 +94,7 @@ export function CharacterSpecGearColumn({
         locale={locale}
         t={t}
         hideHeader
+        compact
       />
     </Stack>
   );

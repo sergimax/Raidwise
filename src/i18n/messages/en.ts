@@ -97,7 +97,6 @@ export const enMessages = {
   },
   characterEdit: {
     title: "Edit character details",
-    importGear: "Import gear from addon WowSimsExporter (export /wse export)",
     mainSpecGear: "Main spec gear",
     offSpecGear: "Off spec gear",
     storedGear: "Stored gear",
