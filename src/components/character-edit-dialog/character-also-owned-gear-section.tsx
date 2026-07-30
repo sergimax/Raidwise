@@ -151,28 +151,28 @@ export function CharacterAlsoOwnedGearSection({
           {t("characterEdit.alsoOwnedEmpty")}
         </Typography>
       )}
+      <TextField
+        label={t("characterEdit.alsoOwnedItemId")}
+        value={itemIdText}
+        onChange={(event) => {
+          setItemIdText(event.target.value);
+          onClearError();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            handleAdd();
+          }
+        }}
+        size="small"
+        sx={{ width: 140 }}
+      />
       <Stack
         direction="row"
         spacing={1}
         useFlexGap
-        sx={{ flexWrap: "wrap", alignItems: "flex-start" }}
+        sx={{ flexWrap: "wrap", alignItems: "center" }}
       >
-        <TextField
-          label={t("characterEdit.alsoOwnedItemId")}
-          value={itemIdText}
-          onChange={(event) => {
-            setItemIdText(event.target.value);
-            onClearError();
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault();
-              handleAdd();
-            }
-          }}
-          size="small"
-          sx={{ width: 140 }}
-        />
         <Button
           type="button"
           variant="outlined"
