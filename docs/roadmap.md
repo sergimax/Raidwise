@@ -12,6 +12,13 @@ Ilvl hints filter raid loot using GearScore2-inspired compatibility rules and pe
 
 ---
 
+## BiS lists
+
+- Mark items that are available (owned / softed) but not currently on the WowSims export gear list.
+- COPY / export button for the currently selected BiS list (pasteable item lines).
+
+---
+
 ## Other ideas
 
 _Add new sections here as ideas come up._
