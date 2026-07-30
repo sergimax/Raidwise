@@ -1,12 +1,4 @@
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  Box,
-  Button,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Chip, Stack, TextField, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 import type { ItemTooltipLocale } from "../../constants/item-tooltips.ts";
 import { getWotlkItemLevel } from "../../data/wotlk-item-levels.ts";
@@ -102,50 +94,52 @@ export function CharacterAlsoOwnedGearSection({
         {t("characterEdit.alsoOwnedHelper")}
       </Typography>
       {itemIds.length > 0 ? (
-        <Box
-          component="ul"
+        <Stack
+          direction="row"
+          useFlexGap
           sx={{
-            m: 0,
-            pl: 0,
-            listStyle: "none",
-            maxHeight: 140,
+            flexWrap: "wrap",
+            gap: 0.75,
+            maxHeight: 160,
             overflowY: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: 0.25,
           }}
         >
           {itemIds.map((itemId) => (
-            <Box
+            <Chip
               key={itemId}
-              component="li"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                minHeight: 28,
+              size="small"
+              variant="outlined"
+              onDelete={() => handleRemove(itemId)}
+              label={<WowItemLink itemId={itemId} />}
+              title={getWotlkItemName(itemId, locale) ?? `#${itemId}`}
+              slotProps={{
+                deleteIcon: {
+                  "aria-label": t("characterEdit.alsoOwnedRemoveAria", {
+                    id: itemId,
+                  }),
+                },
               }}
-            >
-              <Typography
-                component="span"
-                variant="body2"
-                sx={{ flex: 1, minWidth: 0, lineHeight: 1.45 }}
-              >
-                <WowItemLink itemId={itemId} />
-              </Typography>
-              <IconButton
-                type="button"
-                size="small"
-                aria-label={t("characterEdit.alsoOwnedRemoveAria", {
-                  id: itemId,
-                })}
-                onClick={() => handleRemove(itemId)}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Box>
+              sx={{
+                maxWidth: "100%",
+                height: "auto",
+                minHeight: 24,
+                "& .MuiChip-label": {
+                  display: "block",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  py: 0.25,
+                },
+                "& .wow-item-link": {
+                  display: "block",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                },
+              }}
+            />
           ))}
-        </Box>
+        </Stack>
       ) : (
         <Typography variant="caption" color="text.secondary">
           {t("characterEdit.alsoOwnedEmpty")}
