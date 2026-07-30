@@ -1,15 +1,20 @@
 /**
- * Parse scripts/bis-list-sources.md and write preset `.ts` files under src/data/bis-presets/.
- * Titans guild lists and community guides share one markdown source.
+ * Parse BiS markdown sources and write preset `.ts` files under src/data/bis-presets/.
+ * - scripts/bis-list-sources.md — Titans + community
+ * - scripts/bis-list-mix.md — Kingdom. With variants (numbered weapons + slot alts)
  *
  * Run: npm run generate:bis-presets
  *
- * Also writes scripts/bis-list-sources-resolved.json for debugging unresolved names.
+ * Also writes scripts/bis-list-sources-resolved.json and bis-list-mix-resolved.json.
  */
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { formatPresetSlots } from "./bis-preset-format.mjs";
+import {
+  KINGDOM_PRESET_ID,
+  parseMixEntries,
+} from "./bis-resolve-mix.mjs";
 import { isTitansGuildList, resolveTitansListLines } from "./bis-resolve-titans.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -948,14 +953,40 @@ ${slotLines}
 
 function sortSpecEntries(specEntries) {
   return [...specEntries].sort((left, right) => {
+    if (left.id === KINGDOM_PRESET_ID) return -1;
+    if (right.id === KINGDOM_PRESET_ID) return 1;
     if (left.id === "titans") return -1;
     if (right.id === "titans") return 1;
     return left.displayName.localeCompare(right.displayName);
   });
 }
 
+const mixMarkdown = fs.readFileSync(
+  path.join(__dirname, "bis-list-mix.md"),
+  "utf8",
+);
+const mixEntries = parseMixEntries(mixMarkdown);
+
+for (const entry of mixEntries) {
+  console.log("\n=== MIX", entry.className, entry.spec, entry.displayName, "===");
+  if (entry.unknown.length > 0) {
+    console.log("UNKNOWN:", entry.unknown);
+  }
+  for (const slot of entry.slots) {
+    console.log(`  ${slot.slot}: [${slot.itemIds.join(", ")}]`);
+  }
+}
+
+fs.writeFileSync(
+  path.join(__dirname, "bis-list-mix-resolved.json"),
+  `${JSON.stringify(mixEntries, null, 2)}\n`,
+);
+console.log("\nWrote scripts/bis-list-mix-resolved.json");
+
+const allEntries = [...entries, ...mixEntries];
+
 const grouped = new Map();
-for (const entry of entries) {
+for (const entry of allEntries) {
   const key = `${entry.className}|${entry.spec}`;
   if (!grouped.has(key)) {
     grouped.set(key, []);
