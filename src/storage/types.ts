@@ -33,6 +33,8 @@ export type StoredCharacter = {
   className: string;
   mainSpec?: StoredCharacterSpecGear | string;
   offSpec?: StoredCharacterSpecGear | string;
+  /** Item ids owned/available but not on the WowSims export (schema v6+). */
+  alsoOwnedItemIds?: number[];
   /** Legacy v2 flat gear score — migrated to main spec on load. */
   gearScore?: number;
   /** Legacy v4 flat gear — migrated to main spec on load. */

@@ -167,6 +167,17 @@ function migrateToV5(payload: StoredPayload): StoredPayload {
 }
 
 /**
+ * v6 — optional character `alsoOwnedItemIds` (owned/available gear beyond WowSims).
+ * Stamp-only; parsers accept the new field when present.
+ */
+function migrateToV6(payload: StoredPayload): StoredPayload {
+  return {
+    ...payload,
+    schemaVersion: 6,
+  };
+}
+
+/**
  * Walk `schemaVersion` from the stored value (or 0 if missing) up to
  * {@link CURRENT_SCHEMA_VERSION}, applying each step in order.
  *
@@ -199,6 +210,10 @@ export function migrateStoredPayload(payload: StoredPayload): StoredPayload {
   if (version < 5) {
     next = migrateToV5(next);
     version = 5;
+  }
+  if (version < 6) {
+    next = migrateToV6(next);
+    version = 6;
   }
 
   if (version !== CURRENT_SCHEMA_VERSION) {

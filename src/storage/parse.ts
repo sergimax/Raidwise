@@ -226,6 +226,27 @@ function parseStoredGearItems(value: unknown): CharacterGearItem[] | undefined {
   return gearItems.length > 0 ? gearItems : undefined;
 }
 
+function parseStoredAlsoOwnedItemIds(value: unknown): number[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+
+  const itemIds: number[] = [];
+  for (const entry of value) {
+    if (
+      typeof entry !== "number" ||
+      !Number.isInteger(entry) ||
+      entry <= 0 ||
+      itemIds.includes(entry)
+    ) {
+      continue;
+    }
+    itemIds.push(entry);
+  }
+
+  return itemIds.length > 0 ? itemIds : undefined;
+}
+
 function parseCharacters(storedCharacters: StoredCharacter[]): CharacterRecord[] {
   return storedCharacters
     .map((stored) => {
@@ -250,12 +271,17 @@ function parseCharacters(storedCharacters: StoredCharacter[]): CharacterRecord[]
         mainSpec = { ...mainSpec, gearItems: legacyGearItems };
       }
 
+      const alsoOwnedItemIds = parseStoredAlsoOwnedItemIds(
+        stored.alsoOwnedItemIds,
+      );
+
       return {
         id: stored.id,
         name: stored.name,
         class: charClass,
         ...(mainSpec ? { mainSpec } : {}),
         ...(offSpec && offSpec.spec !== mainSpec?.spec ? { offSpec } : {}),
+        ...(alsoOwnedItemIds ? { alsoOwnedItemIds } : {}),
       } as CharacterRecord;
     })
     .filter((character): character is CharacterRecord => character !== null);
