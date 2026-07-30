@@ -63,23 +63,26 @@ function findSetEntryAtStep(
   return entry ? { itemId, entry } : undefined;
 }
 
-function isEquippedBisTarget(
+function isBisTargetPossessed(
   equippedItemId: number | undefined,
+  alsoOwnedItemIds: readonly number[],
   bisItemIds: readonly number[],
 ): boolean {
-  return (
-    equippedItemId !== undefined && bisItemIds.includes(equippedItemId)
-  );
+  if (equippedItemId !== undefined && bisItemIds.includes(equippedItemId)) {
+    return true;
+  }
+  return alsoOwnedItemIds.some((itemId) => bisItemIds.includes(itemId));
 }
 
 function collectNextTokenNeedForSlot(
   equippedItemId: number | undefined,
+  alsoOwnedItemIds: readonly number[],
   targetItemId: number,
   bisItemIds: readonly number[],
   dungeon: Pick<DungeonRecord, "raidKey" | "name" | "size" | "difficulty">,
   className: ClassName,
 ): TierSetTokenNeed | null {
-  if (isEquippedBisTarget(equippedItemId, bisItemIds)) {
+  if (isBisTargetPossessed(equippedItemId, alsoOwnedItemIds, bisItemIds)) {
     return null;
   }
 
@@ -126,6 +129,7 @@ export function evaluateTierSetHint(
   dungeon: Pick<DungeonRecord, "raidKey" | "name" | "size" | "difficulty">,
   bisSlotMap: BisSlotMap | undefined,
   className: ClassName,
+  alsoOwnedItemIds: readonly number[] = [],
 ): TierSetHint {
   if (!bisSlotMap || bisSlotMap.size === 0 || !resolveDungeonRaidKey(dungeon)) {
     return { tokenNeeds: [] };
@@ -147,6 +151,7 @@ export function evaluateTierSetHint(
     const equippedItemId = equippedItemIdForSlot(equippedGear, slot);
     const nextTokenNeed = collectNextTokenNeedForSlot(
       equippedItemId,
+      alsoOwnedItemIds,
       targetItemId,
       bisItemIds,
       dungeon,

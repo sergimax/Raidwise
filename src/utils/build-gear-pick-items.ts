@@ -88,6 +88,7 @@ export function buildGearPickItems({
       dungeon,
       getBisSlotMapForSpec,
       locale,
+      character.alsoOwnedItemIds ?? [],
     );
 
     const raidLabel = formatDungeonExportLabel(dungeon, locale);

@@ -187,26 +187,32 @@ function equippedItemsInSwappableGroup(
 }
 
 /**
- * Skip loot that is a same-name N/H variant already worn in the ring/trinket pair.
+ * Skip loot that is a same-name N/H variant already worn in the ring/trinket pair,
+ * or available via also-owned item ids at equal/higher ilvl.
  * Faction twins stay eligible on the ilvl track so the user can pick a faction variant.
  */
-function filterLootIdsNotNameVariantOfEquippedAtSlot(
+function filterLootIdsNotNameVariantOfPossessedAtSlot(
   lootIds: readonly number[],
   gearItems: readonly CharacterGearItem[],
+  alsoOwnedItemIds: readonly number[],
   slot: number,
 ): number[] {
   const equippedInGroup = equippedItemsInSwappableGroup(gearItems, slot);
+  const possessedIds = [
+    ...equippedInGroup.map((equipped) => equipped.id),
+    ...alsoOwnedItemIds,
+  ];
 
   return lootIds.filter((lootId) => {
     const lootItemLevel = getWotlkItemLevel(lootId) ?? 0;
 
-    return !equippedInGroup.some((equipped) => {
-      if (!isItemIdOrNameVariantAtSlot(lootId, [equipped.id], slot)) {
+    return !possessedIds.some((possessedId) => {
+      if (!isItemIdOrNameVariantAtSlot(lootId, [possessedId], slot)) {
         return false;
       }
 
-      const equippedItemLevel = getWotlkItemLevel(equipped.id) ?? 0;
-      return equippedItemLevel >= lootItemLevel;
+      const possessedItemLevel = getWotlkItemLevel(possessedId) ?? 0;
+      return possessedItemLevel >= lootItemLevel;
     });
   });
 }
@@ -215,10 +221,18 @@ function isBisExactTargetSatisfied(
   item: CharacterGearItem,
   bisItemIdsForSlot: readonly number[],
   gearItems: readonly CharacterGearItem[],
+  alsoOwnedItemIds: readonly number[],
 ): boolean {
-  return equippedItemsInSwappableGroup(gearItems, item.slot).some((equipped) =>
+  const possessedIds = [
+    ...equippedItemsInSwappableGroup(gearItems, item.slot).map(
+      (equipped) => equipped.id,
+    ),
+    ...alsoOwnedItemIds,
+  ];
+
+  return possessedIds.some((possessedId) =>
     isItemIdOrSameIlvlFactionVariantAtSlot(
-      equipped.id,
+      possessedId,
       bisItemIdsForSlot,
       item.slot,
     ),
@@ -229,17 +243,24 @@ function isBisVariantTargetSatisfied(
   item: CharacterGearItem,
   bisItemIdsForSlot: readonly number[],
   gearItems: readonly CharacterGearItem[],
+  alsoOwnedItemIds: readonly number[],
 ): boolean {
   const nameVariantBisIds = expandItemIdsWithNameVariantsAtSlot(
     bisItemIdsForSlot,
     item.slot,
   );
+  const possessedIds = [
+    ...equippedItemsInSwappableGroup(gearItems, item.slot).map(
+      (equipped) => equipped.id,
+    ),
+    ...alsoOwnedItemIds,
+  ];
 
-  return equippedItemsInSwappableGroup(gearItems, item.slot).some(
-    (equipped) =>
-      isItemIdOrNameVariantAtSlot(equipped.id, bisItemIdsForSlot, item.slot) ||
+  return possessedIds.some(
+    (possessedId) =>
+      isItemIdOrNameVariantAtSlot(possessedId, bisItemIdsForSlot, item.slot) ||
       isItemIdOrSameIlvlFactionVariantAtSlot(
-        equipped.id,
+        possessedId,
         nameVariantBisIds,
         item.slot,
       ),
@@ -286,6 +307,7 @@ function evaluateSlotTracks(
   raidKey: NonNullable<ReturnType<typeof resolveDungeonRaidKey>>,
   equipContext: CharacterEquipContext,
   gearItems: readonly CharacterGearItem[],
+  alsoOwnedItemIds: readonly number[],
   bisItemIdsForSlot: readonly number[] | undefined,
   evaluateBisTracks: boolean,
 ): SlotTrackHints {
@@ -316,7 +338,12 @@ function evaluateSlotTracks(
     );
     if (
       exactLootIds.length > 0 &&
-      !isBisExactTargetSatisfied(item, bisItemIdsForSlot, gearItems)
+      !isBisExactTargetSatisfied(
+        item,
+        bisItemIdsForSlot,
+        gearItems,
+        alsoOwnedItemIds,
+      )
     ) {
       exactBis = slotHintFromFilteredLoot(item.slot, exactLootIds, exactBisIds);
     }
@@ -326,7 +353,12 @@ function evaluateSlotTracks(
     );
     if (
       variantLootIds.length > 0 &&
-      !isBisVariantTargetSatisfied(item, bisItemIdsForSlot, gearItems)
+      !isBisVariantTargetSatisfied(
+        item,
+        bisItemIdsForSlot,
+        gearItems,
+        alsoOwnedItemIds,
+      )
     ) {
       variantBis = slotHintFromFilteredLoot(
         item.slot,
@@ -342,9 +374,10 @@ function evaluateSlotTracks(
     equipContext,
     { filterBySpecStats: true },
   );
-  const ilvlCandidateIds = filterLootIdsNotNameVariantOfEquippedAtSlot(
+  const ilvlCandidateIds = filterLootIdsNotNameVariantOfPossessedAtSlot(
     statUsableLootIds.filter((itemId) => !expandedBisIds.has(itemId)),
     gearItems,
+    alsoOwnedItemIds,
     item.slot,
   );
 
@@ -420,6 +453,7 @@ export function evaluateGearUpgradeHint(
   dungeon: GearUpgradeDungeon,
   bisSlotMap?: BisSlotMap,
   equipContext: CharacterEquipContext = {},
+  alsoOwnedItemIds: readonly number[] = [],
 ): GearUpgradeHint {
   const dungeonItemLevels = dungeon.itemLevel;
   const peakDungeonItemLevel = getDungeonPeakItemLevel(dungeonItemLevels);
@@ -451,6 +485,7 @@ export function evaluateGearUpgradeHint(
         raidKey,
         equipContext,
         gearItems,
+        alsoOwnedItemIds,
         bisItemIdsForSlot,
         bisListActive,
       );

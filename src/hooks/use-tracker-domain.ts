@@ -66,6 +66,16 @@ export function useTrackerDomain() {
           if (specGear.offSpec !== undefined) {
             next.offSpec = specGear.offSpec;
           }
+          if (specGear.alsoOwnedItemIds !== undefined) {
+            if (specGear.alsoOwnedItemIds.length > 0) {
+              next.alsoOwnedItemIds = specGear.alsoOwnedItemIds;
+            }
+          } else if (
+            character.alsoOwnedItemIds &&
+            character.alsoOwnedItemIds.length > 0
+          ) {
+            next.alsoOwnedItemIds = character.alsoOwnedItemIds;
+          }
           return next;
         }),
       );

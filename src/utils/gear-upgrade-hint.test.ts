@@ -375,6 +375,25 @@ describe("evaluateGearUpgradeHint", () => {
     expect(hint.bis.upgradeSlots[0]?.bestLootItemId).toBe(50707);
   });
 
+  it("treats also-owned BiS items as satisfying exact BiS targets", () => {
+    const bisSlotMap = buildBisSlotMap(retributionPaladinBis.presets[0]);
+    const equipContext = { className: ClassName.Paladin, spec: "Retribution" };
+
+    const hint = evaluateGearUpgradeHint(
+      [{ slot: 7, id: 50995 }],
+      {
+        name: "ICC25H",
+        raidKey: "icecrownCitadel",
+        itemLevel: [277, 284],
+      },
+      bisSlotMap,
+      equipContext,
+      [50707],
+    );
+
+    expect(hint.bis.upgradeSlotCount).toBe(0);
+  });
+
   it("flags BiS normal belt variant on ICC25N when equipped belt is below tier", () => {
     const bisSlotMap = buildBisSlotMap(retributionPaladinBis.presets[0]);
     const equipContext = { className: ClassName.Paladin, spec: "Retribution" };
