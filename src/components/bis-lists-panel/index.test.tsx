@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BisListsPanel } from "./index.tsx";
 import {
   BIS_LISTS_SCHEMA_VERSION,
@@ -44,11 +44,32 @@ describe("BisListsPanel", () => {
   it("shows slot items for the default Unholy DK preset on open", () => {
     renderWithTheme(<BisListsPanel />);
 
-    expect(screen.getByText(/Udk-STR \(Warmane/i)).toBeInTheDocument();
+    expect(screen.getByText(/Kingdom\. With variants/i)).toBeInTheDocument();
     expect(screen.getByText(/Head/i)).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /Sanctified Scourgelord Helmet/i }),
     ).toBeInTheDocument();
+  });
+
+  it("copies the currently shown BiS list to the clipboard", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+
+    renderWithTheme(<BisListsPanel />);
+
+    await user.click(screen.getByRole("button", { name: /Copy current BiS list/i }));
+
+    expect(writeText).toHaveBeenCalledTimes(1);
+    const copiedText = writeText.mock.calls[0]?.[0] as string;
+    expect(copiedText).toContain("Head: Sanctified Scourgelord Helmet");
+    expect(copiedText).toContain("Neck: Penumbra Pendant");
+    expect(screen.getByRole("button", { name: /Copy current BiS list/i })).toHaveTextContent(
+      /Copied/i,
+    );
   });
 
   it("shows built-in preset items for Warrior Arms", async () => {
