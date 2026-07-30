@@ -60,6 +60,21 @@ export type GetBisSlotMapForSpec = (
   spec: string,
 ) => BisSlotMap;
 
+const KINGDOM_PRESET_ID = "kingdom-with-variants";
+const TITANS_PRESET_ID = "titans";
+
+/** Kingdom first, then Titans, then other built-ins by name; locals stay after. */
+export function compareBuiltInBisPresets(
+  left: BisListPreset,
+  right: BisListPreset,
+): number {
+  if (left.id === KINGDOM_PRESET_ID) return -1;
+  if (right.id === KINGDOM_PRESET_ID) return 1;
+  if (left.id === TITANS_PRESET_ID) return -1;
+  if (right.id === TITANS_PRESET_ID) return 1;
+  return left.name.localeCompare(right.name);
+}
+
 export function specBisStorageKey(className: ClassName, spec: string): string {
   return `${className}|${spec}`;
 }
@@ -71,7 +86,9 @@ export function getMergedPresetsForSpec(
 ): BisListPreset[] {
   const storageKey = specBisStorageKey(className, spec);
   const localEntry = localState.entries[storageKey];
-  const builtInPresets = [...getBuiltInPresetsForSpec(className, spec)];
+  const builtInPresets = [...getBuiltInPresetsForSpec(className, spec)].sort(
+    compareBuiltInBisPresets,
+  );
 
   if (!localEntry) {
     return builtInPresets;

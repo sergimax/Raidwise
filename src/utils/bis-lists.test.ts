@@ -4,8 +4,10 @@ import { unholyDeathKnightBis } from "../data/bis-presets/unholy-death-knight.ts
 import {
   buildBisSlotMap,
   clearAllLocalBisPresets,
+  compareBuiltInBisPresets,
   confirmBisSlotItemsText,
   countLocalBisPresets,
+  getMergedPresetsForSpec,
   getSelectedPresetForSpec,
   isLocalBisPreset,
   parseBisSlotItemId,
@@ -22,6 +24,33 @@ describe("buildBisSlotMap", () => {
     expect(slotMap.get(1)).toContain(54581);
     expect(slotMap.get(14)).toContain(49623);
     expect(slotMap.get(16)).toBeUndefined();
+  });
+});
+
+describe("compareBuiltInBisPresets / getMergedPresetsForSpec", () => {
+  it("orders Kingdom before Titans before other built-ins", () => {
+    const ordered = [
+      { id: "zzz-guide", name: "Z Guide", slots: [] },
+      { id: "titans", name: "Titans", slots: [] },
+      { id: "kingdom-with-variants", name: "Kingdom. With variants", slots: [] },
+      { id: "aaa-guide", name: "A Guide", slots: [] },
+    ].sort(compareBuiltInBisPresets);
+
+    expect(ordered.map((preset) => preset.id)).toEqual([
+      "kingdom-with-variants",
+      "titans",
+      "aaa-guide",
+      "zzz-guide",
+    ]);
+  });
+
+  it("places Kingdom first for Unholy DK merged presets", () => {
+    const presets = getMergedPresetsForSpec(ClassName.DeathKnight, "Unholy", {
+      schemaVersion: 1,
+      entries: {},
+    });
+    expect(presets[0]?.id).toBe("kingdom-with-variants");
+    expect(presets.some((preset) => preset.id === "titans")).toBe(true);
   });
 });
 
