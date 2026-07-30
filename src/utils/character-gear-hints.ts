@@ -56,6 +56,7 @@ export function evaluateSpecGearHintCore(
   className: ClassName,
   dungeon: GearHintDungeon,
   getBisSlotMapForSpec: GetBisSlotMapForSpec,
+  alsoOwnedItemIds: readonly number[] = [],
 ): SpecGearHintCore {
   const slotMap = getBisSlotMapForSpec(className, specGear.spec);
   const bisSlotMap = slotMap.size > 0 ? slotMap : undefined;
@@ -65,6 +66,7 @@ export function evaluateSpecGearHintCore(
     dungeon,
     bisSlotMap,
     equipContext,
+    alsoOwnedItemIds,
   );
 
   return {
@@ -75,6 +77,7 @@ export function evaluateSpecGearHintCore(
       dungeon,
       bisSlotMap,
       className,
+      alsoOwnedItemIds,
     ),
   };
 }
@@ -134,9 +137,16 @@ export function evaluateSpecGearHint(
   dungeon: GearHintDungeon,
   getBisSlotMapForSpec: GetBisSlotMapForSpec,
   locale: AppLocale,
+  alsoOwnedItemIds: readonly number[] = [],
 ): SpecGearHint {
   return withBossLootGroups(
-    evaluateSpecGearHintCore(specGear, className, dungeon, getBisSlotMapForSpec),
+    evaluateSpecGearHintCore(
+      specGear,
+      className,
+      dungeon,
+      getBisSlotMapForSpec,
+      alsoOwnedItemIds,
+    ),
     dungeon,
     locale,
   );
@@ -153,6 +163,7 @@ export function evaluateCharacterGearHintTints(
     return {};
   }
 
+  const alsoOwnedItemIds = character.alsoOwnedItemIds ?? [];
   const tints: CharacterGearHintTints = {};
 
   if (character.mainSpec) {
@@ -161,6 +172,7 @@ export function evaluateCharacterGearHintTints(
       className,
       dungeon,
       getBisSlotMapForSpec,
+      alsoOwnedItemIds,
     );
   }
 
@@ -170,6 +182,7 @@ export function evaluateCharacterGearHintTints(
       className,
       dungeon,
       getBisSlotMapForSpec,
+      alsoOwnedItemIds,
     );
   }
 
