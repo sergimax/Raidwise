@@ -33,6 +33,9 @@ export function saveRaidTrackerState(
     className: character.class?.name ?? "",
     ...(character.mainSpec ? { mainSpec: toStoredSpecGear(character.mainSpec) } : {}),
     ...(character.offSpec ? { offSpec: toStoredSpecGear(character.offSpec) } : {}),
+    ...(character.alsoOwnedItemIds && character.alsoOwnedItemIds.length > 0
+      ? { alsoOwnedItemIds: character.alsoOwnedItemIds }
+      : {}),
   }));
 
   const storedDungeons: StoredDungeon[] = dungeons.map((dungeon) => ({

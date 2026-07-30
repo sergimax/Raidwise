@@ -261,4 +261,24 @@ describe("loadRaidTrackerState", () => {
       { slot: 1, id: 50426 },
     ]);
   });
+
+  it("loads also-owned item ids on characters", () => {
+    writeStoredPayload({
+      schemaVersion: 6,
+      characters: [
+        {
+          id: "character-1",
+          name: "Rhee",
+          className: Classes[7].name,
+          mainSpec: { spec: "Enhancement", gearScore: 6400 },
+          alsoOwnedItemIds: [50707, 49623, 50707, -1, "bad" as unknown as number],
+        },
+      ],
+      dungeons: [],
+      dungeonToggles: {},
+    });
+
+    const result = loadRaidTrackerState();
+    expect(result.state.characters[0]?.alsoOwnedItemIds).toEqual([50707, 49623]);
+  });
 });

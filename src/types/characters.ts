@@ -48,6 +48,11 @@ export type Character = {
   class?: CharacterClass;
   mainSpec?: CharacterSpecGear;
   offSpec?: CharacterSpecGear;
+  /**
+   * Item ids available to equip but not on the current WowSims export
+   * (bags, other-spec sets, vendors). Shared across main/off for hint math.
+   */
+  alsoOwnedItemIds?: number[];
 };
 
 export type CharacterRecord = Character & { id: string };
@@ -55,4 +60,6 @@ export type CharacterRecord = Character & { id: string };
 export type CharacterSpecGearUpdate = {
   mainSpec?: CharacterSpecGear;
   offSpec?: CharacterSpecGear;
+  /** Empty array clears; omit to leave unchanged when updating specs only. */
+  alsoOwnedItemIds?: number[];
 };
