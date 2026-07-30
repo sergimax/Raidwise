@@ -14,8 +14,15 @@ Ilvl hints filter raid loot using GearScore2-inspired compatibility rules and pe
 
 ## BiS lists
 
-- Mark items that are available (owned / softed) but not currently on the WowSims export gear list.
-- COPY / export button for the currently selected BiS list (pasteable item lines).
+### Also owned gear — **shipped (v1.53.0)**
+
+Character edit lists item ids available but not on the WowSims export (bags / other spec / vendors). Shared across main and off; counts toward BiS/ilvl/tier-token hints and Soft pick (`alsoOwnedItemIds`, `schemaVersion` 6).
+
+### BiS list copy — **shipped (v1.53.0)**
+
+Copy button on the BiS panel exports the currently shown list as pasteable `Slot: Item` lines (`formatBisListCopyText`).
+
+**Possible follow-ups:** mark owned items from BiS panel / gear-hint tooltips; soft-reserve ownership separate from also-owned.
 
 ---
 

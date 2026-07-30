@@ -6,7 +6,7 @@
 Данные хранятся локально в `localStorage`.
 Активная ссылка: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![Версия приложения](https://img.shields.io/badge/App_version-1.52.0-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-1.53.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -57,6 +57,7 @@
 - <span style="color:#0284c7">синий</span> — апгрейд по ilvl.
 
 В тултипе лут распределен по боссам.
+Предметы из «Также есть» (редактирование персонажа) учитываются в BiS/ilvl-подсказках, даже если их нет в экспорте WowSims.
 
 ### EN / RU
 
@@ -112,7 +113,7 @@ npm run dev
 
 | Ключ | Содержимое |
 |------|------------|
-| `my-raid-cds` | Персонажи, подземелья, переключатели (`schemaVersion` 5) |
+| `my-raid-cds` | Персонажи, подземелья, переключатели (`schemaVersion` 6) |
 | `my-raid-cds-bis-lists` | Выбранные BiS и локальные списки (битые записи пропускаются) |
 | `my-raid-cds-item-tooltip-locale` | `en` или `ru` (по умолчанию `ru`) |
 | `my-raid-cds-color-mode` | Светлая/тёмная тема |
