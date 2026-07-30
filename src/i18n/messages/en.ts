@@ -114,6 +114,17 @@ export const enMessages = {
       "Gear score changed — re-import gear from WowSimsExporter (/wse export) so upgrade hints stay accurate.",
     suggestUpdateGearScore:
       "Gear changed — update the gear score field so exports and filters reflect your current setup.",
+    alsoOwnedTitle: "Also owned gear",
+    alsoOwnedHelper:
+      "Items available to equip but not on the WowSims export (bags, other spec, or vendors). Counts for gear hints on both specs.",
+    alsoOwnedItemId: "Item ID",
+    alsoOwnedAdd: "Add",
+    alsoOwnedClear: "Clear",
+    alsoOwnedEmpty: "No also-owned items yet.",
+    alsoOwnedRemoveAria: "Remove item {{id}}",
+    alsoOwnedInvalidId: "Enter a valid numeric item id.",
+    alsoOwnedUnknownId: "That item id is not in the bundled WoW item database.",
+    alsoOwnedDuplicate: "That item is already in the also-owned list.",
   },
   dungeonEdit: {
     title: "Edit dungeon details",

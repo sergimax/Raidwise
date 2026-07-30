@@ -117,6 +117,17 @@ export const ruMessages: Messages = {
       "Gear score изменился — переимпортируйте экипировку из WowSimsExporter (/wse export), чтобы подсказки по апгрейдам оставались точными.",
     suggestUpdateGearScore:
       "Экипировка изменилась — обновите поле gear score, чтобы экспорт и фильтры соответствовали текущей экипировке.",
+    alsoOwnedTitle: "Также есть",
+    alsoOwnedHelper:
+      "Предметы, доступные для экипировки, но не в экспорте WowSims (сумки, другой спек, торговцы). Учитываются в подсказках для обоих спеков.",
+    alsoOwnedItemId: "ID предмета",
+    alsoOwnedAdd: "Добавить",
+    alsoOwnedClear: "Очистить",
+    alsoOwnedEmpty: "Пока нет дополнительных предметов.",
+    alsoOwnedRemoveAria: "Удалить предмет {{id}}",
+    alsoOwnedInvalidId: "Введите корректный числовой id предмета.",
+    alsoOwnedUnknownId: "Этого id нет в базе предметов приложения.",
+    alsoOwnedDuplicate: "Этот предмет уже есть в списке.",
   },
   dungeonEdit: {
     title: "Изменить подземелье",
