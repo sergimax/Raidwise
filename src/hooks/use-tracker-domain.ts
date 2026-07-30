@@ -14,6 +14,7 @@ import {
   removeDungeonFromToggles,
   resetCharacterToggles,
 } from "../utils/dungeon-toggles.ts";
+import { resolveAlsoOwnedItemIds } from "../utils/resolve-also-owned-item-ids.ts";
 import { generateUUID } from "../uuid.ts";
 
 /** Domain state: characters, dungeons, toggles, persistence, and mutations. */
@@ -66,15 +67,12 @@ export function useTrackerDomain() {
           if (specGear.offSpec !== undefined) {
             next.offSpec = specGear.offSpec;
           }
-          if (specGear.alsoOwnedItemIds !== undefined) {
-            if (specGear.alsoOwnedItemIds.length > 0) {
-              next.alsoOwnedItemIds = specGear.alsoOwnedItemIds;
-            }
-          } else if (
-            character.alsoOwnedItemIds &&
-            character.alsoOwnedItemIds.length > 0
-          ) {
-            next.alsoOwnedItemIds = character.alsoOwnedItemIds;
+          const alsoOwnedItemIds = resolveAlsoOwnedItemIds(
+            specGear.alsoOwnedItemIds,
+            character.alsoOwnedItemIds,
+          );
+          if (alsoOwnedItemIds !== undefined) {
+            next.alsoOwnedItemIds = alsoOwnedItemIds;
           }
           return next;
         }),
