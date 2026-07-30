@@ -18,7 +18,7 @@ Toolbar panels are mutually exclusive (only one open at a time).
 ### Characters & dungeons
 
 Add manually or load the WotLK raid template when the list is empty.
-Edit specs, WowSims gear, and raid metadata later.
+Edit specs, WowSims gear, also-owned items (bags / other spec / vendors for hints), and raid metadata later.
 
 ### Cooldown toggles
 
