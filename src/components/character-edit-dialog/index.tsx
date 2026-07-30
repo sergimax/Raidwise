@@ -190,32 +190,53 @@ function CharacterEditDialogContent({
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <DialogTitle sx={{ pb: 1 }}>{t("characterEdit.title")}</DialogTitle>
-      <DialogContent sx={{ pt: 0.5 }}>
-        <Stack spacing={1.25} sx={{ pt: 0.5 }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 1,
-              columnGap: 1.5,
-            }}
+      <DialogTitle
+        component="div"
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 1,
+          columnGap: 1.5,
+          pb: 1.25,
+        }}
+      >
+        <Typography component="span" variant="h6">
+          {t("characterEdit.title")}
+        </Typography>
+        <Divider
+          flexItem
+          orientation="vertical"
+          sx={{ alignSelf: "stretch", my: 0.25 }}
+        />
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: 1,
+            columnGap: 1.25,
+            minHeight: 32,
+          }}
+        >
+          <Typography
+            component="span"
+            variant="subtitle1"
+            sx={{ ...characterNameDisplaySx(character.class), lineHeight: 1.2 }}
           >
-            <Typography
-              variant="subtitle1"
-              sx={{ ...characterNameDisplaySx(character.class), lineHeight: 1.2 }}
-            >
-              {character.name}
-            </Typography>
-            {character.class ? (
-              <ClassOptionLabel
-                characterClass={character.class}
-                variant="body2"
-                iconSize={16}
-              />
-            ) : null}
-          </Box>
+            {character.name}
+          </Typography>
+          {character.class ? (
+            <ClassOptionLabel
+              characterClass={character.class}
+              variant="body2"
+              iconSize={16}
+            />
+          ) : null}
+        </Box>
+      </DialogTitle>
+      <DialogContent>
+        <Stack spacing={1.25}>
           {character.class ? (
             <Stack
               direction={{ xs: "column", md: "row" }}
