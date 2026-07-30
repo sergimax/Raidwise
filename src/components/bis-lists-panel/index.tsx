@@ -1,3 +1,4 @@
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import {
@@ -43,6 +44,7 @@ import {
   isLocalBisPreset,
 } from "../../utils/bis-lists.ts";
 import { isSlotEditing, type BisSlotDraft } from "../../utils/bis-list-editor.ts";
+import { formatBisListCopyText } from "../../utils/format-bis-list-copy.ts";
 import type { CharacterEquipContext } from "../../utils/item-equip-restrictions.ts";
 import { hideExternalWowTooltips } from "../../utils/hide-external-wow-tooltips.ts";
 import { BisSlotRow } from "../bis-slot-row/index.tsx";
@@ -141,6 +143,35 @@ export function BisListsPanel() {
     },
     [activeSpec, bisLists, className, clearError],
   );
+
+  const [listCopied, setListCopied] = useState(false);
+
+  const copyListText = useMemo(
+    () =>
+      formatBisListCopyText({
+        slots: slotDrafts.map((slotDraft) => ({
+          slot: slotDraft.slot,
+          itemIds: slotDraft.itemIds,
+        })),
+        locale,
+      }),
+    [locale, slotDrafts],
+  );
+
+  const handleCopyList = useCallback(async () => {
+    if (!copyListText) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(copyListText);
+    } catch {
+      return;
+    }
+    setListCopied(true);
+    window.setTimeout(() => {
+      setListCopied(false);
+    }, 1500);
+  }, [copyListText]);
 
   useEffect(() => () => hideExternalWowTooltips(), []);
 
@@ -453,12 +484,35 @@ export function BisListsPanel() {
             pr: { md: 2 },
           }}
         >
-          <Typography
-            variant="overline"
-            sx={{ lineHeight: 1.2, color: "text.secondary", display: "block", mb: 1 }}
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 1,
+              minWidth: 0,
+            }}
           >
-            {t("bisPanel.items")}
-          </Typography>
+            <Typography
+              variant="overline"
+              sx={{ lineHeight: 1.2, color: "text.secondary" }}
+            >
+              {t("bisPanel.items")}
+            </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<ContentCopyIcon fontSize="small" />}
+              disabled={!copyListText}
+              aria-label={t("bisPanel.copyListAria")}
+              onClick={() => {
+                void handleCopyList();
+              }}
+            >
+              {listCopied ? t("bisPanel.copied") : t("bisPanel.copyList")}
+            </Button>
+          </Stack>
           {slotEditor}
         </Box>
 

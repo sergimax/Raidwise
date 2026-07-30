@@ -198,6 +198,9 @@ export const enMessages = {
     fixItemErrors: "Fix item errors before saving.",
     presetDefault: "Default",
     alternatives: "Alternatives",
+    copyList: "Copy",
+    copyListAria: "Copy current BiS list",
+    copied: "Copied",
   },
   exportPanel: {
     title: "Character pick",

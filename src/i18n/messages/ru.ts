@@ -201,6 +201,9 @@ export const ruMessages: Messages = {
     fixItemErrors: "Исправьте ошибки предметов перед сохранением.",
     presetDefault: "По умолчанию",
     alternatives: "Варианты",
+    copyList: "Копировать",
+    copyListAria: "Копировать текущий BiS-список",
+    copied: "Скопировано",
   },
   exportPanel: {
     title: "Подбор персонажа",
