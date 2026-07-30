@@ -116,6 +116,9 @@ export const BisSlotRow = memo(function BisSlotRow({
   }, [isEditing]);
 
   const showActionsColumn = isEditing || !readOnly;
+  // Tall alternative stacks: pin icon + content to the top together.
+  // Single-item view: keep both vertically centered (original alignment).
+  const pinSlotBlockToTop = isEditing || slotDraft.itemIds.length > 1;
 
   return (
     <Box
@@ -128,8 +131,8 @@ export const BisSlotRow = memo(function BisSlotRow({
     >
       <Box
         sx={{
-          pt: isEditing ? 0.75 : 0.5,
-          alignSelf: "start",
+          pt: isEditing ? 0.75 : 0,
+          alignSelf: pinSlotBlockToTop ? "start" : "center",
           minWidth: 0,
           maxWidth: "100%",
           overflow: "hidden",
@@ -177,7 +180,10 @@ export const BisSlotRow = memo(function BisSlotRow({
           variant="body2"
           color="text.secondary"
           component="div"
-          sx={slotViewContentSx}
+          sx={{
+            ...slotViewContentSx,
+            alignSelf: pinSlotBlockToTop ? "start" : "center",
+          }}
         >
           {slotDraft.itemIds.length === 0 ? (
             "—"
