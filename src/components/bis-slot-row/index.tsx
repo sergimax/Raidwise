@@ -20,7 +20,7 @@ import {
 import type { CharacterEquipContext } from "../../utils/item-equip-restrictions.ts";
 import { BisItemDropSources } from "../bis-item-drop-sources/index.tsx";
 import { GearSlotIcon } from "../gear-slot-icon/index.tsx";
-import { WowItemAlternatives } from "../wow-item-link/index.tsx";
+import { WowItemLink } from "../wow-item-link/index.tsx";
 
 const slotRowSx = {
   display: "grid",
@@ -179,8 +179,50 @@ export const BisSlotRow = memo(function BisSlotRow({
           component="div"
           sx={slotViewContentSx}
         >
-          <WowItemAlternatives itemIds={slotDraft.itemIds} />
-          <BisItemDropSources itemIds={slotDraft.itemIds} locale={locale} />
+          {slotDraft.itemIds.length === 0 ? (
+            "—"
+          ) : (
+            <>
+              <Box
+                component="span"
+                sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}
+              >
+                <WowItemLink itemId={slotDraft.itemIds[0]} />
+                <BisItemDropSources
+                  itemIds={[slotDraft.itemIds[0]]}
+                  locale={locale}
+                />
+              </Box>
+              {slotDraft.itemIds.length > 1 ? (
+                <Box
+                  component="span"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 0.25,
+                    pl: 1,
+                    borderLeft: 1,
+                    borderColor: "divider",
+                    mt: 0.25,
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    component="span"
+                    sx={{ color: "text.disabled", lineHeight: 1.3 }}
+                  >
+                    {t("bisPanel.alternatives")}
+                  </Typography>
+                  {slotDraft.itemIds.slice(1).map((itemId, altIndex) => (
+                    <WowItemLink
+                      key={`${itemId}-${altIndex}`}
+                      itemId={itemId}
+                    />
+                  ))}
+                </Box>
+              ) : null}
+            </>
+          )}
         </Typography>
       )}
 
