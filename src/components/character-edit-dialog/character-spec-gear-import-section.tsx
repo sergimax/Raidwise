@@ -174,15 +174,15 @@ export function CharacterSpecGearImportSection({
           setImportNotice("");
         }}
         multiline
-        minRows={compact ? 1 : 2}
+        minRows={2}
         maxRows={compact ? 3 : 4}
         size={fieldSize}
-        placeholder={t("characterEdit.wsePlaceholder")}
+        placeholder={compact ? undefined : t("characterEdit.wsePlaceholder")}
         helperText={compact ? undefined : t("characterEdit.wseHelper")}
         fullWidth
         slotProps={{
           input: {
-            sx: { py: compact ? 0.5 : 1 },
+            sx: { py: compact ? 0.75 : 1 },
           },
         }}
       />
