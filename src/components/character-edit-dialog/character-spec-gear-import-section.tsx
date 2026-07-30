@@ -121,8 +121,11 @@ export function CharacterSpecGearImportSection({
         )
       ) : null}
       {storedGearSummary ? (
-        <Stack spacing={0.25}>
-          <Typography variant={listVariant} color="text.secondary">
+        <Stack spacing={0.5}>
+          <Typography
+            variant={compact ? "caption" : "body2"}
+            color="text.secondary"
+          >
             {t("characterEdit.storedGear")}
             {storedGearSummary.averageItemLevel !== undefined
               ? t("characterEdit.avgIlvl", {
@@ -134,25 +137,22 @@ export function CharacterSpecGearImportSection({
             component="ul"
             sx={{
               m: 0,
-              pl: compact ? 1.75 : 2.5,
-              maxHeight: compact ? 132 : 160,
+              pl: 2.25,
+              maxHeight: compact ? 168 : 160,
               overflowY: "auto",
-              columnCount: compact ? { xs: 1, sm: 2 } : undefined,
-              columnGap: compact ? 1.5 : undefined,
+              display: "flex",
+              flexDirection: "column",
+              gap: compact ? 0.35 : 0.25,
             }}
           >
             {sortedGearItems.map((item) => (
               <Typography
                 key={`${item.slot}-${item.id}`}
                 component="li"
-                variant={listVariant}
-                sx={
-                  compact
-                    ? { breakInside: "avoid", lineHeight: 1.35, py: 0.1 }
-                    : undefined
-                }
+                variant="body2"
+                sx={{ lineHeight: 1.45 }}
               >
-                <StoredGearItemLine item={item} dense={compact} />
+                <StoredGearItemLine item={item} />
               </Typography>
             ))}
           </Box>

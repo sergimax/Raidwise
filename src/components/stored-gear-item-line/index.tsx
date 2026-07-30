@@ -7,23 +7,21 @@ import { WowItemLink } from "../wow-item-link/index.tsx";
 
 type StoredGearItemLineProps = {
   item: CharacterGearItem;
-  dense?: boolean;
 };
 
 const mutedMetaSx = { color: "text.secondary" } as const;
 
-export function StoredGearItemLine({ item, dense = false }: StoredGearItemLineProps) {
+export function StoredGearItemLine({ item }: StoredGearItemLineProps) {
   const { locale } = useTranslation();
-  const metaVariant = dense ? "caption" : "body2";
 
   return (
     <Box component="span" sx={{ display: "inline" }}>
-      <Typography component="span" variant={metaVariant} sx={mutedMetaSx}>
+      <Typography component="span" variant="body2" sx={mutedMetaSx}>
         {getLocalizedGearSlotLabel(item.slot, locale)}
         {" · "}
       </Typography>
       <WowItemLink itemId={item.id} />
-      <Typography component="span" variant={metaVariant} sx={mutedMetaSx}>
+      <Typography component="span" variant="body2" sx={mutedMetaSx}>
         {" · "}
         {formatStoredGearItemLevelLabel(item, locale)}
       </Typography>
