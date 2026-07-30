@@ -197,6 +197,7 @@ export const enMessages = {
     confirmAllSlots: "Confirm all edited slots before saving the list.",
     fixItemErrors: "Fix item errors before saving.",
     presetDefault: "Default",
+    alternatives: "Alternatives",
   },
   exportPanel: {
     title: "Character pick",

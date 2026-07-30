@@ -200,6 +200,7 @@ export const ruMessages: Messages = {
     confirmAllSlots: "Подтвердите все слоты перед сохранением списка.",
     fixItemErrors: "Исправьте ошибки предметов перед сохранением.",
     presetDefault: "По умолчанию",
+    alternatives: "Варианты",
   },
   exportPanel: {
     title: "Подбор персонажа",
