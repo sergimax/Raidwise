@@ -47,8 +47,8 @@
 
 ### BIS-сборки
 
-Встроенные пресеты по спекам; локальные копии редактируются и используются в подсказках для выбора гира.
-Раскладка слотов как в интерфейсе игры.
+Встроенные пресеты по спекам (сначала Kingdom с вариантами слотов, затем Titans/community); локальные копии редактируются и используются в подсказках для выбора гира.
+Раскладка слотов как в интерфейсе игры; альтернативы показываются стеком под основным предметом.
 
 ### Подсказки гира
 
@@ -101,11 +101,11 @@ npm run dev
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / CI) |
 | `npm run build:wow-data` | Пересборка бандлов WoW JSON из `scripts/wowsims-db.json` (в т.ч. лут тира VoA из метаданных сетов, если WowSims не отдаёт зону 4603) |
-| `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis-list-sources.md` |
+| `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis-list-sources.md` + `scripts/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Комментарии слотов в файлах BiS-пресетов |
 | `npm run download:gear-slot-icons` | PNG-заглушки слотов paper-doll в `src/assets/gear-slot-icons/` |
 
-Встроенные BiS пишутся в `scripts/bis-list-sources.md` (секции `# Class - Spec` с блоками `## Server - Author - List - URL`; гильдейские Titans — `## Titans - Guild - Titans` с русскими подписями слотов).
+Встроенные BiS пишутся в `scripts/bis-list-sources.md` (Titans + community) и `scripts/bis-list-mix.md` (Kingdom. With variants: нумерованное оружие и альтернативы `N-M`).
 После правок markdown перегенерируйте TypeScript-пресеты.
 
 ### Хранение

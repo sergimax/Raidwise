@@ -47,8 +47,8 @@ Session-only; pasteable call lines.
 
 ### BiS builds
 
-Built-in presets per spec; local copies are editable and used for gear-choice hints.
-Slot layout matches the in-game paper doll.
+Built-in presets per spec (Kingdom with slot variants first, then Titans/community); local copies are editable and used for gear-choice hints.
+Slot layout matches the in-game paper doll; alternative items stack under the primary choice.
 
 ### Gear hints
 
@@ -101,11 +101,11 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / CI) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
-| `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis-list-sources.md` |
+| `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis-list-sources.md` + `scripts/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Add slot comments to BiS preset files |
 | `npm run download:gear-slot-icons` | Regenerate WoW paper-doll slot placeholder PNGs in `src/assets/gear-slot-icons/` |
 
-Built-in BiS lists are authored in `scripts/bis-list-sources.md` (`# Class - Spec` sections with `## Server - Author - List - URL` blocks; Titans guild lists use `## Titans - Guild - Titans` with Russian slot labels).
+Built-in BiS lists are authored in `scripts/bis-list-sources.md` (Titans + community) and `scripts/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
 Regenerate TypeScript presets after editing the markdown.
 
 ### Persistence

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Kingdom BiS presets:** Built-in “Kingdom. With variants” lists from `scripts/bis-list-mix.md` (numbered weapon slots and per-slot alternatives); listed first ahead of Titans/community presets.
+- **BiS panel alternatives:** Multi-item slots show the primary choice with drop sources, then a stacked **Alternatives** / **Варианты** block for the rest.
+
 ## [1.52.0] - 2026-07-22
 
 ### Added
