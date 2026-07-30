@@ -6,7 +6,7 @@ Web app to track which raid cooldowns each character has used per dungeon (WotLK
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-1.52.0-purple)
+![App version](https://img.shields.io/badge/App_version-1.53.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -57,6 +57,7 @@ CD cells:
 - <span style="color:#0284c7">blue</span> — ilvl upgrade
 
 Tooltips group loot by boss.
+Also-owned items (edit character) count as available for BiS/ilvl hints without being on the WowSims export.
 
 ### EN / RU
 
@@ -112,7 +113,7 @@ Regenerate TypeScript presets after editing the markdown.
 
 | Key | Contents |
 |-----|----------|
-| `my-raid-cds` | Characters, dungeons, toggles (`schemaVersion` 5) |
+| `my-raid-cds` | Characters, dungeons, toggles (`schemaVersion` 6) |
 | `my-raid-cds-bis-lists` | BiS preset selections and local lists (malformed entries skipped on load) |
 | `my-raid-cds-item-tooltip-locale` | `en` or `ru` (defaults to `ru`) |
 | `my-raid-cds-color-mode` | Light/dark preference |
