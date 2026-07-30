@@ -128,8 +128,8 @@ export const BisSlotRow = memo(function BisSlotRow({
     >
       <Box
         sx={{
-          pt: isEditing ? 0.75 : 0,
-          alignSelf: isEditing ? "start" : "center",
+          pt: isEditing ? 0.75 : 0.5,
+          alignSelf: "start",
           minWidth: 0,
           maxWidth: "100%",
           overflow: "hidden",
