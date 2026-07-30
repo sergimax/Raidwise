@@ -15,7 +15,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    include: [
+      "src/**/*.{test,spec}.{ts,tsx}",
+      // Generator helpers live under scripts/ (.mjs); keep their tests out of src/tsc.
+      "scripts/**/*.test.mjs",
+    ],
   },
   build: {
     rollupOptions: {

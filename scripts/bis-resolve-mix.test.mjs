@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   parseMixSlotLabel,
   resolveMixListLines,
-} from "../../scripts/bis-resolve-mix.mjs";
+} from "./bis-resolve-mix.mjs";
 
 describe("parseMixSlotLabel", () => {
   it("maps numbered weapons and specials", () => {
