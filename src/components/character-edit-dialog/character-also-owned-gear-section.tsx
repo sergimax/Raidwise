@@ -1,3 +1,4 @@
+import CancelIcon from "@mui/icons-material/Cancel";
 import { Button, Chip, Stack, TextField, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 import type { ItemTooltipLocale } from "../../constants/item-tooltips.ts";
@@ -110,15 +111,15 @@ export function CharacterAlsoOwnedGearSection({
               size="small"
               variant="outlined"
               onDelete={() => handleRemove(itemId)}
+              deleteIcon={
+                <CancelIcon
+                  aria-label={t("characterEdit.alsoOwnedRemoveAria", {
+                    id: itemId,
+                  })}
+                />
+              }
               label={<WowItemLink itemId={itemId} />}
               title={getWotlkItemName(itemId, locale) ?? `#${itemId}`}
-              slotProps={{
-                deleteIcon: {
-                  "aria-label": t("characterEdit.alsoOwnedRemoveAria", {
-                    id: itemId,
-                  }),
-                },
-              }}
               sx={{
                 maxWidth: "100%",
                 height: "auto",
