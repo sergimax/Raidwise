@@ -12,6 +12,27 @@ export const feralDruidBis: BuiltInSpecBis = {
   spec: "Feral",
   presets: [
     {
+      id: "kingdom-with-variants",
+      name: "Kingdom. With variants",
+      slots: [
+        { slot: 0, itemIds: [51296] }, // Head: Sanctified Lasherweave Headguard
+        { slot: 1, itemIds: [50633, 54581] }, // Neck: Sindragosa's Cruel Claw / Penumbra Pendant
+        { slot: 2, itemIds: [51299] }, // Shoulder: Sanctified Lasherweave Shoulderpads
+        { slot: 3, itemIds: [50653, 47546, 50470] }, // Back: Shadowvault Slayer's Cloak / Sylvanas' Cunning / Recovered Scarlet Onslaught Cape
+        { slot: 4, itemIds: [51300] }, // Chest: Sanctified Lasherweave Robes
+        { slot: 5, itemIds: [54580] }, // Wrist: Umbrage Armbands
+        { slot: 6, itemIds: [50675] }, // Hands: Aldriana's Gloves of Secrecy
+        { slot: 7, itemIds: [50707] }, // Waist: Astrylian's Sutured Cinch
+        { slot: 8, itemIds: [51297] }, // Legs: Sanctified Lasherweave Legguards
+        { slot: 9, itemIds: [50607] }, // Feet: Frostbitten Fur Boots
+        { slot: 10, itemIds: [50402] }, // Finger 1: Ashen Band of Endless Vengeance
+        { slot: 11, itemIds: [54576, 50604] }, // Finger 2: Signet of Twilight / Band of the Bone Colossus
+        { slot: 12, itemIds: [50363] }, // Trinket 1: Deathbringer's Will
+        { slot: 13, itemIds: [54590] }, // Trinket 2: Sharpened Twilight Scale
+        { slot: 14, itemIds: [50735] }, // Main hand: Oathbinder, Charge of the Ranger-General
+      ],
+    },
+    {
       id: "titans",
       name: "Titans",
       slots: [
