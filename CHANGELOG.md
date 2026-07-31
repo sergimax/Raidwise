@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.53.1] - 2026-08-01
+
+### Changed
+
+- **README:** Short app description now mentions BiS gear hints and raid signup helpers (EN/RU).
+- **Dev dependencies:** Updated nested lockfile packages (`brace-expansion`, `nanoid`, `postcss`).
+
 ## [1.53.0] - 2026-07-31
 
 ### Added
