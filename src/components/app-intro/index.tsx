@@ -14,7 +14,7 @@ export function AppIntro({ visible = true }: AppIntroProps) {
       sx={(theme) => ({
         px: { xs: 1.75, sm: 2.25 },
         py: { xs: 1.75, sm: 2.25 },
-        borderRadius: 2.5,
+        borderRadius: 1,
         border: 1,
         borderColor: "divider",
         bgcolor: "background.paper",
