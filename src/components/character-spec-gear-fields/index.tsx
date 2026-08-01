@@ -42,6 +42,8 @@ export type CharacterSingleSpecGearFieldsProps = {
   layout?: "row" | "column";
   size?: "small" | "medium";
   showHelperText?: boolean;
+  /** When true, omit the Main/Off caption (parent step title covers it). */
+  hideLabel?: boolean;
   onSpecChange: (value: string) => void;
   onGearScoreTextChange: (value: string) => void;
 };
@@ -59,6 +61,7 @@ export function CharacterSingleSpecGearFields({
   layout = "row",
   size = "medium",
   showHelperText = true,
+  hideLabel = false,
   onSpecChange,
   onGearScoreTextChange,
 }: CharacterSingleSpecGearFieldsProps) {
@@ -70,13 +73,15 @@ export function CharacterSingleSpecGearFields({
 
   return (
     <Stack spacing={0.5}>
-      <Typography
-        variant={size === "small" ? "caption" : "body2"}
-        color="text.secondary"
-        sx={size === "small" ? { fontWeight: 600, letterSpacing: 0.02 } : undefined}
-      >
-        {label}
-      </Typography>
+      {!hideLabel ? (
+        <Typography
+          variant={size === "small" ? "caption" : "body2"}
+          color="text.secondary"
+          sx={size === "small" ? { fontWeight: 600, letterSpacing: 0.02 } : undefined}
+        >
+          {label}
+        </Typography>
+      ) : null}
       <Stack direction={fieldsDirection} spacing={size === "small" ? 1 : 2}>
         <FormControl size={size} sx={{ flex: 1, minWidth: 0 }} disabled={disabled}>
           <InputLabel id={specLabelId}>{t("common.spec")}</InputLabel>

@@ -16,7 +16,7 @@ import { StoredGearItemLine } from "../stored-gear-item-line/index.tsx";
 type CharacterSpecGearImportSectionProps = {
   label: string;
   spec?: string;
-  characterClass: CharacterClass;
+  characterClass: CharacterClass | "";
   gearItems: CharacterGearItem[] | undefined;
   onGearItemsChange: (gearItems: CharacterGearItem[] | undefined) => void;
   onError: (message: string) => void;
@@ -25,6 +25,10 @@ type CharacterSpecGearImportSectionProps = {
   t: TranslateFn;
   hideHeader?: boolean;
   compact?: boolean;
+  /** Greys out the block and blocks interaction (e.g. class/spec not chosen yet). */
+  disabled?: boolean;
+  /** Shown under the controls when `disabled` — why import is unavailable. */
+  disabledReason?: string;
 };
 
 export function CharacterSpecGearImportSection({
@@ -39,6 +43,8 @@ export function CharacterSpecGearImportSection({
   t,
   hideHeader = false,
   compact = false,
+  disabled = false,
+  disabledReason,
 }: CharacterSpecGearImportSectionProps) {
   const [wowsimsImportText, setWowsimsImportText] = useState("");
   const [importNotice, setImportNotice] = useState("");
@@ -63,6 +69,9 @@ export function CharacterSpecGearImportSection({
   }, [onClearError, onGearItemsChange]);
 
   const handleImportGear = useCallback(() => {
+    if (disabled || characterClass === "") {
+      return;
+    }
     onClearError();
     setImportNotice("");
 
@@ -94,7 +103,8 @@ export function CharacterSpecGearImportSection({
     setImportNotice(noticeParts.join(" "));
     setWowsimsImportText("");
   }, [
-    characterClass.name,
+    characterClass,
+    disabled,
     locale,
     onClearError,
     onError,
@@ -105,11 +115,23 @@ export function CharacterSpecGearImportSection({
 
   const fieldSize = compact ? "small" : "medium";
   const listVariant = compact ? "caption" : "body2";
+  const controlsDisabled = disabled || characterClass === "";
 
   return (
-    <Stack spacing={compact ? 0.75 : 1}>
+    <Stack
+      spacing={compact ? 0.75 : 1}
+      aria-disabled={controlsDisabled || undefined}
+      sx={
+        controlsDisabled
+          ? {
+              opacity: 0.55,
+              filter: "grayscale(0.35)",
+            }
+          : undefined
+      }
+    >
       {!hideHeader ? (
-        spec ? (
+        spec && characterClass !== "" ? (
           <SpecOptionLabel
             className={characterClass.name}
             spec={spec}
@@ -120,7 +142,7 @@ export function CharacterSpecGearImportSection({
           <Typography variant="subtitle2">{label}</Typography>
         )
       ) : null}
-      {storedGearSummary ? (
+      {storedGearSummary && !controlsDisabled ? (
         <Stack spacing={0.5}>
           <Typography
             variant={compact ? "caption" : "body2"}
@@ -167,7 +189,7 @@ export function CharacterSpecGearImportSection({
       ) : null}
       <TextField
         label={t("characterEdit.wseJson")}
-        value={wowsimsImportText}
+        value={controlsDisabled ? "" : wowsimsImportText}
         onChange={(event) => {
           setWowsimsImportText(event.target.value);
           onClearError();
@@ -177,6 +199,7 @@ export function CharacterSpecGearImportSection({
         placeholder={compact ? undefined : t("characterEdit.wsePlaceholder")}
         helperText={compact ? undefined : t("characterEdit.wseHelper")}
         fullWidth
+        disabled={controlsDisabled}
       />
       <Stack
         direction="row"
@@ -189,11 +212,11 @@ export function CharacterSpecGearImportSection({
           variant="outlined"
           size={fieldSize}
           onClick={handleImportGear}
-          disabled={wowsimsImportText.trim() === ""}
+          disabled={controlsDisabled || wowsimsImportText.trim() === ""}
         >
           {t("characterEdit.importButton")}
         </Button>
-        {storedGearSummary ? (
+        {storedGearSummary && !controlsDisabled ? (
           <Button
             type="button"
             variant="outlined"
@@ -204,13 +227,18 @@ export function CharacterSpecGearImportSection({
             {t("characterEdit.clearGearButton")}
           </Button>
         ) : null}
-        {compact ? (
+        {compact && !controlsDisabled ? (
           <Typography variant="caption" color="text.secondary">
             {t("characterEdit.wseHelper")}
           </Typography>
         ) : null}
       </Stack>
-      {importNotice ? (
+      {controlsDisabled && disabledReason ? (
+        <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.4 }}>
+          {disabledReason}
+        </Typography>
+      ) : null}
+      {importNotice && !controlsDisabled ? (
         <Typography variant={listVariant} color="success.main">
           {importNotice}
         </Typography>
