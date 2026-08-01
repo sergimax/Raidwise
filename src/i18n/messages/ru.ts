@@ -14,6 +14,7 @@ export const ruMessages: Messages = {
     size: "Размер",
     mode: "Режим",
     searchPlaceholder: "Поиск…",
+    optional: "необязательно",
   },
   header: {
     appTitle: "My Raid CDs",

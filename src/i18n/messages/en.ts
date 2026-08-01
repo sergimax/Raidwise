@@ -12,6 +12,7 @@ export const enMessages = {
     size: "Size",
     mode: "Mode",
     searchPlaceholder: "Search…",
+    optional: "optional",
   },
   header: {
     appTitle: "My Raid CDs",

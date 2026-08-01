@@ -6,6 +6,8 @@ type ExportFilterSectionProps = {
   /** Optional workflow step number shown before the title (Character pick). */
   step?: number;
   title: string;
+  /** When set, shown muted after the title as `(…)` — e.g. optional filters. */
+  titleMark?: string;
   titleActions?: ReactNode;
   description?: string;
   children: ReactNode;
@@ -16,6 +18,7 @@ type ExportFilterSectionProps = {
 export function ExportFilterSection({
   step,
   title,
+  titleMark,
   titleActions,
   description,
   children,
@@ -60,6 +63,14 @@ export function ExportFilterSection({
             </Box>
           ) : null}
           {title}
+          {titleMark ? (
+            <Box
+              component="span"
+              sx={{ color: "text.secondary", fontWeight: 500, ml: 0.5 }}
+            >
+              ({titleMark})
+            </Box>
+          ) : null}
         </Typography>
         {titleActions ? (
           <Box sx={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 0.25 }}>
