@@ -162,6 +162,8 @@ export function RaidTrackerMain({
               mainGearScoreText={forms.characterForm.mainGearScoreText}
               offSpec={forms.characterForm.offSpec}
               offGearScoreText={forms.characterForm.offGearScoreText}
+              mainGearItems={forms.characterForm.mainGearItems}
+              offGearItems={forms.characterForm.offGearItems}
               error={forms.characterForm.error}
               onNameChange={forms.characterForm.setName}
               onClassChange={forms.characterForm.setCharacterClass}
@@ -169,6 +171,10 @@ export function RaidTrackerMain({
               onMainGearScoreTextChange={forms.characterForm.setMainGearScoreText}
               onOffSpecChange={forms.characterForm.setOffSpec}
               onOffGearScoreTextChange={forms.characterForm.setOffGearScoreText}
+              onMainGearItemsChange={forms.characterForm.setMainGearItems}
+              onOffGearItemsChange={forms.characterForm.setOffGearItems}
+              onImportError={forms.characterForm.setFormError}
+              onClearImportError={forms.characterForm.clearError}
               onSubmit={forms.characterForm.handleSubmit}
             />
           ) : null}

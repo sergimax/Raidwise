@@ -393,7 +393,7 @@ export const enMessages = {
     gearScoreRange:
       "{{specLabel}} gear score must be a whole number from {{min}} to {{max}}.",
     gearScoreNeedsSpec:
-      "Choose a {{specLabel}} specialization to attach a gear score.",
+      "Choose a {{specLabel}} specialization to attach a gear score or imported gear.",
     invalidMainSpec: "Choose a valid main specialization for this class.",
     invalidOffSpec: "Choose a valid off specialization for this class.",
     specsMustDiffer: "Main and off specialization must be different.",
