@@ -258,7 +258,7 @@ export const enMessages = {
     dungeonFilterTitle: "Selected raid",
     dungeonFilterHelper:
       "Search here or in the table header — both stay in sync. Character pick includes one line per matching raid row",
-    dungeonFilterMatchCount: "{{count}} of {{total}} raid(s) in character pick",
+    dungeonFilterMatchCount: "{{count}} of {{total}} raid(s)",
     dungeonFilterNoMatches: "No raids match the current search.",
     gearScoreFilterTitle: "Minimum GS",
     characterSpecsFilterTitle: "Needed specs",
@@ -301,8 +301,6 @@ export const enMessages = {
   gearPickPanel: {
     title: "Soft reserve pick",
     closeAria: "Close soft reserve pick panel",
-    instructions:
-      "Pick one character and spec, set the raid soft reserve rules, assign your softs and competing calls on BiS upgrades from filtered raids, then copy the soft call list",
     rulesTitle: "Soft reserve rules",
     rulesHelper: "How many softs the raid allows, and whether softs add +100 or grant extra /rolls",
     maxSoftsLabel: "Max softs",
@@ -315,7 +313,7 @@ export const enMessages = {
       "Each soft reserve caller gets one default /roll plus one /roll per soft reserve; best roll wins",
     characterTitle: "Character & spec",
     characterHelper: "Select exactly one character and one spec for soft reserve planning",
-    dungeonFilterTitle: "Raids",
+    dungeonFilterTitle: "Selected raid",
     dungeonFilterHelper:
       "Search here or in the table header — both stay in sync. Soft reserve targets come from matching raid rows",
     itemsTitle: "Soft reserve targets",
@@ -347,7 +345,7 @@ export const enMessages = {
     softBudget: "{{used}} / {{max}} softs used",
     kindBis: "BiS",
     kindVariant: "Variant",
-    copyTitle: "Soft reserve call",
+    copyTitle: "Soft reserve list",
     copyHelper: "Items you assigned softs to. Copy and send to the raid",
     copyEmpty: "Assign soft reserves to at least one item to build a soft reserve call",
     copyLine: "Copy",

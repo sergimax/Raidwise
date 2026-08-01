@@ -57,7 +57,13 @@ export function GearPickCopyBlock({
         spacing={1}
         sx={{ alignItems: "center", justifyContent: "space-between" }}
       >
-        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+        <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
+          <Box
+            component="span"
+            sx={{ color: "text.secondary", fontWeight: 700, mr: 0.5 }}
+          >
+            5.
+          </Box>
           {t("gearPickPanel.copyTitle")}
         </Typography>
         <Button
