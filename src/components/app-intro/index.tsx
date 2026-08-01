@@ -7,6 +7,7 @@ type IntroScenario = {
   letter: "A" | "B" | "C";
   titleKey: MessageKey;
   stepKeys: MessageKey[];
+  outcomeKey: MessageKey;
 };
 
 const INTRO_SCENARIOS: IntroScenario[] = [
@@ -18,6 +19,7 @@ const INTRO_SCENARIOS: IntroScenario[] = [
       "intro.scenarioAStep2",
       "intro.scenarioAStep3",
     ],
+    outcomeKey: "intro.scenarioAOutcome",
   },
   {
     letter: "B",
@@ -29,11 +31,13 @@ const INTRO_SCENARIOS: IntroScenario[] = [
       "intro.scenarioBStep4",
       "intro.scenarioBStep5",
     ],
+    outcomeKey: "intro.scenarioBOutcome",
   },
   {
     letter: "C",
     titleKey: "intro.scenarioCTitle",
     stepKeys: ["intro.scenarioCStep1"],
+    outcomeKey: "intro.scenarioCOutcome",
   },
 ];
 
@@ -82,18 +86,12 @@ export function AppIntro({ visible = true }: AppIntroProps) {
                 pl: { md: scenario.letter === "A" ? 0 : 2 },
                 borderLeft: {
                   xs: "none",
-                  md:
-                    scenario.letter === "A"
-                      ? "none"
-                      : "1px solid",
+                  md: scenario.letter === "A" ? "none" : "1px solid",
                 },
                 borderColor: { md: "divider" },
                 pt: { xs: scenario.letter === "A" ? 0 : 1.25, md: 0 },
                 borderTop: {
-                  xs:
-                    scenario.letter === "A"
-                      ? "none"
-                      : "1px solid",
+                  xs: scenario.letter === "A" ? "none" : "1px solid",
                   md: "none",
                 },
               }}
@@ -137,6 +135,15 @@ export function AppIntro({ visible = true }: AppIntroProps) {
                     </Typography>
                   ))}
                 </Box>
+                <Typography variant="body2" sx={{ lineHeight: 1.45 }}>
+                  <Box
+                    component="span"
+                    sx={{ color: "text.secondary", fontWeight: 700 }}
+                  >
+                    {t("intro.whatYouGet")}:{" "}
+                  </Box>
+                  {t(scenario.outcomeKey)}
+                </Typography>
               </Stack>
             </Box>
           ))}

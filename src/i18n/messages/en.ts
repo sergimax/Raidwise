@@ -27,23 +27,28 @@ export const enMessages = {
     authorSiteAria: "sergimax.ru",
   },
   intro: {
-    title: "Get started",
+    title: "How this app can help",
     saveNote: "Data is saved automatically in your browser.",
+    whatYouGet: "What you get",
     scenarioATitle: "Cooldown tracking",
     scenarioAStep1:
       "Add raids — or use Add from template when the list is empty",
     scenarioAStep2: "Add characters",
     scenarioAStep3: "Mark which raids each character has completed",
+    scenarioAOutcome: "A roster cooldown map — who is free for which raid",
     scenarioBTitle: "Gear upgrades",
     scenarioBStep1: "Add a character",
     scenarioBStep2: "Edit the character and import gear from WowSimsExporter",
     scenarioBStep3: "Add raids",
     scenarioBStep4: "Mark completed raids per character",
     scenarioBStep5:
-      "Check cell colors to see which raids drop more upgrades for each character",
+      "Check which raids have more upgrades for each character",
+    scenarioBOutcome:
+      "The same map, plus BiS and item-level upgrade hints on the grid",
     scenarioCTitle: "BiS lists only",
     scenarioCStep1:
       "Open BiS builds to browse presets — no characters or raids needed",
+    scenarioCOutcome: "Spec BiS lists without setting up a roster",
   },
   toolbar: {
     actionsAria: "Tracker actions",
