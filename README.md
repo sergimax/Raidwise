@@ -33,7 +33,7 @@ Compact layout on small screens.
 ### Data controls
 
 Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm).
-When there are no dungeons — **Add from template**.
+When there are no dungeons — **Add raids from template**.
 
 ### Character pick for a raid
 

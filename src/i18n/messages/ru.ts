@@ -32,18 +32,19 @@ export const ruMessages: Messages = {
     title: "Чем поможет приложение",
     saveNote: "Данные сохраняются автоматически в браузере.",
     whatYouGet: "Что получите",
+    featureEditCharacter: "Изменить персонажа",
     scenarioATitle: "Трекинг КД",
     scenarioAStep1:
-      "Добавьте рейды — или используйте Добавить из шаблона, если список пуст",
-    scenarioAStep2: "Добавьте персонажей",
+      "{{addDungeon}} — или {{addFromTemplate}}, если список пуст",
+    scenarioAStep2: "{{addCharacter}}",
     scenarioAStep3: "Отметьте, какие рейды пройдены на каком персонаже",
     scenarioAOutcome:
       "Карта КД ваших персонажей — кто свободен на какой рейд",
     scenarioBTitle: "Апгрейды экипировки",
-    scenarioBStep1: "Добавьте персонажа",
+    scenarioBStep1: "{{addCharacter}}",
     scenarioBStep2:
-      "Отредактируйте персонажа и импортируйте экипировку из WowSimsExporter",
-    scenarioBStep3: "Добавьте рейды",
+      "{{editCharacter}} и импортируйте экипировку из WowSimsExporter",
+    scenarioBStep3: "{{addDungeon}}",
     scenarioBStep4: "Отметьте пройденные рейды по персонажам",
     scenarioBStep5:
       "Смотрите, в каких рейдах больше апгрейдов для каждого персонажа",
@@ -51,18 +52,18 @@ export const ruMessages: Messages = {
       "Та же карта плюс подсказки апгрейдов BiS и по ilvl в таблице",
     scenarioCTitle: "Только BIS списки",
     scenarioCStep1:
-      "Откройте BIS сборки и смотрите пресеты — персонажи и рейды не нужны",
+      "Откройте {{bisLists}} — персонажи и рейды не нужны",
     scenarioCOutcome: "BIS списки по спекам без добавления персонажей и рейдов",
   },
   toolbar: {
     actionsAria: "Действия трекера",
-    addFromTemplate: "Добавить из шаблона",
-    addCharacter: "+ персонаж",
-    addDungeon: "+ рейд",
+    addFromTemplate: "Добавить рейды из шаблона",
+    addCharacter: "Добавить персонажа",
+    addDungeon: "Добавить рейд",
     bisLists: "BIS сборки",
     export: "Подбор персонажа",
     gearPick: "Подбор софтов",
-    dataControls: "Данные",
+    dataControls: "Настройки",
     resetAllToggles: "Сброс статистики",
   },
   table: {
@@ -75,7 +76,7 @@ export const ruMessages: Messages = {
       "Фильтр: название, название+размер или название+размер+режим — напр. ЦЛК, Ульда10, ЦЛК25об или ИК25хм",
     dungeonSearchPlaceholder: "ЦЛК, Ульда10, ЦЛК25об, ИК25хм ...",
     emptyNoDungeons:
-      "Добавьте подземелье или используйте «Добавить из шаблона».",
+      "Добавьте подземелье или используйте «Добавить рейды из шаблона».",
     emptyNoSearchMatches: "Нет подземелий по вашему запросу.",
     ariaNoDungeons: "Трекер КД рейдов, нет подземелий",
     ariaNoSearchMatches: "Трекер КД рейдов, нет совпадений по поиску",
@@ -177,7 +178,7 @@ export const ruMessages: Messages = {
     deleteDungeonsAction: "Удалить все рейды",
     addFromTemplateDescription:
       "Загрузить шаблон рейдов WotLK (русские названия), когда список рейдов пуст.",
-    addFromTemplateConfirmTitle: "Добавить из шаблона?",
+    addFromTemplateConfirmTitle: "Добавить рейды из шаблона?",
     addFromTemplateConfirmMessage:
       "Загрузить список рейдов WotLK в пустую таблицу?",
     addFromTemplateConfirm: "Добавить",

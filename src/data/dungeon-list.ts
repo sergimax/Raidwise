@@ -7,7 +7,7 @@ const H = DungeonDifficulty.HEROIC;
 
 const row = createTemplateDungeon;
 
-/** Default WotLK raid rows for “Add from template”. */
+/** Default WotLK raid rows for “Add raids from template”. */
 export const DungeonList: Array<Dungeon> = [
   row({ raidKey: "naxxramas", size: 10, difficulty: N, itemLevel: [200] }),
   row({ raidKey: "naxxramas", size: 25, difficulty: N, itemLevel: [213] }),
