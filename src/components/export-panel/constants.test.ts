@@ -20,11 +20,12 @@ import {
 } from "./constants.ts";
 
 describe("getExportFilterGridTemplateAreas", () => {
-  it("places GS, role, and specs on row one; raid spans two columns on row two", () => {
+  it("places raid on row one; GS, role, and specs continue below / right", () => {
     const areas = getExportFilterGridTemplateAreas(true);
 
-    expect(areas).toContain("gearScore role characterSpecs");
     expect(areas).toContain("dungeon dungeon characterSpecs");
+    expect(areas).toContain("gearScore role characterSpecs");
+    expect(areas.indexOf("dungeon")).toBeLessThan(areas.indexOf("gearScore"));
   });
 
   it("omits dungeon row when there are no dungeons", () => {
