@@ -37,8 +37,8 @@ jobs:
       - uses: ./.github/actions/setup-project
       - run: npm run build
 
-  # When package.json version bumps, require release files to be touched too.
-  # Loose for now (path presence in the git range only) — see scripts/check-release-files.mjs.
+  # Requires a package.json version bump + matching release-file content.
+  # See scripts/check-release-files.mjs.
   release-files:
     name: Release files
     needs: [lint, test, build]
