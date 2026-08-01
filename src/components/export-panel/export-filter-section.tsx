@@ -3,6 +3,8 @@ import type { SxProps, Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 
 type ExportFilterSectionProps = {
+  /** Optional workflow step number shown before the title (Character pick). */
+  step?: number;
   title: string;
   titleActions?: ReactNode;
   description?: string;
@@ -12,6 +14,7 @@ type ExportFilterSectionProps = {
 };
 
 export function ExportFilterSection({
+  step,
   title,
   titleActions,
   description,
@@ -48,6 +51,14 @@ export function ExportFilterSection({
         }}
       >
         <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3, minWidth: 0 }}>
+          {step != null ? (
+            <Box
+              component="span"
+              sx={{ color: "text.secondary", fontWeight: 700, mr: 0.5 }}
+            >
+              {step}.
+            </Box>
+          ) : null}
           {title}
         </Typography>
         {titleActions ? (

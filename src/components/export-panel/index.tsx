@@ -223,6 +223,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
         >
           <ExportFilterBlock gridArea="gearScore">
             <ExportFilterSection
+              step={2}
               title={t("exportPanel.gearScoreFilterTitle")}
               description={t("exportPanel.minGearScoreHelper")}
               contentSx={{ overflow: "visible" }}
@@ -238,6 +239,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
 
           <ExportFilterBlock gridArea="role">
             <ExportFilterSection
+              step={2}
               title={t("exportPanel.roleFilterTitle")}
               description={t("exportPanel.roleFilterHelper")}
             >
@@ -250,6 +252,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
 
           <ExportFilterBlock gridArea="characterSpecs">
             <ExportFilterSection
+              step={2}
               title={t("exportPanel.characterSpecsFilterTitle")}
               description={t("exportPanel.characterSpecsFilterHelper")}
               titleActions={
@@ -274,6 +277,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
           {hasDungeonFilter ? (
             <ExportFilterBlock gridArea="dungeon">
               <ExportFilterSection
+                step={1}
                 title={t("exportPanel.dungeonFilterTitle")}
                 description={t("exportPanel.dungeonFilterHelper")}
               >

@@ -137,6 +137,7 @@ export function ExportResultLines({ result }: ExportResultLinesProps) {
   if (result.kind === "message") {
     return (
       <ExportFilterSection
+        step={3}
         title={t("exportPanel.exportLinesTitle")}
         description={t("exportPanel.exportLinesHelper")}
         sx={sectionLayoutSx}
@@ -153,6 +154,7 @@ export function ExportResultLines({ result }: ExportResultLinesProps) {
 
   return (
     <ExportFilterSection
+      step={3}
       title={t("exportPanel.exportLinesTitle")}
       description={
         singleLine
