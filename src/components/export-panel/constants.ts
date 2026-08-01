@@ -22,6 +22,13 @@ export const EXPORT_FILTER_UNIT_WIDTH = 300;
  */
 export const EXPORT_FILTER_UNIT_HEIGHT = 224;
 
+/** Keeps search + match count pinned; only raid chips scroll inside the section. */
+export const exportDungeonFilterContentSx = {
+  overflow: "hidden",
+  display: "flex",
+  flexDirection: "column",
+} as const;
+
 /**
  * Character-spec list (Character pick + Soft pick) — fits a 2×1 unit column.
  * Shared so both panels stay equal in size.

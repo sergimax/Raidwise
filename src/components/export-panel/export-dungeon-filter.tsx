@@ -8,13 +8,6 @@ import { formatDungeonExportLabel } from "../../utils/format-dungeon-label.ts";
 import { DungeonNameSearchField } from "../dungeon-name-search-field/index.tsx";
 import { ExportRaidIcon } from "./export-raid-icon.tsx";
 
-/** Keeps search + match count pinned; only raid chips scroll inside the section. */
-export const exportDungeonFilterContentSx = {
-  overflow: "hidden",
-  display: "flex",
-  flexDirection: "column",
-} as const;
-
 type ExportDungeonFilterProps = {
   dungeonNameSearch: string;
   onDungeonNameSearchChange: (query: string) => void;
