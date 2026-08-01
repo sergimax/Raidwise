@@ -1,17 +1,17 @@
 /**
- * Release-file presence check for CI.
+ * Release-file check for CI.
  *
- * When `package.json` version changes vs the comparison base, require that the
- * usual release files were also touched in the same git range.
+ * When `package.json` version changes vs the comparison base:
+ * 1. Require the usual release paths were touched in the git range
+ * 2. Require the new version string is present in:
+ *    - package.json
+ *    - package-lock.json (root + packages[""])
+ *    - README.md / README.ru.md App_version badges
+ *    - CHANGELOG.md as a Keep a Changelog heading `## [X.Y.Z]`
  *
- * Current check (intentionally loose): each required path appears in
- * `git diff --name-only <base>...<head>`.
- *
- * Future (stricter) checks to consider:
- * - Same semver string in package.json, package-lock.json (root + packages[""]),
- *   and both README App_version badges
- * - CHANGELOG.md has a matching `## [X.Y.Z] - YYYY-MM-DD` section for that version
+ * Future checks to consider:
  * - Version is a valid semver bump relative to the base (not equal / not lower)
+ * - CHANGELOG date looks sane; Unreleased section discipline
  */
 
 import { execFileSync } from "node:child_process";
@@ -32,9 +32,20 @@ function git(args) {
   }).trimEnd();
 }
 
-function packageVersionAt(ref) {
+function gitShow(ref, path) {
   try {
-    const raw = git(["show", `${ref}:package.json`]);
+    return git(["show", `${ref}:${path}`]);
+  } catch {
+    return null;
+  }
+}
+
+function packageVersionAt(ref) {
+  const raw = gitShow(ref, "package.json");
+  if (raw === null) {
+    return null;
+  }
+  try {
     return JSON.parse(raw).version;
   } catch {
     return null;
@@ -60,6 +71,98 @@ function resolveRefs(cliBase, cliHead) {
 
 function isNullOrZeroSha(sha) {
   return !sha || /^0+$/.test(sha);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Badge fragment used in both README.md and README.ru.md. */
+function readmeBadgeHasVersion(readmeText, version) {
+  const pattern = new RegExp(
+    `img\\.shields\\.io/badge/App_version-${escapeRegExp(version)}-`,
+  );
+  return pattern.test(readmeText);
+}
+
+function changelogHasVersionHeading(changelogText, version) {
+  const pattern = new RegExp(
+    `^## \\[${escapeRegExp(version)}\\](?:\\s|$)`,
+    "m",
+  );
+  return pattern.test(changelogText);
+}
+
+function collectContentErrors(head, version) {
+  const errors = [];
+
+  const packageJsonRaw = gitShow(head, "package.json");
+  if (packageJsonRaw === null) {
+    errors.push("package.json: could not read at head");
+  } else {
+    let packageJson;
+    try {
+      packageJson = JSON.parse(packageJsonRaw);
+    } catch {
+      errors.push("package.json: invalid JSON");
+      packageJson = null;
+    }
+    if (packageJson && packageJson.version !== version) {
+      errors.push(
+        `package.json: expected version "${version}", found "${packageJson.version}"`,
+      );
+    }
+  }
+
+  const lockRaw = gitShow(head, "package-lock.json");
+  if (lockRaw === null) {
+    errors.push("package-lock.json: could not read at head");
+  } else {
+    let lockfile;
+    try {
+      lockfile = JSON.parse(lockRaw);
+    } catch {
+      errors.push("package-lock.json: invalid JSON");
+      lockfile = null;
+    }
+    if (lockfile) {
+      if (lockfile.version !== version) {
+        errors.push(
+          `package-lock.json: expected root version "${version}", found "${lockfile.version}"`,
+        );
+      }
+      const rootPackageVersion = lockfile.packages?.[""]?.version;
+      if (rootPackageVersion !== version) {
+        errors.push(
+          `package-lock.json: expected packages[""].version "${version}", found "${rootPackageVersion}"`,
+        );
+      }
+    }
+  }
+
+  for (const readmePath of ["README.md", "README.ru.md"]) {
+    const readmeText = gitShow(head, readmePath);
+    if (readmeText === null) {
+      errors.push(`${readmePath}: could not read at head`);
+      continue;
+    }
+    if (!readmeBadgeHasVersion(readmeText, version)) {
+      errors.push(
+        `${readmePath}: App_version badge does not include "${version}"`,
+      );
+    }
+  }
+
+  const changelogText = gitShow(head, "CHANGELOG.md");
+  if (changelogText === null) {
+    errors.push("CHANGELOG.md: could not read at head");
+  } else if (!changelogHasVersionHeading(changelogText, version)) {
+    errors.push(
+      `CHANGELOG.md: missing heading "## [${version}]" (Keep a Changelog section for this release)`,
+    );
+  }
+
+  return errors;
 }
 
 function main() {
@@ -98,7 +201,7 @@ function main() {
   }
 
   console.log(
-    `Detected version bump: ${baseVersion} → ${headVersion}. Checking release files were touched…`,
+    `Detected version bump: ${baseVersion} → ${headVersion}. Checking release files…`,
   );
 
   // Triple-dot: changes on head since merge-base with base (PR-friendly).
@@ -109,25 +212,29 @@ function main() {
       .filter(Boolean),
   );
 
-  const missing = RELEASE_FILES.filter((path) => !changed.has(path));
+  const missingPaths = RELEASE_FILES.filter((path) => !changed.has(path));
+  const contentErrors = collectContentErrors(head, headVersion);
+  const allErrors = [
+    ...missingPaths.map(
+      (path) => `${path}: not changed in this range (must be updated for a release)`,
+    ),
+    ...contentErrors,
+  ];
 
-  if (missing.length > 0) {
+  if (allErrors.length > 0) {
     console.error(
       [
-        "Release bump is incomplete. When version changes, these files must also change:",
-        ...RELEASE_FILES.map((path) => `  - ${path}`),
+        "Release bump is incomplete:",
+        ...allErrors.map((error) => `  - ${error}`),
         "",
-        "Missing from this range:",
-        ...missing.map((path) => `  - ${path}`),
-        "",
-        // Reminder for whoever tightens this script later — see file header.
-        "(Loose check: file presence only. Stricter version/CHANGELOG content checks may be added later.)",
+        "Required: same version in package.json, package-lock.json, README badges,",
+        "and a CHANGELOG.md section heading for that version.",
       ].join("\n"),
     );
     process.exit(1);
   }
 
-  console.log("Release files OK (all required paths changed in this range):");
+  console.log(`Release files OK for version ${headVersion}:`);
   for (const path of RELEASE_FILES) {
     console.log(`  - ${path}`);
   }
