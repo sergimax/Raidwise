@@ -6,5 +6,6 @@ export type ExportPanelProps = {
   visibleDungeons: DungeonRecord[];
   dungeonToggles: DungeonToggles;
   dungeonNameSearch: string;
+  onDungeonNameSearchChange: (query: string) => void;
   totalDungeonCount: number;
 };

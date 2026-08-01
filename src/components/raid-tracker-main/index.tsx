@@ -197,6 +197,7 @@ export function RaidTrackerMain({
               visibleDungeons={tableState.sortedDungeons}
               dungeonToggles={domain.dungeonToggles}
               dungeonNameSearch={tableState.dungeonNameSearch}
+              onDungeonNameSearchChange={tableState.setDungeonNameSearch}
               totalDungeonCount={tableState.dungeonCount}
             />
           ) : null}
@@ -207,6 +208,7 @@ export function RaidTrackerMain({
               visibleDungeons={tableState.sortedDungeons}
               dungeonToggles={domain.dungeonToggles}
               dungeonNameSearch={tableState.dungeonNameSearch}
+              onDungeonNameSearchChange={tableState.setDungeonNameSearch}
               totalDungeonCount={tableState.dungeonCount}
             />
           ) : null}

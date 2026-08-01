@@ -55,6 +55,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
       visibleDungeons,
       dungeonToggles,
       dungeonNameSearch,
+      onDungeonNameSearchChange,
       totalDungeonCount,
     },
     ref,
@@ -283,6 +284,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
               >
                 <ExportDungeonFilter
                   dungeonNameSearch={dungeonNameSearch}
+                  onDungeonNameSearchChange={onDungeonNameSearchChange}
                   visibleDungeons={visibleDungeons}
                   totalDungeonCount={totalDungeonCount}
                   locale={locale}

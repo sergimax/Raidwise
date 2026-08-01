@@ -1,7 +1,8 @@
 import type { SxProps, Theme } from "@mui/material";
-import { Stack, TableCell, TableSortLabel, TextField } from "@mui/material";
+import { Stack, TableCell, TableSortLabel } from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { DungeonSortKey, SortDirection } from "../../utils/sort-dungeons.ts";
+import { DungeonNameSearchField } from "../dungeon-name-search-field/index.tsx";
 
 type DungeonNameHeaderCellProps = {
   activeSortKey: DungeonSortKey;
@@ -39,27 +40,9 @@ export function DungeonNameHeaderCell({
         >
           {t("table.dungeonName")}
         </TableSortLabel>
-        <TextField
-          className="raid-tracker-table__dungeon-search"
-          size="small"
-          placeholder={t("table.dungeonSearchPlaceholder")}
+        <DungeonNameSearchField
           value={searchQuery}
-          onChange={(event) => {
-            onSearchQueryChange(event.target.value);
-          }}
-          onClick={(event) => {
-            event.stopPropagation();
-          }}
-          onKeyDown={(event) => {
-            event.stopPropagation();
-          }}
-          slotProps={{
-            htmlInput: {
-              "aria-label": t("table.filterByDungeonName"),
-              title: t("table.filterByDungeonName"),
-            },
-          }}
-          fullWidth
+          onChange={onSearchQueryChange}
         />
       </Stack>
     </TableCell>
