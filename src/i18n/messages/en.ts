@@ -155,6 +155,10 @@ export const enMessages = {
     deleteDungeonsAction: "Delete all dungeons",
     addFromTemplateDescription:
       "Load the WotLK raid template (Russian names) when the dungeon list is empty.",
+    addFromTemplateConfirmTitle: "Add from template?",
+    addFromTemplateConfirmMessage:
+      "Load the WotLK raid list into the empty dungeon table?",
+    addFromTemplateConfirm: "Add",
     deleteBisTitle: "Custom BiS lists",
     deleteBisDescription:
       "Delete saved local BiS lists. Built-in presets stay.",

@@ -1,16 +1,19 @@
 import { Container } from "@mui/material";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   pickTrackerFormsState,
   useOverlayPanels,
 } from "../../hooks/use-overlay-panels.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
+import { useTranslation } from "../../i18n/use-translation.ts";
 import { AppHeader } from "../app-header/index.tsx";
+import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog.tsx";
 import { RaidTrackerMain } from "../raid-tracker-main/index.tsx";
 import { TrackerControls } from "../tracker-controls/index.tsx";
 import type { TrackerControlsSource } from "../tracker-controls/types.ts";
 
 export function TrackerLayout() {
+  const { t } = useTranslation();
   const domain = useRaidTrackerContext();
   const overlayPanels = useOverlayPanels({
     characters: domain.characters,
@@ -18,17 +21,28 @@ export function TrackerLayout() {
     onDungeonAdded: domain.addDungeon,
   });
   const forms = pickTrackerFormsState(overlayPanels);
+  const [confirmAddFromTemplateOpen, setConfirmAddFromTemplateOpen] =
+    useState(false);
 
-  const handleAddFromTemplate = useCallback(() => {
+  const requestAddFromTemplate = useCallback(() => {
     overlayPanels.closeAllOverlayPanels();
+    setConfirmAddFromTemplateOpen(true);
+  }, [overlayPanels]);
+
+  const cancelAddFromTemplate = useCallback(() => {
+    setConfirmAddFromTemplateOpen(false);
+  }, []);
+
+  const confirmAddFromTemplate = useCallback(() => {
     domain.handleAddFromTemplate();
-  }, [domain, overlayPanels]);
+    setConfirmAddFromTemplateOpen(false);
+  }, [domain]);
 
   const controlsSource = useMemo(
     (): TrackerControlsSource => ({
       charactersCount: domain.characters.length,
       dungeonsCount: domain.dungeons.length,
-      handleAddFromTemplate,
+      handleAddFromTemplate: requestAddFromTemplate,
       showCharacterForm: overlayPanels.showCharacterForm,
       showDungeonForm: overlayPanels.showDungeonForm,
       showExportPanel: overlayPanels.showExportPanel,
@@ -45,7 +59,7 @@ export function TrackerLayout() {
     [
       domain.characters.length,
       domain.dungeons.length,
-      handleAddFromTemplate,
+      requestAddFromTemplate,
       overlayPanels.showBisListsPanel,
       overlayPanels.showCharacterForm,
       overlayPanels.showDataControlsPanel,
@@ -72,6 +86,7 @@ export function TrackerLayout() {
       >
         <RaidTrackerMain
           forms={forms}
+          onAddFromTemplate={requestAddFromTemplate}
           showExportPanel={overlayPanels.showExportPanel}
           closeExportPanel={overlayPanels.closeExportPanel}
           showGearPickPanel={overlayPanels.showGearPickPanel}
@@ -82,6 +97,17 @@ export function TrackerLayout() {
           closeDataControlsPanel={overlayPanels.closeDataControlsPanel}
         />
       </Container>
+      {confirmAddFromTemplateOpen ? (
+        <DeleteConfirmDialog
+          open
+          title={t("dataControlsPanel.addFromTemplateConfirmTitle")}
+          message={t("dataControlsPanel.addFromTemplateConfirmMessage")}
+          confirmLabel={t("dataControlsPanel.addFromTemplateConfirm")}
+          confirmColor="secondary"
+          onConfirm={confirmAddFromTemplate}
+          onCancel={cancelAddFromTemplate}
+        />
+      ) : null}
     </div>
   );
 }

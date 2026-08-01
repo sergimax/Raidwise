@@ -158,6 +158,10 @@ export const ruMessages: Messages = {
     deleteDungeonsAction: "Удалить все рейды",
     addFromTemplateDescription:
       "Загрузить шаблон рейдов WotLK (русские названия), когда список рейдов пуст.",
+    addFromTemplateConfirmTitle: "Добавить из шаблона?",
+    addFromTemplateConfirmMessage:
+      "Загрузить список рейдов WotLK в пустую таблицу?",
+    addFromTemplateConfirm: "Добавить",
     deleteBisTitle: "Свои BIS списки",
     deleteBisDescription:
       "Удалить сохранённые локальные BIS списки. Встроенные пресеты остаются.",

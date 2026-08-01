@@ -26,8 +26,14 @@ type ConfirmCopy = {
   confirmColor: "warning" | "error";
 };
 
+type DataControlsPanelProps = {
+  onAddFromTemplate: () => void;
+};
+
 /** Bulk reset / delete actions in a 2×2 unit-block grid. */
-export function DataControlsPanel() {
+export function DataControlsPanel({
+  onAddFromTemplate,
+}: DataControlsPanelProps) {
   const { t } = useTranslation();
   const domain = useRaidTrackerContext();
   const bisLists = useBisListsContext();
@@ -176,7 +182,7 @@ export function DataControlsPanel() {
                 size="small"
                 variant="contained"
                 color="secondary"
-                onClick={domain.handleAddFromTemplate}
+                onClick={onAddFromTemplate}
               >
                 {t("toolbar.addFromTemplate")}
               </Button>
