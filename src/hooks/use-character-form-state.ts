@@ -1,6 +1,7 @@
 import type { SubmitEvent } from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "../i18n/use-translation.ts";
+import type { CharacterGearItem } from "../types/character-gear.ts";
 import type { CharacterClass, CharacterRecord } from "../types/characters.ts";
 import { isSpecValidForClass } from "../data/class-specs.ts";
 import { parseCharacterForm } from "../utils/validate-character.ts";
@@ -35,6 +36,12 @@ export function useCharacterFormState({
   const [mainGearScoreText, setMainGearScoreTextState] = useState("");
   const [offSpec, setOffSpecState] = useState("");
   const [offGearScoreText, setOffGearScoreTextState] = useState("");
+  const [mainGearItems, setMainGearItemsState] = useState<
+    CharacterGearItem[] | undefined
+  >(undefined);
+  const [offGearItems, setOffGearItemsState] = useState<
+    CharacterGearItem[] | undefined
+  >(undefined);
   const [error, setError] = useState("");
 
   const resetFields = useCallback(() => {
@@ -44,6 +51,8 @@ export function useCharacterFormState({
     setMainGearScoreTextState(EMPTY_SPEC_GEAR_FIELDS.mainGearScoreText);
     setOffSpecState(EMPTY_SPEC_GEAR_FIELDS.offSpec);
     setOffGearScoreTextState(EMPTY_SPEC_GEAR_FIELDS.offGearScoreText);
+    setMainGearItemsState(undefined);
+    setOffGearItemsState(undefined);
     setError("");
   }, []);
 
@@ -74,11 +83,14 @@ export function useCharacterFormState({
         isSpecValidForClass(nextClass.name, previous) ? previous : "",
       );
     }
+    setMainGearItemsState(undefined);
+    setOffGearItemsState(undefined);
     setError("");
   }, []);
 
   const setMainSpec = useCallback((value: string) => {
     setMainSpecState(value);
+    setMainGearItemsState(undefined);
     setError("");
   }, []);
 
@@ -89,12 +101,37 @@ export function useCharacterFormState({
 
   const setOffSpec = useCallback((value: string) => {
     setOffSpecState(value);
+    setOffGearItemsState(undefined);
     setError("");
   }, []);
 
   const setOffGearScoreText = useCallback((value: string) => {
     setOffGearScoreTextState(value);
     setError("");
+  }, []);
+
+  const setMainGearItems = useCallback(
+    (gearItems: CharacterGearItem[] | undefined) => {
+      setMainGearItemsState(gearItems);
+      setError("");
+    },
+    [],
+  );
+
+  const setOffGearItems = useCallback(
+    (gearItems: CharacterGearItem[] | undefined) => {
+      setOffGearItemsState(gearItems);
+      setError("");
+    },
+    [],
+  );
+
+  const clearError = useCallback(() => {
+    setError("");
+  }, []);
+
+  const setFormError = useCallback((message: string) => {
+    setError(message);
   }, []);
 
   const handleSubmit = useCallback(
@@ -109,6 +146,8 @@ export function useCharacterFormState({
           mainGearScoreText,
           offSpec,
           offGearScoreText,
+          mainGearItems,
+          offGearItems,
         },
         characters,
         locale,
@@ -131,9 +170,11 @@ export function useCharacterFormState({
     [
       characterClass,
       characters,
+      mainGearItems,
       mainGearScoreText,
       mainSpec,
       name,
+      offGearItems,
       offGearScoreText,
       offSpec,
       locale,
@@ -161,26 +202,38 @@ export function useCharacterFormState({
       setOffSpec,
       offGearScoreText,
       setOffGearScoreText,
+      mainGearItems,
+      setMainGearItems,
+      offGearItems,
+      setOffGearItems,
       error,
+      setFormError,
+      clearError,
       handleSubmit,
     }),
     [
       characterClass,
+      clearError,
       close,
       error,
       handleSubmit,
       isOpen,
+      mainGearItems,
       mainGearScoreText,
       mainSpec,
       name,
+      offGearItems,
       offGearScoreText,
       offSpec,
       open,
       resetFields,
       setCharacterClass,
+      setFormError,
+      setMainGearItems,
       setMainGearScoreText,
       setMainSpec,
       setName,
+      setOffGearItems,
       setOffGearScoreText,
       setOffSpec,
     ],

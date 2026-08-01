@@ -102,7 +102,51 @@ describe("parseCharacterForm", () => {
     );
     expect(result).toEqual({
       ok: false,
-      error: "Choose a main spec specialization to attach a gear score.",
+      error:
+        "Choose a main spec specialization to attach a gear score or imported gear.",
+    });
+  });
+
+  it("attaches imported gear items to the matching spec", () => {
+    const gearItems = [{ id: 50733, slot: 0 }];
+    const result = parseCharacterForm(
+      {
+        name: "Beta",
+        characterClass: Classes[0],
+        mainSpec: "Blood",
+        mainGearScoreText: "",
+        offSpec: "",
+        offGearScoreText: "",
+        mainGearItems: gearItems,
+      },
+      [],
+    );
+    expect(result).toEqual({
+      ok: true,
+      name: "Beta",
+      characterClass: Classes[0],
+      mainSpec: { spec: "Blood", gearItems },
+      offSpec: undefined,
+    });
+  });
+
+  it("rejects imported gear without a spec", () => {
+    const result = parseCharacterForm(
+      {
+        name: "Beta",
+        characterClass: Classes[0],
+        mainSpec: "",
+        mainGearScoreText: "",
+        offSpec: "",
+        offGearScoreText: "",
+        mainGearItems: [{ id: 50733, slot: 0 }],
+      },
+      [],
+    );
+    expect(result).toEqual({
+      ok: false,
+      error:
+        "Choose a main spec specialization to attach a gear score or imported gear.",
     });
   });
 

@@ -6,6 +6,7 @@ import {
 import { isSpecValidForClass } from "../data/class-specs.ts";
 import type { AppLocale } from "../i18n/types.ts";
 import { createTranslator } from "../i18n/translate.ts";
+import type { CharacterGearItem } from "../types/character-gear.ts";
 import type {
   CharacterClass,
   CharacterRecord,
@@ -20,6 +21,8 @@ export type CharacterFormValues = {
   mainGearScoreText: string;
   offSpec: string;
   offGearScoreText: string;
+  mainGearItems?: CharacterGearItem[];
+  offGearItems?: CharacterGearItem[];
 };
 
 export type ParsedCharacterFields = {
@@ -55,12 +58,14 @@ function parseSpecGearPair(
   gearScoreText: string,
   specLabelKey: "validation.mainSpecLabel" | "validation.offSpecLabel",
   locale: AppLocale,
+  gearItems?: CharacterGearItem[],
 ): CharacterSpecGear | undefined | { error: string } {
   const t = createTranslator(locale);
   const specLabel = t(specLabelKey);
 
   const spec = specValue.trim() || undefined;
   const gearScore = parseGearScoreField(gearScoreText);
+  const hasGearItems = gearItems !== undefined && gearItems.length > 0;
 
   if (Number.isNaN(gearScore)) {
     return {
@@ -72,7 +77,7 @@ function parseSpecGearPair(
     };
   }
 
-  if (!spec && gearScore !== undefined) {
+  if (!spec && (gearScore !== undefined || hasGearItems)) {
     return {
       error: t("validation.gearScoreNeedsSpec", {
         specLabel: specLabel.toLowerCase(),
@@ -84,11 +89,19 @@ function parseSpecGearPair(
     return undefined;
   }
 
-  return gearScore !== undefined ? { spec, gearScore } : { spec };
+  const next: CharacterSpecGear = { spec };
+  if (gearScore !== undefined) {
+    next.gearScore = gearScore;
+  }
+  if (hasGearItems) {
+    next.gearItems = gearItems;
+  }
+  return next;
 }
 
 export function parseCharacterSpecGearFields(
-  values: CharacterSpecGearFormValues,
+  values: CharacterSpecGearFormValues &
+    Pick<CharacterFormValues, "mainGearItems" | "offGearItems">,
   characterClass: CharacterClass,
   locale: AppLocale = "en",
 ): ParseCharacterSpecGearResult {
@@ -99,6 +112,7 @@ export function parseCharacterSpecGearFields(
     values.mainGearScoreText,
     "validation.mainSpecLabel",
     locale,
+    values.mainGearItems,
   );
   if (mainResult && "error" in mainResult) {
     return { ok: false, error: mainResult.error };
@@ -109,6 +123,7 @@ export function parseCharacterSpecGearFields(
     values.offGearScoreText,
     "validation.offSpecLabel",
     locale,
+    values.offGearItems,
   );
   if (offResult && "error" in offResult) {
     return { ok: false, error: offResult.error };

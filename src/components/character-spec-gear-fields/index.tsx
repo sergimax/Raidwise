@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import type { ReactNode } from "react";
 import { specsForClass } from "../../data/class-specs.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterClass } from "../../types/characters.ts";
@@ -22,6 +23,10 @@ export type CharacterSpecGearFieldsProps = {
   onMainGearScoreTextChange: (value: string) => void;
   onOffSpecChange: (value: string) => void;
   onOffGearScoreTextChange: (value: string) => void;
+  /** Optional content under the main-spec fields (e.g. WowSims import). */
+  mainFooter?: ReactNode;
+  /** Optional content under the off-spec fields (e.g. WowSims import). */
+  offFooter?: ReactNode;
 };
 
 export type CharacterSingleSpecGearFieldsProps = {
@@ -145,6 +150,8 @@ export function CharacterSpecGearFields({
   onMainGearScoreTextChange,
   onOffSpecChange,
   onOffGearScoreTextChange,
+  mainFooter,
+  offFooter,
 }: CharacterSpecGearFieldsProps) {
   const { t } = useTranslation();
   const classSpecs =
@@ -153,32 +160,38 @@ export function CharacterSpecGearFields({
 
   return (
     <Stack spacing={2}>
-      <CharacterSingleSpecGearFields
-        label={t("characterForm.main")}
-        spec={mainSpec}
-        gearScoreText={mainGearScoreText}
-        specName="mainSpec"
-        gearScoreName="mainGearScore"
-        specLabelId="character-main-spec-label"
-        characterClass={characterClass}
-        classSpecs={classSpecs}
-        disabled={specsDisabled}
-        onSpecChange={onMainSpecChange}
-        onGearScoreTextChange={onMainGearScoreTextChange}
-      />
-      <CharacterSingleSpecGearFields
-        label={t("characterForm.off")}
-        spec={offSpec}
-        gearScoreText={offGearScoreText}
-        specName="offSpec"
-        gearScoreName="offGearScore"
-        specLabelId="character-off-spec-label"
-        characterClass={characterClass}
-        classSpecs={classSpecs}
-        disabled={specsDisabled}
-        onSpecChange={onOffSpecChange}
-        onGearScoreTextChange={onOffGearScoreTextChange}
-      />
+      <Stack spacing={mainFooter ? 1.25 : 0.5}>
+        <CharacterSingleSpecGearFields
+          label={t("characterForm.main")}
+          spec={mainSpec}
+          gearScoreText={mainGearScoreText}
+          specName="mainSpec"
+          gearScoreName="mainGearScore"
+          specLabelId="character-main-spec-label"
+          characterClass={characterClass}
+          classSpecs={classSpecs}
+          disabled={specsDisabled}
+          onSpecChange={onMainSpecChange}
+          onGearScoreTextChange={onMainGearScoreTextChange}
+        />
+        {mainFooter}
+      </Stack>
+      <Stack spacing={offFooter ? 1.25 : 0.5}>
+        <CharacterSingleSpecGearFields
+          label={t("characterForm.off")}
+          spec={offSpec}
+          gearScoreText={offGearScoreText}
+          specName="offSpec"
+          gearScoreName="offGearScore"
+          specLabelId="character-off-spec-label"
+          characterClass={characterClass}
+          classSpecs={classSpecs}
+          disabled={specsDisabled}
+          onSpecChange={onOffSpecChange}
+          onGearScoreTextChange={onOffGearScoreTextChange}
+        />
+        {offFooter}
+      </Stack>
     </Stack>
   );
 }

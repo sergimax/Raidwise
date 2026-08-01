@@ -9,8 +9,9 @@ import {
 import { MAX_CHARACTER_NAME_LENGTH } from "../../constants/character.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { Classes } from "../../types/characters.ts";
-import { ClassOptionLabel } from "../class-option-label/index.tsx";
+import { CharacterSpecGearImportSection } from "../character-edit-dialog/character-spec-gear-import-section.tsx";
 import { CharacterSpecGearFields } from "../character-spec-gear-fields/index.tsx";
+import { ClassOptionLabel } from "../class-option-label/index.tsx";
 import { FormActionsRow } from "../form-actions-row/index.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import type { CharacterFormProps } from "./types.ts";
@@ -22,6 +23,8 @@ export function CharacterForm({
   mainGearScoreText,
   offSpec,
   offGearScoreText,
+  mainGearItems,
+  offGearItems,
   error,
   onNameChange,
   onClassChange,
@@ -29,9 +32,13 @@ export function CharacterForm({
   onMainGearScoreTextChange,
   onOffSpecChange,
   onOffGearScoreTextChange,
+  onMainGearItemsChange,
+  onOffGearItemsChange,
+  onImportError,
+  onClearImportError,
   onSubmit,
 }: CharacterFormProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <form onSubmit={onSubmit} noValidate>
@@ -94,6 +101,40 @@ export function CharacterForm({
           onMainGearScoreTextChange={onMainGearScoreTextChange}
           onOffSpecChange={onOffSpecChange}
           onOffGearScoreTextChange={onOffGearScoreTextChange}
+          mainFooter={
+            characterClass !== "" ? (
+              <CharacterSpecGearImportSection
+                label={t("characterForm.main")}
+                spec={mainSpec || undefined}
+                characterClass={characterClass}
+                gearItems={mainGearItems}
+                onGearItemsChange={onMainGearItemsChange}
+                onError={onImportError}
+                onClearError={onClearImportError}
+                locale={locale}
+                t={t}
+                hideHeader
+                compact
+              />
+            ) : null
+          }
+          offFooter={
+            characterClass !== "" ? (
+              <CharacterSpecGearImportSection
+                label={t("characterForm.off")}
+                spec={offSpec || undefined}
+                characterClass={characterClass}
+                gearItems={offGearItems}
+                onGearItemsChange={onOffGearItemsChange}
+                onError={onImportError}
+                onClearError={onClearImportError}
+                locale={locale}
+                t={t}
+                hideHeader
+                compact
+              />
+            ) : null
+          }
         />
         <FormActionsRow submitLabel={t("characterForm.addCharacter")} />
         {error ? <FormErrorMessage message={error} /> : null}

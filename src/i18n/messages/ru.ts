@@ -393,7 +393,7 @@ export const ruMessages: Messages = {
     gearScoreRange:
       "GearScore {{specLabel}} — целое число от {{min}} до {{max}}.",
     gearScoreNeedsSpec:
-      "Выберите спек {{specLabel}} для привязки GearScore.",
+      "Выберите спек {{specLabel}} для привязки GearScore или импортированной экипировки.",
     invalidMainSpec: "Выберите корректный основной спек для этого класса.",
     invalidOffSpec: "Выберите корректный второй спек для этого класса.",
     specsMustDiffer: "Основной и второй спек должны отличаться.",
