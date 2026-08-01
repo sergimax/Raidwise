@@ -28,28 +28,60 @@ describe("CharacterForm", () => {
     onSubmit: vi.fn(),
   };
 
-  it("renders name and class fields", () => {
+  it("renders stepped identity fields and inactive WowSims import", () => {
     renderWithTheme(<CharacterForm {...defaultProps} />);
 
+    const stepTitle = (expected: string) =>
+      screen.getByText((_, element) => {
+        return element?.tagName === "P" && element.textContent === expected;
+      });
+
+    expect(stepTitle("1.Name and class")).toBeInTheDocument();
+    expect(stepTitle("2.Main specialization(optional)")).toBeInTheDocument();
+    expect(stepTitle("3.Off specialization(optional)")).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: /^Name/ })).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: /^Class/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Add character" })).toBeInTheDocument();
+
+    const importFields = screen.getAllByRole("textbox", {
+      name: /WowSimsExporter/i,
+    });
+    expect(importFields).toHaveLength(2);
+    expect(importFields[0]).toBeDisabled();
+    expect(importFields[1]).toBeDisabled();
     expect(
-      screen.queryByRole("textbox", { name: /WowSimsExporter/i }),
-    ).not.toBeInTheDocument();
+      screen.getAllByText(/Choose a class first to enable WowSimsExporter import/i),
+    ).toHaveLength(2);
   });
 
-  it("shows WowSimsExporter import after a class is selected", () => {
+  it("keeps WowSims import disabled until a specialization is chosen", () => {
     renderWithTheme(
       <CharacterForm {...defaultProps} characterClass={Classes[0]} />,
     );
 
+    const importFields = screen.getAllByRole("textbox", {
+      name: /WowSimsExporter/i,
+    });
+    expect(importFields[0]).toBeDisabled();
     expect(
-      screen.getAllByRole("textbox", { name: /WowSimsExporter/i }),
+      screen.getAllByText(/Choose a specialization first to enable import/i),
     ).toHaveLength(2);
-    expect(
-      screen.getAllByRole("button", { name: /Import gear/i }),
-    ).toHaveLength(2);
+  });
+
+  it("enables main WowSims import after main specialization is set", () => {
+    renderWithTheme(
+      <CharacterForm
+        {...defaultProps}
+        characterClass={Classes[0]}
+        mainSpec="Blood"
+      />,
+    );
+
+    const importFields = screen.getAllByRole("textbox", {
+      name: /WowSimsExporter/i,
+    });
+    expect(importFields[0]).not.toBeDisabled();
+    expect(importFields[1]).toBeDisabled();
   });
 
   it("displays validation error", () => {
