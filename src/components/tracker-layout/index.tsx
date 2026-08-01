@@ -1,5 +1,6 @@
 import { Container } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
+import { useAppIntroVisibility } from "../../hooks/use-app-intro-visibility.ts";
 import {
   pickTrackerFormsState,
   useOverlayPanels,
@@ -21,6 +22,10 @@ export function TrackerLayout() {
     onDungeonAdded: domain.addDungeon,
   });
   const forms = pickTrackerFormsState(overlayPanels);
+  const appIntro = useAppIntroVisibility({
+    isEmptyTracker:
+      domain.characters.length === 0 && domain.dungeons.length === 0,
+  });
   const [confirmAddFromTemplateOpen, setConfirmAddFromTemplateOpen] =
     useState(false);
 
@@ -77,7 +82,11 @@ export function TrackerLayout() {
 
   return (
     <div className="app-shell">
-      <AppHeader center={<TrackerControls source={controlsSource} />} />
+      <AppHeader
+        center={<TrackerControls source={controlsSource} />}
+        introVisible={appIntro.visible}
+        onToggleIntro={appIntro.toggle}
+      />
       <Container
         className="app-main"
         component="main"
@@ -87,6 +96,8 @@ export function TrackerLayout() {
         <RaidTrackerMain
           forms={forms}
           onAddFromTemplate={requestAddFromTemplate}
+          introVisible={appIntro.visible}
+          onDismissIntro={appIntro.dismiss}
           showExportPanel={overlayPanels.showExportPanel}
           closeExportPanel={overlayPanels.closeExportPanel}
           showGearPickPanel={overlayPanels.showGearPickPanel}

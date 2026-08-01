@@ -17,6 +17,8 @@ export const enMessages = {
     appTitle: "My Raid CDs",
     themeLight: "Switch to light mode",
     themeDark: "Switch to dark mode",
+    introShowAria: "Show how this app can help",
+    introHideAria: "Hide how this app can help",
     localeTooltipEn:
       "Interface language: English. Click for Russian. Item tooltips use Cavern of Time.",
     localeTooltipRu:
@@ -28,6 +30,7 @@ export const enMessages = {
   },
   intro: {
     title: "How this app can help",
+    closeAria: "Hide how this app can help",
     saveNote: "Data is saved automatically in your browser.",
     whatYouGet: "What you get",
     featureEditCharacter: "Edit character",
@@ -43,9 +46,11 @@ export const enMessages = {
     scenarioBStep2:
       "{{editCharacter}} and import gear from WowSimsExporter",
     scenarioBStep3: "{{addDungeon}}",
-    scenarioBStep4: "Mark completed raids per character",
-    scenarioBStep5:
+    scenarioBStep4:
       "Check which raids have more upgrades for each character",
+    scenarioBStep5: "Mark completed raids per character",
+    scenarioBStep6:
+      "Optional: {{bisLists}} — choose a preset or create your own",
     scenarioBOutcome:
       "The same map, plus BiS and item-level upgrade hints on the grid",
     scenarioCTitle: "BiS lists only",

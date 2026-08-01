@@ -1,6 +1,7 @@
 import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
+import { AppIntroToggle } from "../app-intro-toggle/index.tsx";
 import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
 import { ThemeModeToggle } from "../theme-mode-toggle/index.tsx";
 import { useTranslation } from "../../i18n/use-translation.ts";
@@ -8,7 +9,11 @@ import type { AppHeaderProps } from "./types.ts";
 
 export type { AppHeaderProps } from "./types.ts";
 
-export function AppHeader({ center }: AppHeaderProps) {
+export function AppHeader({
+  center,
+  introVisible = false,
+  onToggleIntro,
+}: AppHeaderProps) {
   const { t } = useTranslation();
 
   return (
@@ -91,6 +96,12 @@ export function AppHeader({ center }: AppHeaderProps) {
               gap: 0.25,
             }}
           >
+            {onToggleIntro ? (
+              <AppIntroToggle
+                introVisible={introVisible}
+                onToggle={onToggleIntro}
+              />
+            ) : null}
             <ItemTooltipLocaleToggle />
             <ThemeModeToggle />
             <AppMetaInfo />
