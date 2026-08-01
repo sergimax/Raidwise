@@ -10,24 +10,9 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Job order: (Lint ∥ Test ∥ Build) → Release files.
+# Quality jobs run in parallel for faster feedback; docs/release check waits on all three.
 jobs:
-  # When package.json version bumps, require release files to be touched too.
-  # Loose for now (path presence in the git range only) — see scripts/check-release-files.mjs.
-  release-files:
-    name: Release files
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: Check release files on version bump
-        env:
-          # PR: target branch tip. Push: previous tip (all-zero SHA → skip).
-          RELEASE_CHECK_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-          # Checked-out commit (PR merge commit or push SHA).
-          RELEASE_CHECK_HEAD: ${{ github.sha }}
-        run: node scripts/check-release-files.mjs
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -51,3 +36,21 @@ jobs:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-project
       - run: npm run build
+
+  # When package.json version bumps, require release files to be touched too.
+  # Loose for now (path presence in the git range only) — see scripts/check-release-files.mjs.
+  release-files:
+    name: Release files
+    needs: [lint, test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Check release files on version bump
+        env:
+          # PR: target branch tip. Push: previous tip (all-zero SHA → skip).
+          RELEASE_CHECK_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          # Checked-out commit (PR merge commit or push SHA).
+          RELEASE_CHECK_HEAD: ${{ github.sha }}
+        run: node scripts/check-release-files.mjs
