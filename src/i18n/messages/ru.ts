@@ -247,8 +247,6 @@ export const ruMessages: Messages = {
   exportPanel: {
     title: "Подбор персонажа",
     closeAria: "Закрыть панель подбора персонажа",
-    instructions:
-      "1. Найдите рейд в поиске (в панели или в таблице). 2. Выберите спеки, роли и GS. 3. Скопируйте строку и отправьте РЛ в личку.",
     noCharacters: "Добавьте персонажа для работы подбора",
     exportLinesTitle: "Подходят для рейда",
     exportLinesHelper:

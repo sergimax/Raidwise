@@ -245,8 +245,6 @@ export const enMessages = {
   exportPanel: {
     title: "Character pick",
     closeAria: "Close character pick panel",
-    instructions:
-      "1. Find the raid in the search (panel or table). 2. Choose specs, roles, and GS. 3. Copy the line and send it to the raid leader in a private message.",
     noCharacters: "Add a character to build a character pick",
     exportLinesTitle: "Character pick",
     exportLinesHelper:

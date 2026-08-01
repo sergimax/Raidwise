@@ -90,7 +90,6 @@ function getExportToolbarPanelMeta(
 ): ToolbarPanelMeta {
   return {
     title: t("exportPanel.title"),
-    description: t("exportPanel.instructions"),
     closeAriaLabel: t("exportPanel.closeAria"),
     onClose,
     maxWidth: TRACKER_UNIT_GRID_PANEL_MAX_WIDTH,
