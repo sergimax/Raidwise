@@ -28,10 +28,22 @@ export const enMessages = {
   },
   intro: {
     title: "Get started",
-    body:
-      "Add characters and dungeons, then mark cooldown usage per cell. Data is saved automatically in your browser. When the dungeon list is empty, use",
-    addFromTemplate: "Add from template",
-    bodySuffix: "to load WotLK raids (Russian names).",
+    saveNote: "Data is saved automatically in your browser.",
+    scenarioATitle: "Cooldown tracking",
+    scenarioAStep1:
+      "Add raids — or use Add from template when the list is empty",
+    scenarioAStep2: "Add characters",
+    scenarioAStep3: "Mark which raids each character has completed",
+    scenarioBTitle: "Gear upgrades",
+    scenarioBStep1: "Add a character",
+    scenarioBStep2: "Edit the character and import gear from WowSimsExporter",
+    scenarioBStep3: "Add raids",
+    scenarioBStep4: "Mark completed raids per character",
+    scenarioBStep5:
+      "Check cell colors to see which raids drop more upgrades for each character",
+    scenarioCTitle: "BiS lists only",
+    scenarioCStep1:
+      "Open BiS builds to browse presets — no characters or raids needed",
   },
   toolbar: {
     actionsAria: "Tracker actions",
