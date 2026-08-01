@@ -37,7 +37,8 @@ export const ruMessages: Messages = {
       "Добавьте рейды — или используйте Добавить из шаблона, если список пуст",
     scenarioAStep2: "Добавьте персонажей",
     scenarioAStep3: "Отметьте, какие рейды пройдены на каком персонаже",
-    scenarioAOutcome: "Карта КД состава — кто свободен на какой рейд",
+    scenarioAOutcome:
+      "Карта КД ваших персонажей — кто свободен на какой рейд",
     scenarioBTitle: "Апгрейды экипировки",
     scenarioBStep1: "Добавьте персонажа",
     scenarioBStep2:
@@ -51,7 +52,7 @@ export const ruMessages: Messages = {
     scenarioCTitle: "Только BIS списки",
     scenarioCStep1:
       "Откройте BIS сборки и смотрите пресеты — персонажи и рейды не нужны",
-    scenarioCOutcome: "BIS списки по спекам без настройки состава",
+    scenarioCOutcome: "BIS списки по спекам без добавления персонажей и рейдов",
   },
   toolbar: {
     actionsAria: "Действия трекера",

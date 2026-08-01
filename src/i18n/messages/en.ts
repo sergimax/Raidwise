@@ -35,7 +35,8 @@ export const enMessages = {
       "Add raids — or use Add from template when the list is empty",
     scenarioAStep2: "Add characters",
     scenarioAStep3: "Mark which raids each character has completed",
-    scenarioAOutcome: "A roster cooldown map — who is free for which raid",
+    scenarioAOutcome:
+      "A cooldown map for your characters — who is free for which raid",
     scenarioBTitle: "Gear upgrades",
     scenarioBStep1: "Add a character",
     scenarioBStep2: "Edit the character and import gear from WowSimsExporter",
@@ -48,7 +49,7 @@ export const enMessages = {
     scenarioCTitle: "BiS lists only",
     scenarioCStep1:
       "Open BiS builds to browse presets — no characters or raids needed",
-    scenarioCOutcome: "Spec BiS lists without setting up a roster",
+    scenarioCOutcome: "Spec BiS lists without adding characters or raids",
   },
   toolbar: {
     actionsAria: "Tracker actions",
