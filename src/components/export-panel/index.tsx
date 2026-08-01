@@ -21,7 +21,10 @@ import {
 } from "../../utils/parse-export-min-gear-score.ts";
 import { ExportCharacterSpecFilter } from "./export-character-spec-filter.tsx";
 import { ExportCharacterSpecFilterActions } from "./export-character-spec-filter-actions.tsx";
-import { ExportDungeonFilter } from "./export-dungeon-filter.tsx";
+import {
+  ExportDungeonFilter,
+  exportDungeonFilterContentSx,
+} from "./export-dungeon-filter.tsx";
 import { ExportFilterBlock } from "./export-filter-block.tsx";
 import { ExportFilterSection } from "./export-filter-section.tsx";
 import { ExportMinGearScoreFilter } from "./export-min-gear-score-filter.tsx";
@@ -281,6 +284,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
                 step={1}
                 title={t("exportPanel.dungeonFilterTitle")}
                 description={t("exportPanel.dungeonFilterHelper")}
+                contentSx={exportDungeonFilterContentSx}
               >
                 <ExportDungeonFilter
                   dungeonNameSearch={dungeonNameSearch}

@@ -20,7 +20,10 @@ import {
   type SoftAssignmentByItemId,
   type SoftRollRules,
 } from "../../utils/gear-pick-soft-roll.ts";
-import { ExportDungeonFilter } from "../export-panel/export-dungeon-filter.tsx";
+import {
+  ExportDungeonFilter,
+  exportDungeonFilterContentSx,
+} from "../export-panel/export-dungeon-filter.tsx";
 import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
 import { EXPORT_FILTER_GRID_GAP_SPACING } from "../export-panel/constants.ts";
 import {
@@ -272,6 +275,7 @@ export function GearPickPanel({
         <ExportFilterSection
           title={t("gearPickPanel.dungeonFilterTitle")}
           description={t("gearPickPanel.dungeonFilterHelper")}
+          contentSx={exportDungeonFilterContentSx}
         >
           <ExportDungeonFilter
             dungeonNameSearch={dungeonNameSearch}
