@@ -25,6 +25,8 @@ import { getToolbarPanelMeta } from "../tracker-toolbar-panel/toolbar-panel-meta
 type RaidTrackerMainProps = {
   forms: TrackerFormsState;
   onAddFromTemplate: () => void;
+  introVisible: boolean;
+  onDismissIntro: () => void;
   showExportPanel: boolean;
   closeExportPanel: () => void;
   showGearPickPanel: boolean;
@@ -54,6 +56,8 @@ function localizeStorageMessage(message: string, t: TranslateFn): string {
 export function RaidTrackerMain({
   forms,
   onAddFromTemplate,
+  introVisible,
+  onDismissIntro,
   showExportPanel,
   closeExportPanel,
   showGearPickPanel,
@@ -67,8 +71,6 @@ export function RaidTrackerMain({
   const domain = useRaidTrackerContext();
   const { dismissed: gearHintLegendDismissed, dismiss: dismissGearHintLegend } =
     useGearHintLegendDismissed();
-  const showIntro =
-    domain.characters.length === 0 && domain.dungeons.length === 0;
   const showGearHintLegend =
     !gearHintLegendDismissed &&
     domain.characters.length > 0 &&
@@ -142,7 +144,7 @@ export function RaidTrackerMain({
 
   return (
     <Stack spacing={2}>
-      <AppIntro visible={showIntro} />
+      <AppIntro visible={introVisible} onDismiss={onDismissIntro} />
 
       {domain.storageError ? (
         <Alert severity="error">

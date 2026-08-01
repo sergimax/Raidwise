@@ -19,6 +19,8 @@ export const ruMessages: Messages = {
     appTitle: "My Raid CDs",
     themeLight: "Светлая тема",
     themeDark: "Тёмная тема",
+    introShowAria: "Показать, чем поможет приложение",
+    introHideAria: "Скрыть подсказку «чем поможет приложение»",
     localeTooltipEn:
       "Язык интерфейса: английский. Нажмите для русского. Подсказки предметов — Cavern of Time.",
     localeTooltipRu:
@@ -30,9 +32,10 @@ export const ruMessages: Messages = {
   },
   intro: {
     title: "Чем поможет приложение",
+    closeAria: "Скрыть подсказку «чем поможет приложение»",
     saveNote: "Данные сохраняются автоматически в браузере.",
     whatYouGet: "Что получите",
-    featureEditCharacter: "Изменить персонажа",
+    featureEditCharacter: "Редактировать персонажа",
     scenarioATitle: "Трекинг КД",
     scenarioAStep1:
       "{{addDungeon}} — или {{addFromTemplate}}, если список пуст",
@@ -45,9 +48,11 @@ export const ruMessages: Messages = {
     scenarioBStep2:
       "{{editCharacter}} и импортируйте экипировку из WowSimsExporter",
     scenarioBStep3: "{{addDungeon}}",
-    scenarioBStep4: "Отметьте пройденные рейды по персонажам",
-    scenarioBStep5:
+    scenarioBStep4:
       "Смотрите, в каких рейдах больше апгрейдов для каждого персонажа",
+    scenarioBStep5: "Отметьте пройденные рейды по персонажам",
+    scenarioBStep6:
+      "Опционально: {{bisLists}} — выберите пресет или создайте свой список",
     scenarioBOutcome:
       "Та же карта плюс подсказки апгрейдов BiS и по ilvl в таблице",
     scenarioCTitle: "Только BIS списки",
@@ -119,7 +124,7 @@ export const ruMessages: Messages = {
     heroic: "Героический",
   },
   characterEdit: {
-    title: "Изменить персонажа",
+    title: "Редактировать персонажа",
     mainSpecGear: "Экипировка основного спека",
     offSpecGear: "Экипировка второго спека",
     storedGear: "Сохранённая экипировка",

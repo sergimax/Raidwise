@@ -1,4 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import type { MessageKey } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { AppIntroProps } from "./types.ts";
@@ -31,6 +32,7 @@ const INTRO_SCENARIOS: IntroScenario[] = [
       "intro.scenarioBStep3",
       "intro.scenarioBStep4",
       "intro.scenarioBStep5",
+      "intro.scenarioBStep6",
     ],
     outcomeKey: "intro.scenarioBOutcome",
   },
@@ -42,7 +44,7 @@ const INTRO_SCENARIOS: IntroScenario[] = [
   },
 ];
 
-export function AppIntro({ visible = true }: AppIntroProps) {
+export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
   const { t } = useTranslation();
 
   if (!visible) {
@@ -65,9 +67,31 @@ export function AppIntro({ visible = true }: AppIntroProps) {
       })}
     >
       <Stack spacing={1.5}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
-          {t("intro.title")}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: 1,
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 700, lineHeight: 1.3, pt: 0.25 }}
+          >
+            {t("intro.title")}
+          </Typography>
+          {onDismiss ? (
+            <IconButton
+              size="small"
+              onClick={onDismiss}
+              aria-label={t("intro.closeAria")}
+              sx={{ mt: -0.5, mr: -0.75 }}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          ) : null}
+        </Box>
 
         <Box
           sx={{
