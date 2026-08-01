@@ -249,6 +249,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
             <ExportFilterSection
               step={2}
               title={t("exportPanel.gearScoreFilterTitle")}
+              titleMark={t("common.optional")}
               description={t("exportPanel.minGearScoreHelper")}
               contentSx={{ overflow: "visible" }}
             >
@@ -263,7 +264,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
 
           <ExportFilterBlock gridArea="role">
             <ExportFilterSection
-              step={2}
+              step={3}
               title={t("exportPanel.roleFilterTitle")}
               description={t("exportPanel.roleFilterHelper")}
             >
@@ -276,7 +277,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
 
           <ExportFilterBlock gridArea="characterSpecs">
             <ExportFilterSection
-              step={2}
+              step={4}
               title={t("exportPanel.characterSpecsFilterTitle")}
               description={t("exportPanel.characterSpecsFilterHelper")}
               titleActions={

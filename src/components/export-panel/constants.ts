@@ -124,7 +124,7 @@ export function getExportFilterGridTemplateRows(): string {
 
 export function getExportFilterGridTemplateAreas(hasDungeon: boolean): string {
   if (hasDungeon) {
-    // Step order: raid filter (1) on top, GS/role/specs filters (2) below / right.
+    // Step order: raid (1) on top; GS (2), role (3), specs (4) below / right.
     return [
       '"dungeon dungeon characterSpecs"',
       '"gearScore role characterSpecs"',
