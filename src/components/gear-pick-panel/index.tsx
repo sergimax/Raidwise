@@ -241,38 +241,9 @@ export function GearPickPanel({
         },
       }}
     >
-      <GearPickFilterBlock gridArea="rules">
-        <ExportFilterSection
-          title={t("gearPickPanel.rulesTitle")}
-          description={t("gearPickPanel.rulesHelper")}
-          contentSx={{ overflow: "visible" }}
-        >
-          <GearPickRules
-            rules={rules}
-            onRulesChange={handleRulesChange}
-            softBudgetUsed={softBudgetUsed}
-            t={t}
-          />
-        </ExportFilterSection>
-      </GearPickFilterBlock>
-
-      <GearPickFilterBlock gridArea="characterSpecs">
-        <ExportFilterSection
-          title={t("gearPickPanel.characterTitle")}
-          description={t("gearPickPanel.characterHelper")}
-        >
-          <GearPickCharacterSelect
-            characters={characters}
-            includedCharacterIds={includedCharacterIds}
-            selection={activeSelection}
-            onSelectionChange={handleSelectionChange}
-            t={t}
-          />
-        </ExportFilterSection>
-      </GearPickFilterBlock>
-
       <GearPickFilterBlock gridArea="dungeon">
         <ExportFilterSection
+          step={1}
           title={t("gearPickPanel.dungeonFilterTitle")}
           description={t("gearPickPanel.dungeonFilterHelper")}
           contentSx={exportDungeonFilterContentSx}
@@ -288,8 +259,41 @@ export function GearPickPanel({
         </ExportFilterSection>
       </GearPickFilterBlock>
 
+      <GearPickFilterBlock gridArea="characterSpecs">
+        <ExportFilterSection
+          step={2}
+          title={t("gearPickPanel.characterTitle")}
+          description={t("gearPickPanel.characterHelper")}
+        >
+          <GearPickCharacterSelect
+            characters={characters}
+            includedCharacterIds={includedCharacterIds}
+            selection={activeSelection}
+            onSelectionChange={handleSelectionChange}
+            t={t}
+          />
+        </ExportFilterSection>
+      </GearPickFilterBlock>
+
+      <GearPickFilterBlock gridArea="rules">
+        <ExportFilterSection
+          step={3}
+          title={t("gearPickPanel.rulesTitle")}
+          description={t("gearPickPanel.rulesHelper")}
+          contentSx={{ overflow: "visible" }}
+        >
+          <GearPickRules
+            rules={rules}
+            onRulesChange={handleRulesChange}
+            softBudgetUsed={softBudgetUsed}
+            t={t}
+          />
+        </ExportFilterSection>
+      </GearPickFilterBlock>
+
       <GearPickFilterBlock gridArea="softs">
         <ExportFilterSection
+          step={4}
           title={t("gearPickPanel.itemsTitle")}
           description={t("gearPickPanel.itemsHelper")}
           contentSx={{

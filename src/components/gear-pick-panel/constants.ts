@@ -19,6 +19,7 @@ export {
 /**
  * Soft pick panel grid areas.
  * Filter columns share one unit width so 1×1 / 2×1 blocks align visually.
+ * Step order: raid (1) on top; character (2) spans right; rules (3) below raid.
  * - xs: stacked (DOM order)
  * - md: filters + softs; copy 1×2 below
  * - wide (≥1600): filters + softs; copy 1×2 top-right
@@ -63,14 +64,14 @@ export function getGearPickCopyBlockMaxHeight(
 export function getGearPickGridTemplateAreas(layout: GearPickGridLayout): string {
   if (layout === "wide") {
     return [
-      '"rules characterSpecs softs copy"',
-      '"dungeon characterSpecs softs ."',
+      '"dungeon characterSpecs softs copy"',
+      '"rules characterSpecs softs ."',
     ].join(" ");
   }
 
   return [
-    '"rules characterSpecs softs"',
     '"dungeon characterSpecs softs"',
+    '"rules characterSpecs softs"',
     '"copy copy ."',
   ].join(" ");
 }

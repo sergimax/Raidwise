@@ -15,19 +15,21 @@ import {
 } from "./constants.ts";
 
 describe("getGearPickGridTemplateAreas", () => {
-  it("places softs beside filters and copy as 1×2 below on medium", () => {
+  it("places raid on row one; rules below; softs beside; copy 1×2 below on medium", () => {
     const areas = getGearPickGridTemplateAreas("md");
 
-    expect(areas).toContain("rules characterSpecs softs");
     expect(areas).toContain("dungeon characterSpecs softs");
+    expect(areas).toContain("rules characterSpecs softs");
     expect(areas).toContain("copy copy .");
+    expect(areas.indexOf("dungeon")).toBeLessThan(areas.indexOf("rules"));
   });
 
-  it("places copy as a 1×2 top-right cell on wide", () => {
+  it("places raid on row one and copy as a 1×2 top-right cell on wide", () => {
     const areas = getGearPickGridTemplateAreas("wide");
 
-    expect(areas).toContain("rules characterSpecs softs copy");
-    expect(areas).toContain("dungeon characterSpecs softs .");
+    expect(areas).toContain("dungeon characterSpecs softs copy");
+    expect(areas).toContain("rules characterSpecs softs .");
+    expect(areas.indexOf("dungeon")).toBeLessThan(areas.indexOf("rules"));
   });
 });
 

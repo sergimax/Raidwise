@@ -102,7 +102,6 @@ function getGearPickToolbarPanelMeta(
 ): ToolbarPanelMeta {
   return {
     title: t("gearPickPanel.title"),
-    description: t("gearPickPanel.instructions"),
     closeAriaLabel: t("gearPickPanel.closeAria"),
     onClose,
     maxWidth: TRACKER_UNIT_GRID_PANEL_MAX_WIDTH,
