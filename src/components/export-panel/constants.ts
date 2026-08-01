@@ -18,7 +18,7 @@ export const EXPORT_FILTER_UNIT_WIDTH = 300;
 
 /**
  * Fixed height of one grid row unit (1× block).
- * Fits GS slider, role 2×2 icons, and raid chip summary without inner scroll.
+ * Fits raid chips, GS slider, and role 2×2 icons (chips scroll inside the raid block).
  */
 export const EXPORT_FILTER_UNIT_HEIGHT = 224;
 
@@ -124,9 +124,10 @@ export function getExportFilterGridTemplateRows(): string {
 
 export function getExportFilterGridTemplateAreas(hasDungeon: boolean): string {
   if (hasDungeon) {
+    // Step order: raid filter (1) on top, GS/role/specs filters (2) below / right.
     return [
-      '"gearScore role characterSpecs"',
       '"dungeon dungeon characterSpecs"',
+      '"gearScore role characterSpecs"',
     ].join(" ");
   }
 

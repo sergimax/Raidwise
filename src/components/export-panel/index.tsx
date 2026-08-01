@@ -225,6 +225,26 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
             flexShrink: 0,
           }}
         >
+          {hasDungeonFilter ? (
+            <ExportFilterBlock gridArea="dungeon">
+              <ExportFilterSection
+                step={1}
+                title={t("exportPanel.dungeonFilterTitle")}
+                description={t("exportPanel.dungeonFilterHelper")}
+                contentSx={exportDungeonFilterContentSx}
+              >
+                <ExportDungeonFilter
+                  dungeonNameSearch={dungeonNameSearch}
+                  onDungeonNameSearchChange={onDungeonNameSearchChange}
+                  visibleDungeons={visibleDungeons}
+                  totalDungeonCount={totalDungeonCount}
+                  locale={locale}
+                  t={t}
+                />
+              </ExportFilterSection>
+            </ExportFilterBlock>
+          ) : null}
+
           <ExportFilterBlock gridArea="gearScore">
             <ExportFilterSection
               step={2}
@@ -277,26 +297,6 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
               />
             </ExportFilterSection>
           </ExportFilterBlock>
-
-          {hasDungeonFilter ? (
-            <ExportFilterBlock gridArea="dungeon">
-              <ExportFilterSection
-                step={1}
-                title={t("exportPanel.dungeonFilterTitle")}
-                description={t("exportPanel.dungeonFilterHelper")}
-                contentSx={exportDungeonFilterContentSx}
-              >
-                <ExportDungeonFilter
-                  dungeonNameSearch={dungeonNameSearch}
-                  onDungeonNameSearchChange={onDungeonNameSearchChange}
-                  visibleDungeons={visibleDungeons}
-                  totalDungeonCount={totalDungeonCount}
-                  locale={locale}
-                  t={t}
-                />
-              </ExportFilterSection>
-            </ExportFilterBlock>
-          ) : null}
         </Box>
 
         <Box
