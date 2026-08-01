@@ -246,7 +246,7 @@ export const enMessages = {
     title: "Character pick",
     closeAria: "Close character pick panel",
     instructions:
-      "1. Find the raid in the table search. 2. Choose specs, roles, and GS. 3. Copy the line and send it to the raid leader in a private message.",
+      "1. Find the raid in the search (panel or table). 2. Choose specs, roles, and GS. 3. Copy the line and send it to the raid leader in a private message.",
     noCharacters: "Add a character to build a character pick",
     exportLinesTitle: "Character pick",
     exportLinesHelper:
@@ -258,11 +258,9 @@ export const enMessages = {
     copied: "Copied",
     dungeonFilterTitle: "Filter by raid",
     dungeonFilterHelper:
-      "Uses the dungeon search field in the table header. Character pick includes one line per matching raid row",
-    dungeonFilterSearchEmpty: "Table search: (none) — all raids included",
-    dungeonFilterSearchActive: "Table search: {{query}}",
+      "Search here or in the table header — both stay in sync. Character pick includes one line per matching raid row",
     dungeonFilterMatchCount: "{{count}} of {{total}} raid(s) in character pick",
-    dungeonFilterNoMatches: "No raids match the current table search.",
+    dungeonFilterNoMatches: "No raids match the current search.",
     gearScoreFilterTitle: "Filter by GearScore",
     characterSpecsFilterTitle: "Filter by character specs",
     characterSpecsFilterHelper:
@@ -320,7 +318,7 @@ export const enMessages = {
     characterHelper: "Select exactly one character and one spec for soft reserve planning",
     dungeonFilterTitle: "Raids",
     dungeonFilterHelper:
-      "Uses the dungeon search in the table header. Soft reserve targets come from matching raid rows",
+      "Search here or in the table header — both stay in sync. Soft reserve targets come from matching raid rows",
     itemsTitle: "Soft reserve targets",
     itemsHelper: "BiS and BiS-variant upgrades from filtered raids. Assign your soft reserves and track others",
     itemsEmptyNoSelection: "Select a character and spec to see soft reserve targets",

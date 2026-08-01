@@ -5,10 +5,12 @@ import type { DungeonRecord } from "../../types/dungeons.ts";
 import { getRaidIcon } from "../../assets/raid-icons/raid-icons.ts";
 import { resolveDungeonRaidKey } from "../../utils/resolve-dungeon-raid-key.ts";
 import { formatDungeonExportLabel } from "../../utils/format-dungeon-label.ts";
+import { DungeonNameSearchField } from "../dungeon-name-search-field/index.tsx";
 import { ExportRaidIcon } from "./export-raid-icon.tsx";
 
 type ExportDungeonFilterProps = {
   dungeonNameSearch: string;
+  onDungeonNameSearchChange: (query: string) => void;
   visibleDungeons: readonly DungeonRecord[];
   totalDungeonCount: number;
   locale: AppLocale;
@@ -17,21 +19,18 @@ type ExportDungeonFilterProps = {
 
 export function ExportDungeonFilter({
   dungeonNameSearch,
+  onDungeonNameSearchChange,
   visibleDungeons,
   totalDungeonCount,
   locale,
   t,
 }: ExportDungeonFilterProps) {
-  const trimmedSearch = dungeonNameSearch.trim();
-  const hasSearch = trimmedSearch.length > 0;
-
   return (
     <Stack spacing={0.75}>
-      <Typography variant="body2" color="text.secondary">
-        {hasSearch
-          ? t("exportPanel.dungeonFilterSearchActive", { query: trimmedSearch })
-          : t("exportPanel.dungeonFilterSearchEmpty")}
-      </Typography>
+      <DungeonNameSearchField
+        value={dungeonNameSearch}
+        onChange={onDungeonNameSearchChange}
+      />
       <Typography variant="body2">
         {t("exportPanel.dungeonFilterMatchCount", {
           count: visibleDungeons.length,

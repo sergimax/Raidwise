@@ -43,6 +43,7 @@ export type GearPickPanelProps = {
   visibleDungeons: readonly DungeonRecord[];
   dungeonToggles: DungeonToggles;
   dungeonNameSearch: string;
+  onDungeonNameSearchChange: (query: string) => void;
   totalDungeonCount: number;
 };
 
@@ -51,6 +52,7 @@ export function GearPickPanel({
   visibleDungeons,
   dungeonToggles,
   dungeonNameSearch,
+  onDungeonNameSearchChange,
   totalDungeonCount,
 }: GearPickPanelProps) {
   const { t, locale } = useTranslation();
@@ -273,6 +275,7 @@ export function GearPickPanel({
         >
           <ExportDungeonFilter
             dungeonNameSearch={dungeonNameSearch}
+            onDungeonNameSearchChange={onDungeonNameSearchChange}
             visibleDungeons={visibleDungeons}
             totalDungeonCount={totalDungeonCount}
             locale={locale}
