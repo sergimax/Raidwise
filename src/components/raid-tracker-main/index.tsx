@@ -24,6 +24,7 @@ import { getToolbarPanelMeta } from "../tracker-toolbar-panel/toolbar-panel-meta
 
 type RaidTrackerMainProps = {
   forms: TrackerFormsState;
+  onAddFromTemplate: () => void;
   showExportPanel: boolean;
   closeExportPanel: () => void;
   showGearPickPanel: boolean;
@@ -52,6 +53,7 @@ function localizeStorageMessage(message: string, t: TranslateFn): string {
 
 export function RaidTrackerMain({
   forms,
+  onAddFromTemplate,
   showExportPanel,
   closeExportPanel,
   showGearPickPanel,
@@ -209,7 +211,9 @@ export function RaidTrackerMain({
 
           {showBisListsPanel ? <BisListsPanel /> : null}
 
-          {showDataControlsPanel ? <DataControlsPanel /> : null}
+          {showDataControlsPanel ? (
+            <DataControlsPanel onAddFromTemplate={onAddFromTemplate} />
+          ) : null}
         </TrackerToolbarPanel>
       ) : null}
 
