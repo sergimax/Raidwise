@@ -11,6 +11,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # When package.json version bumps, require release files to be touched too.
+  # Loose for now (path presence in the git range only) — see scripts/check-release-files.mjs.
+  release-files:
+    name: Release files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Check release files on version bump
+        env:
+          # PR: target branch tip. Push: previous tip (all-zero SHA → skip).
+          RELEASE_CHECK_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          # Checked-out commit (PR merge commit or push SHA).
+          RELEASE_CHECK_HEAD: ${{ github.sha }}
+        run: node scripts/check-release-files.mjs
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
