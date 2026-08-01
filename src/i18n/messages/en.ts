@@ -247,7 +247,7 @@ export const enMessages = {
     title: "Character pick",
     closeAria: "Close character pick panel",
     noCharacters: "Add a character to build a character pick",
-    exportLinesTitle: "Character pick",
+    exportLinesTitle: "Who fits for the raid",
     exportLinesHelper:
       "Find the raid you're interested in in the search. Select the specs you want, roles, and GS. If a line appears below, copy it and send it to the raid leader in a private message",
     exportLinesHelperSingle:
@@ -255,13 +255,13 @@ export const enMessages = {
     copyLine: "Copy",
     copyLineAria: "Copy signup line for {{raid}}",
     copied: "Copied",
-    dungeonFilterTitle: "Filter by raid",
+    dungeonFilterTitle: "Selected raid",
     dungeonFilterHelper:
       "Search here or in the table header — both stay in sync. Character pick includes one line per matching raid row",
     dungeonFilterMatchCount: "{{count}} of {{total}} raid(s) in character pick",
     dungeonFilterNoMatches: "No raids match the current search.",
-    gearScoreFilterTitle: "Filter by GearScore",
-    characterSpecsFilterTitle: "Filter by character specs",
+    gearScoreFilterTitle: "Minimum GS",
+    characterSpecsFilterTitle: "Needed specs",
     characterSpecsFilterHelper:
       "Choose which specs to include per character in character pick lines",
     characterInactiveCooldownHint: "On cooldown for every visible raid",
@@ -280,8 +280,8 @@ export const enMessages = {
       "When enabled, specs below the selected GS are disabled and omitted from character pick lines",
     minGearScoreSliderValue: "≥ {{value}}k GS",
     minGearScoreAria: "Minimum GearScore for character pick lines",
-    roleFilterLabel: "Filter by role in raid",
-    roleFilterTitle: "Filter by role in raid",
+    roleFilterLabel: "Required roles",
+    roleFilterTitle: "Required roles",
     roleFilterHelper:
       "Unchecked roles disable matching spec checkboxes and omit them from character pick lines",
     roleTank: "Tank",
