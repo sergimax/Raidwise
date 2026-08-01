@@ -30,17 +30,19 @@ export const enMessages = {
     title: "How this app can help",
     saveNote: "Data is saved automatically in your browser.",
     whatYouGet: "What you get",
+    featureEditCharacter: "Edit character",
     scenarioATitle: "Cooldown tracking",
     scenarioAStep1:
-      "Add raids — or use Add from template when the list is empty",
-    scenarioAStep2: "Add characters",
+      "{{addDungeon}} — or {{addFromTemplate}} when the list is empty",
+    scenarioAStep2: "{{addCharacter}}",
     scenarioAStep3: "Mark which raids each character has completed",
     scenarioAOutcome:
       "A cooldown map for your characters — who is free for which raid",
     scenarioBTitle: "Gear upgrades",
-    scenarioBStep1: "Add a character",
-    scenarioBStep2: "Edit the character and import gear from WowSimsExporter",
-    scenarioBStep3: "Add raids",
+    scenarioBStep1: "{{addCharacter}}",
+    scenarioBStep2:
+      "{{editCharacter}} and import gear from WowSimsExporter",
+    scenarioBStep3: "{{addDungeon}}",
     scenarioBStep4: "Mark completed raids per character",
     scenarioBStep5:
       "Check which raids have more upgrades for each character",
@@ -48,18 +50,18 @@ export const enMessages = {
       "The same map, plus BiS and item-level upgrade hints on the grid",
     scenarioCTitle: "BiS lists only",
     scenarioCStep1:
-      "Open BiS builds to browse presets — no characters or raids needed",
+      "Open {{bisLists}} — no characters or raids needed",
     scenarioCOutcome: "Spec BiS lists without adding characters or raids",
   },
   toolbar: {
     actionsAria: "Tracker actions",
-    addFromTemplate: "Add from template",
+    addFromTemplate: "Add raids from template",
     addCharacter: "Add character",
     addDungeon: "Add dungeon",
     bisLists: "BiS builds",
     export: "Character pick",
     gearPick: "Soft pick",
-    dataControls: "Data",
+    dataControls: "Settings",
     resetAllToggles: "Reset all toggles",
   },
   table: {
@@ -71,7 +73,8 @@ export const enMessages = {
     filterByDungeonName:
       "Filter by raid name, name+size, or name+size+mode — e.g. ICC, Uld10, ICC25N, or ToC25H",
     dungeonSearchPlaceholder: "ICC, Uld10, ICC25N, ToC25H ...",
-    emptyNoDungeons: "Add a dungeon or use Add from template to get started.",
+    emptyNoDungeons:
+      "Add a dungeon or use Add raids from template to get started.",
     emptyNoSearchMatches: "No dungeons match your search.",
     ariaNoDungeons: "Raid cooldown tracker, no dungeons",
     ariaNoSearchMatches: "Raid cooldown tracker, no dungeons match search",
@@ -173,7 +176,7 @@ export const enMessages = {
     deleteDungeonsAction: "Delete all dungeons",
     addFromTemplateDescription:
       "Load the WotLK raid template (Russian names) when the dungeon list is empty.",
-    addFromTemplateConfirmTitle: "Add from template?",
+    addFromTemplateConfirmTitle: "Add raids from template?",
     addFromTemplateConfirmMessage:
       "Load the WotLK raid list into the empty dungeon table?",
     addFromTemplateConfirm: "Add",

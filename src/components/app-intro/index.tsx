@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import type { MessageKey } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { AppIntroProps } from "./types.ts";
+import { renderIntroRichText } from "./render-intro-rich-text.tsx";
 
 type IntroScenario = {
   letter: "A" | "B" | "C";
@@ -129,9 +130,9 @@ export function AppIntro({ visible = true }: AppIntroProps) {
                       component="li"
                       variant="body2"
                       color="text.secondary"
-                      sx={{ lineHeight: 1.45 }}
+                      sx={{ lineHeight: 1.55 }}
                     >
-                      {t(stepKey)}
+                      {renderIntroRichText(t(stepKey), t)}
                     </Typography>
                   ))}
                 </Box>

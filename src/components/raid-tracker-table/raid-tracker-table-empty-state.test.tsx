@@ -19,7 +19,9 @@ describe("RaidTrackerTableEmptyState", () => {
     );
 
     expect(
-      screen.getByText("Add a dungeon or use Add from template to get started."),
+      screen.getByText(
+        "Add a dungeon or use Add raids from template to get started.",
+      ),
     ).toBeInTheDocument();
   });
 

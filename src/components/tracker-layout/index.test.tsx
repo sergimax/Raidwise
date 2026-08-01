@@ -51,21 +51,21 @@ describe("TrackerLayout add from template confirm", () => {
 
     expect(
       screen.getByText(
-        "Add a dungeon or use Add from template to get started.",
+        "Add a dungeon or use Add raids from template to get started.",
       ),
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole("button", { name: "Add from template" }),
+      screen.getByRole("button", { name: "Add raids from template" }),
     );
 
     const dialog = screen.getByRole("dialog");
     expect(
-      within(dialog).getByText("Add from template?"),
+      within(dialog).getByText("Add raids from template?"),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Add a dungeon or use Add from template to get started.",
+        "Add a dungeon or use Add raids from template to get started.",
       ),
     ).toBeInTheDocument();
 
@@ -74,7 +74,7 @@ describe("TrackerLayout add from template confirm", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(
       screen.queryByText(
-        "Add a dungeon or use Add from template to get started.",
+        "Add a dungeon or use Add raids from template to get started.",
       ),
     ).not.toBeInTheDocument();
     expect(
@@ -87,7 +87,7 @@ describe("TrackerLayout add from template confirm", () => {
     renderTrackerLayout();
 
     await user.click(
-      screen.getByRole("button", { name: "Add from template" }),
+      screen.getByRole("button", { name: "Add raids from template" }),
     );
 
     const dialog = screen.getByRole("dialog");
@@ -96,7 +96,7 @@ describe("TrackerLayout add from template confirm", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(
       screen.getByText(
-        "Add a dungeon or use Add from template to get started.",
+        "Add a dungeon or use Add raids from template to get started.",
       ),
     ).toBeInTheDocument();
   });
