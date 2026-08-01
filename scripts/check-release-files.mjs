@@ -1,16 +1,16 @@
 /**
  * Release-file check for CI.
  *
- * When `package.json` version changes vs the comparison base:
- * 1. Require the usual release paths were touched in the git range
- * 2. Require the new version string is present in:
+ * Requires a `package.json` version bump vs the comparison base, then:
+ * 1. The usual release paths were touched in the git range
+ * 2. The new version string is present in:
  *    - package.json
  *    - package-lock.json (root + packages[""])
  *    - README.md / README.ru.md App_version badges
  *    - CHANGELOG.md as a Keep a Changelog heading `## [X.Y.Z]`
  *
  * Future checks to consider:
- * - Version is a valid semver bump relative to the base (not equal / not lower)
+ * - Version is a valid semver bump relative to the base (not lower / not same major leap)
  * - CHANGELOG date looks sane; Unreleased section discipline
  */
 
@@ -194,10 +194,13 @@ function main() {
   }
 
   if (baseVersion === headVersion) {
-    console.log(
-      `No package.json version bump (${headVersion}) — skipping release-files check.`,
+    console.error(
+      [
+        `No package.json version bump (still ${headVersion}).`,
+        "Each push that runs this check must bump the app version and update release files.",
+      ].join("\n"),
     );
-    process.exit(0);
+    process.exit(1);
   }
 
   console.log(
