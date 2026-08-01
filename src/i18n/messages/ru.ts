@@ -249,7 +249,7 @@ export const ruMessages: Messages = {
     title: "Подбор персонажа",
     closeAria: "Закрыть панель подбора персонажа",
     noCharacters: "Добавьте персонажа для работы подбора",
-    exportLinesTitle: "Подходят для рейда",
+    exportLinesTitle: "Кто подходит для рейда",
     exportLinesHelper:
       "По строке на рейд с персонажами без КД. Отфильтруйте таблицу до одного рейда и скопируйте нужную строку",
     exportLinesHelperSingle:
@@ -257,13 +257,13 @@ export const ruMessages: Messages = {
     copyLine: "Скопировать",
     copyLineAria: "Скопировать строку записи для {{raid}}",
     copied: "Скопировано",
-    dungeonFilterTitle: "Фильтр по рейду",
+    dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
       "Ищите здесь или в заголовке таблицы — оба поля синхронизированы. В подбор попадает по одной строке на каждый подходящий рейд",
     dungeonFilterMatchCount: "{{count}} из {{total}} рейдов в экспорте",
     dungeonFilterNoMatches: "Нет рейдов по текущему поиску.",
-    gearScoreFilterTitle: "Фильтр по GearScore",
-    characterSpecsFilterTitle: "Фильтр по спекам персонажей",
+    gearScoreFilterTitle: "Минимальный GS",
+    characterSpecsFilterTitle: "Нужные спеки",
     characterSpecsFilterHelper:
       "Выбор спеков каждого персонажа для включения в подбор",
     characterInactiveCooldownHint: "КД на каждом видимом рейде",
@@ -282,8 +282,8 @@ export const ruMessages: Messages = {
       "Минимальный GearScore для подбора",
     minGearScoreSliderValue: "≥ {{value}}k GS",
     minGearScoreAria: "Минимальный GS для подбора",
-    roleFilterLabel: "Фильтр по роли в рейде",
-    roleFilterTitle: "Фильтр по роли в рейде",
+    roleFilterLabel: "Необходимые роли",
+    roleFilterTitle: "Необходимые роли",
     roleFilterHelper:
       "Выбранные роли участвуют в подборе",
     roleTank: "Танк",
