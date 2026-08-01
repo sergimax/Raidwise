@@ -29,13 +29,15 @@ export const ruMessages: Messages = {
     authorSiteAria: "sergimax.ru",
   },
   intro: {
-    title: "С чего начать",
+    title: "Чем поможет приложение",
     saveNote: "Данные сохраняются автоматически в браузере.",
+    whatYouGet: "Что получите",
     scenarioATitle: "Трекинг КД",
     scenarioAStep1:
       "Добавьте рейды — или используйте Добавить из шаблона, если список пуст",
     scenarioAStep2: "Добавьте персонажей",
     scenarioAStep3: "Отметьте, какие рейды пройдены на каком персонаже",
+    scenarioAOutcome: "Карта КД состава — кто свободен на какой рейд",
     scenarioBTitle: "Апгрейды экипировки",
     scenarioBStep1: "Добавьте персонажа",
     scenarioBStep2:
@@ -43,10 +45,13 @@ export const ruMessages: Messages = {
     scenarioBStep3: "Добавьте рейды",
     scenarioBStep4: "Отметьте пройденные рейды по персонажам",
     scenarioBStep5:
-      "По цвету ячеек смотрите, в каких рейдах больше апгрейдов для персонажа",
+      "Смотрите, в каких рейдах больше апгрейдов для каждого персонажа",
+    scenarioBOutcome:
+      "Та же карта плюс подсказки апгрейдов BiS и по ilvl в таблице",
     scenarioCTitle: "Только BIS списки",
     scenarioCStep1:
       "Откройте BIS сборки и смотрите пресеты — персонажи и рейды не нужны",
+    scenarioCOutcome: "BIS списки по спекам без настройки состава",
   },
   toolbar: {
     actionsAria: "Действия трекера",
