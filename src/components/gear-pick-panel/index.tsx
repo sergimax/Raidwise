@@ -37,6 +37,7 @@ import {
   type GearPickCharacterSelection,
 } from "./gear-pick-character-select.tsx";
 import { GearPickCopyBlock } from "./gear-pick-copy-block.tsx";
+import { GearPickEmptyNoGear } from "./gear-pick-empty-no-gear.tsx";
 import { GearPickFilterBlock } from "./gear-pick-filter-block.tsx";
 import { GearPickItemRow } from "./gear-pick-item-row.tsx";
 import { GearPickRules } from "./gear-pick-rules.tsx";
@@ -133,26 +134,26 @@ export function GearPickPanel({
 
   const softBudgetUsed = sumMySofts(assignmentsByItemId);
 
-  const emptyItemsMessage = useMemo(() => {
+  const emptyItemsState = useMemo((): "noSelection" | "noGear" | "noBis" | "noItems" | null => {
     if (!activeSelection || !selectedCharacter) {
-      return t("gearPickPanel.itemsEmptyNoSelection");
+      return "noSelection";
     }
     if (!selectedSpecGear) {
-      return t("gearPickPanel.itemsEmptyNoSelection");
+      return "noSelection";
     }
     if (!selectedSpecGear.gearItems || selectedSpecGear.gearItems.length === 0) {
-      return t("gearPickPanel.itemsEmptyNoGear");
+      return "noGear";
     }
     const className = selectedCharacter.class?.name;
     if (!className) {
-      return t("gearPickPanel.itemsEmptyNoSelection");
+      return "noSelection";
     }
     const bisMap = getBisSlotMapForSpec(className, selectedSpecGear.spec);
     if (bisMap.size === 0) {
-      return t("gearPickPanel.itemsEmptyNoBis");
+      return "noBis";
     }
     if (gearPickItems.length === 0) {
-      return t("gearPickPanel.itemsEmptyNoItems");
+      return "noItems";
     }
     return null;
   }, [
@@ -161,7 +162,6 @@ export function GearPickPanel({
     getBisSlotMapForSpec,
     selectedCharacter,
     selectedSpecGear,
-    t,
   ]);
 
   const copyItems = useMemo(() => {
@@ -300,9 +300,15 @@ export function GearPickPanel({
             overflowY: "auto",
           }}
         >
-          {emptyItemsMessage ? (
+          {emptyItemsState === "noGear" ? (
+            <GearPickEmptyNoGear t={t} />
+          ) : emptyItemsState ? (
             <Typography variant="body2" color="text.secondary">
-              {emptyItemsMessage}
+              {emptyItemsState === "noSelection"
+                ? t("gearPickPanel.itemsEmptyNoSelection")
+                : emptyItemsState === "noBis"
+                  ? t("gearPickPanel.itemsEmptyNoBis")
+                  : t("gearPickPanel.itemsEmptyNoItems")}
             </Typography>
           ) : (
             <Stack spacing={0}>

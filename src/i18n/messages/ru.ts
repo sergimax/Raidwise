@@ -321,7 +321,9 @@ export const ruMessages: Messages = {
     itemsTitle: "Предметы для софта",
     itemsHelper: "BiS и варианты BiS из отфильтрованных рейдов. Назначьте свои софты и учтите чужие заявки",
     itemsEmptyNoSelection: "Выберите персонажа и спек, чтобы увидеть предметы для софта",
-    itemsEmptyNoGear: "Импортируйте шмот для этого спека, чтобы увидеть предметы для софта",
+    itemsEmptyNoGearPrefix: "Нажмите",
+    itemsEmptyNoGearSuffix:
+      "в заголовке колонки персонажа и импортируйте шмот из WowSimsExporter, чтобы увидеть предметы для софта",
     itemsEmptyNoBis: "Выберите BiS-список для этого спека, чтобы увидеть предметы для софта",
     itemsEmptyNoItems: "Нет BiS-апгрейдов в отфильтрованных рейдах для этого спека софт-резервов",
     mySoftsLabel: "Мои софт-резервы",

@@ -319,7 +319,9 @@ export const enMessages = {
     itemsTitle: "Soft reserve targets",
     itemsHelper: "BiS and BiS-variant upgrades from filtered raids. Assign your soft reserves and track others",
     itemsEmptyNoSelection: "Select a character and spec to see soft reserve targets",
-    itemsEmptyNoGear: "Import gear for this spec to see soft reserve targets",
+    itemsEmptyNoGearPrefix: "Click",
+    itemsEmptyNoGearSuffix:
+      "on the character column header and import gear from WowSimsExporter to see soft reserve targets",
     itemsEmptyNoBis: "Select a BiS list for this spec to see soft reserve targets",
     itemsEmptyNoItems: "No BiS upgrades in the filtered raids for this spec soft reserve",
     mySoftsLabel: "My soft reserves",
