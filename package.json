@@ -14,7 +14,8 @@
     "comment:bis-presets": "node scripts/comment-bis-presets.mjs",
     "download:gear-slot-icons": "node scripts/download-gear-slot-icons.mjs",
     "download:raid-icons": "node scripts/download-raid-icons.mjs",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "check:release-files": "node scripts/check-release-files.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
