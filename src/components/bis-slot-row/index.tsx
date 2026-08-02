@@ -199,7 +199,16 @@ export const BisSlotRow = memo(function BisSlotRow({
             <>
               <Box
                 component="span"
-                sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  gap: 0.25,
+                  // Keep item links content-sized. A stretched flex item makes
+                  // WowItemLink a full-width hover target and breaks external
+                  // WoW tooltips (stuck position / no hide on mouseleave).
+                  maxWidth: "100%",
+                }}
               >
                 <WowItemLink itemId={slotDraft.itemIds[0]} />
                 <BisItemDropSources
@@ -213,11 +222,13 @@ export const BisSlotRow = memo(function BisSlotRow({
                   sx={{
                     display: "flex",
                     flexDirection: "column",
+                    alignItems: "flex-start",
                     gap: 0.25,
                     pl: 1,
                     borderLeft: 1,
                     borderColor: "divider",
                     mt: 0.25,
+                    maxWidth: "100%",
                   }}
                 >
                   <Typography
