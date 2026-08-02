@@ -110,6 +110,17 @@ describe("BisListsPanel", () => {
     });
   });
 
+  it("shows list-name required on the Save list field", async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<BisListsPanel />);
+
+    await user.click(screen.getByRole("button", { name: /Save list/i }));
+
+    const listNameField = screen.getByRole("textbox", { name: /List name/i });
+    expect(listNameField).toHaveAccessibleDescription(/List name is required/i);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
   it("disables save while edited slots are unconfirmed", async () => {
     const user = userEvent.setup();
     seedLocalUnholyPreset("Editable local");

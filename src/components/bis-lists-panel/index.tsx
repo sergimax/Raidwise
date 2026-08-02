@@ -68,6 +68,20 @@ function localizeBisStorageMessage(message: string, t: TranslateFn): string {
   return message;
 }
 
+/** Save-step name errors from `resolveSaveLocalPresetByName` (shown on the list-name field). */
+function localizeBisSaveNameError(
+  message: string,
+  t: TranslateFn,
+): string | null {
+  if (message === "List name is required") {
+    return t("validation.bisListNameRequired");
+  }
+  if (message === "Use a custom name (not a built-in list name)") {
+    return t("validation.bisListNameBuiltin");
+  }
+  return null;
+}
+
 const bisClassSpecSelectSx = {
   "& .MuiSelect-select": {
     display: "flex",
@@ -309,6 +323,8 @@ export function BisListsPanel() {
     </Stack>
   );
 
+  const saveNameError = error ? localizeBisSaveNameError(error, t) : null;
+
   const saveListForm = (
     <Stack spacing={1}>
       <TextField
@@ -320,6 +336,8 @@ export function BisListsPanel() {
           clearError();
         }}
         placeholder={t("bisPanel.listNamePlaceholder")}
+        error={Boolean(saveNameError)}
+        helperText={saveNameError ?? undefined}
         fullWidth
       />
       <Button
@@ -545,7 +563,7 @@ export function BisListsPanel() {
         </ExportFilterSection>
       </Box>
 
-      {error ? <FormErrorMessage message={error} /> : null}
+      {error && !saveNameError ? <FormErrorMessage message={error} /> : null}
     </Stack>
   );
 }
