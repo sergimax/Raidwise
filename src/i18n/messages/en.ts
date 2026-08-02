@@ -228,6 +228,7 @@ export const enMessages = {
       "Hover item names for tooltips. Edit a slot, then confirm with ✓ or cancel with ✕",
     itemsHelperBuiltin:
       "Built-in list (read-only). Save under a custom name to create an editable copy",
+    newCustomList: "New custom list",
     lists: "Lists",
     listsHelper:
       "Select which BiS list is active for this class and spec. Built-in lists are locked",

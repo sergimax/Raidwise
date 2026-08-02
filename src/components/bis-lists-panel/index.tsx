@@ -301,6 +301,10 @@ export function BisListsPanel() {
     ? t("bisPanel.itemsHelperBuiltin")
     : t("bisPanel.itemsHelperEdit");
 
+  const itemsListName = isCustomListCreation
+    ? t("bisPanel.newCustomList")
+    : (selectedPreset?.name ?? t("bisPanel.presetDefault"));
+
   const itemsTitleActions = (
     <Stack direction="row" spacing={0.75} sx={{ alignItems: "center" }}>
       {!isBuiltInPresetSelected ? (
@@ -556,6 +560,7 @@ export function BisListsPanel() {
         <ExportFilterSection
           step={3}
           title={t("bisPanel.items")}
+          subtitle={itemsListName}
           description={itemsDescription}
           titleActions={itemsTitleActions}
           contentSx={bisItemsContentSx}
