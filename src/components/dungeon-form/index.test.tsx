@@ -31,13 +31,22 @@ function renderDungeonForm(overrides: Partial<DungeonFormProps> = {}) {
 }
 
 describe("DungeonForm", () => {
-  it("renders dungeon fields including optional short name", () => {
+  it("renders stepped raid fields including optional short name", () => {
     renderDungeonForm();
 
+    const stepTitle = (expected: string) =>
+      screen.getByText((_, element) => {
+        return element?.tagName === "P" && element.textContent === expected;
+      });
+
+    expect(stepTitle("1.Name")).toBeInTheDocument();
+    expect(stepTitle("2.Short name(optional)")).toBeInTheDocument();
+    expect(stepTitle("3.Size and difficulty")).toBeInTheDocument();
+    expect(stepTitle("4.Item levels")).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: /^Name/ })).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: /^Short name/ })).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: /^Item levels/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Add dungeon" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add raid" })).toBeInTheDocument();
   });
 
   it("displays validation error", () => {
@@ -106,7 +115,7 @@ describe("DungeonForm", () => {
     });
 
     await user.click(
-      screen.getByRole("button", { name: "Add dungeon" }),
+      screen.getByRole("button", { name: "Add raid" }),
     );
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
