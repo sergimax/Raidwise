@@ -6,7 +6,7 @@
 Данные хранятся локально в `localStorage`.
 Активная ссылка: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![Версия приложения](https://img.shields.io/badge/App_version-1.53.1-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-1.54.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -17,8 +17,9 @@
 
 ### Персонажи и подземелья
 
-Добавляйте вручную или загрузите шаблон рейдов WotLK, если список пуст.
+Добавляйте вручную (**Добавить персонажа** / **Добавить рейд**, пошаговые формы) или загрузите шаблон рейдов WotLK, если список пуст.
 Позже можно править спеки, гир из WowSims, список «Также есть» (сумки / другой спек / торговцы для подсказок) и данные рейда.
+Кнопка **info** в хедере показывает краткую справку (сценарии: КД, план гира или только BIS).
 
 ### Переключатели КД
 
@@ -49,6 +50,7 @@
 
 Встроенные пресеты по спекам (сначала Kingdom с вариантами слотов, затем Titans/community); локальные копии редактируются и используются в подсказках для выбора гира.
 Раскладка слотов как в интерфейсе игры; альтернативы показываются стеком под основным предметом.
+У своих списков — очистка слота / всех слотов; Items и Lists с ограниченной высотой и прокруткой.
 
 ### Подсказки гира
 
@@ -75,7 +77,7 @@
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
-На push/PR в `main` GitHub Actions параллельно гоняет **Lint**, **Test** и **Build** (`.github/workflows/ci.yml`); push в `main` также загружает артефакт `dist` (`.github/workflows/build-artifacts.yml`).
+На push/PR в `main` GitHub Actions параллельно гоняет **Lint**, **Test** и **Build**, затем **Release files** (бамп версии + бейджи README / CHANGELOG при релизе) (`.github/workflows/ci.yml`); push в `main` также загружает артефакт `dist` (`.github/workflows/build-artifacts.yml`).
 
 **Структура:**
 `src/components/` (UI), `src/hooks/` (домен + оверлей-панели), `src/utils/`, `src/data/` (бандлы WoW + BiS-пресеты), `src/storage/`. Тесты рядом: `*.test.ts(x)`.

@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.54.0] - 2026-08-02
+
+### Added
+
+- **Usage help:** Intro card with three scenarios (raid CDs, gear planning, BiS-only) and a header info button to show/hide it.
+- **Stepped toolbar panels:** Character pick, Soft pick, BiS builds, Add character, and Add raid use numbered step cards with short helpers (no panel-level layout blurbs).
+- **Add character:** Multi-step form with optional WowSims gear import for main/off specs while creating.
+- **Add raid:** Stepped form; toolbar/form copy uses “raid” (EN) to match RU and the template CTA.
+- **BiS custom lists:** Clear one slot while editing, or clear all slots; scroll height budgets for the paper-doll and list chips.
+- **Design system docs:** `docs/design-system.md` and `docs/design-tokens.json` document colors, radii, borders, shadows, and form recipes for reuse.
+- **CI:** After lint/test/build, a release-files job requires a version bump plus matching `package.json` / lockfile / README badges / `CHANGELOG.md` content (`scripts/check-release-files.mjs`).
+
+### Changed
+
+- **Template CTA:** Label is **Add raids from template** / **Добавить рейды из шаблона** (with confirm in Data when empty).
+- **BiS panel:** Stepped Class & spec → Lists → Items → Save layout; save-name errors on the list-name field; Copy / Clear all on the Items header.
+- **Scrollbars:** Thin theme-aware scrollbars app-wide.
+- **Character pick / Soft pick:** Shared raid search field in the Raids step; clearer optional-step marks and empty Soft pick guidance.
+
+### Fixed
+
+- **BiS item tooltips:** Primary item links no longer stretch as full-width hover targets (tooltips stick less often); hide external tooltips on Items scroll/mouse leave.
+
 ## [1.53.1] - 2026-08-01
 
 ### Changed
