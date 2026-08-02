@@ -67,8 +67,6 @@ function getMainToolbarPanelMeta(
     case "bis":
       return {
         title: t("bisPanel.title"),
-        description: t("bisPanel.layoutHint"),
-        descriptionTooltip: t("bisPanel.helpTooltip"),
         closeAriaLabel: t("bisPanel.closeAria"),
         onClose: handlers.closeBisListsPanel,
         maxWidth: TRACKER_WIDE_PANEL_MAX_WIDTH,

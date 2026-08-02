@@ -212,22 +212,25 @@ export const enMessages = {
   },
   bisPanel: {
     title: "BiS lists",
-    layoutHint:
-      "Choose class & spec on the left. Items in the center. Lists & save on the right. The active list will be used for upgrade hints in the table.",
-    helpTooltip:
-      "Preset best-in-slot targets per spec. Save custom lists with a name; saving again with the same name updates that list. Upgrade hints use the selected list for each character's main and off spec.",
     classAndSpec: "Class & spec",
+    classAndSpecHelper:
+      "Choose class and specialization. The selected list for this spec drives upgrade hints in the table",
     items: "Items",
+    itemsHelperEdit:
+      "Hover item names for tooltips. Edit a slot, then confirm with ✓ or cancel with ✕",
+    itemsHelperBuiltin:
+      "Built-in list (read-only). Save under a custom name to create an editable copy",
     lists: "Lists",
-    builtinReadOnly:
-      "Built-in list (read-only). Save under a custom name to create an editable copy.",
-    editHint:
-      "Hover item names for tooltips. Edit a slot, then confirm with ✓ or cancel with ✕.",
+    listsHelper:
+      "Select which BiS list is active for this class and spec. Built-in lists are locked",
+    listsHelperCustom:
+      "No built-in BiS list for {{class}} {{spec}}. Build items, then save under a custom name",
+    saveTitle: "Save list",
+    saveHelper:
+      "Save under a custom name to edit; saving again with the same name updates that list",
     shirtSlot: "Shirt",
     tabardSlot: "Tabard",
     cosmeticSlotHint: "Cosmetic (not in BiS)",
-    createCustomListHint:
-      "No built-in BiS list for {{class}} {{spec}}. Add items below and save under a custom name.",
     listName: "List name",
     listNamePlaceholder: "Custom list name",
     saveList: "Save list",
