@@ -251,6 +251,10 @@ export const enMessages = {
     copyList: "Copy",
     copyListAria: "Copy current BiS list",
     copied: "Copied",
+    clearAllSlots: "Clear all",
+    clearAllSlotsAria: "Clear all BiS list slots",
+    clearSlot: "Clear slot",
+    clearSlotAria: "Clear {{slot}} item",
   },
   exportPanel: {
     title: "Character pick",

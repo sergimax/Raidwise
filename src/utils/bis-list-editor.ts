@@ -31,18 +31,22 @@ export function isSlotEditing(
 }
 
 export function presetToSlotDrafts(preset: BisListPreset): BisSlotDraft[] {
-  return preset.slots
-    .slice()
-    .sort((leftSlot, rightSlot) => leftSlot.slot - rightSlot.slot)
-    .map((slotEntry) => {
-      const itemsText = formatBisSlotItems(slotEntry.itemIds);
-      return {
-        slot: slotEntry.slot,
-        itemsText,
-        confirmedText: itemsText,
-        itemIds: [...slotEntry.itemIds],
-      };
-    });
+  const itemIdsBySlot = new Map(
+    preset.slots.map((slotEntry) => [slotEntry.slot, slotEntry.itemIds] as const),
+  );
+
+  // Always include every gear slot so empty slots stay editable after save/reload.
+  return GearSlotNames.map((_, slot) => {
+    const itemIds = itemIdsBySlot.get(slot) ?? [];
+    const itemsText =
+      itemIds.length > 0 ? formatBisSlotItems(itemIds) : "";
+    return {
+      slot,
+      itemsText,
+      confirmedText: itemsText,
+      itemIds: [...itemIds],
+    };
+  });
 }
 
 export function createEmptySlotDrafts(): BisSlotDraft[] {

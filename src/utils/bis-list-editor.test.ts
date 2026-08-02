@@ -17,6 +17,23 @@ describe("presetToSlotDrafts", () => {
     expect(headDraft?.itemIds).toEqual([51312]);
     expect(headDraft?.itemsText).toBe(headDraft?.confirmedText);
   });
+
+  it("fills missing gear slots as empty drafts", () => {
+    const drafts = presetToSlotDrafts({
+      id: "partial",
+      name: "Partial",
+      slots: [{ slot: 0, itemIds: [51312] }],
+    });
+
+    expect(drafts).toHaveLength(createEmptySlotDrafts().length);
+    expect(drafts.find((draft) => draft.slot === 0)?.itemIds).toEqual([51312]);
+    expect(drafts.find((draft) => draft.slot === 1)).toEqual({
+      slot: 1,
+      itemsText: "",
+      confirmedText: "",
+      itemIds: [],
+    });
+  });
 });
 
 describe("createEmptySlotDrafts", () => {

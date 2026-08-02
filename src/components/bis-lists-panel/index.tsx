@@ -126,10 +126,19 @@ export function BisListsPanel() {
     handleConfirmSlot,
     handleStartEditSlot,
     handleCancelEditSlot,
+    handleClearSlot,
+    handleClearAllSlots,
     handleSaveList,
     handleItemsTextChange,
     handleItemsTextBlur,
   } = editor;
+
+  const canClearAllSlots =
+    !isBuiltInPresetSelected &&
+    slotDrafts.some(
+      (slotDraft) =>
+        slotDraft.itemIds.length > 0 || slotDraft.itemsText.trim() !== "",
+    );
 
   const handleSelectPreset = useCallback(
     (presetId: string) => {
@@ -210,6 +219,7 @@ export function BisListsPanel() {
           onConfirm={handleConfirmSlot}
           onStartEdit={handleStartEditSlot}
           onCancelEdit={handleCancelEditSlot}
+          onClearSlot={handleClearSlot}
         />
       );
     },
@@ -217,6 +227,7 @@ export function BisListsPanel() {
       editingSlots,
       equipContext,
       handleCancelEditSlot,
+      handleClearSlot,
       handleConfirmSlot,
       handleItemsTextBlur,
       handleItemsTextChange,
@@ -250,19 +261,33 @@ export function BisListsPanel() {
     ? t("bisPanel.itemsHelperBuiltin")
     : t("bisPanel.itemsHelperEdit");
 
-  const copyTitleAction = (
-    <Button
-      size="small"
-      variant="outlined"
-      startIcon={<ContentCopyIcon fontSize="small" />}
-      disabled={!copyListText}
-      aria-label={t("bisPanel.copyListAria")}
-      onClick={() => {
-        void handleCopyList();
-      }}
-    >
-      {listCopied ? t("bisPanel.copied") : t("bisPanel.copyList")}
-    </Button>
+  const itemsTitleActions = (
+    <Stack direction="row" spacing={0.75} sx={{ alignItems: "center" }}>
+      {!isBuiltInPresetSelected ? (
+        <Button
+          size="small"
+          variant="outlined"
+          color="inherit"
+          disabled={!canClearAllSlots}
+          aria-label={t("bisPanel.clearAllSlotsAria")}
+          onClick={handleClearAllSlots}
+        >
+          {t("bisPanel.clearAllSlots")}
+        </Button>
+      ) : null}
+      <Button
+        size="small"
+        variant="outlined"
+        startIcon={<ContentCopyIcon fontSize="small" />}
+        disabled={!copyListText}
+        aria-label={t("bisPanel.copyListAria")}
+        onClick={() => {
+          void handleCopyList();
+        }}
+      >
+        {listCopied ? t("bisPanel.copied") : t("bisPanel.copyList")}
+      </Button>
+    </Stack>
   );
 
   const saveListForm = (
@@ -364,86 +389,77 @@ export function BisListsPanel() {
           display: "grid",
           gridTemplateColumns: {
             xs: "1fr",
-            md: "13rem minmax(0, 1fr) 14rem",
-            lg: "14.5rem minmax(0, 1fr) 16rem",
+            md: "14rem minmax(0, 1fr) 13rem",
+            lg: "16rem minmax(0, 1fr) 14.5rem",
           },
           gap: { xs: 1.5, md: 2 },
           alignItems: "start",
         }}
       >
-        <ExportFilterSection
-          step={1}
-          title={t("bisPanel.classAndSpec")}
-          description={t("bisPanel.classAndSpecHelper")}
-          contentSx={bisOverflowVisibleContentSx}
-        >
-          <Stack spacing={1.25}>
-            <FormControl size="small" fullWidth>
-              <InputLabel id="bis-class-label">{t("common.class")}</InputLabel>
-              <Select
-                labelId="bis-class-label"
-                label={t("common.class")}
-                value={className}
-                sx={bisClassSpecSelectSx}
-                renderValue={(selectedName) => {
-                  const selectedClass = Classes.find(
-                    (option) => option.name === selectedName,
-                  );
-                  if (!selectedClass) {
-                    return selectedName;
-                  }
-                  return <ClassOptionLabel characterClass={selectedClass} />;
-                }}
-                onChange={(event) => {
-                  const nextClass = event.target.value as ClassNameType;
-                  setClassName(nextClass);
-                  setSpec(specsForClass(nextClass)[0] ?? "");
-                  clearError();
-                }}
-              >
-                {Classes.map((characterClass) => (
-                  <MenuItem key={characterClass.name} value={characterClass.name}>
-                    <ClassOptionLabel characterClass={characterClass} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl size="small" fullWidth>
-              <InputLabel id="bis-spec-label">{t("common.spec")}</InputLabel>
-              <Select
-                labelId="bis-spec-label"
-                label={t("common.spec")}
-                value={activeSpec}
-                sx={bisClassSpecSelectSx}
-                renderValue={(selectedSpec) => (
-                  <SpecOptionLabel className={className} spec={selectedSpec} />
-                )}
-                onChange={(event) => {
-                  setSpec(event.target.value);
-                  clearError();
-                }}
-              >
-                {classSpecs.map((specName) => (
-                  <MenuItem key={specName} value={specName}>
-                    <SpecOptionLabel className={className} spec={specName} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        </ExportFilterSection>
-
-        <ExportFilterSection
-          step={3}
-          title={t("bisPanel.items")}
-          description={itemsDescription}
-          titleActions={copyTitleAction}
-        >
-          {slotEditor}
-        </ExportFilterSection>
-
         <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+          <ExportFilterSection
+            step={1}
+            title={t("bisPanel.classAndSpec")}
+            description={t("bisPanel.classAndSpecHelper")}
+            contentSx={bisOverflowVisibleContentSx}
+          >
+            <Stack spacing={1.25}>
+              <FormControl size="small" fullWidth>
+                <InputLabel id="bis-class-label">{t("common.class")}</InputLabel>
+                <Select
+                  labelId="bis-class-label"
+                  label={t("common.class")}
+                  value={className}
+                  sx={bisClassSpecSelectSx}
+                  renderValue={(selectedName) => {
+                    const selectedClass = Classes.find(
+                      (option) => option.name === selectedName,
+                    );
+                    if (!selectedClass) {
+                      return selectedName;
+                    }
+                    return <ClassOptionLabel characterClass={selectedClass} />;
+                  }}
+                  onChange={(event) => {
+                    const nextClass = event.target.value as ClassNameType;
+                    setClassName(nextClass);
+                    setSpec(specsForClass(nextClass)[0] ?? "");
+                    clearError();
+                  }}
+                >
+                  {Classes.map((characterClass) => (
+                    <MenuItem key={characterClass.name} value={characterClass.name}>
+                      <ClassOptionLabel characterClass={characterClass} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl size="small" fullWidth>
+                <InputLabel id="bis-spec-label">{t("common.spec")}</InputLabel>
+                <Select
+                  labelId="bis-spec-label"
+                  label={t("common.spec")}
+                  value={activeSpec}
+                  sx={bisClassSpecSelectSx}
+                  renderValue={(selectedSpec) => (
+                    <SpecOptionLabel className={className} spec={selectedSpec} />
+                  )}
+                  onChange={(event) => {
+                    setSpec(event.target.value);
+                    clearError();
+                  }}
+                >
+                  {classSpecs.map((specName) => (
+                    <MenuItem key={specName} value={specName}>
+                      <SpecOptionLabel className={className} spec={specName} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+          </ExportFilterSection>
+
           <ExportFilterSection
             step={2}
             title={t("bisPanel.lists")}
@@ -494,17 +510,26 @@ export function BisListsPanel() {
               </Stack>
             )}
           </ExportFilterSection>
-
-          <ExportFilterSection
-            step={4}
-            title={t("bisPanel.saveTitle")}
-            titleMark={optionalMark}
-            description={t("bisPanel.saveHelper")}
-            contentSx={bisOverflowVisibleContentSx}
-          >
-            {saveListForm}
-          </ExportFilterSection>
         </Stack>
+
+        <ExportFilterSection
+          step={3}
+          title={t("bisPanel.items")}
+          description={itemsDescription}
+          titleActions={itemsTitleActions}
+        >
+          {slotEditor}
+        </ExportFilterSection>
+
+        <ExportFilterSection
+          step={4}
+          title={t("bisPanel.saveTitle")}
+          titleMark={optionalMark}
+          description={t("bisPanel.saveHelper")}
+          contentSx={bisOverflowVisibleContentSx}
+        >
+          {saveListForm}
+        </ExportFilterSection>
       </Box>
 
       {error ? <FormErrorMessage message={error} /> : null}

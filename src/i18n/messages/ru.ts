@@ -253,6 +253,10 @@ export const ruMessages: Messages = {
     copyList: "Копировать",
     copyListAria: "Копировать текущий BiS-список",
     copied: "Скопировано",
+    clearAllSlots: "Очистить все",
+    clearAllSlotsAria: "Очистить все слоты BiS-списка",
+    clearSlot: "Очистить слот",
+    clearSlotAria: "Очистить {{slot}}",
   },
   exportPanel: {
     title: "Подбор персонажа",
