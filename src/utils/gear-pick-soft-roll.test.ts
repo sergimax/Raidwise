@@ -103,6 +103,29 @@ describe("gear-pick-soft-roll", () => {
       ["- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"),
     );
   });
+
+  it("prefixes the character name when softs are present", () => {
+    const text = formatGearPickCopyText({
+      characterName: "Elst",
+      items: [
+        { itemName: "Belt", bossName: "Putricide", mySofts: 3 },
+        { itemName: "Ring", bossName: "", mySofts: 0 },
+        { itemName: "Trinket", bossName: "Halion", mySofts: 1 },
+      ],
+    });
+    expect(text).toBe(
+      ["Elst:", "- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"),
+    );
+  });
+
+  it("returns empty when no softs even if a character name is set", () => {
+    expect(
+      formatGearPickCopyText({
+        characterName: "Elst",
+        items: [{ itemName: "Ring", bossName: "", mySofts: 0 }],
+      }),
+    ).toBe("");
+  });
 });
 
 function getSofts(

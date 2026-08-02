@@ -215,10 +215,12 @@ export type GearPickCopyItem = {
 };
 
 export type FormatGearPickCopyOptions = {
+  /** Character nickname prepended as `{name}:` when there is at least one soft line. */
+  characterName?: string;
   items: readonly GearPickCopyItem[];
 };
 
-/** Pasteable soft-call lines only (no rules/character preamble). */
+/** Pasteable soft-call list: character name, then `- Item (Boss) xN` lines. */
 export function formatGearPickCopyText(options: FormatGearPickCopyOptions): string {
   const lines: string[] = [];
 
@@ -228,6 +230,15 @@ export function formatGearPickCopyText(options: FormatGearPickCopyOptions): stri
     }
     const bossSuffix = item.bossName ? ` (${item.bossName})` : "";
     lines.push(`- ${item.itemName}${bossSuffix} x${item.mySofts} `);
+  }
+
+  if (lines.length === 0) {
+    return "";
+  }
+
+  const characterName = options.characterName?.trim();
+  if (characterName) {
+    return [`${characterName}:`, ...lines].join("\n");
   }
 
   return lines.join("\n");
