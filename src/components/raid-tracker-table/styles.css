@@ -15,6 +15,11 @@
   padding-bottom: 8px;
 }
 
+/* Viewport sticky thead under AppBar (page scroll only; no nested table scroll). */
+.raid-tracker-table--sticky-page-header .MuiTableCell-head {
+  top: var(--app-toolbar-min-height);
+}
+
 .raid-tracker-table .MuiTableSortLabel-root {
   font-size: 0.85rem;
 }
