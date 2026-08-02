@@ -63,7 +63,7 @@ export const enMessages = {
     actionsAria: "Tracker actions",
     addFromTemplate: "Add raids from template",
     addCharacter: "Add character",
-    addDungeon: "Add dungeon",
+    addDungeon: "Add raid",
     bisLists: "BiS builds",
     export: "Character pick",
     gearPick: "Soft pick",
@@ -112,15 +112,23 @@ export const enMessages = {
     gearScoreHelper: "Character GearScore",
   },
   dungeonForm: {
-    title: "New dungeon",
-    addDungeon: "Add dungeon",
-    closeAria: "Close add dungeon panel",
+    title: "New raid",
+    addDungeon: "Add raid",
+    closeAria: "Close add raid panel",
+    stepName: "Name",
+    nameHelper:
+      "Pick a known WotLK raid from the list, or type a custom name",
+    stepShortName: "Short name",
     shortName: "Short name",
     shortNameHelper:
-      "Optional abbreviation shown in compact table view. Leave blank to use a default for known raids.",
+      "Compact table label. Leave blank to use the default for known raids",
+    stepType: "Size and difficulty",
+    typeHelper:
+      "Shown in the Type column — Heroic adds the skull next to the size",
+    stepItemLevels: "Item levels",
     itemLevels: "Item levels",
     itemLevelsHelper:
-      "One or more values, separated by / or comma (e.g. 200 or 200 / 213).",
+      "One or more values, separated by / or comma (e.g. 200 or 200 / 213)",
     difficulty: "Difficulty",
     badge: "Badge",
   },
