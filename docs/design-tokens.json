@@ -1,0 +1,230 @@
+{
+  "$schemaComment": "Portable design tokens extracted from my-raid-cds. Core tokens are app-agnostic; domain.* is product-specific.",
+  "meta": {
+    "name": "my-raid-cds",
+    "version": "1.0.0",
+    "sources": [
+      "src/theme/create-app-theme.ts",
+      "src/theme/tooltip-surface.ts",
+      "src/index.css",
+      "src/App.css"
+    ],
+    "muiSpacingPx": 8
+  },
+  "typography": {
+    "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+    "button": {
+      "textTransform": "none",
+      "fontWeight": 600,
+      "letterSpacing": 0
+    },
+    "h6": { "fontWeight": 700, "letterSpacing": "-0.02em" },
+    "subtitle1": { "fontWeight": 600, "letterSpacing": "-0.01em" }
+  },
+  "shape": {
+    "borderRadius": 10,
+    "controlBorderRadius": 8,
+    "dialogBorderRadius": 12,
+    "filterCardBorderRadius": 8,
+    "scrollbarThumbBorderRadius": 999
+  },
+  "borders": {
+    "width": "1px",
+    "style": "solid",
+    "defaultColorToken": "divider"
+  },
+  "spacingRecipes": {
+    "panelPadding": { "xs": 12, "sm": 16 },
+    "filterSectionPadding": 10,
+    "stackPanel": 12,
+    "formFieldGap": 10
+  },
+  "shadows": {
+    "card": {
+      "light": "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06)",
+      "dark": "0 1px 2px rgba(0, 0, 0, 0.35)"
+    },
+    "menu": {
+      "light": "0 8px 24px rgba(15, 23, 42, 0.12)",
+      "dark": "0 8px 24px rgba(0, 0, 0, 0.45)"
+    }
+  },
+  "scrollbar": {
+    "sizePx": 8,
+    "track": "transparent",
+    "thumb": { "light": "#cbd5e1", "dark": "#475569" },
+    "thumbHover": { "light": "#94a3b8", "dark": "#64748b" }
+  },
+  "shell": {
+    "toolbarMinHeightPx": { "xs": 56, "sm": 64 },
+    "mainPadding": {
+      "top": { "xs": "1.5rem", "sm": "2rem" },
+      "x": { "xs": "1.25rem", "sm": "1.75rem" },
+      "bottom": "2rem"
+    }
+  },
+  "colorMode": {
+    "htmlAttribute": "data-color-mode",
+    "storageKeyExample": "my-raid-cds-color-mode",
+    "themeColorMeta": {
+      "light": "#f1f5f9",
+      "dark": "#0f172a"
+    }
+  },
+  "cssVariables": {
+    "light": {
+      "--text": "#0f172a",
+      "--text-muted": "#64748b",
+      "--border": "#e2e8f0",
+      "--surface": "#ffffff",
+      "--page-bg": "#f1f5f9",
+      "--link": "#2563eb",
+      "--link-hover": "#1d4ed8",
+      "--scrollbar-size": "8px",
+      "--scrollbar-track": "transparent",
+      "--scrollbar-thumb": "#cbd5e1",
+      "--scrollbar-thumb-hover": "#94a3b8"
+    },
+    "dark": {
+      "--text": "#f8fafc",
+      "--text-muted": "#94a3b8",
+      "--border": "#334155",
+      "--surface": "#1e293b",
+      "--page-bg": "#0f172a",
+      "--link": "#60a5fa",
+      "--link-hover": "#93c5fd",
+      "--scrollbar-thumb": "#475569",
+      "--scrollbar-thumb-hover": "#64748b"
+    }
+  },
+  "palette": {
+    "light": {
+      "primary": { "main": "#2563eb", "light": "#60a5fa", "dark": "#1d4ed8" },
+      "secondary": { "main": "#0f766e", "light": "#14b8a6", "dark": "#0d5c56" },
+      "info": { "main": "#0284c7", "light": "#38bdf8", "dark": "#0369a1" },
+      "warning": { "main": "#d97706", "light": "#fbbf24", "dark": "#b45309" },
+      "background": { "default": "#f1f5f9", "paper": "#ffffff" },
+      "divider": "#e2e8f0",
+      "text": { "primary": "#0f172a", "secondary": "#64748b" },
+      "action": {
+        "hover": "rgba(15, 23, 42, 0.04)",
+        "selected": "rgba(37, 99, 235, 0.08)"
+      },
+      "inputHoverBorder": "#cbd5e1"
+    },
+    "dark": {
+      "primary": { "main": "#60a5fa", "light": "#93c5fd", "dark": "#2563eb" },
+      "secondary": { "main": "#2dd4bf", "light": "#5eead4", "dark": "#14b8a6" },
+      "info": { "main": "#38bdf8", "light": "#7dd3fc", "dark": "#0284c7" },
+      "warning": { "main": "#f59e0b", "light": "#fbbf24", "dark": "#d97706" },
+      "background": { "default": "#0f172a", "paper": "#1e293b" },
+      "divider": "#334155",
+      "text": { "primary": "#f8fafc", "secondary": "#94a3b8" },
+      "action": {
+        "hover": "rgba(248, 250, 252, 0.06)",
+        "selected": "rgba(96, 165, 250, 0.16)"
+      },
+      "inputHoverBorder": "#475569"
+    }
+  },
+  "atmosphere": {
+    "light": "radial-gradient(1200px 600px at 10% -10%, rgba(37, 99, 235, 0.07), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(15, 118, 110, 0.05), transparent 50%)",
+    "dark": "radial-gradient(1000px 520px at 8% -12%, rgba(96, 165, 250, 0.12), transparent 55%), radial-gradient(800px 480px at 100% 0%, rgba(45, 212, 191, 0.08), transparent 50%)",
+    "backgroundAttachment": "fixed"
+  },
+  "components": {
+    "outlinedPaper": {
+      "borderColor": "divider",
+      "shadowToken": "card"
+    },
+    "filterSection": {
+      "border": 1,
+      "borderColor": "divider",
+      "borderRadiusThemeUnits": 1,
+      "paddingThemeUnits": 1.25,
+      "titleVariant": "body2",
+      "titleFontWeight": 600,
+      "descriptionVariant": "caption"
+    },
+    "button": {
+      "disableElevation": true,
+      "borderRadius": 8,
+      "outlinedFillAlpha": { "light": 0.7, "dark": 0.4 }
+    },
+    "outlinedInput": {
+      "fillAlpha": { "light": 0.8, "dark": 0.35 }
+    },
+    "dialog": {
+      "borderRadius": 12,
+      "border": "1px solid divider"
+    },
+    "tableContainer": {
+      "borderRadiusToken": "shape.borderRadius",
+      "border": "1px solid divider",
+      "shadowToken": "card"
+    }
+  },
+  "domain": {
+    "comment": "Product-specific; omit when seeding a unrelated UI.",
+    "tooltipSurface": {
+      "light": {
+        "bgcolor": "#27272a",
+        "color": "#fafafa",
+        "mutedColor": "#d4d4d8",
+        "borderColor": "#3f3f46"
+      },
+      "dark": {
+        "bgcolor": "#3f3f46",
+        "color": "#fafafa",
+        "mutedColor": "#d4d4d8",
+        "borderColor": "#52525b"
+      }
+    },
+    "gearHintAlphas": {
+      "bis": {
+        "light": [0, 0.22, 0.32, 0.44],
+        "dark": [0, 0.26, 0.38, 0.5]
+      },
+      "ilvl": {
+        "light": [0, 0.18, 0.28, 0.4],
+        "dark": [0, 0.22, 0.34, 0.46]
+      }
+    },
+    "itemLevelTier": {
+      "thresholds": [277, 264, 258, 251, 245, 232, 226, 219, 213, 200],
+      "colorsLight": [
+        "#64748b",
+        "#15803d",
+        "#16a34a",
+        "#0891b2",
+        "#0284c7",
+        "#2563eb",
+        "#4338ca",
+        "#7c3aed",
+        "#9333ea",
+        "#c2410c",
+        "#b91c1c"
+      ],
+      "colorsDark": [
+        "#a1a1aa",
+        "#4ade80",
+        "#86efac",
+        "#22d3ee",
+        "#38bdf8",
+        "#60a5fa",
+        "#818cf8",
+        "#a78bfa",
+        "#c084fc",
+        "#fb923c",
+        "#f87171"
+      ],
+      "unknownItem": { "light": "#7c3aed", "dark": "#c084fc" }
+    },
+    "panelMaxWidthsPx": {
+      "narrow": 480,
+      "dataControls": 680,
+      "wide": 1280,
+      "unitGrid": 1920
+    }
+  }
+}
