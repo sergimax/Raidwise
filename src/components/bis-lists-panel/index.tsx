@@ -93,12 +93,19 @@ const bisClassSpecSelectSx = {
 
 const bisOverflowVisibleContentSx = { overflow: "visible" } as const;
 
+/** Scroll lives on an inner box (with hide-on-scroll); section content stays visible. */
 const bisItemsContentSx = {
+  overflow: "visible",
+} as const;
+
+const bisItemsScrollSx = {
   maxHeight: {
     xs: BIS_ITEMS_CONTENT_MAX_HEIGHT_XS_PX,
     md: getBisItemsContentMaxHeight(),
   },
   overflowY: "auto",
+  pr: 0.5,
+  minWidth: 0,
 } as const;
 
 const bisListsContentSx = {
@@ -353,7 +360,11 @@ export function BisListsPanel() {
   );
 
   const slotEditor = slotDrafts.length === 0 ? null : (
-    <Box sx={{ pr: 0.5, minWidth: 0 }}>
+    <Box
+      sx={bisItemsScrollSx}
+      onScroll={hideExternalWowTooltips}
+      onMouseLeave={hideExternalWowTooltips}
+    >
       <Table
         size="small"
         sx={{
