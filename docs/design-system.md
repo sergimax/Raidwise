@@ -109,7 +109,10 @@ Action:
 | Control | `8` | Buttons, icon buttons, tooltips |
 | Dialog | `12` | Dialog paper |
 | Filter / step card | `8` (`borderRadius: 1` in theme spacing ≈ 8px) | `ExportFilterSection` |
+| Inline mention chip | `8` | Intro feature chips, edit-icon mention |
+| Game / slot icon thumb | `4` | Class, spec, raid, gear-slot, emblem thumbs |
 | Scrollbar thumb | `999` (pill) | WebKit thumb only |
+| Legend / role dot | `50%` | Circular swatches only |
 
 MUI `borderRadius: 1` in `sx` = **8px** when theme spacing is 8.
 
@@ -145,9 +148,11 @@ Keep shadows soft and slate-tinted (light) or black (dark).
 | Token | Light | Dark |
 | --- | --- | --- |
 | Card / outlined paper / table | `0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06)` | `0 1px 2px rgba(0, 0, 0, 0.35)` |
+| Inline mention (micro) | `0 1px 1px rgba(15, 23, 42, 0.04)` | `0 1px 1px rgba(0, 0, 0, 0.25)` |
 | Menu | `0 8px 24px rgba(15, 23, 42, 0.12)` | `0 8px 24px rgba(0, 0, 0, 0.45)` |
 | Tooltip | MUI `shadows[8]` | MUI `shadows[12]` |
 | Paper default | `backgroundImage: none` | (no gradient overlay on elevation) |
+| Sticky column edge | `1px 0 0 rgba(0,0,0,0.08)` | (table pin separator; layout-only) |
 
 ---
 
@@ -173,11 +178,12 @@ system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Ari
 ### Recipes
 
 1. **Toolbar shell** — `Paper variant="outlined"`, padding `{ xs: 1.5, sm: 2 }`, header row = title + close (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
-2. **Numbered step** — `ExportFilterSection` with `step`, `title`, optional `titleMark` (`(optional)`), `description`, children. Content overflow often `visible` so selects/autocomplete aren’t clipped.
+2. **Numbered step** — Always use `ExportFilterSection` (`step`, `title`, optional `titleMark` / `description`). Do not add a second step-chrome component. Content overflow often `visible` so selects/autocomplete aren’t clipped.
 3. **Field density** — Prefer `size="small"` on TextField / Select / FormControl in add forms.
 4. **Stack rhythm** — Outer form / panel stacks use `spacing={1.5}`; fields inside a step often `1`–`1.25`.
 5. **Errors** — Field-level `helperText` + `error` when possible; otherwise `FormErrorMessage` under actions.
 6. **Actions** — `FormActionsRow` for submit; no Cancel in toolbar forms (close via panel ✕).
+7. **Edit dialogs** — Character / raid edit dialogs stay as flat field stacks (not numbered toolbar steps). Still use theme inputs, `divider` borders, and dialog paper chrome from the theme.
 
 ### Inputs (theme)
 
@@ -253,6 +259,14 @@ Item links on tooltip backgrounds always use the **dark** ilvl color set (`TOOLT
 WotLK GearScore-style tiers in `src/utils/item-level-tier.ts` (11 colors light + dark). Unknown item purple: light `#7c3aed`, dark `#c084fc`.
 
 Item links: weight `600`, dotted underline → solid on hover.
+
+### Completion chips
+
+Progress fill spectrum in `src/utils/completion-chip-color.ts` (gray → red … green). Contrast-tuned for small labels; not the same stops as ilvl tiers. Documented in `design-tokens.json` → `domain.completionChips`.
+
+### Character name on tinted cells
+
+Optional dark text-shadow for readability on colored class cells (`src/utils/character-display.ts`) — domain-only, do not reuse as generic elevation.
 
 ---
 

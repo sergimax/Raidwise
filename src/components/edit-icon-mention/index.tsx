@@ -19,7 +19,7 @@ export function EditIconMention({ ariaLabel }: EditIconMentionProps) {
         width: 22,
         height: 22,
         mx: 0.25,
-        borderRadius: "6px",
+        borderRadius: "8px",
         border: 1,
         borderColor: "divider",
         bgcolor: alpha(
