@@ -52,6 +52,11 @@ import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import { SpecOptionLabel } from "../spec-option-label/index.tsx";
 import { BisCosmeticSlotRow } from "./bis-cosmetic-slot-row.tsx";
+import {
+  BIS_ITEMS_CONTENT_MAX_HEIGHT_XS_PX,
+  getBisItemsContentMaxHeight,
+  getBisListsContentMaxHeight,
+} from "./constants.ts";
 
 function localizeBisStorageMessage(message: string, t: TranslateFn): string {
   if (message === BIS_LISTS_STORAGE_QUOTA_MESSAGE) {
@@ -73,6 +78,20 @@ const bisClassSpecSelectSx = {
 } as const;
 
 const bisOverflowVisibleContentSx = { overflow: "visible" } as const;
+
+const bisItemsContentSx = {
+  maxHeight: {
+    xs: BIS_ITEMS_CONTENT_MAX_HEIGHT_XS_PX,
+    md: getBisItemsContentMaxHeight(),
+  },
+  overflowY: "auto",
+} as const;
+
+const bisListsContentSx = {
+  maxHeight: getBisListsContentMaxHeight(),
+  overflowY: "auto",
+  pr: 0.25,
+} as const;
 
 export function BisListsPanel() {
   const { t, locale } = useTranslation();
@@ -316,14 +335,7 @@ export function BisListsPanel() {
   );
 
   const slotEditor = slotDrafts.length === 0 ? null : (
-    <Box
-      sx={{
-        maxHeight: { xs: 420, md: 560 },
-        overflowY: "auto",
-        pr: 0.5,
-        minWidth: 0,
-      }}
-    >
+    <Box sx={{ pr: 0.5, minWidth: 0 }}>
       <Table
         size="small"
         sx={{
@@ -464,7 +476,7 @@ export function BisListsPanel() {
             step={2}
             title={t("bisPanel.lists")}
             description={listsDescription}
-            contentSx={bisOverflowVisibleContentSx}
+            contentSx={bisListsContentSx}
           >
             {isCustomListCreation ? (
               <Typography variant="caption" color="text.secondary">
@@ -517,6 +529,7 @@ export function BisListsPanel() {
           title={t("bisPanel.items")}
           description={itemsDescription}
           titleActions={itemsTitleActions}
+          contentSx={bisItemsContentSx}
         >
           {slotEditor}
         </ExportFilterSection>
