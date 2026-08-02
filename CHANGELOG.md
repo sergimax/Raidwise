@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.55.0] - 2026-08-03
+
+### Added
+
+- **BiS Items header:** Shows the active list name under the Items step title.
+- **Soft pick copy:** Pasteable soft-reserve call starts with `Character:` then `- Item (Boss) xN` lines.
+- **Sticky table header:** With no toolbar panel open, the dungeon table header stays under the sticky app bar while scrolling the page.
+
+### Changed
+
+- **Add raids from template:** Default template list focuses on current-tier raids (VoA, ToC 25, ICC, RS 25); older WotLK entries removed from the one-shot template.
+
 ## [1.54.0] - 2026-08-02
 
 ### Added

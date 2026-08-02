@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-1.54.0-purple)
+![App version](https://img.shields.io/badge/App_version-1.55.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -30,6 +30,7 @@ Reset one character from the table header, or everyone from the **Data** panel.
 
 Sort and search raids (name, size, mode — EN/RU, e.g. `ICC25H` / `ЦЛК25хм`).
 Compact layout on small screens.
+With no toolbar panel open, the table header stays under the app bar while scrolling.
 
 ### Data controls
 
@@ -44,13 +45,13 @@ Filters: min GS, role, specs.
 ### Soft pick for a raid
 
 Soft reserves for one character + spec on BiS upgrades from filtered raids.
-Session-only; pasteable call lines.
+Session-only; pasteable call lines start with the character name.
 
 ### BiS builds
 
 Built-in presets per spec (Kingdom with slot variants first, then Titans/community); local copies are editable and used for gear-choice hints.
 Slot layout matches the in-game paper doll; alternative items stack under the primary choice.
-Custom lists support clear-slot / clear-all; Items and Lists scroll within fixed height budgets.
+Custom lists support clear-slot / clear-all; Items shows the active list name and scrolls with Lists within fixed height budgets.
 
 ### Gear hints
 
