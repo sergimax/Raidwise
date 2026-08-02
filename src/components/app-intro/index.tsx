@@ -1,5 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import type { MessageKey } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { AppIntroProps } from "./types.ts";
@@ -52,19 +52,13 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
   }
 
   return (
-    <Box
-      sx={(theme) => ({
+    <Paper
+      variant="outlined"
+      sx={{
         px: { xs: 1.75, sm: 2.25 },
         py: { xs: 1.75, sm: 2.25 },
         borderRadius: 1,
-        border: 1,
-        borderColor: "divider",
-        bgcolor: "background.paper",
-        boxShadow:
-          theme.palette.mode === "light"
-            ? "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06)"
-            : "0 1px 2px rgba(0, 0, 0, 0.35)",
-      })}
+      }}
     >
       <Stack spacing={1.5}>
         <Box
@@ -178,6 +172,6 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
           {t("intro.saveNote")}
         </Typography>
       </Stack>
-    </Box>
+    </Paper>
   );
 }
