@@ -44,10 +44,24 @@ describe("BisListsPanel", () => {
   it("shows slot items for the default Unholy DK preset on open", () => {
     renderWithTheme(<BisListsPanel />);
 
-    expect(screen.getByText(/Kingdom\. With variants/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Kingdom\. With variants/i).length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText(/Head/i)).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /Sanctified Scourgelord Helmet/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the selected list name under the Items step header", () => {
+    seedLocalUnholyPreset("Editable local");
+    renderWithTheme(<BisListsPanel />);
+
+    const itemsHeading = screen.getByText((_, element) => {
+      return element?.tagName === "P" && element.textContent === "3.Items";
+    });
+    const itemsSection = itemsHeading.closest(".MuiBox-root");
+    expect(itemsSection).not.toBeNull();
+    expect(
+      within(itemsSection as HTMLElement).getByText("Editable local"),
     ).toBeInTheDocument();
   });
 
@@ -81,7 +95,7 @@ describe("BisListsPanel", () => {
     await user.click(screen.getByRole("combobox", { name: /^Spec/ }));
     await user.click(screen.getByRole("option", { name: /Arms/ }));
 
-    expect(screen.getByText(/Arms \(icy-veins/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Arms \(icy-veins/i).length).toBeGreaterThanOrEqual(2);
     expect(screen.getByRole("link", { name: /Shadowmourne/i })).toBeInTheDocument();
   });
 

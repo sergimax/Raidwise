@@ -9,6 +9,8 @@ type ExportFilterSectionProps = {
   /** When set, shown muted after the title as `(…)` — e.g. optional filters. */
   titleMark?: string;
   titleActions?: ReactNode;
+  /** Optional line under the title row (e.g. active BiS list name). */
+  subtitle?: string;
   description?: string;
   children: ReactNode;
   sx?: SxProps<Theme>;
@@ -20,6 +22,7 @@ export function ExportFilterSection({
   title,
   titleMark,
   titleActions,
+  subtitle,
   description,
   children,
   sx,
@@ -78,13 +81,31 @@ export function ExportFilterSection({
           </Box>
         ) : null}
       </Stack>
+      {subtitle ? (
+        <Typography
+          variant="body2"
+          sx={{
+            display: "block",
+            mt: 0.35,
+            fontWeight: 600,
+            lineHeight: 1.35,
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}
+        >
+          {subtitle}
+        </Typography>
+      ) : null}
       {description ? (
         <Typography
           variant="caption"
           color="text.secondary"
           sx={{
             display: "block",
-            mt: 0.25,
+            mt: subtitle ? 0.15 : 0.25,
             mb: 0.75,
             lineHeight: 1.35,
             flexShrink: 0,
