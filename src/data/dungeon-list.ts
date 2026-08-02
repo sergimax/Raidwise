@@ -9,20 +9,10 @@ const row = createTemplateDungeon;
 
 /** Default WotLK raid rows for “Add raids from template”. */
 export const DungeonList: Array<Dungeon> = [
-  row({ raidKey: "naxxramas", size: 10, difficulty: N, itemLevel: [200] }),
-  row({ raidKey: "naxxramas", size: 25, difficulty: N, itemLevel: [213] }),
-  row({ raidKey: "obsidianSanctum", size: 10, difficulty: N, itemLevel: [200, 213] }),
-  row({ raidKey: "obsidianSanctum", size: 25, difficulty: N, itemLevel: [213, 226] }),
-  row({ raidKey: "onyxiasLair", size: 10, difficulty: N, itemLevel: [232] }),
-  row({ raidKey: "onyxiasLair", size: 25, difficulty: N, itemLevel: [245] }),
   row({ raidKey: "vaultOfArchavon", size: 10, difficulty: N, itemLevel: [232, 251] }),
   row({ raidKey: "vaultOfArchavon", size: 25, difficulty: N, itemLevel: [245, 264] }),
-  row({ raidKey: "trialOfTheCrusader", size: 10, difficulty: N, itemLevel: [232] }),
-  row({ raidKey: "trialOfTheCrusader", size: 10, difficulty: H, itemLevel: [245] }),
   row({ raidKey: "trialOfTheCrusader", size: 25, difficulty: N, itemLevel: [245] }),
   row({ raidKey: "trialOfTheCrusader", size: 25, difficulty: H, itemLevel: [258] }),
-  row({ raidKey: "ulduar", size: 10, difficulty: N, itemLevel: [219, 232] }),
-  row({ raidKey: "ulduar", size: 25, difficulty: N, itemLevel: [226, 239] }),
   row({
     raidKey: "icecrownCitadel",
     size: 10,
@@ -49,20 +39,6 @@ export const DungeonList: Array<Dungeon> = [
     size: 25,
     difficulty: H,
     itemLevel: [277, 284],
-    withEmblem: true,
-  }),
-  row({
-    raidKey: "rubySanctum",
-    size: 10,
-    difficulty: N,
-    itemLevel: [258],
-    withEmblem: true,
-  }),
-  row({
-    raidKey: "rubySanctum",
-    size: 10,
-    difficulty: H,
-    itemLevel: [271],
     withEmblem: true,
   }),
   row({
