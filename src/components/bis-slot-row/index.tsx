@@ -1,5 +1,6 @@
-import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
@@ -54,6 +55,7 @@ export type BisSlotRowProps = {
   onConfirm: (slotIndex: number) => void;
   onStartEdit: (slot: number) => void;
   onCancelEdit: (slotIndex: number) => void;
+  onClearSlot: (slotIndex: number) => void;
 };
 
 function areBisSlotRowPropsEqual(
@@ -71,7 +73,8 @@ function areBisSlotRowPropsEqual(
     previous.onItemsTextBlur === next.onItemsTextBlur &&
     previous.onConfirm === next.onConfirm &&
     previous.onStartEdit === next.onStartEdit &&
-    previous.onCancelEdit === next.onCancelEdit
+    previous.onCancelEdit === next.onCancelEdit &&
+    previous.onClearSlot === next.onClearSlot
   );
 }
 
@@ -87,6 +90,7 @@ export const BisSlotRow = memo(function BisSlotRow({
   onConfirm,
   onStartEdit,
   onCancelEdit,
+  onClearSlot,
 }: BisSlotRowProps) {
   const { t, locale } = useTranslation();
   const slotLabel = getLocalizedGearSlotLabel(slotDraft.slot, locale);
@@ -108,6 +112,10 @@ export const BisSlotRow = memo(function BisSlotRow({
       ).error === undefined
     );
   }, [equipContext, isEditing, slotDraft, validationError]);
+
+  const canClearSlot =
+    isEditing &&
+    (slotDraft.itemIds.length > 0 || slotDraft.itemsText.trim() !== "");
 
   useEffect(() => {
     if (isEditing) {
@@ -244,6 +252,20 @@ export const BisSlotRow = memo(function BisSlotRow({
             >
               <CloseIcon fontSize="small" />
             </IconButton>
+          </Tooltip>
+          <Tooltip title={t("bisPanel.clearSlot")}>
+            <span>
+              <IconButton
+                size="small"
+                aria-label={t("bisPanel.clearSlotAria", { slot: slotLabel })}
+                onClick={() => {
+                  onClearSlot(slotIndex);
+                }}
+                disabled={!canClearSlot}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title={t("bisPanel.confirmItem")}>
             <span>

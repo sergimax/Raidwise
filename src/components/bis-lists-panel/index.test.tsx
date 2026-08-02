@@ -123,6 +123,56 @@ describe("BisListsPanel", () => {
     expect(screen.getByRole("button", { name: /Save list/i })).toBeDisabled();
   });
 
+  it("clears one slot while editing a custom list", async () => {
+    const user = userEvent.setup();
+    seedLocalUnholyPreset("Editable local");
+    renderWithTheme(<BisListsPanel />);
+
+    expect(
+      screen.getByRole("link", { name: /Sanctified Scourgelord Helmet/i }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Edit Head item/i }));
+    await user.click(screen.getByRole("button", { name: /Clear Head item/i }));
+
+    expect(
+      screen.queryByRole("link", { name: /Sanctified Scourgelord Helmet/i }),
+    ).not.toBeInTheDocument();
+
+    const storageKey = specBisStorageKey(ClassName.DeathKnight, "Unholy");
+    await waitFor(() => {
+      const persisted = JSON.parse(localStorage.getItem(BIS_LISTS_STORAGE_KEY)!);
+      expect(persisted.entries[storageKey].presets[0].slots).toEqual([]);
+    });
+  });
+
+  it("clears all slots on a custom list", async () => {
+    const user = userEvent.setup();
+    seedLocalUnholyPreset("Editable local");
+    renderWithTheme(<BisListsPanel />);
+
+    await user.click(screen.getByRole("button", { name: /Clear all BiS list slots/i }));
+
+    expect(
+      screen.queryByRole("link", { name: /Sanctified Scourgelord Helmet/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Clear all BiS list slots/i })).toBeDisabled();
+
+    const storageKey = specBisStorageKey(ClassName.DeathKnight, "Unholy");
+    await waitFor(() => {
+      const persisted = JSON.parse(localStorage.getItem(BIS_LISTS_STORAGE_KEY)!);
+      expect(persisted.entries[storageKey].presets[0].slots).toEqual([]);
+    });
+  });
+
+  it("hides clear-all for built-in lists", () => {
+    renderWithTheme(<BisListsPanel />);
+
+    expect(
+      screen.queryByRole("button", { name: /Clear all BiS list slots/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("shows validation errors for items in the wrong slot", async () => {
     const user = userEvent.setup();
     seedLocalUnholyPreset("Editable local");
@@ -134,7 +184,9 @@ describe("BisListsPanel", () => {
     await user.type(headInput, "51132");
     await user.tab();
 
-    expect(screen.getByText(/Hands/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/belongs in Hands, not Head/i),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Confirm Head item/i }),
     ).toBeDisabled();

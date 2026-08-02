@@ -85,6 +85,19 @@ export function useBisListsEditorState({
     [equipContext],
   );
 
+  const persistLocalDraftSlots = useCallback(
+    (nextDrafts: BisSlotDraft[]) => {
+      if (selectedPreset && isLocalBisPreset(selectedPreset)) {
+        bisLists.updateSelectedLocalPresetSlots(
+          className,
+          activeSpec,
+          confirmedSlotDraftsToPresetSlots(nextDrafts),
+        );
+      }
+    },
+    [activeSpec, bisLists, className, selectedPreset],
+  );
+
   const handleConfirmSlot = useCallback(
     (slotIndex: number) => {
       const slotDraft = slotDrafts[slotIndex];
@@ -134,16 +147,9 @@ export function useBisListsEditorState({
         return nextEditing;
       });
       setError("");
-
-      if (selectedPreset && isLocalBisPreset(selectedPreset)) {
-        bisLists.updateSelectedLocalPresetSlots(
-          className,
-          activeSpec,
-          confirmedSlotDraftsToPresetSlots(nextDrafts),
-        );
-      }
+      persistLocalDraftSlots(nextDrafts);
     },
-    [activeSpec, bisLists, className, equipContext, selectedPreset, slotDrafts],
+    [equipContext, persistLocalDraftSlots, slotDrafts],
   );
 
   const handleStartEditSlot = useCallback(
@@ -188,6 +194,64 @@ export function useBisListsEditorState({
       );
     });
   }, []);
+
+  const handleClearSlot = useCallback(
+    (slotIndex: number) => {
+      if (isBuiltInPresetSelected) {
+        return;
+      }
+
+      const slotDraft = slotDrafts[slotIndex];
+      if (!slotDraft) {
+        return;
+      }
+
+      const nextDrafts = slotDrafts.map((entry, entryIndex) =>
+        entryIndex === slotIndex
+          ? {
+              ...entry,
+              itemsText: "",
+              confirmedText: "",
+              itemIds: [],
+            }
+          : entry,
+      );
+
+      setSlotDrafts(nextDrafts);
+      setSlotErrors((previousErrors) => {
+        if (!(slotDraft.slot in previousErrors)) {
+          return previousErrors;
+        }
+        const nextErrors = { ...previousErrors };
+        delete nextErrors[slotDraft.slot];
+        return nextErrors;
+      });
+      setEditingSlots((previousEditing) => {
+        if (!(slotDraft.slot in previousEditing)) {
+          return previousEditing;
+        }
+        const nextEditing = { ...previousEditing };
+        delete nextEditing[slotDraft.slot];
+        return nextEditing;
+      });
+      setError("");
+      persistLocalDraftSlots(nextDrafts);
+    },
+    [isBuiltInPresetSelected, persistLocalDraftSlots, slotDrafts],
+  );
+
+  const handleClearAllSlots = useCallback(() => {
+    if (isBuiltInPresetSelected) {
+      return;
+    }
+
+    const nextDrafts = createEmptySlotDrafts();
+    setSlotDrafts(nextDrafts);
+    setSlotErrors({});
+    setEditingSlots({});
+    setError("");
+    persistLocalDraftSlots(nextDrafts);
+  }, [isBuiltInPresetSelected, persistLocalDraftSlots]);
 
   const handleSaveList = useCallback(() => {
     if (hasUnconfirmedSlots) {
@@ -266,6 +330,8 @@ export function useBisListsEditorState({
       handleConfirmSlot,
       handleStartEditSlot,
       handleCancelEditSlot,
+      handleClearSlot,
+      handleClearAllSlots,
       handleSaveList,
       handleItemsTextChange,
       handleItemsTextBlur,
@@ -275,6 +341,8 @@ export function useBisListsEditorState({
       editingSlots,
       error,
       handleCancelEditSlot,
+      handleClearAllSlots,
+      handleClearSlot,
       handleConfirmSlot,
       handleItemsTextBlur,
       handleItemsTextChange,
