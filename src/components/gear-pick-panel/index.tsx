@@ -182,8 +182,12 @@ export function GearPickPanel({
   }, [assignmentsByItemId, gearPickItems, itemLocale]);
 
   const copyText = useMemo(
-    () => formatGearPickCopyText({ items: copyItems }),
-    [copyItems],
+    () =>
+      formatGearPickCopyText({
+        characterName: selectedCharacter?.name,
+        items: copyItems,
+      }),
+    [copyItems, selectedCharacter?.name],
   );
 
   const handleRulesChange = (next: SoftRollRules) => {
