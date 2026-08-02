@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-1.53.1-purple)
+![App version](https://img.shields.io/badge/App_version-1.54.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -17,8 +17,9 @@ Toolbar panels are mutually exclusive (only one open at a time).
 
 ### Characters & dungeons
 
-Add manually or load the WotLK raid template when the list is empty.
+Add manually (**Add character** / **Add raid**, stepped forms) or load the WotLK raid template when the list is empty.
 Edit specs, WowSims gear, also-owned items (bags / other spec / vendors for hints), and raid metadata later.
+Header **info** toggles a short usage-help intro (scenarios for CDs, gear planning, or BiS-only).
 
 ### Cooldown toggles
 
@@ -49,6 +50,7 @@ Session-only; pasteable call lines.
 
 Built-in presets per spec (Kingdom with slot variants first, then Titans/community); local copies are editable and used for gear-choice hints.
 Slot layout matches the in-game paper doll; alternative items stack under the primary choice.
+Custom lists support clear-slot / clear-all; Items and Lists scroll within fixed height budgets.
 
 ### Gear hints
 
@@ -75,7 +77,7 @@ Header links to GitHub and [sergimax.ru](https://sergimax.ru).
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
-On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in parallel (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
+On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in parallel, then **Release files** (version bump + changelog/README badges when releasing) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
 
 **Layout:**
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
