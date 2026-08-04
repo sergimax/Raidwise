@@ -135,7 +135,7 @@ src/
 
 scripts/ # build-wow-data.mjs, tier-set-token-names.mjs, bis-preset-format.mjs, comment-bis-presets.mjs, generate-bis-presets.mjs, bis-resolve-titans.mjs, bis-resolve-mix.mjs, download-gear-slot-icons.mjs, download-raid-icons.mjs, bis-list-sources.md, bis-list-mix.md, wow-item-gear-slots.mjs, wowsims-db.json
 
-docs/ # roadmap.md (future feature ideas; stat-aware gear hints)
+docs/ # roadmap.md; design/ (design-system, design-tokens, theme-super)
 ```
 
 Colocate tests as `*.test.ts` / `*.test.tsx` beside the module under test; use `src/test/fixtures.ts` for sample characters/dungeons/toggles and `renderWithTheme` for MUI component tests.
