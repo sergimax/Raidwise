@@ -2,13 +2,17 @@
   "$schemaComment": "Portable design tokens for my-raid-cds — chrome + domain overlays.",
   "meta": {
     "name": "my-raid-cds",
-    "version": "2.0.0",
+    "version": "2.0.1",
+    "versionNote": "Tracks app package.json when design tokens change with a release; not an independent semver stream.",
     "sources": [
       "src/theme/create-app-theme.ts",
       "src/theme/links.css",
       "src/theme/tooltip-surface.ts",
       "src/index.css",
-      "src/App.css"
+      "src/App.css",
+      "src/utils/completion-chip-color.ts",
+      "src/utils/character-display.ts",
+      "src/components/export-panel/export-filter-section.tsx"
     ],
     "muiSpacingPx": 8,
     "bilingualFonts": {
@@ -229,19 +233,60 @@
       "shadowToken": "card"
     },
     "filterSection": {
+      "source": "src/components/export-panel/export-filter-section.tsx",
       "border": 1,
       "borderColor": "divider",
+      "borderLeft": "3px solid var(--brand)",
       "borderRadiusThemeUnits": 1,
       "paddingThemeUnits": 1.25,
       "titleVariant": "body2",
-      "titleFontWeight": 600,
+      "titleFontFamily": "var(--font-display)",
+      "titleFontWeight": 700,
+      "titleColor": "var(--brand)",
+      "stepBadge": {
+        "minWidth": 22,
+        "height": 22,
+        "borderRadius": "8px",
+        "bgcolor": "var(--brand-soft)",
+        "color": "var(--brand)",
+        "border": "1px solid color-mix(in srgb, var(--brand) 40%, transparent)",
+        "fontWeight": 700,
+        "fontSize": "0.75rem"
+      },
       "descriptionVariant": "caption"
     },
     "button": {
       "disableElevation": true,
       "borderRadius": 8,
       "primaryIsInverseInk": true,
-      "outlinedFillAlpha": { "light": 0.7, "dark": 0.4 }
+      "outlinedFillAlpha": { "light": 0.7, "dark": 0.4 },
+      "outlinedHoverFillAlpha": { "light": 0.08, "dark": 0.14 },
+      "containedInheritActive": {
+        "note": "Toolbar selected panel — brand soft fill, not ink alpha",
+        "backgroundAlpha": { "light": 0.14, "dark": 0.24 },
+        "borderAlpha": { "light": 0.4, "dark": 0.5 },
+        "hoverBackgroundAlpha": { "light": 0.22, "dark": 0.34 }
+      }
+    },
+    "switch": {
+      "source": "src/theme/create-app-theme.ts MuiSwitch",
+      "off": {
+        "thumb": { "light": "#b0afa9", "dark": "#5c5c5c" },
+        "track": { "light": "chipBg", "dark": "#2e2e2e" }
+      },
+      "on": {
+        "light": {
+          "thumb": "#86efac",
+          "thumbRing": "0 0 0 1px #166534",
+          "track": "ok (#166534)"
+        },
+        "dark": {
+          "thumb": "#6ee7a0",
+          "thumbShadow": "0 1px 2px rgba(0,0,0,0.35)",
+          "track": "rgba(134, 239, 172, 0.55)",
+          "note": "No hard glow ring"
+        }
+      }
     },
     "outlinedInput": {
       "fillAlpha": { "light": 0.8, "dark": 0.35 }
@@ -258,6 +303,14 @@
   },
   "domain": {
     "comment": "Product-specific; omit when seeding a unrelated UI.",
+    "classColorChips": {
+      "source": "src/utils/character-display.ts",
+      "bgBrightness": 0.78,
+      "fgOnLightBg": "#0a0a0a",
+      "fgOnDarkBg": "#fafafa",
+      "borderRadiusPx": 4,
+      "note": "Fill = darkened WoW class hex; FG = higher WCAG contrast of black vs near-white"
+    },
     "tooltipSurface": {
       "light": {
         "bgcolor": "#27272a",
