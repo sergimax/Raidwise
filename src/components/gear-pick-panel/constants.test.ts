@@ -82,6 +82,6 @@ describe("getGearPickGridTemplateRows", () => {
 
 describe("GEAR_PICK_SIDE_BY_SIDE_MIN_PX", () => {
   it("matches Character pick wide breakpoint", () => {
-    expect(GEAR_PICK_SIDE_BY_SIDE_MIN_PX).toBe(1600);
+    expect(GEAR_PICK_SIDE_BY_SIDE_MIN_PX).toBe(1680);
   });
 });

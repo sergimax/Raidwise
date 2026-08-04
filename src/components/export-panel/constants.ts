@@ -1,5 +1,5 @@
 /** Min viewport width for filter grid left + result lines right. */
-export const EXPORT_PANEL_SIDE_BY_SIDE_MIN_PX = 1600;
+export const EXPORT_PANEL_SIDE_BY_SIDE_MIN_PX = 1680;
 
 /** `matchMedia` / `useMediaQuery` query (no `@media` prefix). */
 export const EXPORT_PANEL_SIDE_BY_SIDE_MQ = `(min-width:${EXPORT_PANEL_SIDE_BY_SIDE_MIN_PX}px)`;

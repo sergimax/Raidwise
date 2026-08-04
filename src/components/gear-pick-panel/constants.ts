@@ -9,7 +9,7 @@ import {
 /** Pixel gap between Soft pick grid tracks (`gap: 1.5` → 12px at default spacing). */
 const GEAR_PICK_GRID_GAP_PX = EXPORT_FILTER_GRID_GAP_SPACING * 8;
 
-/** Reuses Character pick side-by-side breakpoint (≥1600px) for the wide Soft pick layout. */
+/** Reuses Character pick side-by-side breakpoint (≥1680px) for the wide Soft pick layout. */
 export {
   EXPORT_PANEL_SIDE_BY_SIDE_MIN_PX as GEAR_PICK_SIDE_BY_SIDE_MIN_PX,
   EXPORT_PANEL_SIDE_BY_SIDE_MQ as GEAR_PICK_SIDE_BY_SIDE_MQ,
@@ -22,7 +22,7 @@ export {
  * Step order: raid (1) on top; character (2) spans right; rules (3) below raid.
  * - xs: stacked (DOM order)
  * - md: filters + softs; copy 1×2 below
- * - wide (≥1600): filters + softs; copy 1×2 top-right
+ * - wide (≥1680): filters + softs; copy 1×2 top-right
  */
 export type GearPickGridAreaId =
   | "rules"
