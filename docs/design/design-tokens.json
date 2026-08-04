@@ -5,7 +5,6 @@
     "version": "2.0.0",
     "themeId": "super",
     "sources": [
-      "docs/design/theme-super.json",
       "src/theme/create-app-theme.ts",
       "src/theme/links.css",
       "src/theme/tooltip-surface.ts",
