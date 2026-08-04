@@ -64,7 +64,6 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
   const {
     compactTable,
     visiblePinnedColumns,
-    dungeonCount,
     characterCount,
     sortKey,
     sortDirection,
