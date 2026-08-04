@@ -320,20 +320,20 @@
     },
     "completionChips": {
       "source": "src/utils/completion-chip-color.ts",
+      "note": "Derived from createAppTheme palette at runtime (not fixed hex).",
       "gray": {
-        "light": { "backgroundColor": "#9ca3af", "color": "#111827" },
-        "dark": { "backgroundColor": "#52525b", "color": "#fafafa" }
+        "light": { "backgroundColor": "divider (#8a8a8a)", "color": "primaryFg" },
+        "dark": { "backgroundColor": "#3f3f3f", "color": "text.primary" }
       },
       "progressStops": [
-        { "minRatio": 0.001, "backgroundColor": "#dc2626", "color": "#ffffff" },
-        { "minRatio": 0.125, "backgroundColor": "#c2410c", "color": "#ffffff" },
-        { "minRatio": 0.25, "backgroundColor": "#f59e0b", "color": "#422006" },
-        { "minRatio": 0.375, "backgroundColor": "#eab308", "color": "#422006" },
-        { "minRatio": 0.5, "backgroundColor": "#a16207", "color": "#ffffff" },
-        { "minRatio": 0.625, "backgroundColor": "#0369a1", "color": "#ffffff" },
-        { "minRatio": 0.75, "backgroundColor": "#2563eb", "color": "#ffffff" },
-        { "minRatio": 0.875, "backgroundColor": "#0e7490", "color": "#ffffff" },
-        { "minRatio": 1, "backgroundColor": "#15803d", "color": "#ffffff" }
+        { "minRatio": 0.001, "role": "error.main" },
+        { "minRatio": 0.15, "role": "error.dark" },
+        { "minRatio": 0.3, "role": "warning.dark" },
+        { "minRatio": 0.45, "role": "warning.main" },
+        { "minRatio": 0.6, "role": "secondary.main (brand)" },
+        { "minRatio": 0.75, "role": "info.main" },
+        { "minRatio": 0.9, "role": "info.dark" },
+        { "minRatio": 1, "role": "success.main (ok)" }
       ]
     }
   }
