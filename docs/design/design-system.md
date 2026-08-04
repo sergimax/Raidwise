@@ -313,7 +313,7 @@ Item links: weight `600`, dotted underline → solid on hover.
 
 ### Completion chips
 
-Progress fill spectrum in `src/utils/completion-chip-color.ts` (gray → red … green). Contrast-tuned for small labels; not the same stops as ilvl tiers. Documented in `design-tokens.json` → `domain.completionChips`.
+Progress fill in `src/utils/completion-chip-color.ts` from theme palette: muted (`divider` / dark gray) → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). Same family as status / chrome — not the ilvl rainbow.
 
 ### Character name on tinted cells
 

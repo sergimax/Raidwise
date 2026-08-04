@@ -1,43 +1,81 @@
 import type { Theme } from "@mui/material/styles";
+import { appThemeTokens } from "../theme/create-app-theme.ts";
 
 export type CompletionChipFill = {
   backgroundColor: string;
   color: string;
 };
 
-const DARK_TEXT = "#422006";
+type ProgressStop = CompletionChipFill & { minRatio: number };
 
 /**
- * Ratio thresholds: gray (none) → red → orange → amber/yellow → gold → sky → blue → cyan → green.
- * Pairs target WCAG AA contrast (≥4.5:1) for small chip labels.
+ * Theme-aligned progress: muted → danger → brand/warning → info → ok.
+ * Stops use palette tokens so chips match the rest of the chrome.
  */
-const PROGRESS_STOPS: readonly { minRatio: number; backgroundColor: string; color: string }[] =
-  [
-    { minRatio: 0.001, backgroundColor: "#dc2626", color: "#ffffff" },
-    { minRatio: 0.125, backgroundColor: "#c2410c", color: "#ffffff" },
-    { minRatio: 0.25, backgroundColor: "#f59e0b", color: DARK_TEXT },
-    { minRatio: 0.375, backgroundColor: "#eab308", color: DARK_TEXT },
-    { minRatio: 0.5, backgroundColor: "#a16207", color: "#ffffff" },
-    { minRatio: 0.625, backgroundColor: "#0369a1", color: "#ffffff" },
-    { minRatio: 0.75, backgroundColor: "#2563eb", color: "#ffffff" },
-    { minRatio: 0.875, backgroundColor: "#0e7490", color: "#ffffff" },
-    { minRatio: 1, backgroundColor: "#15803d", color: "#ffffff" },
-  ];
+function progressStops(theme: Theme): readonly ProgressStop[] {
+  const { palette } = theme;
+  const isLight = palette.mode === "light";
 
-function grayFill(theme: Theme): CompletionChipFill {
-  return theme.palette.mode === "dark"
-    ? { backgroundColor: "#52525b", color: "#fafafa" }
-    : { backgroundColor: "#9ca3af", color: "#111827" };
+  return [
+    {
+      minRatio: 0.001,
+      backgroundColor: palette.error.main,
+      color: palette.error.contrastText,
+    },
+    {
+      minRatio: 0.15,
+      backgroundColor: palette.error.dark,
+      color: palette.error.contrastText,
+    },
+    {
+      minRatio: 0.3,
+      backgroundColor: palette.warning.dark,
+      color: isLight ? "#ffffff" : palette.primary.contrastText,
+    },
+    {
+      minRatio: 0.45,
+      backgroundColor: palette.warning.main,
+      color: isLight ? appThemeTokens.light.textStrong : appThemeTokens.dark.primaryFg,
+    },
+    {
+      minRatio: 0.6,
+      backgroundColor: palette.secondary.main,
+      color: palette.secondary.contrastText,
+    },
+    {
+      minRatio: 0.75,
+      backgroundColor: palette.info.main,
+      color: isLight ? "#ffffff" : appThemeTokens.dark.primaryFg,
+    },
+    {
+      minRatio: 0.9,
+      backgroundColor: palette.info.dark,
+      color: "#ffffff",
+    },
+    {
+      minRatio: 1,
+      backgroundColor: palette.success.main,
+      color: palette.success.contrastText,
+    },
+  ];
 }
 
-function progressFill(ratio: number): CompletionChipFill {
+function grayFill(theme: Theme): CompletionChipFill {
+  const tokens = appThemeTokens[theme.palette.mode];
+  return theme.palette.mode === "dark"
+    ? { backgroundColor: "#3f3f3f", color: tokens.text }
+    : { backgroundColor: tokens.border, color: tokens.primaryFg };
+}
+
+function progressFill(theme: Theme, ratio: number): CompletionChipFill {
+  const stops = progressStops(theme);
   const clamped = Math.min(Math.max(ratio, 0), 1);
   let fill: CompletionChipFill = {
-    backgroundColor: PROGRESS_STOPS[0].backgroundColor,
-    color: PROGRESS_STOPS[0].color,
+    backgroundColor: stops[0].backgroundColor,
+    color: stops[0].color,
   };
 
-  for (const stop of PROGRESS_STOPS) {
+  for (const stop of stops) {
     if (clamped >= stop.minRatio) {
       fill = { backgroundColor: stop.backgroundColor, color: stop.color };
     }
@@ -46,7 +84,7 @@ function progressFill(ratio: number): CompletionChipFill {
   return fill;
 }
 
-/** Filled chip colors: gray (none) → red … yellow … blue … green (complete). */
+/** Filled chip colors from theme: muted → danger → brand/warning → info → ok. */
 export function completionChipFill(
   completed: number,
   total: number,
@@ -58,11 +96,13 @@ export function completionChipFill(
 
   const ratio = completed / total;
   if (ratio >= 1) {
+    const stops = progressStops(theme);
+    const complete = stops[stops.length - 1];
     return {
-      backgroundColor: PROGRESS_STOPS[PROGRESS_STOPS.length - 1].backgroundColor,
-      color: PROGRESS_STOPS[PROGRESS_STOPS.length - 1].color,
+      backgroundColor: complete.backgroundColor,
+      color: complete.color,
     };
   }
 
-  return progressFill(ratio);
+  return progressFill(theme, ratio);
 }
