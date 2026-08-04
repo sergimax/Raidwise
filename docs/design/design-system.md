@@ -6,8 +6,6 @@ Portable visual tokens and UI recipes used by this app. Use as:
 2. **Import seed** for another project (`docs/design/design-tokens.json` + this file)
 3. **Cross-project alignment** — keep core tokens stable; extend domain layers per app
 
-**Theme contract:** [theme-super.md](./theme-super.md) · [theme-super.json](./theme-super.json) (Super ★)
-
 **Source of truth (code):**
 
 | Layer | Path |
@@ -320,7 +318,7 @@ Optional dark text-shadow for readability on colored class cells (`src/utils/cha
 
 **Core (reuse across projects)**
 
-1. Copy Super tokens from `theme-super.json` / `design-tokens.json`
+1. Copy Super tokens from `design-tokens.json`
 2. Port `createAppTheme` structure (palette: primary=ink, secondary=brand, success=ok, error=danger; fonts; CssBaseline atmosphere; Button / Paper / Table / Dialog / Tooltip / OutlinedInput / Menu)
 3. Wire `data-color-mode` + matching CSS vars before paint
 4. Load Noto Sans + Onest + JetBrains Mono (Cyrillic + Latin)
