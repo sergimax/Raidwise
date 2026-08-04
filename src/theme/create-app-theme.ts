@@ -232,7 +232,9 @@ export function createAppTheme(mode: PaletteMode) {
             backgroundColor: alpha(theme.palette.background.paper, isLight ? 0.7 : 0.4),
             "&:hover": {
               borderColor: tokens.inputHoverBorder,
-              backgroundColor: theme.palette.action.hover,
+              backgroundColor: isLight
+                ? alpha(theme.palette.common.black, 0.08)
+                : alpha(theme.palette.common.white, 0.14),
             },
           }),
         },
@@ -250,16 +252,21 @@ export function createAppTheme(mode: PaletteMode) {
             },
           },
           {
+            // Toolbar / quiet “active panel” — brand soft fill (clearer than ink alpha).
             props: { variant: "contained", color: "inherit" },
             style: ({ theme }) => ({
               backgroundColor: isLight
-                ? alpha(theme.palette.common.black, 0.06)
-                : alpha(theme.palette.common.white, 0.1),
+                ? alpha(tokens.brand, 0.14)
+                : alpha(tokens.brand, 0.24),
               color: theme.palette.text.primary,
+              border: `1px solid ${
+                isLight ? alpha(tokens.brand, 0.4) : alpha(tokens.brand, 0.5)
+              }`,
               "&:hover": {
                 backgroundColor: isLight
-                  ? alpha(theme.palette.common.black, 0.1)
-                  : alpha(theme.palette.common.white, 0.16),
+                  ? alpha(tokens.brand, 0.22)
+                  : alpha(tokens.brand, 0.34),
+                borderColor: tokens.brandBorder,
               },
             }),
           },
