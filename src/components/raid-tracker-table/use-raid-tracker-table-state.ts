@@ -1,7 +1,8 @@
 /**
- * Ephemeral UI state for the raid tracker table: dungeon/character sorting,
+ * Ephemeral UI state for the raid tracker table: dungeon sorting,
  * name search, delete confirmation, responsive pinned-column layout, and
  * derived row data (filtered/sorted dungeons, per-dungeon completion counts).
+ * Character-toggle sort plumbing remains with TODOs (UI control removed).
  */
 import { useCallback, useMemo, useState } from "react";
 import { useCompactLayout } from "../../hooks/use-compact-layout.ts";
@@ -38,6 +39,7 @@ export function useRaidTrackerTableState({
   const characterCount = characters.length;
   const [sortKey, setSortKey] = useState<DungeonSortKey>("itemLevel");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  // TODO: check if character-toggle sort is still needed (UI control removed from header).
   const [characterSortId, setCharacterSortId] = useState<string | null>(null);
   const [characterSortDirection, setCharacterSortDirection] =
     useState<SortDirection>("desc");
@@ -87,6 +89,7 @@ export function useRaidTrackerTableState({
 
   const handleSort = useCallback(
     (nextSortKey: DungeonSortKey) => {
+      // TODO: check if character-toggle sort is still needed (clears latent character sort).
       setCharacterSortId(null);
       if (nextSortKey === sortKey) {
         setSortDirection((previous) => (previous === "asc" ? "desc" : "asc"));
@@ -98,6 +101,7 @@ export function useRaidTrackerTableState({
     [sortKey],
   );
 
+  // TODO: check if character-toggle sort is still needed (no header control wired).
   const handleCharacterSort = useCallback(
     (nextCharacterId: string) => {
       setSortKey("itemLevel");
@@ -132,6 +136,7 @@ export function useRaidTrackerTableState({
   }, [characters, dungeonToggles, dungeons]);
 
   const sortedDungeons = useMemo(() => {
+    // TODO: check if character-toggle sort is still needed (branch unused without UI).
     if (characterSortId) {
       return sortDungeonsByCharacterToggle(
         filteredDungeons,
@@ -164,6 +169,7 @@ export function useRaidTrackerTableState({
       characterCount,
       sortKey,
       sortDirection,
+      // TODO: check if character-toggle sort is still needed (exported but unwired).
       characterSortId,
       characterSortDirection,
       dungeonNameSearch,

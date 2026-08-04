@@ -6,7 +6,6 @@ import {
   IconButton,
   Stack,
   TableCell,
-  TableSortLabel,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -16,38 +15,14 @@ import { formatCharacterDetailsTooltip } from "../../utils/format-character-deta
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
 import { CharacterSpecGearLabel } from "../spec-option-label/index.tsx";
-import type { SortDirection } from "../../utils/sort-dungeons.ts";
 import { CHARACTER_HEADER_CELL_SX } from "./table-layout.ts";
 
 type CharacterHeaderCellProps = {
   character: CharacterRecord;
-  isActiveSort: boolean;
-  sortDirection: SortDirection;
-  onSort: () => void;
   onResetCharacterToggles: (characterId: string) => void;
   onEditCharacter: (characterId: string) => void;
   onDeleteCharacter: (characterId: string) => void;
 };
-
-/** Inactive sort arrow stays faintly visible so the control is discoverable. */
-const SORT_CONTROL_SX = {
-  p: 0.25,
-  minWidth: 28,
-  justifyContent: "center",
-  "& .MuiTableSortLabel-icon": {
-    margin: 0,
-    fontSize: "1.1rem",
-  },
-  "&:not(.Mui-active) .MuiTableSortLabel-icon": {
-    opacity: 0.42,
-  },
-  "&:hover:not(.Mui-active) .MuiTableSortLabel-icon": {
-    opacity: 0.75,
-  },
-  "&.Mui-active .MuiTableSortLabel-icon": {
-    opacity: 1,
-  },
-} as const;
 
 const SPEC_GEAR_ROW_SX = {
   alignItems: "center",
@@ -56,6 +31,12 @@ const SPEC_GEAR_ROW_SX = {
   minWidth: 0,
   maxWidth: "100%",
   lineHeight: 1.2,
+} as const;
+
+const CONTROLS_ROW_SX = {
+  flexWrap: "nowrap",
+  justifyContent: "center",
+  alignItems: "center",
 } as const;
 
 /** Keeps caption row height when a main/off side has no spec or GS. */
@@ -69,9 +50,6 @@ function SpecGearPlaceholder() {
 
 export function CharacterHeaderCell({
   character,
-  isActiveSort,
-  sortDirection,
-  onSort,
   onResetCharacterToggles,
   onEditCharacter,
   onDeleteCharacter,
@@ -80,7 +58,6 @@ export function CharacterHeaderCell({
   const theme = useTheme();
   const displayName = formatCharacterDisplayName(character.name);
   const detailsTooltip = formatCharacterDetailsTooltip(character, locale);
-  const sortAriaLabel = t("table.sortByCharacter", { name: displayName });
   const characterClass = character.class;
   const mainSlot =
     characterClass && character.mainSpec ? (
@@ -110,12 +87,7 @@ export function CharacterHeaderCell({
     );
 
   return (
-    <TableCell
-      key={character.id}
-      align="center"
-      sortDirection={isActiveSort ? sortDirection : false}
-      sx={CHARACTER_HEADER_CELL_SX}
-    >
+    <TableCell key={character.id} align="center" sx={CHARACTER_HEADER_CELL_SX}>
       <Stack
         spacing={0.5}
         sx={{
@@ -169,30 +141,7 @@ export function CharacterHeaderCell({
           {offSlot}
         </Stack>
 
-        <Stack
-          direction="row"
-          spacing={0.25}
-          sx={{
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Tooltip title={sortAriaLabel}>
-            <TableSortLabel
-              active={isActiveSort}
-              direction={isActiveSort ? sortDirection : "asc"}
-              onClick={onSort}
-              aria-label={sortAriaLabel}
-              sx={SORT_CONTROL_SX}
-            >
-              <Box
-                component="span"
-                aria-hidden
-                sx={{ width: 0, height: 0, overflow: "hidden" }}
-              />
-            </TableSortLabel>
-          </Tooltip>
+        <Stack direction="row" spacing={0.25} sx={CONTROLS_ROW_SX}>
           <Tooltip title={t("table.editCharacter", { name: displayName })}>
             <IconButton
               size="small"
