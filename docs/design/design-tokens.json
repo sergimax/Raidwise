@@ -251,7 +251,8 @@
         "color": "var(--brand)",
         "border": "1px solid color-mix(in srgb, var(--brand) 40%, transparent)",
         "fontWeight": 700,
-        "fontSize": "0.75rem"
+        "fontSize": "0.75rem",
+        "note": "Numeric badge only (aria-hidden); not a 'N.' text prefix before the title"
       },
       "descriptionVariant": "caption"
     },
