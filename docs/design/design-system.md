@@ -169,7 +169,7 @@ Do **not** invent a second border color for generic chrome — use `divider` / `
 | Menu | `0 8px 24px rgba(0, 0, 0, 0.12)` | `0 8px 24px rgba(0, 0, 0, 0.45)` |
 | Tooltip | MUI `shadows[8]` | MUI `shadows[12]` |
 | Paper default | `backgroundImage: none` | (no gradient overlay on elevation) |
-| Sticky column edge | `1px 0 0 rgba(0,0,0,0.08)` | (table pin separator; layout-only) |
+| Sticky column edge | `1px 0 0 color-mix(…, var(--border) 40%)` | (table pin separator; layout-only) |
 
 ---
 

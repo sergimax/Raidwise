@@ -86,7 +86,7 @@
       "light": "0 8px 24px rgba(0, 0, 0, 0.12)",
       "dark": "0 8px 24px rgba(0, 0, 0, 0.45)"
     },
-    "stickyColumnEdge": "1px 0 0 rgba(0,0,0,0.08)"
+    "stickyColumnEdge": "1px 0 0 color-mix(in srgb, var(--border) 40%, transparent)"
   },
   "scrollbar": {
     "sizePx": 8,

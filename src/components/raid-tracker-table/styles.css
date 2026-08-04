@@ -1,5 +1,42 @@
 /* Ilvl / dungeon name tier colors: item-level-tier.ts (MUI sx). */
 
+/*
+ * Sticky system columns (actions + dungeon fields) sit above scrolled character
+ * cells. Their opaque backgrounds would otherwise square off the TableContainer
+ * radius and cover the Super border. Corner radii match the inner curve
+ * (container --radius minus 1px border); ::after redraws the border above
+ * sticky z-index (pinned header uses 4).
+ */
+.raid-tracker-table-container {
+  position: relative;
+}
+
+.raid-tracker-table-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid var(--border);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.raid-tracker-table thead .MuiTableCell-head:first-child {
+  border-top-left-radius: calc(var(--radius) - 1px);
+}
+
+.raid-tracker-table thead .MuiTableCell-head:last-child {
+  border-top-right-radius: calc(var(--radius) - 1px);
+}
+
+.raid-tracker-table tbody tr:last-child > .MuiTableCell-root:first-child {
+  border-bottom-left-radius: calc(var(--radius) - 1px);
+}
+
+.raid-tracker-table tbody tr:last-child > .MuiTableCell-root:last-child {
+  border-bottom-right-radius: calc(var(--radius) - 1px);
+}
+
 .raid-tracker-table .raid-tracker-table__ilvl-separator {
   color: var(--mui-palette-text-secondary, #64748b);
   font-weight: 400;
