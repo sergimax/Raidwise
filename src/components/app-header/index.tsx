@@ -5,8 +5,8 @@ import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx
 import { ThemeModeToggle } from "../theme-mode-toggle/index.tsx";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
+  appThemeTokens,
   fontFamilyDisplay,
-  superThemeTokens,
 } from "../../theme/create-app-theme.ts";
 import type { AppHeaderProps } from "./types.ts";
 
@@ -25,7 +25,7 @@ export function AppHeader({
       color="inherit"
       elevation={0}
       sx={(theme) => ({
-        bgcolor: superThemeTokens[theme.palette.mode].headerBg,
+        bgcolor: appThemeTokens[theme.palette.mode].headerBg,
         backdropFilter: "saturate(1.2) blur(12px)",
         WebkitBackdropFilter: "saturate(1.2) blur(12px)",
         borderBottom: 1,
@@ -68,7 +68,7 @@ export function AppHeader({
               sx={(theme) => ({
                 fontFamily: fontFamilyDisplay,
                 fontWeight: 700,
-                color: superThemeTokens[theme.palette.mode].brand,
+                color: appThemeTokens[theme.palette.mode].brand,
                 fontSize: { xs: "1rem", sm: "1.2rem" },
               })}
             >

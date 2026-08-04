@@ -10,7 +10,7 @@ Portable visual tokens and UI recipes used by this app. Use as:
 
 | Layer | Path |
 | --- | --- |
-| MUI theme | `src/theme/create-app-theme.ts` (`superThemeTokens`) |
+| MUI theme | `src/theme/create-app-theme.ts` (`appThemeTokens`) |
 | Quiet / spot links | `src/theme/links.css` |
 | Tooltip surfaces | `src/theme/tooltip-surface.ts` |
 | CSS variables + scrollbars | `src/index.css` |
@@ -137,7 +137,7 @@ MUI `borderRadius: 1` in `sx` = **8px** when theme spacing is 8.
 
 ## Borders
 
-Interactive chrome uses Super border `#8a8a8a` (≥ ~3:1 vs page bg):
+Interactive chrome uses border `#8a8a8a` (≥ ~3:1 vs page bg):
 
 ```text
 border: 1px solid <divider>
@@ -275,9 +275,9 @@ Panel max widths (app layout, not core brand):
 
 ## Domain overlays (app-specific)
 
-Port only if the target app needs the same semantics. Keep separate from Super chrome.
+Port only if the target app needs the same semantics. Keep separate from core chrome.
 
-### Status semantics (Super domain exception)
+### Status semantics (domain exception)
 
 - BiS / ready → **ok** green (`success`)
 - Defect → **danger** red (`error`)
@@ -318,7 +318,7 @@ Optional dark text-shadow for readability on colored class cells (`src/utils/cha
 
 **Core (reuse across projects)**
 
-1. Copy Super tokens from `design-tokens.json`
+1. Copy tokens from `design-tokens.json`
 2. Port `createAppTheme` structure (palette: primary=ink, secondary=brand, success=ok, error=danger; fonts; CssBaseline atmosphere; Button / Paper / Table / Dialog / Tooltip / OutlinedInput / Menu)
 3. Wire `data-color-mode` + matching CSS vars before paint
 4. Load Noto Sans + Onest + JetBrains Mono (Cyrillic + Latin)

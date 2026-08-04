@@ -1,10 +1,10 @@
 import { alpha, createTheme, type PaletteMode } from "@mui/material/styles";
 import { getTooltipSurface } from "./tooltip-surface.ts";
 
-/** Super ★ body stack — Cyrillic + Latin. */
+/** Body stack — Cyrillic + Latin. */
 const fontFamilyBody = ["'Noto Sans'", "system-ui", "sans-serif"].join(",");
 
-/** Super ★ display stack — brand / titles. */
+/** Display stack — brand / titles. */
 export const fontFamilyDisplay = [
   "'Onest'",
   "'Noto Sans'",
@@ -12,15 +12,15 @@ export const fontFamilyDisplay = [
   "sans-serif",
 ].join(",");
 
-/** Super ★ mono stack — chips / meta. */
+/** Mono stack — chips / meta. */
 export const fontFamilyMono = [
   "'JetBrains Mono'",
   "'IBM Plex Mono'",
   "monospace",
 ].join(",");
 
-/** Super ★ mode tokens (shared with CSS vars in index.css). */
-export const superThemeTokens = {
+/** Mode tokens (shared with CSS vars in index.css). */
+export const appThemeTokens = {
   light: {
     bg: "#fcfbf9",
     surface: "#ffffff",
@@ -73,7 +73,7 @@ export const superThemeTokens = {
 
 export function createAppTheme(mode: PaletteMode) {
   const isLight = mode === "light";
-  const tokens = superThemeTokens[mode];
+  const tokens = appThemeTokens[mode];
 
   return createTheme({
     palette: {
