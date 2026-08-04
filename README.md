@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-2.0.1-purple)
+![App version](https://img.shields.io/badge/App_version-2.1.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -29,6 +29,8 @@ Reset one character from the table header, or everyone from the **Data** panel.
 ### Table
 
 Sort and search raids (name, size, mode — EN/RU, e.g. `ICC25H` / `ЦЛК25хм`).
+Character headers show class-colored names, main/off GS (or `- / -`), and edit / reset / delete.
+Complete column uses a progress bar (count on hover).
 Compact layout on small screens.
 Wide character columns scroll horizontally inside the table (page stays put).
 
