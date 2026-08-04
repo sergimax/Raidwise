@@ -9,6 +9,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import type { SubmitEvent } from "react";
 import { useCallback, useState, useEffect } from "react";
 import type { CharacterGearItem } from "../../types/character-gear.ts";
@@ -50,6 +51,7 @@ function CharacterEditDialogContent({
   onSave,
 }: CharacterEditDialogContentProps) {
   const { t, locale } = useTranslation();
+  const theme = useTheme();
   const initialValues = characterSpecGearFormValues(character);
   const [mainSpec, setMainSpec] = useState(initialValues.mainSpec);
   const [mainGearScoreText, setMainGearScoreText] = useState(
@@ -228,7 +230,10 @@ function CharacterEditDialogContent({
           <Typography
             component="span"
             variant="subtitle1"
-            sx={{ ...characterNameDisplaySx(character.class), lineHeight: 1.2 }}
+            sx={{
+              ...characterNameDisplaySx(character.class, theme.palette.mode),
+              lineHeight: 1.2,
+            }}
           >
             {character.name}
           </Typography>
