@@ -18,6 +18,7 @@ import {
   type ColorMode,
   type ColorModeContextValue,
 } from "../hooks/color-mode.ts";
+import { superThemeTokens } from "../theme/create-app-theme.ts";
 
 export function ColorModeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<ColorMode>(() => getInitialColorMode());
@@ -27,7 +28,7 @@ export function ColorModeProvider({ children }: { children: ReactNode }) {
     document.documentElement.dataset.colorMode = mode;
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", mode === "dark" ? "#0f172a" : "#f1f5f9");
+      ?.setAttribute("content", superThemeTokens[mode].themeColorMeta);
     try {
       localStorage.setItem(COLOR_MODE_STORAGE_KEY, mode);
     } catch {

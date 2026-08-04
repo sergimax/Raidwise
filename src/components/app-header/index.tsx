@@ -1,10 +1,13 @@
 import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
 import { AppIntroToggle } from "../app-intro-toggle/index.tsx";
 import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
 import { ThemeModeToggle } from "../theme-mode-toggle/index.tsx";
 import { useTranslation } from "../../i18n/use-translation.ts";
+import {
+  fontFamilyDisplay,
+  superThemeTokens,
+} from "../../theme/create-app-theme.ts";
 import type { AppHeaderProps } from "./types.ts";
 
 export type { AppHeaderProps } from "./types.ts";
@@ -22,10 +25,7 @@ export function AppHeader({
       color="inherit"
       elevation={0}
       sx={(theme) => ({
-        bgcolor: alpha(
-          theme.palette.background.paper,
-          theme.palette.mode === "light" ? 0.82 : 0.72,
-        ),
+        bgcolor: superThemeTokens[theme.palette.mode].headerBg,
         backdropFilter: "saturate(1.2) blur(12px)",
         WebkitBackdropFilter: "saturate(1.2) blur(12px)",
         borderBottom: 1,
@@ -65,7 +65,12 @@ export function AppHeader({
               component="h1"
               variant="h6"
               noWrap
-              sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+              sx={(theme) => ({
+                fontFamily: fontFamilyDisplay,
+                fontWeight: 700,
+                color: superThemeTokens[theme.palette.mode].brand,
+                fontSize: { xs: "1rem", sm: "1.2rem" },
+              })}
             >
               {t("header.appTitle")}
             </Typography>

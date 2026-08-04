@@ -1,0 +1,34 @@
+/**
+ * Super ★ link recipes — quiet (informational) vs spot (in-prose action).
+ * See docs/theme-super.md.
+ *
+ * Domain item links (`.wow-item-link`) keep their own ilvl-tier colors and
+ * dotted underlines — do not restyle them as quiet/spot chrome.
+ */
+
+a:not(.wow-item-link):not(.link-spot) {
+  color: var(--link);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:not(.wow-item-link):not(.link-spot):hover {
+  color: var(--link-spot);
+}
+
+a.link-spot {
+  color: var(--link-spot);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+a.link-spot:hover {
+  color: var(--brand-border);
+}
