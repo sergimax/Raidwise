@@ -129,7 +129,11 @@ function progressFill(theme: Theme, ratio: number): CompletionChipFill {
   return fill;
 }
 
-/** Filled chip colors from theme: muted → danger → brand/warning → info → ok. */
+/**
+ * Progress bar / label colors for `CompletionCountChip`.
+ * `backgroundColor` = bar fill + label; `color` kept for callers that need on-fill ink.
+ * Scale: muted → danger → brand/warning → info → ok.
+ */
 export function completionChipFill(
   completed: number,
   total: number,

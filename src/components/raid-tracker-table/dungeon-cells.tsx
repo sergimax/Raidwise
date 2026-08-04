@@ -1,4 +1,12 @@
-import { Box, Chip, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Chip,
+  LinearProgress,
+  Stack,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { getLocalizedDungeonCompactLabel, getLocalizedDungeonDisplayName } from "../../i18n/localized-domain.ts";
 import {
@@ -166,6 +174,10 @@ export function DungeonTypeCell({
   );
 }
 
+/**
+ * Determinate linear progress with `completed/total` label (MUI LinearProgress pattern).
+ * Bar color follows theme completion stops (`completionChipFill`).
+ */
 export function CompletionCountChip({
   completed,
   total,
@@ -175,20 +187,57 @@ export function CompletionCountChip({
 }) {
   const theme = useTheme();
   const fill = completionChipFill(completed, total, theme);
+  const progressValue =
+    total <= 0 ? 0 : Math.min(100, Math.max(0, (completed / total) * 100));
+  const label = `${completed}/${total}`;
+  const trackColor =
+    theme.palette.mode === "dark"
+      ? "rgba(255, 255, 255, 0.12)"
+      : "rgba(0, 0, 0, 0.1)";
 
   return (
-    <Chip
-      size="small"
-      variant="filled"
-      label={`${completed}/${total}`}
+    <Box
       sx={{
-        fontVariantNumeric: "tabular-nums",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+        gap: 0.35,
+        width: "100%",
+        minWidth: 0,
         maxWidth: "100%",
-        bgcolor: fill.backgroundColor,
-        color: fill.color,
-        "& .MuiChip-label": { overflow: "hidden", textOverflow: "ellipsis" },
       }}
-    />
+      role="img"
+      aria-label={label}
+    >
+      <Typography
+        variant="caption"
+        component="div"
+        sx={{
+          fontSize: "0.7rem",
+          fontWeight: 700,
+          lineHeight: 1.1,
+          fontVariantNumeric: "tabular-nums",
+          color: fill.backgroundColor,
+          textAlign: "center",
+        }}
+      >
+        {label}
+      </Typography>
+      <LinearProgress
+        variant="determinate"
+        value={progressValue}
+        aria-hidden
+        sx={{
+          height: 6,
+          borderRadius: 1,
+          bgcolor: trackColor,
+          "& .MuiLinearProgress-bar": {
+            borderRadius: 1,
+            bgcolor: fill.backgroundColor,
+          },
+        }}
+      />
+    </Box>
   );
 }
 

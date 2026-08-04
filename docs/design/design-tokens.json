@@ -373,7 +373,8 @@
     },
     "completionChips": {
       "source": "src/utils/completion-chip-color.ts",
-      "note": "Derived from createAppTheme palette; light uses dimmer/darker stops.",
+      "ui": "CompletionCountChip — LinearProgress determinate + completed/total label",
+      "note": "Bar/label color from palette stops; light uses dimmer/darker stops.",
       "gray": {
         "light": { "backgroundColor": "#737373", "color": "primaryFg" },
         "dark": { "backgroundColor": "#3f3f3f", "color": "text.primary" }

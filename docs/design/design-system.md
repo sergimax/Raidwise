@@ -312,9 +312,9 @@ WotLK GearScore-style tiers in `src/utils/item-level-tier.ts` (11 colors light +
 
 Item links: weight `600`, dotted underline → solid on hover.
 
-### Completion chips
+### Completion progress
 
-Progress fill in `src/utils/completion-chip-color.ts` from theme palette: muted → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). **Light** uses darker/dimmer stops (`.dark` + deeper mid hues) so chips sit quieter on cream; **dark** keeps full palette brightness. Documented in `design-tokens.json` → `domain.completionChips`.
+UI: MUI determinate `LinearProgress` + `completed/total` label above the bar (`CompletionCountChip` in `dungeon-cells.tsx`). Bar color from `src/utils/completion-chip-color.ts`: muted → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). **Light** uses darker/dimmer stops; **dark** keeps full palette brightness. Quiet gray track behind the fill. Documented in `design-tokens.json` → `domain.completionChips`.
 
 ---
 

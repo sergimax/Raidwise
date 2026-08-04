@@ -77,6 +77,7 @@ export const PINNED_WIDTHS = {
   // Fits Heroic labels like `25 ☠️` (emoji is wider than a letter suffix).
   type: 88,
   itemLevel: 104,
+  // Linear completion bar + count label in the pinned Complete column.
   complete: 78,
 } as const;
 
