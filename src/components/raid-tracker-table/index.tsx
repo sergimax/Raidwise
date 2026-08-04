@@ -68,15 +68,12 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     characterCount,
     sortKey,
     sortDirection,
-    characterSortId,
-    characterSortDirection,
     dungeonNameSearch,
     setDungeonNameSearch,
     pendingDelete,
     sortedDungeons,
     completionsByDungeonId,
     handleSort,
-    handleCharacterSort,
     handleRequestDeleteCharacter,
     handleRequestDeleteDungeon,
     handleCancelDelete,
@@ -119,12 +116,9 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
             characters={characters}
             sortKey={sortKey}
             sortDirection={sortDirection}
-            characterSortId={characterSortId}
-            characterSortDirection={characterSortDirection}
             dungeonNameSearch={dungeonNameSearch}
             onDungeonNameSearchChange={setDungeonNameSearch}
             onSort={handleSort}
-            onCharacterSort={handleCharacterSort}
             onResetCharacterToggles={onResetCharacterToggles}
             onEditCharacter={handleEditCharacter}
             onRequestDeleteCharacter={handleRequestDeleteCharacter}

@@ -67,6 +67,8 @@ export function sortDungeons(
   return sorted;
 }
 
+/** Sort dungeons by whether a character has CD on each row (on before off when desc).
+ * TODO: check if character-toggle sort is still needed (header control removed). */
 export function sortDungeonsByCharacterToggle(
   list: DungeonRecord[],
   characterId: string,

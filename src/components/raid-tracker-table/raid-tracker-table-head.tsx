@@ -1,6 +1,6 @@
 /**
  * Table header row: pinned dungeon columns (sort, search) and per-character
- * columns (sort, edit/reset/delete actions).
+ * columns (edit/reset/delete actions).
  */
 import { Fragment } from "react";
 import { TableCell, TableHead, TableRow } from "@mui/material";
@@ -17,12 +17,9 @@ type RaidTrackerTableHeadProps = {
   characters: CharacterRecord[];
   sortKey: DungeonSortKey;
   sortDirection: SortDirection;
-  characterSortId: string | null;
-  characterSortDirection: SortDirection;
   dungeonNameSearch: string;
   onDungeonNameSearchChange: (query: string) => void;
   onSort: (sortKey: DungeonSortKey) => void;
-  onCharacterSort: (characterId: string) => void;
   onResetCharacterToggles: (characterId: string) => void;
   onEditCharacter: (characterId: string) => void;
   onRequestDeleteCharacter: (characterId: string) => void;
@@ -34,12 +31,9 @@ export function RaidTrackerTableHead({
   characters,
   sortKey,
   sortDirection,
-  characterSortId,
-  characterSortDirection,
   dungeonNameSearch,
   onDungeonNameSearchChange,
   onSort,
-  onCharacterSort,
   onResetCharacterToggles,
   onEditCharacter,
   onRequestDeleteCharacter,
@@ -70,13 +64,6 @@ export function RaidTrackerTableHead({
           <CharacterHeaderCell
             key={character.id}
             character={character}
-            isActiveSort={characterSortId === character.id}
-            sortDirection={
-              characterSortId === character.id ? characterSortDirection : "asc"
-            }
-            onSort={() => {
-              onCharacterSort(character.id);
-            }}
             onResetCharacterToggles={onResetCharacterToggles}
             onEditCharacter={onEditCharacter}
             onDeleteCharacter={onRequestDeleteCharacter}
