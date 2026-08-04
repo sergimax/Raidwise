@@ -232,6 +232,7 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 ### Icon buttons
 
 - Radius `8`; hover `action.hover`
+- Danger (`color="error"`) — light: `error.light` (`#f87171`) at rest, `error.main` (`--danger`) on hover; dark: `error.main` (`#ff7b72`, already soft coral)
 
 ### Status / chips
 
