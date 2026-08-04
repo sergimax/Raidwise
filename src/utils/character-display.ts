@@ -1,3 +1,4 @@
+import type { PaletteMode } from "@mui/material";
 import type { CharacterClass } from "../types/characters.ts";
 
 /** WoW class colors are stored without a leading `#`. */
@@ -5,27 +6,83 @@ export function formatClassColorHex(color: string): string {
   return color.startsWith("#") ? color : `#${color}`;
 }
 
-/** Light class colors (e.g. Priest, Rogue) need a shadow on light backgrounds. */
-function isLightClassColor(hexWithoutHash: string): boolean {
-  const red = Number.parseInt(hexWithoutHash.slice(0, 2), 16);
-  const green = Number.parseInt(hexWithoutHash.slice(2, 4), 16);
-  const blue = Number.parseInt(hexWithoutHash.slice(4, 6), 16);
-  const luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
-  return luminance > 0.75;
+function parseRgb(hexWithoutHash: string): {
+  red: number;
+  green: number;
+  blue: number;
+} {
+  return {
+    red: Number.parseInt(hexWithoutHash.slice(0, 2), 16),
+    green: Number.parseInt(hexWithoutHash.slice(2, 4), 16),
+    blue: Number.parseInt(hexWithoutHash.slice(4, 6), 16),
+  };
 }
 
-/** Typography sx for a character name tinted with class color. */
-export function characterNameDisplaySx(characterClass?: CharacterClass) {
-  if (!characterClass) {
-    return { fontWeight: 600 } as const;
-  }
-  const color = formatClassColorHex(characterClass.color);
-  const needsContrastOnLight = isLightClassColor(characterClass.color);
+/** Relative luminance (sRGB, WCAG). */
+export function classColorRelativeLuminance(hexWithoutHash: string): number {
+  const { red, green, blue } = parseRgb(hexWithoutHash);
+  const channel = (value: number) => {
+    const normalized = value / 255;
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+  return (
+    0.2126 * channel(red) + 0.7152 * channel(green) + 0.0722 * channel(blue)
+  );
+}
+
+function contrastRatio(luminanceA: number, luminanceB: number): number {
+  const lighter = Math.max(luminanceA, luminanceB);
+  const darker = Math.min(luminanceA, luminanceB);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+/** Ink tokens — readable on class-color chips (not a hue complement; those fail WCAG). */
+export const CLASS_CHIP_FG_ON_LIGHT_BG = "#0a0a0a" as const;
+export const CLASS_CHIP_FG_ON_DARK_BG = "#fafafa" as const;
+
+/**
+ * Accessible foreground for a class-color background: black or near-white,
+ * whichever has the higher WCAG contrast ratio against the fill.
+ */
+export function accessibleForegroundForClassColor(
+  hexWithoutHash: string,
+): typeof CLASS_CHIP_FG_ON_LIGHT_BG | typeof CLASS_CHIP_FG_ON_DARK_BG {
+  const backgroundLuminance = classColorRelativeLuminance(hexWithoutHash);
+  const blackContrast = contrastRatio(backgroundLuminance, 0);
+  const whiteContrast = contrastRatio(backgroundLuminance, 1);
+  return whiteContrast >= blackContrast
+    ? CLASS_CHIP_FG_ON_DARK_BG
+    : CLASS_CHIP_FG_ON_LIGHT_BG;
+}
+
+/** Chip chrome: class hue as fill, accessible ink as text. */
+export function classColorChipSx(characterClass: CharacterClass) {
+  const background = formatClassColorHex(characterClass.color);
+  const color = accessibleForegroundForClassColor(characterClass.color);
   return {
     fontWeight: 600,
     color,
-    ...(needsContrastOnLight
-      ? { textShadow: "0 0 1px #18181b, 0 1px 2px rgba(24, 24, 27, 0.45)" }
-      : {}),
-  };
+    bgcolor: background,
+    px: 0.55,
+    py: 0.15,
+    borderRadius: "4px",
+    lineHeight: 1.25,
+  } as const;
+}
+
+/**
+ * Typography sx for a character / class name.
+ * Class color is the chip background; text is accessible black/white.
+ * `colorMode` kept for call-site compatibility (same treatment in both modes).
+ */
+export function characterNameDisplaySx(
+  characterClass?: CharacterClass,
+  _colorMode: PaletteMode = "light",
+) {
+  if (!characterClass) {
+    return { fontWeight: 600 } as const;
+  }
+  return classColorChipSx(characterClass);
 }

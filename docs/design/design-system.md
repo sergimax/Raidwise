@@ -239,6 +239,12 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 - Danger → `error` / `--danger*`
 - Brand chip → brand border/text on `--brand-soft` fill (intro template mention)
 
+### Class-colored names
+
+- Chip style via `characterNameDisplaySx` / `classColorChipSx`: **background = WoW class hex**
+- **Foreground** = accessible ink (`#0a0a0a` or `#fafafa`) — whichever has higher WCAG contrast vs the fill (not a hue-wheel complement; those often fail contrast)
+- Same treatment in light and dark mode
+
 ---
 
 ## Scrollbars
