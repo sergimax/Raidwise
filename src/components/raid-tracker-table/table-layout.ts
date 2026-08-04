@@ -74,7 +74,8 @@ const PINNED_CELL_BASE_SX = {
 export const PINNED_WIDTHS = {
   actions: 68,
   name: 200,
-  type: 72,
+  // Fits Heroic labels like `25 ☠️` (emoji is wider than a letter suffix).
+  type: 88,
   itemLevel: 104,
   complete: 78,
 } as const;
