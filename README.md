@@ -79,7 +79,7 @@ Design tokens / recipes: [docs/design/design-system.md](docs/design/design-syste
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
-On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in parallel, then **Release files** (version bump + changelog/README badges when releasing) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
+On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in parallel, then **Release files** (validates that `package.json` was bumped and CHANGELOG / README badges / lockfile match — does not bump versions itself) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
 
 **Layout:**
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
@@ -118,9 +118,12 @@ Regenerate TypeScript presets after editing the markdown.
 | Key | Contents |
 |-----|----------|
 | `my-raid-cds` | Characters, dungeons, toggles (`schemaVersion` 6) |
-| `my-raid-cds-bis-lists` | BiS preset selections and local lists (malformed entries skipped on load) |
+| `my-raid-cds-bis-lists` | BiS preset selections and local lists (`schemaVersion` 1; malformed entries skipped on load) |
 | `my-raid-cds-item-tooltip-locale` | `en` or `ru` (defaults to `ru`) |
 | `my-raid-cds-color-mode` | Light/dark preference |
+| `my-raid-cds-gear-hint-legend-dismissed` | Dismissed gear-hint legend above the table |
+
+Character names: new names are letters only (Unicode `\p{L}+`); display capitalizes the first letter. Legacy names with digits/symbols still load.
 
 Corrupted tracker data resets with an error alert.
 Legacy saves migrate on load.

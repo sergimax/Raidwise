@@ -241,9 +241,10 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 
 ### Class-colored names
 
-- Chip style via `characterNameDisplaySx` / `classColorChipSx`: **background = WoW class hex darkened ~22%** (`CLASS_CHIP_BG_BRIGHTNESS`)
+- Chip style via `characterNameDisplaySx` / `classColorChipSx`: **background = WoW class hex darkened ~22%** (`CLASS_CHIP_BG_BRIGHTNESS` 0.78), radius `4px`
 - **Foreground** = accessible ink (`#0a0a0a` or `#fafafa`) — whichever has higher WCAG contrast vs the darkened fill
 - Same treatment in light and dark mode
+- Display names capitalize the first letter (`formatCharacterDisplayName`)
 
 ---
 
@@ -313,11 +314,7 @@ Item links: weight `600`, dotted underline → solid on hover.
 
 ### Completion chips
 
-Progress fill in `src/utils/completion-chip-color.ts` from theme palette: muted → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). **Light** uses darker/dimmer stops (`.dark` + deeper mid hues) so chips sit quieter on cream; **dark** keeps full palette brightness.
-
-### Character name on tinted cells
-
-Optional dark text-shadow for readability on colored class cells (`src/utils/character-display.ts`) — domain-only, do not reuse as generic elevation.
+Progress fill in `src/utils/completion-chip-color.ts` from theme palette: muted → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). **Light** uses darker/dimmer stops (`.dark` + deeper mid hues) so chips sit quieter on cream; **dark** keeps full palette brightness. Documented in `design-tokens.json` → `domain.completionChips`.
 
 ---
 
@@ -326,13 +323,14 @@ Optional dark text-shadow for readability on colored class cells (`src/utils/cha
 **Core (reuse across projects)**
 
 1. Copy tokens from `design-tokens.json`
-2. Port `createAppTheme` structure (palette: primary=ink, secondary=brand, success=ok, error=danger; fonts; CssBaseline atmosphere; Button / Paper / Table / Dialog / Tooltip / OutlinedInput / Menu)
+2. Port `createAppTheme` structure (palette: primary=ink, secondary=brand, success=ok, error=danger; fonts; CssBaseline atmosphere; Button / Paper / Table / Dialog / Tooltip / OutlinedInput / Menu / Switch)
 3. Wire `data-color-mode` + matching CSS vars before paint
 4. Load Noto Sans + Onest + JetBrains Mono (Cyrillic + Latin)
 5. Implement quiet vs `.link-spot` links (`links.css`)
 6. Keep border `#8a8a8a`, radii 8/10/12
-7. Prefer stepped `ExportFilterSection`-style cards for multi-field workflows
+7. Prefer stepped `ExportFilterSection`-style cards for multi-field workflows (brand title, step badge, 3px brand left edge)
 8. Contrast-check text / muted / brand / ok / danger / link / link-spot / border
+9. Port class-color chips (`character-display.ts`) and completion chip fills (`completion-chip-color.ts`) when the product needs them
 
 **Optional**
 

@@ -79,7 +79,7 @@
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
-На push/PR в `main` GitHub Actions параллельно гоняет **Lint**, **Test** и **Build**, затем **Release files** (бамп версии + бейджи README / CHANGELOG при релизе) (`.github/workflows/ci.yml`); push в `main` также загружает артефакт `dist` (`.github/workflows/build-artifacts.yml`).
+На push/PR в `main` GitHub Actions параллельно запускает **Lint**, **Test** и **Build**, затем **Release files** (проверяет, что версия в `package.json` уже поднята и совпадает с CHANGELOG / бейджами README / lockfile — сам версию не повышает) (`.github/workflows/ci.yml`); push в `main` также загружает артефакт `dist` (`.github/workflows/build-artifacts.yml`).
 
 **Структура:**
 `src/components/` (UI), `src/hooks/` (домен + оверлей-панели), `src/utils/`, `src/data/` (бандлы WoW + BiS-пресеты), `src/storage/`. Тесты рядом: `*.test.ts(x)`.
@@ -118,9 +118,12 @@ npm run dev
 | Ключ | Содержимое |
 |------|------------|
 | `my-raid-cds` | Персонажи, подземелья, переключатели (`schemaVersion` 6) |
-| `my-raid-cds-bis-lists` | Выбранные BiS и локальные списки (битые записи пропускаются) |
+| `my-raid-cds-bis-lists` | Выбранные BiS и локальные списки (`schemaVersion` 1; битые записи пропускаются) |
 | `my-raid-cds-item-tooltip-locale` | `en` или `ru` (по умолчанию `ru`) |
 | `my-raid-cds-color-mode` | Светлая/тёмная тема |
+| `my-raid-cds-gear-hint-legend-dismissed` | Скрытая легенда подсказок экипировки над таблицей |
+
+Имена персонажей: при создании — только буквы (Unicode `\p{L}+`); в UI первая буква с заглавной. Старые имена с цифрами/символами по-прежнему загружаются.
 
 Повреждённые данные трекера сбрасываются с алертом.
 Старые сейвы мигрируют при загрузке.

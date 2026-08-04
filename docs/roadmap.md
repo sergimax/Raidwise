@@ -8,7 +8,7 @@ Ideas for future releases. Not committed to a version or timeline.
 
 Ilvl hints filter raid loot using GearScore2-inspired compatibility rules and per-spec PvE stat weights (`spec-stat-priorities.ts`, `item-stat-fit.ts`, `wotlk-item-stats.json`; weights from [gearscore2](https://github.com/cozawariat/gearscore2)). BiS-list hints (amber) are unchanged. Agi+AP cross-armor pieces still pass for Strength melee specs (Ret/Fury/DK) via AP weighting; Enhancement accepts both Agi and spellhance Int gear; pure caster/healer items fail for physical DPS (e.g. int plate for Fury). Neutral gear (stamina, armor, resistances only) still passes. Same-release extras: BiS normal/heroic name variants, amber/blue toggle tints, compact three-tier gear hint tooltip.
 
-**Possible follow-ups:** finer per-spec tuning, trinket proc awareness, stat-aware BiS slot validation.
+**Possible follow-ups:** finer per-spec tuning; broader trinket-effect modeling beyond the role proc allowlists already in `item-stat-fit.ts` (`TankOnlyProcTrinketItemIds` / `HealerOnlyProcTrinketItemIds` / `MeleeOnlyProcTrinketItemIds`); stat-aware BiS slot validation.
 
 ---
 
