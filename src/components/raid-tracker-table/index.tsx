@@ -93,8 +93,11 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
   return (
     <Stack spacing={2}>
       <TableContainer
-        sx={
-          stickyPageHeader
+        className="raid-tracker-table-container"
+        sx={{
+          // Theme border is redrawn via ::after above sticky system columns.
+          borderColor: "transparent",
+          ...(stickyPageHeader
             ? {
                 // Must stay visible: overflow-x:auto (MUI default) creates a
                 // scrollport and stops thead from sticking to the page under AppBar.
@@ -103,8 +106,8 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
               }
             : {
                 overflowX: "auto",
-              }
-        }
+              }),
+        }}
       >
         <Table
           aria-label={raidTrackerTableAriaLabel(
@@ -121,7 +124,12 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
             .join(" ")}
           size="small"
           stickyHeader={stickyPageHeader}
-          sx={{ tableLayout: "fixed", width: "max-content" }}
+          sx={{
+            tableLayout: "fixed",
+            width: "max-content",
+            // Separate collapse so corner radii on sticky cells actually clip.
+            borderCollapse: "separate",
+          }}
         >
           <RaidTrackerTableHead
             compactTable={compactTable}
