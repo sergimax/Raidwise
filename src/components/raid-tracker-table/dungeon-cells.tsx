@@ -175,7 +175,7 @@ export function DungeonTypeCell({
 }
 
 /**
- * Determinate linear progress with `completed/total` label (MUI LinearProgress pattern).
+ * Determinate linear progress (MUI LinearProgress). Count `completed/total` is hover-only.
  * Bar color follows theme completion stops (`completionChipFill`).
  */
 export function CompletionCountChip({
@@ -196,48 +196,36 @@ export function CompletionCountChip({
       : "rgba(0, 0, 0, 0.1)";
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        gap: 0.35,
-        width: "100%",
-        minWidth: 0,
-        maxWidth: "100%",
-      }}
-      role="img"
-      aria-label={label}
-    >
-      <Typography
-        variant="caption"
-        component="div"
+    <Tooltip title={label}>
+      <Box
         sx={{
-          fontSize: "0.7rem",
-          fontWeight: 700,
-          lineHeight: 1.1,
-          fontVariantNumeric: "tabular-nums",
-          color: fill.backgroundColor,
-          textAlign: "center",
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          minWidth: 0,
+          maxWidth: "100%",
+          py: 0.25,
         }}
+        role="img"
+        aria-label={label}
       >
-        {label}
-      </Typography>
-      <LinearProgress
-        variant="determinate"
-        value={progressValue}
-        aria-hidden
-        sx={{
-          height: 6,
-          borderRadius: 1,
-          bgcolor: trackColor,
-          "& .MuiLinearProgress-bar": {
+        <LinearProgress
+          variant="determinate"
+          value={progressValue}
+          aria-hidden
+          sx={{
+            width: "100%",
+            height: 6,
             borderRadius: 1,
-            bgcolor: fill.backgroundColor,
-          },
-        }}
-      />
-    </Box>
+            bgcolor: trackColor,
+            "& .MuiLinearProgress-bar": {
+              borderRadius: 1,
+              bgcolor: fill.backgroundColor,
+            },
+          }}
+        />
+      </Box>
+    </Tooltip>
   );
 }
 

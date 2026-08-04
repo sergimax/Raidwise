@@ -1,6 +1,6 @@
 /**
  * Table header row: pinned dungeon columns (sort, search) and per-character
- * columns (sort, completion chip, reset/delete actions).
+ * columns (sort, edit/reset/delete actions).
  */
 import { Fragment } from "react";
 import { TableCell, TableHead, TableRow } from "@mui/material";
@@ -15,8 +15,6 @@ type RaidTrackerTableHeadProps = {
   compactTable: boolean;
   visiblePinnedColumns: ReadonlyArray<PinnedColumnDef>;
   characters: CharacterRecord[];
-  completionsByCharacterId: Readonly<Record<string, number>>;
-  dungeonCount: number;
   sortKey: DungeonSortKey;
   sortDirection: SortDirection;
   characterSortId: string | null;
@@ -34,8 +32,6 @@ export function RaidTrackerTableHead({
   compactTable,
   visiblePinnedColumns,
   characters,
-  completionsByCharacterId,
-  dungeonCount,
   sortKey,
   sortDirection,
   characterSortId,
@@ -74,8 +70,6 @@ export function RaidTrackerTableHead({
           <CharacterHeaderCell
             key={character.id}
             character={character}
-            completedCount={completionsByCharacterId[character.id] ?? 0}
-            dungeonCount={dungeonCount}
             isActiveSort={characterSortId === character.id}
             sortDirection={
               characterSortId === character.id ? characterSortDirection : "asc"

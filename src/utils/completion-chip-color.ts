@@ -130,8 +130,8 @@ function progressFill(theme: Theme, ratio: number): CompletionChipFill {
 }
 
 /**
- * Progress bar / label colors for `CompletionCountChip`.
- * `backgroundColor` = bar fill + label; `color` kept for callers that need on-fill ink.
+ * Progress bar colors for `CompletionCountChip` (count text is hover-only).
+ * `backgroundColor` = bar fill; `color` kept for callers that need on-fill ink.
  * Scale: muted → danger → brand/warning → info → ok.
  */
 export function completionChipFill(

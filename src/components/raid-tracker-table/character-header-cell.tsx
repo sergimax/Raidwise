@@ -16,14 +16,11 @@ import { formatCharacterDetailsTooltip } from "../../utils/format-character-deta
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
 import { CharacterSpecGearLabel } from "../spec-option-label/index.tsx";
-import { CompletionCountChip } from "./dungeon-cells.tsx";
 import type { SortDirection } from "../../utils/sort-dungeons.ts";
 import { CHARACTER_HEADER_CELL_SX } from "./table-layout.ts";
 
 type CharacterHeaderCellProps = {
   character: CharacterRecord;
-  completedCount: number;
-  dungeonCount: number;
   isActiveSort: boolean;
   sortDirection: SortDirection;
   onSort: () => void;
@@ -32,10 +29,46 @@ type CharacterHeaderCellProps = {
   onDeleteCharacter: (characterId: string) => void;
 };
 
+/** Inactive sort arrow stays faintly visible so the control is discoverable. */
+const SORT_CONTROL_SX = {
+  p: 0.25,
+  minWidth: 28,
+  justifyContent: "center",
+  "& .MuiTableSortLabel-icon": {
+    margin: 0,
+    fontSize: "1.1rem",
+  },
+  "&:not(.Mui-active) .MuiTableSortLabel-icon": {
+    opacity: 0.42,
+  },
+  "&:hover:not(.Mui-active) .MuiTableSortLabel-icon": {
+    opacity: 0.75,
+  },
+  "&.Mui-active .MuiTableSortLabel-icon": {
+    opacity: 1,
+  },
+} as const;
+
+const SPEC_GEAR_ROW_SX = {
+  alignItems: "center",
+  justifyContent: "center",
+  flexWrap: "wrap",
+  minWidth: 0,
+  maxWidth: "100%",
+  lineHeight: 1.2,
+} as const;
+
+/** Keeps caption row height when a main/off side has no spec or GS. */
+function SpecGearPlaceholder() {
+  return (
+    <Typography variant="caption" color="text.secondary" component="span">
+      -
+    </Typography>
+  );
+}
+
 export function CharacterHeaderCell({
   character,
-  completedCount,
-  dungeonCount,
   isActiveSort,
   sortDirection,
   onSort,
@@ -46,103 +79,120 @@ export function CharacterHeaderCell({
   const { t, locale } = useTranslation();
   const theme = useTheme();
   const displayName = formatCharacterDisplayName(character.name);
-  const hasSpecGear = character.mainSpec !== undefined || character.offSpec !== undefined;
   const detailsTooltip = formatCharacterDetailsTooltip(character, locale);
+  const sortAriaLabel = t("table.sortByCharacter", { name: displayName });
+  const characterClass = character.class;
+  const mainSlot =
+    characterClass && character.mainSpec ? (
+      <CharacterSpecGearLabel
+        characterClass={characterClass}
+        spec={character.mainSpec.spec}
+        gearScore={character.mainSpec.gearScore}
+        iconSize={14}
+        variant="caption"
+        showSpecName={false}
+      />
+    ) : (
+      <SpecGearPlaceholder />
+    );
+  const offSlot =
+    characterClass && character.offSpec ? (
+      <CharacterSpecGearLabel
+        characterClass={characterClass}
+        spec={character.offSpec.spec}
+        gearScore={character.offSpec.gearScore}
+        iconSize={14}
+        variant="caption"
+        showSpecName={false}
+      />
+    ) : (
+      <SpecGearPlaceholder />
+    );
 
   return (
-    <TableCell key={character.id} align="center" sx={CHARACTER_HEADER_CELL_SX}>
-      <Stack spacing={0.5} sx={{ alignItems: "center", minWidth: 0, width: "100%" }}>
+    <TableCell
+      key={character.id}
+      align="center"
+      sortDirection={isActiveSort ? sortDirection : false}
+      sx={CHARACTER_HEADER_CELL_SX}
+    >
+      <Stack
+        spacing={0.5}
+        sx={{
+          alignItems: "center",
+          justifyContent: "flex-start",
+          minWidth: 0,
+          width: "100%",
+        }}
+      >
         <Tooltip title={detailsTooltip}>
-          <TableSortLabel
-            active={isActiveSort}
-            direction={isActiveSort ? sortDirection : "asc"}
-            onClick={onSort}
-            sx={{ "& .MuiTableSortLabel-icon": { marginLeft: "2px" } }}
-          >
-            <Stack
-              direction="row"
-              spacing={0.5}
-              sx={{
-                alignItems: "center",
-                justifyContent: "center",
-                minWidth: 0,
-                maxWidth: "100%",
-              }}
-            >
-              {character.class ? (
-                <Box
-                  component="img"
-                  src={character.class.icon}
-                  alt=""
-                  width={18}
-                  height={18}
-                  sx={{ borderRadius: "4px", flexShrink: 0 }}
-                />
-              ) : null}
-              <Typography
-                variant="caption"
-                sx={{
-                  ...characterNameDisplaySx(character.class, theme.palette.mode),
-                  minWidth: 0,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {displayName}
-              </Typography>
-            </Stack>
-          </TableSortLabel>
-        </Tooltip>
-
-        {hasSpecGear && character.class ? (
           <Stack
             direction="row"
             spacing={0.5}
             sx={{
               alignItems: "center",
               justifyContent: "center",
-              flexWrap: "wrap",
               minWidth: 0,
               maxWidth: "100%",
-              lineHeight: 1.2,
             }}
           >
-            {character.mainSpec ? (
-              <CharacterSpecGearLabel
-                characterClass={character.class}
-                spec={character.mainSpec.spec}
-                gearScore={character.mainSpec.gearScore}
-                iconSize={14}
-                variant="caption"
-                showSpecName={false}
+            {characterClass ? (
+              <Box
+                component="img"
+                src={characterClass.icon}
+                alt=""
+                width={18}
+                height={18}
+                sx={{ borderRadius: "4px", flexShrink: 0 }}
               />
             ) : null}
-            {character.mainSpec && character.offSpec ? (
-              <Typography variant="caption" color="text.secondary" component="span">
-                /
-              </Typography>
-            ) : null}
-            {character.offSpec ? (
-              <CharacterSpecGearLabel
-                characterClass={character.class}
-                spec={character.offSpec.spec}
-                gearScore={character.offSpec.gearScore}
-                iconSize={14}
-                variant="caption"
-                showSpecName={false}
-              />
-            ) : null}
+            <Typography
+              variant="caption"
+              sx={{
+                ...characterNameDisplaySx(characterClass, theme.palette.mode),
+                minWidth: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {displayName}
+            </Typography>
           </Stack>
-        ) : null}
+        </Tooltip>
 
-        <CompletionCountChip completed={completedCount} total={dungeonCount} />
+        <Stack direction="row" spacing={0.5} sx={SPEC_GEAR_ROW_SX}>
+          {mainSlot}
+          <Typography variant="caption" color="text.secondary" component="span">
+            /
+          </Typography>
+          {offSlot}
+        </Stack>
 
         <Stack
           direction="row"
-          spacing={0.5}
-          sx={{ flexWrap: "wrap", justifyContent: "center" }}
+          spacing={0.25}
+          sx={{
+            flexWrap: "wrap",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
+          <Tooltip title={sortAriaLabel}>
+            <TableSortLabel
+              active={isActiveSort}
+              direction={isActiveSort ? sortDirection : "asc"}
+              onClick={onSort}
+              aria-label={sortAriaLabel}
+              sx={SORT_CONTROL_SX}
+            >
+              <Box
+                component="span"
+                aria-hidden
+                sx={{ width: 0, height: 0, overflow: "hidden" }}
+              />
+            </TableSortLabel>
+          </Tooltip>
           <Tooltip title={t("table.editCharacter", { name: displayName })}>
             <IconButton
               size="small"

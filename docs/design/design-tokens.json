@@ -373,7 +373,7 @@
     },
     "completionChips": {
       "source": "src/utils/completion-chip-color.ts",
-      "ui": "CompletionCountChip — LinearProgress determinate + completed/total label",
+      "ui": "CompletionCountChip — LinearProgress determinate; completed/total on hover tooltip only",
       "note": "Bar/label color from palette stops; light uses dimmer/darker stops.",
       "gray": {
         "light": { "backgroundColor": "#737373", "color": "primaryFg" },

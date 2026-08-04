@@ -314,7 +314,7 @@ Item links: weight `600`, dotted underline → solid on hover.
 
 ### Completion progress
 
-UI: MUI determinate `LinearProgress` + `completed/total` label above the bar (`CompletionCountChip` in `dungeon-cells.tsx`). Bar color from `src/utils/completion-chip-color.ts`: muted → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). **Light** uses darker/dimmer stops; **dark** keeps full palette brightness. Quiet gray track behind the fill. Documented in `design-tokens.json` → `domain.completionChips`.
+UI: MUI determinate `LinearProgress` only (`CompletionCountChip` in `dungeon-cells.tsx`); `completed/total` appears in a hover tooltip (and `aria-label`). Bar color from `src/utils/completion-chip-color.ts`: muted → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). **Light** uses darker/dimmer stops; **dark** keeps full palette brightness. Quiet gray track behind the fill. Documented in `design-tokens.json` → `domain.completionChips`.
 
 ---
 

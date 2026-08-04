@@ -75,7 +75,6 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     pendingDelete,
     sortedDungeons,
     completionsByDungeonId,
-    completionsByCharacterId,
     handleSort,
     handleCharacterSort,
     handleRequestDeleteCharacter,
@@ -118,8 +117,6 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
             compactTable={compactTable}
             visiblePinnedColumns={visiblePinnedColumns}
             characters={characters}
-            completionsByCharacterId={completionsByCharacterId}
-            dungeonCount={dungeonCount}
             sortKey={sortKey}
             sortDirection={sortDirection}
             characterSortId={characterSortId}
