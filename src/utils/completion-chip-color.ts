@@ -10,11 +10,56 @@ type ProgressStop = CompletionChipFill & { minRatio: number };
 
 /**
  * Theme-aligned progress: muted → danger → brand/warning → info → ok.
- * Stops use palette tokens so chips match the rest of the chrome.
+ * Light mode uses darker/dimmer palette stops so chips sit quieter on cream.
  */
 function progressStops(theme: Theme): readonly ProgressStop[] {
   const { palette } = theme;
   const isLight = palette.mode === "light";
+
+  if (isLight) {
+    return [
+      {
+        minRatio: 0.001,
+        backgroundColor: palette.error.dark,
+        color: "#ffffff",
+      },
+      {
+        minRatio: 0.15,
+        backgroundColor: "#991b1b",
+        color: "#ffffff",
+      },
+      {
+        minRatio: 0.3,
+        backgroundColor: palette.warning.dark,
+        color: "#ffffff",
+      },
+      {
+        minRatio: 0.45,
+        backgroundColor: "#a16207",
+        color: "#ffffff",
+      },
+      {
+        minRatio: 0.6,
+        backgroundColor: palette.secondary.dark,
+        color: palette.secondary.contrastText,
+      },
+      {
+        minRatio: 0.75,
+        backgroundColor: palette.info.dark,
+        color: "#ffffff",
+      },
+      {
+        minRatio: 0.9,
+        backgroundColor: "#075985",
+        color: "#ffffff",
+      },
+      {
+        minRatio: 1,
+        backgroundColor: palette.success.dark,
+        color: "#ffffff",
+      },
+    ];
+  }
 
   return [
     {
@@ -30,12 +75,12 @@ function progressStops(theme: Theme): readonly ProgressStop[] {
     {
       minRatio: 0.3,
       backgroundColor: palette.warning.dark,
-      color: isLight ? "#ffffff" : palette.primary.contrastText,
+      color: palette.primary.contrastText,
     },
     {
       minRatio: 0.45,
       backgroundColor: palette.warning.main,
-      color: isLight ? appThemeTokens.light.textStrong : appThemeTokens.dark.primaryFg,
+      color: appThemeTokens.dark.primaryFg,
     },
     {
       minRatio: 0.6,
@@ -45,7 +90,7 @@ function progressStops(theme: Theme): readonly ProgressStop[] {
     {
       minRatio: 0.75,
       backgroundColor: palette.info.main,
-      color: isLight ? "#ffffff" : appThemeTokens.dark.primaryFg,
+      color: appThemeTokens.dark.primaryFg,
     },
     {
       minRatio: 0.9,
@@ -64,7 +109,7 @@ function grayFill(theme: Theme): CompletionChipFill {
   const tokens = appThemeTokens[theme.palette.mode];
   return theme.palette.mode === "dark"
     ? { backgroundColor: "#3f3f3f", color: tokens.text }
-    : { backgroundColor: tokens.border, color: tokens.primaryFg };
+    : { backgroundColor: "#737373", color: tokens.primaryFg };
 }
 
 function progressFill(theme: Theme, ratio: number): CompletionChipFill {

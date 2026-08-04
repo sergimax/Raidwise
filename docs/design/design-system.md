@@ -313,7 +313,7 @@ Item links: weight `600`, dotted underline → solid on hover.
 
 ### Completion chips
 
-Progress fill in `src/utils/completion-chip-color.ts` from theme palette: muted (`divider` / dark gray) → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). Same family as status / chrome — not the ilvl rainbow.
+Progress fill in `src/utils/completion-chip-color.ts` from theme palette: muted → `error` → `warning` → `secondary` (brand) → `info` → `success` (ok). **Light** uses darker/dimmer stops (`.dark` + deeper mid hues) so chips sit quieter on cream; **dark** keeps full palette brightness.
 
 ### Character name on tinted cells
 

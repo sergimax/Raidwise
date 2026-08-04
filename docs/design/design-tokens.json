@@ -320,21 +320,33 @@
     },
     "completionChips": {
       "source": "src/utils/completion-chip-color.ts",
-      "note": "Derived from createAppTheme palette at runtime (not fixed hex).",
+      "note": "Derived from createAppTheme palette; light uses dimmer/darker stops.",
       "gray": {
-        "light": { "backgroundColor": "divider (#8a8a8a)", "color": "primaryFg" },
+        "light": { "backgroundColor": "#737373", "color": "primaryFg" },
         "dark": { "backgroundColor": "#3f3f3f", "color": "text.primary" }
       },
-      "progressStops": [
-        { "minRatio": 0.001, "role": "error.main" },
-        { "minRatio": 0.15, "role": "error.dark" },
-        { "minRatio": 0.3, "role": "warning.dark" },
-        { "minRatio": 0.45, "role": "warning.main" },
-        { "minRatio": 0.6, "role": "secondary.main (brand)" },
-        { "minRatio": 0.75, "role": "info.main" },
-        { "minRatio": 0.9, "role": "info.dark" },
-        { "minRatio": 1, "role": "success.main (ok)" }
-      ]
+      "progressStops": {
+        "light": [
+          { "minRatio": 0.001, "role": "error.dark" },
+          { "minRatio": 0.15, "role": "#991b1b" },
+          { "minRatio": 0.3, "role": "warning.dark" },
+          { "minRatio": 0.45, "role": "#a16207" },
+          { "minRatio": 0.6, "role": "secondary.dark (brand)" },
+          { "minRatio": 0.75, "role": "info.dark" },
+          { "minRatio": 0.9, "role": "#075985" },
+          { "minRatio": 1, "role": "success.dark (ok)" }
+        ],
+        "dark": [
+          { "minRatio": 0.001, "role": "error.main" },
+          { "minRatio": 0.15, "role": "error.dark" },
+          { "minRatio": 0.3, "role": "warning.dark" },
+          { "minRatio": 0.45, "role": "warning.main" },
+          { "minRatio": 0.6, "role": "secondary.main (brand)" },
+          { "minRatio": 0.75, "role": "info.main" },
+          { "minRatio": 0.9, "role": "info.dark" },
+          { "minRatio": 1, "role": "success.main (ok)" }
+        ]
+      }
     }
   }
 }
