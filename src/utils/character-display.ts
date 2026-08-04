@@ -1,4 +1,3 @@
-import type { PaletteMode } from "@mui/material";
 import type { CharacterClass } from "../types/characters.ts";
 
 /** WoW class colors are stored without a leading `#`. */
@@ -100,12 +99,11 @@ export function classColorChipSx(characterClass: CharacterClass) {
 
 /**
  * Typography sx for a character / class name.
- * Class color is the chip background; text is accessible black/white.
- * `colorMode` kept for call-site compatibility (same treatment in both modes).
+ * Class color is the chip background; text is accessible black/white
+ * (same treatment in light and dark app modes).
  */
 export function characterNameDisplaySx(
   characterClass?: CharacterClass,
-  _colorMode: PaletteMode = "light",
 ): ReturnType<typeof classColorChipSx> | { readonly fontWeight: 600 } {
   if (!characterClass) {
     return { fontWeight: 600 } as const;

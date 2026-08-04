@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { getLocalizedClassName } from "../../i18n/localized-domain.ts";
 import { characterNameDisplaySx } from "../../utils/character-display.ts";
@@ -11,7 +10,6 @@ export function ClassOptionLabel({
   variant = "body2",
 }: ClassOptionLabelProps) {
   const { locale } = useTranslation();
-  const theme = useTheme();
 
   return (
     <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
@@ -26,7 +24,7 @@ export function ClassOptionLabel({
       <Typography
         component="span"
         variant={variant}
-        sx={characterNameDisplaySx(characterClass, theme.palette.mode)}
+        sx={characterNameDisplaySx(characterClass)}
       >
         {getLocalizedClassName(characterClass.name, locale)}
       </Typography>
