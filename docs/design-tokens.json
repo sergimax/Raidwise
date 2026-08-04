@@ -1,25 +1,54 @@
 {
-  "$schemaComment": "Portable design tokens extracted from my-raid-cds. Core tokens are app-agnostic; domain.* is product-specific.",
+  "$schemaComment": "Portable design tokens for my-raid-cds — Super ★ chrome + domain overlays.",
   "meta": {
     "name": "my-raid-cds",
-    "version": "1.0.0",
+    "version": "2.0.0",
+    "themeId": "super",
     "sources": [
+      "docs/theme-super.json",
       "src/theme/create-app-theme.ts",
+      "src/theme/links.css",
       "src/theme/tooltip-surface.ts",
       "src/index.css",
       "src/App.css"
     ],
-    "muiSpacingPx": 8
+    "muiSpacingPx": 8,
+    "bilingualFonts": {
+      "rule": "RU+EN — Cyrillic + Latin required",
+      "body": "Noto Sans",
+      "display": "Onest",
+      "mono": ["JetBrains Mono", "IBM Plex Mono"]
+    }
+  },
+  "semantics": {
+    "brandNotPrimary": true,
+    "primaryIsInverseInk": true,
+    "okIsGreen": true,
+    "dangerIsRed": true,
+    "brandDistinctFromDangerAndOk": true,
+    "interactiveBorder": "#8a8a8a",
+    "domain": {
+      "bisReady": "ok",
+      "defect": "danger",
+      "missingBisHints": "warning",
+      "ilvlUpgradeHints": "info"
+    }
   },
   "typography": {
-    "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+    "fontFamily": {
+      "body": "'Noto Sans', system-ui, sans-serif",
+      "display": "'Onest', 'Noto Sans', system-ui, sans-serif",
+      "mono": "'JetBrains Mono', 'IBM Plex Mono', monospace"
+    },
+    "brandNameWeight": 700,
+    "proseLineHeight": 1.55,
     "button": {
       "textTransform": "none",
       "fontWeight": 600,
       "letterSpacing": 0
     },
-    "h6": { "fontWeight": 700, "letterSpacing": "-0.02em" },
-    "subtitle1": { "fontWeight": 600, "letterSpacing": "-0.01em" }
+    "h6": { "fontFamily": "display", "fontWeight": 700, "letterSpacing": "-0.02em" },
+    "subtitle1": { "fontFamily": "display", "fontWeight": 600, "letterSpacing": "-0.01em" }
   },
   "shape": {
     "borderRadius": 10,
@@ -28,12 +57,15 @@
     "filterCardBorderRadius": 8,
     "inlineMentionBorderRadius": 8,
     "iconThumbBorderRadius": 4,
-    "scrollbarThumbBorderRadius": 999
+    "scrollbarThumbBorderRadius": 999,
+    "gap": "0.55rem",
+    "pad": "0.65rem"
   },
   "borders": {
     "width": "1px",
     "style": "solid",
-    "defaultColorToken": "divider"
+    "defaultColorToken": "divider",
+    "interactive": "#8a8a8a"
   },
   "spacingRecipes": {
     "panelPadding": { "xs": 12, "sm": 16 },
@@ -43,15 +75,15 @@
   },
   "shadows": {
     "card": {
-      "light": "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06)",
-      "dark": "0 1px 2px rgba(0, 0, 0, 0.35)"
+      "light": "0 6px 18px rgba(0, 0, 0, 0.07)",
+      "dark": "0 8px 24px rgba(0, 0, 0, 0.4)"
     },
     "inlineMention": {
-      "light": "0 1px 1px rgba(15, 23, 42, 0.04)",
+      "light": "0 1px 1px rgba(0, 0, 0, 0.04)",
       "dark": "0 1px 1px rgba(0, 0, 0, 0.25)"
     },
     "menu": {
-      "light": "0 8px 24px rgba(15, 23, 42, 0.12)",
+      "light": "0 8px 24px rgba(0, 0, 0, 0.12)",
       "dark": "0 8px 24px rgba(0, 0, 0, 0.45)"
     },
     "stickyColumnEdge": "1px 0 0 rgba(0,0,0,0.08)"
@@ -59,8 +91,8 @@
   "scrollbar": {
     "sizePx": 8,
     "track": "transparent",
-    "thumb": { "light": "#cbd5e1", "dark": "#475569" },
-    "thumbHover": { "light": "#94a3b8", "dark": "#64748b" }
+    "thumb": { "light": "#c4c4c0", "dark": "#555555" },
+    "thumbHover": { "light": "#8a8a8a", "dark": "#8a8a8a" }
   },
   "shell": {
     "toolbarMinHeightPx": { "xs": 56, "sm": 64 },
@@ -74,69 +106,123 @@
     "htmlAttribute": "data-color-mode",
     "storageKeyExample": "my-raid-cds-color-mode",
     "themeColorMeta": {
-      "light": "#f1f5f9",
-      "dark": "#0f172a"
+      "light": "#fcfbf9",
+      "dark": "#1a1a1a"
     }
   },
   "cssVariables": {
     "light": {
-      "--text": "#0f172a",
-      "--text-muted": "#64748b",
-      "--border": "#e2e8f0",
+      "--bg": "#fcfbf9",
+      "--page-bg": "#fcfbf9",
       "--surface": "#ffffff",
-      "--page-bg": "#f1f5f9",
-      "--link": "#2563eb",
-      "--link-hover": "#1d4ed8",
+      "--chip-bg": "#f3f2ef",
+      "--header-bg": "rgba(252, 251, 249, 0.96)",
+      "--border": "#8a8a8a",
+      "--text": "#141414",
+      "--text-strong": "#0a0a0a",
+      "--text-muted": "#555555",
+      "--brand": "#9a3412",
+      "--brand-soft": "#fff7ed",
+      "--brand-border": "#c2410c",
+      "--ok": "#166534",
+      "--ok-bg": "#ecfdf5",
+      "--ok-border": "#166534",
+      "--danger": "#dc2626",
+      "--danger-bg": "#fef2f2",
+      "--danger-border": "#dc2626",
+      "--link": "#2c5282",
+      "--link-spot": "#9a3412",
+      "--primary-bg": "#0a0a0a",
+      "--primary-fg": "#ffffff",
+      "--shadow": "0 6px 18px rgba(0, 0, 0, 0.07)",
       "--scrollbar-size": "8px",
       "--scrollbar-track": "transparent",
-      "--scrollbar-thumb": "#cbd5e1",
-      "--scrollbar-thumb-hover": "#94a3b8"
+      "--scrollbar-thumb": "#c4c4c0",
+      "--scrollbar-thumb-hover": "#8a8a8a"
     },
     "dark": {
-      "--text": "#f8fafc",
-      "--text-muted": "#94a3b8",
-      "--border": "#334155",
-      "--surface": "#1e293b",
-      "--page-bg": "#0f172a",
-      "--link": "#60a5fa",
-      "--link-hover": "#93c5fd",
-      "--scrollbar-thumb": "#475569",
-      "--scrollbar-thumb-hover": "#64748b"
+      "--bg": "#1a1a1a",
+      "--page-bg": "#1a1a1a",
+      "--surface": "#242424",
+      "--chip-bg": "#1f1f1f",
+      "--header-bg": "rgba(26, 26, 26, 0.96)",
+      "--border": "#8a8a8a",
+      "--text": "#f2f2f2",
+      "--text-strong": "#fafafa",
+      "--text-muted": "#a3a3a3",
+      "--brand": "#fb923c",
+      "--brand-soft": "#3d2818",
+      "--brand-border": "#fb923c",
+      "--ok": "#86efac",
+      "--ok-bg": "rgba(134, 239, 172, 0.12)",
+      "--ok-border": "#86efac",
+      "--danger": "#ff7b72",
+      "--danger-bg": "rgba(255, 123, 114, 0.14)",
+      "--danger-border": "#ff7b72",
+      "--link": "#8ab4c8",
+      "--link-spot": "#fb923c",
+      "--primary-bg": "#fafafa",
+      "--primary-fg": "#111111",
+      "--shadow": "0 8px 24px rgba(0, 0, 0, 0.4)",
+      "--scrollbar-thumb": "#555555",
+      "--scrollbar-thumb-hover": "#8a8a8a"
     }
   },
   "palette": {
     "light": {
-      "primary": { "main": "#2563eb", "light": "#60a5fa", "dark": "#1d4ed8" },
-      "secondary": { "main": "#0f766e", "light": "#14b8a6", "dark": "#0d5c56" },
+      "primary": { "main": "#0a0a0a", "light": "#333333", "dark": "#000000", "contrastText": "#ffffff" },
+      "secondary": { "main": "#9a3412", "light": "#c2410c", "dark": "#7c2d12", "contrastText": "#ffffff" },
+      "success": { "main": "#166534", "contrastText": "#ffffff" },
+      "error": { "main": "#dc2626", "contrastText": "#ffffff" },
       "info": { "main": "#0284c7", "light": "#38bdf8", "dark": "#0369a1" },
       "warning": { "main": "#d97706", "light": "#fbbf24", "dark": "#b45309" },
-      "background": { "default": "#f1f5f9", "paper": "#ffffff" },
-      "divider": "#e2e8f0",
-      "text": { "primary": "#0f172a", "secondary": "#64748b" },
+      "background": { "default": "#fcfbf9", "paper": "#ffffff" },
+      "divider": "#8a8a8a",
+      "text": { "primary": "#141414", "secondary": "#555555" },
       "action": {
-        "hover": "rgba(15, 23, 42, 0.04)",
-        "selected": "rgba(37, 99, 235, 0.08)"
+        "hover": "rgba(20, 20, 20, 0.04)",
+        "selected": "rgba(154, 52, 18, 0.1)"
       },
-      "inputHoverBorder": "#cbd5e1"
+      "inputHoverBorder": "#6b6b6b"
     },
     "dark": {
-      "primary": { "main": "#60a5fa", "light": "#93c5fd", "dark": "#2563eb" },
-      "secondary": { "main": "#2dd4bf", "light": "#5eead4", "dark": "#14b8a6" },
+      "primary": { "main": "#fafafa", "light": "#ffffff", "dark": "#e5e5e5", "contrastText": "#111111" },
+      "secondary": { "main": "#fb923c", "light": "#fdba74", "dark": "#ea580c", "contrastText": "#111111" },
+      "success": { "main": "#86efac", "contrastText": "#111111" },
+      "error": { "main": "#ff7b72", "contrastText": "#111111" },
       "info": { "main": "#38bdf8", "light": "#7dd3fc", "dark": "#0284c7" },
       "warning": { "main": "#f59e0b", "light": "#fbbf24", "dark": "#d97706" },
-      "background": { "default": "#0f172a", "paper": "#1e293b" },
-      "divider": "#334155",
-      "text": { "primary": "#f8fafc", "secondary": "#94a3b8" },
+      "background": { "default": "#1a1a1a", "paper": "#242424" },
+      "divider": "#8a8a8a",
+      "text": { "primary": "#f2f2f2", "secondary": "#a3a3a3" },
       "action": {
-        "hover": "rgba(248, 250, 252, 0.06)",
-        "selected": "rgba(96, 165, 250, 0.16)"
+        "hover": "rgba(242, 242, 242, 0.06)",
+        "selected": "rgba(251, 146, 60, 0.18)"
       },
-      "inputHoverBorder": "#475569"
+      "inputHoverBorder": "#a3a3a3"
+    }
+  },
+  "linkStyles": {
+    "quiet": {
+      "colorToken": "link",
+      "fontWeight": 500,
+      "textDecorationThickness": "1px",
+      "textUnderlineOffset": "3px"
+    },
+    "spot": {
+      "className": "link-spot",
+      "colorToken": "linkSpot",
+      "fontFamilyToken": "display",
+      "fontWeight": 700,
+      "fontStyle": "italic",
+      "textDecorationThickness": "2px",
+      "textUnderlineOffset": "3px",
+      "letterSpacing": "0.01em"
     }
   },
   "atmosphere": {
-    "light": "radial-gradient(1200px 600px at 10% -10%, rgba(37, 99, 235, 0.07), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(15, 118, 110, 0.05), transparent 50%)",
-    "dark": "radial-gradient(1000px 520px at 8% -12%, rgba(96, 165, 250, 0.12), transparent 55%), radial-gradient(800px 480px at 100% 0%, rgba(45, 212, 191, 0.08), transparent 50%)",
+    "light": "radial-gradient(1200px 600px at 10% -10%, rgba(154, 52, 18, 0.06), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(194, 65, 12, 0.04), transparent 50%)",
+    "dark": "radial-gradient(1000px 520px at 8% -12%, rgba(251, 146, 60, 0.1), transparent 55%), radial-gradient(800px 480px at 100% 0%, rgba(61, 40, 24, 0.45), transparent 50%)",
     "backgroundAttachment": "fixed"
   },
   "components": {
@@ -156,6 +242,7 @@
     "button": {
       "disableElevation": true,
       "borderRadius": 8,
+      "primaryIsInverseInk": true,
       "outlinedFillAlpha": { "light": 0.7, "dark": 0.4 }
     },
     "outlinedInput": {

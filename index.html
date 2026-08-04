@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="Track raid cooldowns for your characters and dungeons. Manage characters, dungeon lockouts, and cooldown toggles." />
-    <meta name="theme-color" content="#f1f5f9" />
+    <meta name="theme-color" content="#fcfbf9" />
     <!-- Sync theme before paint (same key/logic as use-color-mode) to avoid a light flash. -->
     <script>
       (function () {
@@ -28,10 +28,16 @@
         // Match browser chrome (address bar, etc.) to --page-bg for each mode.
         var themeMeta = document.querySelector('meta[name="theme-color"]');
         if (themeMeta) {
-          themeMeta.setAttribute("content", mode === "dark" ? "#0f172a" : "#f1f5f9");
+          themeMeta.setAttribute("content", mode === "dark" ? "#1a1a1a" : "#fcfbf9");
         }
       })();
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=Onest:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="icon" type="image/svg+xml" href="/logo-as-icon.svg" />
     <title>My Raid CDs – Raid Cooldown Tracker</title>
     <meta property="og:title" content="My Raid CDs – Raid Cooldown Tracker" />

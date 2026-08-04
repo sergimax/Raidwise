@@ -11,20 +11,45 @@
 }
 
 :root {
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
+  /* Super ★ light tokens */
+  --bg: #fcfbf9;
+  --page-bg: var(--bg);
   --surface: #ffffff;
-  --page-bg: #f1f5f9;
-  --link: #2563eb;
-  --link-hover: #1d4ed8;
+  --chip-bg: #f3f2ef;
+  --header-bg: rgba(252, 251, 249, 0.96);
+  --border: #8a8a8a;
+  --text: #141414;
+  --text-strong: #0a0a0a;
+  --text-muted: #555555;
+  --brand: #9a3412;
+  --brand-soft: #fff7ed;
+  --brand-border: #c2410c;
+  --ok: #166534;
+  --ok-bg: #ecfdf5;
+  --ok-border: #166534;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --danger-border: #dc2626;
+  --link: #2c5282;
+  --link-spot: #9a3412;
+  --link-hover: var(--link-spot);
+  --primary-bg: #0a0a0a;
+  --primary-fg: #ffffff;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  --radius: 10px;
+  --control-radius: 8px;
+  --gap: 0.55rem;
+  --pad: 0.65rem;
+  --font-body: "Noto Sans", system-ui, sans-serif;
+  --font-display: "Onest", "Noto Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", monospace;
   --scrollbar-size: 8px;
   --scrollbar-track: transparent;
-  --scrollbar-thumb: #cbd5e1;
-  --scrollbar-thumb-hover: #94a3b8;
+  --scrollbar-thumb: #c4c4c0;
+  --scrollbar-thumb-hover: #8a8a8a;
 
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: var(--font-body);
+  line-height: 1.55;
   font-weight: 400;
   color-scheme: light;
   color: var(--text);
@@ -36,15 +61,32 @@
 }
 
 :root[data-color-mode="dark"] {
-  --text: #f8fafc;
-  --text-muted: #94a3b8;
-  --border: #334155;
-  --surface: #1e293b;
-  --page-bg: #0f172a;
-  --link: #60a5fa;
-  --link-hover: #93c5fd;
-  --scrollbar-thumb: #475569;
-  --scrollbar-thumb-hover: #64748b;
+  --bg: #1a1a1a;
+  --page-bg: var(--bg);
+  --surface: #242424;
+  --chip-bg: #1f1f1f;
+  --header-bg: rgba(26, 26, 26, 0.96);
+  --border: #8a8a8a;
+  --text: #f2f2f2;
+  --text-strong: #fafafa;
+  --text-muted: #a3a3a3;
+  --brand: #fb923c;
+  --brand-soft: #3d2818;
+  --brand-border: #fb923c;
+  --ok: #86efac;
+  --ok-bg: rgba(134, 239, 172, 0.12);
+  --ok-border: #86efac;
+  --danger: #ff7b72;
+  --danger-bg: rgba(255, 123, 114, 0.14);
+  --danger-border: #ff7b72;
+  --link: #8ab4c8;
+  --link-spot: #fb923c;
+  --link-hover: var(--link-spot);
+  --primary-bg: #fafafa;
+  --primary-fg: #111111;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --scrollbar-thumb: #555555;
+  --scrollbar-thumb-hover: #8a8a8a;
   color-scheme: dark;
 }
 
@@ -78,15 +120,6 @@
   background: transparent;
 }
 
-a {
-  color: var(--link);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
 body {
   margin: 0;
   min-width: 320px;
@@ -100,6 +133,8 @@ textarea {
 }
 
 h1 {
+  font-family: var(--font-display);
   font-size: 1.35em;
+  font-weight: 700;
   line-height: 1.1;
 }

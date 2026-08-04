@@ -1,69 +1,161 @@
 import { alpha, createTheme, type PaletteMode } from "@mui/material/styles";
 import { getTooltipSurface } from "./tooltip-surface.ts";
 
-const fontFamily = [
+/** Super ★ body stack — Cyrillic + Latin. */
+const fontFamilyBody = ["'Noto Sans'", "system-ui", "sans-serif"].join(",");
+
+/** Super ★ display stack — brand / titles. */
+export const fontFamilyDisplay = [
+  "'Onest'",
+  "'Noto Sans'",
   "system-ui",
-  "-apple-system",
-  "BlinkMacSystemFont",
-  '"Segoe UI"',
-  "Roboto",
-  "Helvetica",
-  "Arial",
   "sans-serif",
 ].join(",");
 
+/** Super ★ mono stack — chips / meta. */
+export const fontFamilyMono = [
+  "'JetBrains Mono'",
+  "'IBM Plex Mono'",
+  "monospace",
+].join(",");
+
+/** Super ★ mode tokens (shared with CSS vars in index.css). */
+export const superThemeTokens = {
+  light: {
+    bg: "#fcfbf9",
+    surface: "#ffffff",
+    chipBg: "#f3f2ef",
+    headerBg: "rgba(252, 251, 249, 0.96)",
+    border: "#8a8a8a",
+    text: "#141414",
+    textStrong: "#0a0a0a",
+    textMuted: "#555555",
+    brand: "#9a3412",
+    brandSoft: "#fff7ed",
+    brandBorder: "#c2410c",
+    ok: "#166534",
+    okBg: "#ecfdf5",
+    danger: "#dc2626",
+    dangerBg: "#fef2f2",
+    link: "#2c5282",
+    linkSpot: "#9a3412",
+    primaryBg: "#0a0a0a",
+    primaryFg: "#ffffff",
+    shadow: "0 6px 18px rgba(0, 0, 0, 0.07)",
+    inputHoverBorder: "#6b6b6b",
+    themeColorMeta: "#fcfbf9",
+  },
+  dark: {
+    bg: "#1a1a1a",
+    surface: "#242424",
+    chipBg: "#1f1f1f",
+    headerBg: "rgba(26, 26, 26, 0.96)",
+    border: "#8a8a8a",
+    text: "#f2f2f2",
+    textStrong: "#fafafa",
+    textMuted: "#a3a3a3",
+    brand: "#fb923c",
+    brandSoft: "#3d2818",
+    brandBorder: "#fb923c",
+    ok: "#86efac",
+    okBg: "rgba(134, 239, 172, 0.12)",
+    danger: "#ff7b72",
+    dangerBg: "rgba(255, 123, 114, 0.14)",
+    link: "#8ab4c8",
+    linkSpot: "#fb923c",
+    primaryBg: "#fafafa",
+    primaryFg: "#111111",
+    shadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+    inputHoverBorder: "#a3a3a3",
+    themeColorMeta: "#1a1a1a",
+  },
+} as const;
+
 export function createAppTheme(mode: PaletteMode) {
   const isLight = mode === "light";
+  const tokens = superThemeTokens[mode];
 
   return createTheme({
     palette: {
       mode,
       ...(isLight
         ? {
+            // Primary CTAs = inverse ink (never brand orange).
             primary: {
-              main: "#2563eb",
-              light: "#60a5fa",
-              dark: "#1d4ed8",
+              main: tokens.primaryBg,
+              light: "#333333",
+              dark: "#000000",
+              contrastText: tokens.primaryFg,
             },
+            // Secondary = brand identity (spotlight / template CTAs).
             secondary: {
-              main: "#0f766e",
-              light: "#14b8a6",
-              dark: "#0d5c56",
+              main: tokens.brand,
+              light: tokens.brandBorder,
+              dark: "#7c2d12",
+              contrastText: "#ffffff",
             },
-            background: {
-              default: "#f1f5f9",
-              paper: "#ffffff",
+            success: {
+              main: tokens.ok,
+              light: "#22c55e",
+              dark: "#14532d",
+              contrastText: "#ffffff",
             },
-            divider: "#e2e8f0",
+            error: {
+              main: tokens.danger,
+              light: "#f87171",
+              dark: "#b91c1c",
+              contrastText: "#ffffff",
+            },
+            // Domain: ilvl upgrade hints (keep distinct from brand / ok / danger).
             info: {
               main: "#0284c7",
               light: "#38bdf8",
               dark: "#0369a1",
             },
+            // Domain: missing BiS hints (amber ≠ brand orange).
             warning: {
               main: "#d97706",
               light: "#fbbf24",
               dark: "#b45309",
             },
+            background: {
+              default: tokens.bg,
+              paper: tokens.surface,
+            },
+            divider: tokens.border,
             text: {
-              primary: "#0f172a",
-              secondary: "#64748b",
+              primary: tokens.text,
+              secondary: tokens.textMuted,
             },
             action: {
-              hover: alpha("#0f172a", 0.04),
-              selected: alpha("#2563eb", 0.08),
+              hover: alpha(tokens.text, 0.04),
+              selected: alpha(tokens.brand, 0.1),
             },
           }
         : {
             primary: {
-              main: "#60a5fa",
-              light: "#93c5fd",
-              dark: "#2563eb",
+              main: tokens.primaryBg,
+              light: "#ffffff",
+              dark: "#e5e5e5",
+              contrastText: tokens.primaryFg,
             },
             secondary: {
-              main: "#2dd4bf",
-              light: "#5eead4",
-              dark: "#14b8a6",
+              main: tokens.brand,
+              light: "#fdba74",
+              dark: "#ea580c",
+              contrastText: "#111111",
+            },
+            success: {
+              main: tokens.ok,
+              light: "#bbf7d0",
+              dark: "#4ade80",
+              contrastText: "#111111",
+            },
+            error: {
+              main: tokens.danger,
+              light: "#fecaca",
+              dark: "#f87171",
+              contrastText: "#111111",
             },
             info: {
               main: "#38bdf8",
@@ -76,32 +168,34 @@ export function createAppTheme(mode: PaletteMode) {
               dark: "#d97706",
             },
             background: {
-              default: "#0f172a",
-              paper: "#1e293b",
+              default: tokens.bg,
+              paper: tokens.surface,
             },
-            divider: "#334155",
+            divider: tokens.border,
             text: {
-              primary: "#f8fafc",
-              secondary: "#94a3b8",
+              primary: tokens.text,
+              secondary: tokens.textMuted,
             },
             action: {
-              hover: alpha("#f8fafc", 0.06),
-              selected: alpha("#60a5fa", 0.16),
+              hover: alpha(tokens.text, 0.06),
+              selected: alpha(tokens.brand, 0.18),
             },
           }),
     },
     typography: {
-      fontFamily,
+      fontFamily: fontFamilyBody,
       button: {
         textTransform: "none",
         fontWeight: 600,
         letterSpacing: 0,
       },
       h6: {
+        fontFamily: fontFamilyDisplay,
         fontWeight: 700,
         letterSpacing: "-0.02em",
       },
       subtitle1: {
+        fontFamily: fontFamilyDisplay,
         fontWeight: 600,
         letterSpacing: "-0.01em",
       },
@@ -111,10 +205,12 @@ export function createAppTheme(mode: PaletteMode) {
       MuiCssBaseline: {
         styleOverrides: {
           body: {
+            // Warm paper atmosphere — brand soft tint, not SaaS blue/teal.
             backgroundImage: isLight
-              ? "radial-gradient(1200px 600px at 10% -10%, rgba(37, 99, 235, 0.07), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(15, 118, 110, 0.05), transparent 50%)"
-              : "radial-gradient(1000px 520px at 8% -12%, rgba(96, 165, 250, 0.12), transparent 55%), radial-gradient(800px 480px at 100% 0%, rgba(45, 212, 191, 0.08), transparent 50%)",
+              ? "radial-gradient(1200px 600px at 10% -10%, rgba(154, 52, 18, 0.06), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(194, 65, 12, 0.04), transparent 50%)"
+              : "radial-gradient(1000px 520px at 8% -12%, rgba(251, 146, 60, 0.1), transparent 55%), radial-gradient(800px 480px at 100% 0%, rgba(61, 40, 24, 0.45), transparent 50%)",
             backgroundAttachment: "fixed",
+            lineHeight: 1.55,
           },
         },
       },
@@ -135,12 +231,24 @@ export function createAppTheme(mode: PaletteMode) {
             borderColor: theme.palette.divider,
             backgroundColor: alpha(theme.palette.background.paper, isLight ? 0.7 : 0.4),
             "&:hover": {
-              borderColor: theme.palette.mode === "light" ? "#cbd5e1" : "#475569",
+              borderColor: tokens.inputHoverBorder,
               backgroundColor: theme.palette.action.hover,
             },
           }),
         },
         variants: [
+          {
+            props: { variant: "contained", color: "primary" },
+            style: {
+              backgroundColor: tokens.primaryBg,
+              color: tokens.primaryFg,
+              border: `1px solid ${tokens.primaryBg}`,
+              "&:hover": {
+                backgroundColor: isLight ? "#262626" : "#e5e5e5",
+                borderColor: isLight ? "#262626" : "#e5e5e5",
+              },
+            },
+          },
           {
             props: { variant: "contained", color: "inherit" },
             style: ({ theme }) => ({
@@ -174,9 +282,7 @@ export function createAppTheme(mode: PaletteMode) {
           },
           outlined: ({ theme }) => ({
             borderColor: theme.palette.divider,
-            boxShadow: isLight
-              ? "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06)"
-              : "0 1px 2px rgba(0, 0, 0, 0.35)",
+            boxShadow: tokens.shadow,
           }),
         },
       },
@@ -196,9 +302,7 @@ export function createAppTheme(mode: PaletteMode) {
             borderRadius: theme.shape.borderRadius,
             border: `1px solid ${theme.palette.divider}`,
             backgroundColor: theme.palette.background.paper,
-            boxShadow: isLight
-              ? "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06)"
-              : "0 1px 2px rgba(0, 0, 0, 0.35)",
+            boxShadow: tokens.shadow,
           }),
         },
       },
@@ -257,13 +361,13 @@ export function createAppTheme(mode: PaletteMode) {
           switchBase: ({ theme }) =>
             theme.palette.mode === "dark"
               ? {
-                  color: "#64748b",
+                  color: tokens.textMuted,
                   "& + .MuiSwitch-track": {
-                    backgroundColor: "#334155",
+                    backgroundColor: tokens.chipBg,
                     opacity: 1,
                   },
                   "&.Mui-checked": {
-                    color: "#ffffff",
+                    color: tokens.primaryFg,
                     "& + .MuiSwitch-track": {
                       backgroundColor: theme.palette.primary.main,
                       opacity: 1,
@@ -278,7 +382,7 @@ export function createAppTheme(mode: PaletteMode) {
           root: ({ theme }) => ({
             backgroundColor: alpha(theme.palette.background.paper, isLight ? 0.8 : 0.35),
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: isLight ? "#cbd5e1" : "#475569",
+              borderColor: tokens.inputHoverBorder,
             },
           }),
         },
@@ -289,7 +393,7 @@ export function createAppTheme(mode: PaletteMode) {
             borderRadius: 10,
             border: `1px solid ${theme.palette.divider}`,
             boxShadow: isLight
-              ? "0 8px 24px rgba(15, 23, 42, 0.12)"
+              ? "0 8px 24px rgba(0, 0, 0, 0.12)"
               : "0 8px 24px rgba(0, 0, 0, 0.45)",
           }),
         },

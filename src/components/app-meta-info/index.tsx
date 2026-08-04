@@ -16,6 +16,7 @@ export function AppVersionLabel() {
       color="text.secondary"
       aria-label={t("header.versionAria", { version: __APP_VERSION__ })}
       sx={{
+        fontFamily: "var(--font-mono)",
         fontVariantNumeric: "tabular-nums",
         lineHeight: 1,
         display: "inline-block",

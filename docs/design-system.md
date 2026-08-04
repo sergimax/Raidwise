@@ -6,11 +6,14 @@ Portable visual tokens and UI recipes used by this app. Use as:
 2. **Import seed** for another project (`docs/design-tokens.json` + this file)
 3. **Cross-project alignment** — keep core tokens stable; extend domain layers per app
 
+**Theme contract:** [theme-super.md](./theme-super.md) · [theme-super.json](./theme-super.json) (Super ★)
+
 **Source of truth (code):**
 
 | Layer | Path |
 | --- | --- |
-| MUI theme | `src/theme/create-app-theme.ts` |
+| MUI theme | `src/theme/create-app-theme.ts` (`superThemeTokens`) |
+| Quiet / spot links | `src/theme/links.css` |
 | Tooltip surfaces | `src/theme/tooltip-surface.ts` |
 | CSS variables + scrollbars | `src/index.css` |
 | App shell spacing | `src/App.css` |
@@ -23,15 +26,16 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 ## Visual direction
 
-- **Base:** Slate neutrals (Tailwind slate scale), not pure grey
-- **Brand / primary:** Blue (`#2563eb` light → `#60a5fa` dark)
-- **Accent / secondary:** Teal (`#0f766e` light → `#2dd4bf` dark)
-- **Surfaces:** Soft paper cards with `1px` divider borders and light elevation; no heavy multi-layer shadows
-- **Radii:** Soft but not pill-heavy — global `10px`, controls often `8px`
-- **Type:** System UI stack; buttons **no** uppercase (`textTransform: none`)
-- **Atmosphere:** Fixed radial gradients on `body` (primary + secondary tint), subtle
+| Trait | Rule |
+| --- | --- |
+| Chrome | Quiet MUJI neutrals — warm paper (`#fcfbf9` / `#1a1a1a`), not slate-blue fog |
+| Brand | Burnt orange (Signal energy) — identity only, **not** primary CTAs |
+| Primary CTAs | Inverse ink (`#0a0a0a` on light / `#fafafa` on dark) |
+| Ok / Danger | Forest/mint green · true red — never reuse brand orange |
+| Surfaces | Soft card shadow + modest radii (`10` / `8`) |
+| Type | Onest display · Noto Sans body · JetBrains Mono chips/meta (Cyrillic + Latin) |
 
-Avoid defaulting new work to purple-on-white gradients, cream/serif “AI landing” looks, or glow-heavy dark chrome unless the product explicitly needs them.
+**Avoid:** Facebook/SaaS blue as brand; pink/magenta identity; brand≈danger or brand≈ok pairs; Latin-only display fonts (Syne, Space Grotesk) as sole UI fonts.
 
 ---
 
@@ -40,7 +44,8 @@ Avoid defaulting new work to purple-on-white gradients, cream/serif “AI landin
 - Attribute: `document.documentElement.dataset.colorMode` = `light` | `dark`
 - CSS: `:root` / `:root[data-color-mode="dark"]` in `index.css`
 - Storage key: `my-raid-cds-color-mode`
-- Theme-color meta: light `#f1f5f9`, dark `#0f172a`
+- Theme-color meta: light `#fcfbf9`, dark `#1a1a1a`
+- Default for new ports: `light`
 
 CSS variables mirror the MUI palette so non-MUI markup stays in sync.
 
@@ -52,67 +57,81 @@ CSS variables mirror the MUI palette so non-MUI markup stays in sync.
 
 | Role | Hex | CSS var | MUI |
 | --- | --- | --- | --- |
-| Text | `#0f172a` | `--text` | `text.primary` |
-| Text muted | `#64748b` | `--text-muted` | `text.secondary` |
-| Page background | `#f1f5f9` | `--page-bg` | `background.default` |
+| Page background | `#fcfbf9` | `--bg` / `--page-bg` | `background.default` |
 | Surface / paper | `#ffffff` | `--surface` | `background.paper` |
-| Border / divider | `#e2e8f0` | `--border` | `divider` |
-| Primary | `#2563eb` | `--link` | `primary.main` |
-| Primary dark / hover | `#1d4ed8` | `--link-hover` | `primary.dark` |
-| Primary light | `#60a5fa` | — | `primary.light` |
-| Secondary | `#0f766e` | — | `secondary.main` |
-| Secondary light / dark | `#14b8a6` / `#0d5c56` | — | `secondary.light` / `.dark` |
-| Info (ilvl hints) | `#0284c7` | — | `info.main` |
-| Warning (BiS hints) | `#d97706` | — | `warning.main` |
-| Hover border (inputs) | `#cbd5e1` | — | hard-coded in theme |
-| Scrollbar thumb | `#cbd5e1` → hover `#94a3b8` | `--scrollbar-thumb*` | — |
+| Chip / inset | `#f3f2ef` | `--chip-bg` | — |
+| Sticky header | `rgba(252, 251, 249, 0.96)` | `--header-bg` | AppBar |
+| Border | `#8a8a8a` | `--border` | `divider` |
+| Text | `#141414` | `--text` | `text.primary` |
+| Text strong | `#0a0a0a` | `--text-strong` | — |
+| Text muted | `#555555` | `--text-muted` | `text.secondary` |
+| Brand | `#9a3412` | `--brand` | `secondary.main` |
+| Brand soft / border | `#fff7ed` / `#c2410c` | `--brand-soft` / `--brand-border` | — |
+| Ok | `#166534` | `--ok` | `success.main` |
+| Danger | `#dc2626` | `--danger` | `error.main` |
+| Link (quiet) | `#2c5282` | `--link` | — |
+| Link spot | `#9a3412` | `--link-spot` | — |
+| Primary bg / fg | `#0a0a0a` / `#ffffff` | `--primary-bg` / `--primary-fg` | `primary.main` / contrast |
+| Shadow | `0 6px 18px rgba(0, 0, 0, 0.07)` | `--shadow` | card / paper outlined |
+| Info (ilvl hints) | `#0284c7` | — | `info.main` (domain) |
+| Warning (BiS hints) | `#d97706` | — | `warning.main` (domain) |
+| Scrollbar thumb | `#c4c4c0` → hover `#8a8a8a` | `--scrollbar-thumb*` | — |
 
 Action:
 
-- `hover`: `alpha(#0f172a, 0.04)`
-- `selected`: `alpha(#2563eb, 0.08)`
+- `hover`: `alpha(#141414, 0.04)`
+- `selected`: `alpha(#9a3412, 0.1)`
 
 ### Dark
 
 | Role | Hex | CSS var | MUI |
 | --- | --- | --- | --- |
-| Text | `#f8fafc` | `--text` | `text.primary` |
-| Text muted | `#94a3b8` | `--text-muted` | `text.secondary` |
-| Page background | `#0f172a` | `--page-bg` | `background.default` |
-| Surface / paper | `#1e293b` | `--surface` | `background.paper` |
-| Border / divider | `#334155` | `--border` | `divider` |
-| Primary | `#60a5fa` | `--link` | `primary.main` |
-| Primary light / dark | `#93c5fd` / `#2563eb` | `--link-hover` = light | |
-| Secondary | `#2dd4bf` | — | `secondary.main` |
+| Page background | `#1a1a1a` | `--bg` / `--page-bg` | `background.default` |
+| Surface / paper | `#242424` | `--surface` | `background.paper` |
+| Chip / inset | `#1f1f1f` | `--chip-bg` | — |
+| Sticky header | `rgba(26, 26, 26, 0.96)` | `--header-bg` | AppBar |
+| Border | `#8a8a8a` | `--border` | `divider` |
+| Text | `#f2f2f2` | `--text` | `text.primary` |
+| Text strong | `#fafafa` | `--text-strong` | — |
+| Text muted | `#a3a3a3` | `--text-muted` | `text.secondary` |
+| Brand | `#fb923c` | `--brand` | `secondary.main` |
+| Brand soft / border | `#3d2818` / `#fb923c` | `--brand-soft` / `--brand-border` | — |
+| Ok | `#86efac` | `--ok` | `success.main` |
+| Danger | `#ff7b72` | `--danger` | `error.main` |
+| Link (quiet) | `#8ab4c8` | `--link` | — |
+| Link spot | `#fb923c` | `--link-spot` | — |
+| Primary bg / fg | `#fafafa` / `#111111` | `--primary-bg` / `--primary-fg` | `primary.main` / contrast |
+| Shadow | `0 8px 24px rgba(0, 0, 0, 0.4)` | `--shadow` | card / paper outlined |
 | Info | `#38bdf8` | — | `info.main` |
 | Warning | `#f59e0b` | — | `warning.main` |
-| Hover border (inputs) | `#475569` | — | hard-coded |
-| Scrollbar thumb | `#475569` → hover `#64748b` | `--scrollbar-thumb*` | — |
+| Scrollbar thumb | `#555555` → hover `#8a8a8a` | `--scrollbar-thumb*` | — |
 
 Action:
 
-- `hover`: `alpha(#f8fafc, 0.06)`
-- `selected`: `alpha(#60a5fa, 0.16)`
+- `hover`: `alpha(#f2f2f2, 0.06)`
+- `selected`: `alpha(#fb923c, 0.18)`
 
 ### Page atmosphere (CssBaseline `body`)
 
-- Light: radial blue `rgba(37, 99, 235, 0.07)` + teal `rgba(15, 118, 110, 0.05)`, `backgroundAttachment: fixed`
-- Dark: radial blue `rgba(96, 165, 250, 0.12)` + teal `rgba(45, 212, 191, 0.08)`, fixed
+Warm brand-soft radials (not SaaS blue/teal):
+
+- Light: `rgba(154, 52, 18, 0.06)` + `rgba(194, 65, 12, 0.04)`, `backgroundAttachment: fixed`
+- Dark: `rgba(251, 146, 60, 0.1)` + `rgba(61, 40, 24, 0.45)`, fixed
 
 ---
 
 ## Shape & radius
 
-| Token | Value (px) | Usage |
+| Token | Value | Usage |
 | --- | --- | --- |
-| `shape.borderRadius` | `10` | Global MUI shape; tables, menus, alerts |
-| Control | `8` | Buttons, icon buttons, tooltips |
-| Dialog | `12` | Dialog paper |
-| Filter / step card | `8` (`borderRadius: 1` in theme spacing ≈ 8px) | `ExportFilterSection` |
-| Inline mention chip | `8` | Intro feature chips, edit-icon mention |
-| Game / slot icon thumb | `4` | Class, spec, raid, gear-slot, emblem thumbs |
+| `--radius` / `shape.borderRadius` | `10px` | Global MUI shape; tables, menus, alerts |
+| `--control-radius` / control | `8px` | Buttons, icon buttons, tooltips |
+| Dialog | `12px` | Dialog paper |
+| Filter / step card | `8px` (`borderRadius: 1`) | `ExportFilterSection` |
+| Inline mention chip | `8px` | Intro feature chips |
+| Game / slot icon thumb | `4px` | Class, spec, raid, gear-slot thumbs |
 | Scrollbar thumb | `999` (pill) | WebKit thumb only |
-| Legend / role dot | `50%` | Circular swatches only |
+| `--gap` / `--pad` | `0.55rem` / `0.65rem` | Density reference |
 
 MUI `borderRadius: 1` in `sx` = **8px** when theme spacing is 8.
 
@@ -120,7 +139,7 @@ MUI `borderRadius: 1` in `sx` = **8px** when theme spacing is 8.
 
 ## Borders
 
-Default chrome:
+Interactive chrome uses Super border `#8a8a8a` (≥ ~3:1 vs page bg):
 
 ```text
 border: 1px solid <divider>
@@ -133,7 +152,7 @@ border: 1px solid <divider>
 | Table container | `1px solid divider` | + paper fill + soft shadow |
 | Dialog paper | `1px solid divider` | radius 12 |
 | Menu paper | `1px solid divider` | radius 10 |
-| Outlined button | `divider`; hover `#cbd5e1` / `#475569` | translucent paper fill |
+| Outlined button | `divider`; hover `#6b6b6b` / `#a3a3a3` | translucent paper fill |
 | Outlined input hover outline | same hover border colors | soft paper fill behind field |
 | Intro / panel cards | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | matches filter cards |
 
@@ -143,13 +162,11 @@ Do **not** invent a second border color for generic chrome — use `divider` / `
 
 ## Elevation / shadows
 
-Keep shadows soft and slate-tinted (light) or black (dark).
-
 | Token | Light | Dark |
 | --- | --- | --- |
-| Card / outlined paper / table | `0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06)` | `0 1px 2px rgba(0, 0, 0, 0.35)` |
-| Inline mention (micro) | `0 1px 1px rgba(15, 23, 42, 0.04)` | `0 1px 1px rgba(0, 0, 0, 0.25)` |
-| Menu | `0 8px 24px rgba(15, 23, 42, 0.12)` | `0 8px 24px rgba(0, 0, 0, 0.45)` |
+| Card / outlined paper / table | `0 6px 18px rgba(0, 0, 0, 0.07)` | `0 8px 24px rgba(0, 0, 0, 0.4)` |
+| Inline mention (micro) | `0 1px 1px rgba(0, 0, 0, 0.04)` | `0 1px 1px rgba(0, 0, 0, 0.25)` |
+| Menu | `0 8px 24px rgba(0, 0, 0, 0.12)` | `0 8px 24px rgba(0, 0, 0, 0.45)` |
 | Tooltip | MUI `shadows[8]` | MUI `shadows[12]` |
 | Paper default | `backgroundImage: none` | (no gradient overlay on elevation) |
 | Sticky column edge | `1px 0 0 rgba(0,0,0,0.08)` | (table pin separator; layout-only) |
@@ -158,18 +175,32 @@ Keep shadows soft and slate-tinted (light) or black (dark).
 
 ## Typography
 
-```text
-system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif
-```
+| Role | Stack |
+| --- | --- |
+| Body | `'Noto Sans', system-ui, sans-serif` |
+| Display | `'Onest', 'Noto Sans', system-ui, sans-serif` |
+| Mono | `'JetBrains Mono', 'IBM Plex Mono', monospace` |
+
+Fonts loaded from Google Fonts in `index.html` (Cyrillic + Latin).
 
 | Style | Rules |
 | --- | --- |
+| Brand wordmark | Display stack, weight **700**, color `--brand` |
 | Button | `textTransform: none`, `fontWeight: 600`, `letterSpacing: 0` |
-| `h6` | `fontWeight: 700`, `letterSpacing: -0.02em` |
-| `subtitle1` | `fontWeight: 600`, `letterSpacing: -0.01em` |
-| Step title | `body2`, `fontWeight: 600`; step index `text.secondary`, `fontWeight: 700` |
-| Step description | `caption`, `text.secondary`, `lineHeight: 1.35` |
-| Panel title | `subtitle1`, `fontWeight: 700`, `lineHeight: 1.3` |
+| `h6` / `subtitle1` | Display stack; `h6` weight 700 |
+| Body prose | line-height ~**1.55** |
+| Version / meta | Mono stack |
+
+---
+
+## Links (two kinds)
+
+| Kind | When | Visual |
+| --- | --- | --- |
+| **Quiet** (`a` / `--link`) | Informational, secondary | Slate ≠ body text; weight 500; **1px** underline; offset ~3px |
+| **Spot** (`a.link-spot` / `--link-spot`) | Must be found in prose | Brand; Onest; **bold + italic**; **2px** underline |
+
+Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not turn quiet links into full spot styling on hover alone.
 
 ---
 
@@ -178,28 +209,36 @@ system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Ari
 ### Recipes
 
 1. **Toolbar shell** — `Paper variant="outlined"`, padding `{ xs: 1.5, sm: 2 }`, header row = title + close (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
-2. **Numbered step** — Always use `ExportFilterSection` (`step`, `title`, optional `titleMark` / `description`). Do not add a second step-chrome component. Content overflow often `visible` so selects/autocomplete aren’t clipped.
+2. **Numbered step** — Always use `ExportFilterSection` (`step`, `title`, optional `titleMark` / `description`). Do not add a second step-chrome component.
 3. **Field density** — Prefer `size="small"` on TextField / Select / FormControl in add forms.
 4. **Stack rhythm** — Outer form / panel stacks use `spacing={1.5}`; fields inside a step often `1`–`1.25`.
 5. **Errors** — Field-level `helperText` + `error` when possible; otherwise `FormErrorMessage` under actions.
-6. **Actions** — `FormActionsRow` for submit; no Cancel in toolbar forms (close via panel ✕).
-7. **Edit dialogs** — Character / raid edit dialogs stay as flat field stacks (not numbered toolbar steps). Still use theme inputs, `divider` borders, and dialog paper chrome from the theme.
+6. **Actions** — `FormActionsRow` for submit (contained **primary** = ink); no Cancel in toolbar forms (close via panel ✕).
+7. **Edit dialogs** — Character / raid edit dialogs stay as flat field stacks. Still use theme inputs, `divider` borders, and dialog paper chrome from the theme.
 
 ### Inputs (theme)
 
 - Outlined input fill: `alpha(paper, 0.8)` light / `0.35` dark
-- Hover outline: `#cbd5e1` / `#475569`
+- Hover outline: `#6b6b6b` / `#a3a3a3`
 
 ### Buttons (theme)
 
 - `disableElevation: true`
 - Root radius `8`, padding inline `12`; small: block `4`, inline `10`
+- **Contained primary** — inverse ink fill/border (never brand)
+- **Contained secondary** — brand fill (identity / template spotlight only)
 - Outlined: divider border + translucent paper; hover uses `action.hover`
 - Variant `contained` + `color="inherit"`: black/white alpha fill (quiet secondary actions)
 
 ### Icon buttons
 
 - Radius `8`; hover `action.hover`
+
+### Status / chips
+
+- Ok → `success` / `--ok*`
+- Danger → `error` / `--danger*`
+- Brand chip → brand border/text on `--brand-soft` fill (intro template mention)
 
 ---
 
@@ -238,7 +277,14 @@ Panel max widths (app layout, not core brand):
 
 ## Domain overlays (app-specific)
 
-Port only if the target app needs the same semantics.
+Port only if the target app needs the same semantics. Keep separate from Super chrome.
+
+### Status semantics (Super domain exception)
+
+- BiS / ready → **ok** green (`success`)
+- Defect → **danger** red (`error`)
+- Missing BiS gear hints → **warning** amber (not brand orange)
+- Ilvl upgrade hints → **info** blue (not brand)
 
 ### Tooltip surface (inverted in light mode)
 
@@ -274,11 +320,14 @@ Optional dark text-shadow for readability on colored class cells (`src/utils/cha
 
 **Core (reuse across projects)**
 
-1. Copy palette + CSS variables from `design-tokens.json` / this doc
-2. Port `createAppTheme` structure (palette, shape, CssBaseline gradients, Button / Paper / Table / Dialog / Tooltip / OutlinedInput / Menu overrides)
+1. Copy Super tokens from `theme-super.json` / `design-tokens.json`
+2. Port `createAppTheme` structure (palette: primary=ink, secondary=brand, success=ok, error=danger; fonts; CssBaseline atmosphere; Button / Paper / Table / Dialog / Tooltip / OutlinedInput / Menu)
 3. Wire `data-color-mode` + matching CSS vars before paint
-4. Keep border recipe: `1px solid divider`, radii 8/10/12 as above
-5. Prefer stepped `ExportFilterSection`-style cards for multi-field workflows
+4. Load Noto Sans + Onest + JetBrains Mono (Cyrillic + Latin)
+5. Implement quiet vs `.link-spot` links (`links.css`)
+6. Keep border `#8a8a8a`, radii 8/10/12
+7. Prefer stepped `ExportFilterSection`-style cards for multi-field workflows
+8. Contrast-check text / muted / brand / ok / danger / link / link-spot / border
 
 **Optional**
 
@@ -297,7 +346,9 @@ Optional dark text-shadow for readability on colored class cells (`src/utils/cha
 ## Consistency rules for agents & humans
 
 1. New chrome surfaces → outlined paper or `border + divider + borderRadius 1`, not ad-hoc hex borders
-2. New semantic color → map to `primary` / `secondary` / `info` / `warning` / `text.*` first
-3. Forms in toolbar → numbered steps + short helper caption; avoid duplicating the same hint in the panel header
-4. Prefer theme tokens over one-off hex in components (except documented domain palettes)
-5. When bumping tokens, update **code + this doc + `design-tokens.json`**
+2. Primary CTAs → `color="primary"` (ink). Brand identity → `secondary` or `--brand*`. Never fill primary with brand orange
+3. Ok / danger / brand must stay visually separable in both modes
+4. New semantic color → map to `primary` / `secondary` / `success` / `error` / `info` / `warning` / `text.*` first
+5. Forms in toolbar → numbered steps + short helper caption; avoid duplicating the same hint in the panel header
+6. Prefer theme tokens over one-off hex in components (except documented domain palettes)
+7. When bumping tokens, update **code + this doc + `design-tokens.json`**

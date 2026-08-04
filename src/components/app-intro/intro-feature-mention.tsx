@@ -1,9 +1,10 @@
 import { Box } from "@mui/material";
 import { alpha } from "@mui/material/styles";
+import { superThemeTokens } from "../../theme/create-app-theme.ts";
 
 type IntroFeatureMentionProps = {
   label: string;
-  /** Matches toolbar CTA styling for Add raids from template. */
+  /** Matches toolbar CTA styling for Add raids from template (brand chip). */
   emphasis?: "default" | "secondary";
 };
 
@@ -16,7 +17,8 @@ export function IntroFeatureMention({
     <Box
       component="span"
       sx={(theme) => {
-        const isSecondary = emphasis === "secondary";
+        const isBrand = emphasis === "secondary";
+        const tokens = superThemeTokens[theme.palette.mode];
         return {
           display: "inline-flex",
           alignItems: "center",
@@ -27,21 +29,21 @@ export function IntroFeatureMention({
           mx: 0.15,
           borderRadius: "8px",
           border: 1,
-          borderColor: isSecondary ? "secondary.main" : "divider",
-          bgcolor: isSecondary
-            ? alpha(theme.palette.secondary.main, theme.palette.mode === "light" ? 0.14 : 0.22)
+          borderColor: isBrand ? tokens.brandBorder : "divider",
+          bgcolor: isBrand
+            ? tokens.brandSoft
             : alpha(
                 theme.palette.background.paper,
                 theme.palette.mode === "light" ? 0.9 : 0.55,
               ),
-          color: "text.primary",
+          color: isBrand ? tokens.brand : "text.primary",
           fontWeight: 600,
           fontSize: "0.8125rem",
           lineHeight: 1.4,
           whiteSpace: "nowrap",
           boxShadow:
             theme.palette.mode === "light"
-              ? "0 1px 1px rgba(15, 23, 42, 0.04)"
+              ? "0 1px 1px rgba(0, 0, 0, 0.04)"
               : "0 1px 1px rgba(0, 0, 0, 0.25)",
         };
       }}
