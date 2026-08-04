@@ -241,8 +241,8 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 
 ### Class-colored names
 
-- Chip style via `characterNameDisplaySx` / `classColorChipSx`: **background = WoW class hex**
-- **Foreground** = accessible ink (`#0a0a0a` or `#fafafa`) — whichever has higher WCAG contrast vs the fill (not a hue-wheel complement; those often fail contrast)
+- Chip style via `characterNameDisplaySx` / `classColorChipSx`: **background = WoW class hex darkened ~22%** (`CLASS_CHIP_BG_BRIGHTNESS`)
+- **Foreground** = accessible ink (`#0a0a0a` or `#fafafa`) — whichever has higher WCAG contrast vs the darkened fill
 - Same treatment in light and dark mode
 
 ---

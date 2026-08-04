@@ -51,6 +51,22 @@ function contrastRatio(luminanceA: number, luminanceB: number): number {
 export const CLASS_CHIP_FG_ON_LIGHT_BG = "#0a0a0a" as const;
 export const CLASS_CHIP_FG_ON_DARK_BG = "#fafafa" as const;
 
+/** Chip fill brightness vs raw WoW hex (1 = full; lower = darker). */
+export const CLASS_CHIP_BG_BRIGHTNESS = 0.78;
+
+/** Scale RGB channels toward black (keeps hue, lowers brightness). */
+export function darkenClassColorHex(
+  hexWithoutHash: string,
+  factor: number = CLASS_CHIP_BG_BRIGHTNESS,
+): string {
+  const { red, green, blue } = parseRgb(hexWithoutHash);
+  const channel = (value: number) =>
+    Math.max(0, Math.min(255, Math.round(value * factor)))
+      .toString(16)
+      .padStart(2, "0");
+  return `${channel(red)}${channel(green)}${channel(blue)}`;
+}
+
 /**
  * Accessible foreground for a class-color background: black or near-white,
  * whichever has the higher WCAG contrast ratio against the fill.
@@ -66,10 +82,11 @@ export function accessibleForegroundForClassColor(
     : CLASS_CHIP_FG_ON_LIGHT_BG;
 }
 
-/** Chip chrome: class hue as fill, accessible ink as text. */
+/** Chip chrome: slightly darkened class hue as fill, accessible ink as text. */
 export function classColorChipSx(characterClass: CharacterClass) {
-  const background = formatClassColorHex(characterClass.color);
-  const color = accessibleForegroundForClassColor(characterClass.color);
+  const darkenedHex = darkenClassColorHex(characterClass.color);
+  const background = formatClassColorHex(darkenedHex);
+  const color = accessibleForegroundForClassColor(darkenedHex);
   return {
     fontWeight: 600,
     color,
