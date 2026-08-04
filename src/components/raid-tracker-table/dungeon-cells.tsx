@@ -154,7 +154,13 @@ export function DungeonTypeCell({
               color: (theme) => theme.palette.error.contrastText,
             }
           : {}),
-        "& .MuiChip-label": { overflow: "hidden", textOverflow: "ellipsis" },
+        // Do not ellipsis — skull emoji was clipping to "…" in the narrow type column.
+        "& .MuiChip-label": {
+          overflow: "visible",
+          textOverflow: "clip",
+          px: 0.75,
+          whiteSpace: "nowrap",
+        },
       }}
     />
   );
