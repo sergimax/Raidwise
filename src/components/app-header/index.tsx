@@ -107,8 +107,8 @@ export function AppHeader({
                 onToggle={onToggleIntro}
               />
             ) : null}
-            <ItemTooltipLocaleToggle />
             <ThemeModeToggle />
+            <ItemTooltipLocaleToggle />
             <AppMetaInfo />
             <AppVersionLabel />
           </Box>
