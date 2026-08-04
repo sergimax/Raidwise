@@ -17,6 +17,26 @@ type ExportFilterSectionProps = {
   contentSx?: SxProps<Theme>;
 };
 
+const stepBadgeSx = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minWidth: 22,
+  height: 22,
+  px: 0.5,
+  mr: 0.75,
+  borderRadius: "8px",
+  bgcolor: "var(--brand-soft)",
+  color: "var(--brand)",
+  border: "1px solid color-mix(in srgb, var(--brand) 40%, transparent)",
+  fontWeight: 700,
+  fontSize: "0.75rem",
+  lineHeight: 1,
+  fontVariantNumeric: "tabular-nums",
+  flexShrink: 0,
+  verticalAlign: "middle",
+} as const;
+
 export function ExportFilterSection({
   step,
   title,
@@ -33,6 +53,7 @@ export function ExportFilterSection({
       sx={{
         border: 1,
         borderColor: "divider",
+        borderLeft: "3px solid var(--brand)",
         borderRadius: 1,
         p: 1.25,
         minWidth: 0,
@@ -56,24 +77,41 @@ export function ExportFilterSection({
           minWidth: 0,
         }}
       >
-        <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3, minWidth: 0 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 700,
+            lineHeight: 1.3,
+            minWidth: 0,
+            color: "var(--brand)",
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 0,
+          }}
+        >
           {step != null ? (
-            <Box
-              component="span"
-              sx={{ color: "text.secondary", fontWeight: 700, mr: 0.5 }}
-            >
-              {step}.
+            <Box component="span" sx={stepBadgeSx} aria-hidden>
+              {step}
             </Box>
           ) : null}
-          {title}
-          {titleMark ? (
-            <Box
-              component="span"
-              sx={{ color: "text.secondary", fontWeight: 500, ml: 0.5 }}
-            >
-              ({titleMark})
-            </Box>
-          ) : null}
+          <Box component="span" sx={{ minWidth: 0 }}>
+            {title}
+            {titleMark ? (
+              <Box
+                component="span"
+                sx={{
+                  color: "text.secondary",
+                  fontWeight: 500,
+                  fontFamily: "var(--font-body, inherit)",
+                  ml: 0.5,
+                }}
+              >
+                ({titleMark})
+              </Box>
+            ) : null}
+          </Box>
         </Typography>
         {titleActions ? (
           <Box sx={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 0.25 }}>
