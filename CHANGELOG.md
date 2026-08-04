@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Delete icon buttons:** Softer danger red at rest in light mode (`error.light`), full danger on hover; dark keeps soft coral `error.main`.
 - **Type column:** Wider (88px) so Heroic skull labels like `25 ☠️` are not clipped.
 - **Character pick / Soft pick:** Side-by-side layout breakpoint raised from 1600px to 1680px.
-- **Theme polish:** Switch on/off styles; stronger outlined and inherit-button hovers; stepped filter sections use a brand title, step badge, and left edge.
+- **Theme polish:** Switch on/off styles; stronger outlined and inherit-button hovers; stepped filter sections use a brand title, soft step **badge** (replaces the old `N.` text prefix), and a 3px brand left edge.
 - **Docs:** Design system / tokens (incl. icon-button soft danger), README EN+RU, and project rules updated for the above.
 
 ### Fixed

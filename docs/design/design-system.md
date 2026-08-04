@@ -207,7 +207,7 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 ### Recipes
 
 1. **Toolbar shell** — `Paper variant="outlined"`, padding `{ xs: 1.5, sm: 2 }`, header row = title + close (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
-2. **Numbered step** — Always use `ExportFilterSection` (`step`, `title`, optional `titleMark` / `description`). Do not add a second step-chrome component. Header chrome: **brand** title (Onest), brand soft step badge, **3px brand left edge** on the block.
+2. **Numbered step** — Always use `ExportFilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: **brand** title (Onest), soft brand **step badge** (number only — not a `N.` text prefix; DOM text is `N` + title), **3px brand left edge** on the block.
 3. **Field density** — Prefer `size="small"` on TextField / Select / FormControl in add forms.
 4. **Stack rhythm** — Outer form / panel stacks use `spacing={1.5}`; fields inside a step often `1`–`1.25`.
 5. **Errors** — Field-level `helperText` + `error` when possible; otherwise `FormErrorMessage` under actions.
