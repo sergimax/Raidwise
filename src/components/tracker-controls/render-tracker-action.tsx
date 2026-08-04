@@ -43,6 +43,7 @@ export function renderTrackerAction(
       color={action.buttonColor ?? "inherit"}
       disabled={action.disabled}
       aria-expanded={action.ariaExpanded}
+      aria-pressed={action.selected}
       onClick={handleClick}
     >
       {action.label}

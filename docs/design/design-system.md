@@ -226,8 +226,8 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 - Root radius `8`, padding inline `12`; small: block `4`, inline `10`
 - **Contained primary** — inverse ink fill/border (never brand)
 - **Contained secondary** — brand fill (identity / template spotlight only)
-- Outlined: divider border + translucent paper; hover uses `action.hover`
-- Variant `contained` + `color="inherit"`: black/white alpha fill (quiet secondary actions)
+- Outlined: divider border + translucent paper; hover uses stronger ink/white alpha fill (not tiny `action.hover`)
+- Variant `contained` + `color="inherit"`: brand-tinted fill/border for active toolbar panels; hover deepens brand alpha
 
 ### Icon buttons
 
