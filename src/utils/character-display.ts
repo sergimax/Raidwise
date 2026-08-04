@@ -6,6 +6,15 @@ export function formatClassColorHex(color: string): string {
   return color.startsWith("#") ? color : `#${color}`;
 }
 
+/** Display / create: first letter uppercase (`qwe` → `Qwe`). Rest unchanged. */
+export function formatCharacterDisplayName(name: string): string {
+  const characters = Array.from(name);
+  if (characters.length === 0) {
+    return name;
+  }
+  return characters[0].toLocaleUpperCase() + characters.slice(1).join("");
+}
+
 function parseRgb(hexWithoutHash: string): {
   red: number;
   green: number;

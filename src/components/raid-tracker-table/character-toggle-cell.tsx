@@ -7,6 +7,7 @@ import type { GetBisSlotMapForSpec } from "../../utils/bis-lists.ts";
 import { isCooldownOn } from "../../utils/dungeon-toggles.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { getLocalizedDungeonDisplayName } from "../../i18n/localized-domain.ts";
+import { formatCharacterDisplayName } from "../../utils/character-display.ts";
 import {
   evaluateCharacterGearHintsFromTints,
   evaluateCharacterGearHintTints,
@@ -178,7 +179,7 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
       slotProps={{
         input: {
           "aria-label": t("table.toggleAria", {
-            character: character.name,
+            character: formatCharacterDisplayName(character.name),
             dungeon: dungeonDisplayName,
           }),
         },

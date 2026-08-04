@@ -2,6 +2,7 @@ import type { CharacterSpecGear, CharacterRecord } from "../types/characters.ts"
 import type { AppLocale } from "../i18n/types.ts";
 import { getLocalizedSpecName } from "../i18n/localized-domain.ts";
 import type { ClassName } from "../types/characters.ts";
+import { formatCharacterDisplayName } from "./character-display.ts";
 
 function formatGearScoreShort(gearScore: number, suffix: "k" | ""): string {
   if (gearScore < 1000) {
@@ -57,9 +58,10 @@ export function formatCharacterDetailsTooltip(
   character: CharacterRecord,
   locale: AppLocale = "en",
 ): string {
+  const displayName = formatCharacterDisplayName(character.name);
   const specGearSummary = formatCharacterSpecGearSummary(character, locale);
   if (!specGearSummary) {
-    return character.name;
+    return displayName;
   }
-  return `${character.name}\n${specGearSummary}`;
+  return `${displayName}\n${specGearSummary}`;
 }

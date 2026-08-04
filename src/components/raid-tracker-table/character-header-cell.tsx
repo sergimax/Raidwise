@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { characterNameDisplaySx } from "../../utils/character-display.ts";
+import { characterNameDisplaySx, formatCharacterDisplayName } from "../../utils/character-display.ts";
 import { formatCharacterDetailsTooltip } from "../../utils/format-character-details.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
@@ -45,6 +45,7 @@ export function CharacterHeaderCell({
 }: CharacterHeaderCellProps) {
   const { t, locale } = useTranslation();
   const theme = useTheme();
+  const displayName = formatCharacterDisplayName(character.name);
   const hasSpecGear = character.mainSpec !== undefined || character.offSpec !== undefined;
   const detailsTooltip = formatCharacterDetailsTooltip(character, locale);
 
@@ -88,7 +89,7 @@ export function CharacterHeaderCell({
                   whiteSpace: "nowrap",
                 }}
               >
-                {character.name}
+                {displayName}
               </Typography>
             </Stack>
           </TableSortLabel>
@@ -142,38 +143,38 @@ export function CharacterHeaderCell({
           spacing={0.5}
           sx={{ flexWrap: "wrap", justifyContent: "center" }}
         >
-          <Tooltip title={t("table.editCharacter", { name: character.name })}>
+          <Tooltip title={t("table.editCharacter", { name: displayName })}>
             <IconButton
               size="small"
               color="default"
               onClick={() => {
                 onEditCharacter(character.id);
               }}
-              aria-label={t("table.editCharacter", { name: character.name })}
+              aria-label={t("table.editCharacter", { name: displayName })}
             >
               <EditIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title={t("table.resetCharacterToggles", { name: character.name })}>
+          <Tooltip title={t("table.resetCharacterToggles", { name: displayName })}>
             <IconButton
               size="small"
               color="default"
               onClick={() => {
                 onResetCharacterToggles(character.id);
               }}
-              aria-label={t("table.resetCharacterToggles", { name: character.name })}
+              aria-label={t("table.resetCharacterToggles", { name: displayName })}
             >
               <RestartAltIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title={t("table.removeCharacter", { name: character.name })}>
+          <Tooltip title={t("table.removeCharacter", { name: displayName })}>
             <IconButton
               size="small"
               color="error"
               onClick={() => {
                 onDeleteCharacter(character.id);
               }}
-              aria-label={t("table.removeCharacter", { name: character.name })}
+              aria-label={t("table.removeCharacter", { name: displayName })}
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
