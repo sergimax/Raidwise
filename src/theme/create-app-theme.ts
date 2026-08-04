@@ -280,6 +280,17 @@ export function createAppTheme(mode: PaletteMode) {
               backgroundColor: theme.palette.action.hover,
             },
           }),
+          /** Soft danger at rest; full `--danger` on hover (light). Dark main is already coral-soft. */
+          colorError: ({ theme }) => ({
+            color: isLight ? theme.palette.error.light : theme.palette.error.main,
+            ...(isLight
+              ? {
+                  "&:hover": {
+                    color: theme.palette.error.main,
+                  },
+                }
+              : {}),
+          }),
         },
       },
       MuiPaper: {
