@@ -106,7 +106,7 @@ export function classColorChipSx(characterClass: CharacterClass) {
 export function characterNameDisplaySx(
   characterClass?: CharacterClass,
   _colorMode: PaletteMode = "light",
-) {
+): ReturnType<typeof classColorChipSx> | { readonly fontWeight: 600 } {
   if (!characterClass) {
     return { fontWeight: 600 } as const;
   }

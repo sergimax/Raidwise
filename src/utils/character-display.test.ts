@@ -6,6 +6,7 @@ import {
   CLASS_CHIP_FG_ON_LIGHT_BG,
   accessibleForegroundForClassColor,
   characterNameDisplaySx,
+  classColorChipSx,
   darkenClassColorHex,
   formatCharacterDisplayName,
   formatClassColorHex,
@@ -69,20 +70,24 @@ describe("darkenClassColorHex", () => {
 
 describe("characterNameDisplaySx", () => {
   it("uses a slightly darkened class color as background", () => {
-    const priest = characterNameDisplaySx(classByName(ClassName.Priest), "light");
+    const priest = classColorChipSx(classByName(ClassName.Priest));
     expect(priest.bgcolor).toBe(
       formatClassColorHex(darkenClassColorHex("FFFFFF")),
     );
     expect(priest.color).toBe(CLASS_CHIP_FG_ON_LIGHT_BG);
 
-    const deathKnight = characterNameDisplaySx(
-      classByName(ClassName.DeathKnight),
-      "dark",
-    );
+    const deathKnight = classColorChipSx(classByName(ClassName.DeathKnight));
     expect(deathKnight.bgcolor).toBe(
       formatClassColorHex(darkenClassColorHex("C41E3A")),
     );
     expect(deathKnight.color).toBe(CLASS_CHIP_FG_ON_DARK_BG);
+
+    expect(characterNameDisplaySx(classByName(ClassName.Priest), "light")).toEqual(
+      priest,
+    );
+    expect(
+      characterNameDisplaySx(classByName(ClassName.DeathKnight), "dark"),
+    ).toEqual(deathKnight);
   });
 
   it("returns weight-only styles when class is missing", () => {
