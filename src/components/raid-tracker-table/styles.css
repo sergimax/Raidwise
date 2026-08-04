@@ -3,7 +3,7 @@
 /*
  * Sticky system columns (actions + dungeon fields) sit above scrolled character
  * cells. Their opaque backgrounds would otherwise square off the TableContainer
- * radius and cover the Super border. Corner radii match the inner curve
+ * radius and cover the container border. Corner radii match the inner curve
  * (container --radius minus 1px border); ::after redraws the border above
  * sticky z-index (pinned header uses 4).
  */

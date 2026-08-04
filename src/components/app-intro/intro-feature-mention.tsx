@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { superThemeTokens } from "../../theme/create-app-theme.ts";
+import { appThemeTokens } from "../../theme/create-app-theme.ts";
 
 type IntroFeatureMentionProps = {
   label: string;
@@ -18,7 +18,7 @@ export function IntroFeatureMention({
       component="span"
       sx={(theme) => {
         const isBrand = emphasis === "secondary";
-        const tokens = superThemeTokens[theme.palette.mode];
+        const tokens = appThemeTokens[theme.palette.mode];
         return {
           display: "inline-flex",
           alignItems: "center",

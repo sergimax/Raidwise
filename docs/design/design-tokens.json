@@ -1,9 +1,8 @@
 {
-  "$schemaComment": "Portable design tokens for my-raid-cds — Super ★ chrome + domain overlays.",
+  "$schemaComment": "Portable design tokens for my-raid-cds — chrome + domain overlays.",
   "meta": {
     "name": "my-raid-cds",
     "version": "2.0.0",
-    "themeId": "super",
     "sources": [
       "src/theme/create-app-theme.ts",
       "src/theme/links.css",

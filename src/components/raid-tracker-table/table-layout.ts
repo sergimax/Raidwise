@@ -65,7 +65,7 @@ const PINNED_CELL_BASE_SX = {
   position: "sticky",
   zIndex: 2,
   backgroundColor: "background.paper",
-  // Soft edge against scrolled character columns; matches Super --border.
+  // Soft edge against scrolled character columns; matches --border.
   boxShadow: "1px 0 0 color-mix(in srgb, var(--border) 40%, transparent)",
   boxSizing: "border-box",
 } as const;
