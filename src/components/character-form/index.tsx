@@ -82,7 +82,10 @@ export function CharacterForm({
               slotProps={{
                 htmlInput: { maxLength: MAX_CHARACTER_NAME_LENGTH },
               }}
-              helperText={`${name.length}/${MAX_CHARACTER_NAME_LENGTH}`}
+              helperText={t("characterForm.nameLettersOnlyHint", {
+                count: name.length,
+                max: MAX_CHARACTER_NAME_LENGTH,
+              })}
             />
             <FormControl required size="small">
               <InputLabel id="character-class-label">{t("common.class")}</InputLabel>
