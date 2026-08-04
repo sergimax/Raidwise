@@ -6,7 +6,7 @@
 Данные хранятся локально в `localStorage`.
 Активная ссылка: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![Версия приложения](https://img.shields.io/badge/App_version-2.0.0-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-2.0.1-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
