@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Raid table:** Removed viewport-sticky table header (it required `overflow-x: visible`, which made the whole page scroll horizontally with many characters).
+
+### Fixed
+
+- **Raid table:** Wide character columns always scroll inside the table container; the page no longer scrolls horizontally when many characters are present (including with the usage-help intro open).
+
 ## [2.0.0] - 2026-08-04
 
 ### Changed
