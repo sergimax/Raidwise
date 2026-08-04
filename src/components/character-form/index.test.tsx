@@ -36,9 +36,9 @@ describe("CharacterForm", () => {
         return element?.tagName === "P" && element.textContent === expected;
       });
 
-    expect(stepTitle("1.Name and class")).toBeInTheDocument();
-    expect(stepTitle("2.Main specialization(optional)")).toBeInTheDocument();
-    expect(stepTitle("3.Off specialization(optional)")).toBeInTheDocument();
+    expect(stepTitle("1Name and class")).toBeInTheDocument();
+    expect(stepTitle("2Main specialization(optional)")).toBeInTheDocument();
+    expect(stepTitle("3Off specialization(optional)")).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: /^Name/ })).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: /^Class/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Add character" })).toBeInTheDocument();

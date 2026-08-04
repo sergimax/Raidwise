@@ -39,10 +39,10 @@ describe("DungeonForm", () => {
         return element?.tagName === "P" && element.textContent === expected;
       });
 
-    expect(stepTitle("1.Name")).toBeInTheDocument();
-    expect(stepTitle("2.Short name(optional)")).toBeInTheDocument();
-    expect(stepTitle("3.Size and difficulty")).toBeInTheDocument();
-    expect(stepTitle("4.Item levels")).toBeInTheDocument();
+    expect(stepTitle("1Name")).toBeInTheDocument();
+    expect(stepTitle("2Short name(optional)")).toBeInTheDocument();
+    expect(stepTitle("3Size and difficulty")).toBeInTheDocument();
+    expect(stepTitle("4Item levels")).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: /^Name/ })).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: /^Short name/ })).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: /^Item levels/ })).toBeInTheDocument();

@@ -56,7 +56,7 @@ describe("BisListsPanel", () => {
     renderWithTheme(<BisListsPanel />);
 
     const itemsHeading = screen.getByText((_, element) => {
-      return element?.tagName === "P" && element.textContent === "3.Items";
+      return element?.tagName === "P" && element.textContent === "3Items";
     });
     const itemsSection = itemsHeading.closest(".MuiBox-root");
     expect(itemsSection).not.toBeNull();
