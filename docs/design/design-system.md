@@ -218,6 +218,7 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 
 - Outlined input fill: `alpha(paper, 0.8)` light / `0.35` dark
 - Hover outline: `#6b6b6b` / `#a3a3a3`
+- **Switch** — off: quiet chip/surface track; on (light): solid `--ok` + mint thumb with ring; on (dark): softer translucent ok track + mid-green thumb, no glow ring (avoids hard cut-off)
 
 ### Buttons (theme)
 
