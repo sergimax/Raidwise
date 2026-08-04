@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-08-04
+
+### Changed
+
+- **Visual theme:** Warm paper neutrals, burnt-orange brand (identity only — not primary CTAs), inverse-ink primary buttons, green ok / red danger, and bilingual fonts (Noto Sans, Onest, JetBrains Mono). Quiet vs spot link styles.
+- **Design docs:** Moved to `docs/design/` (`design-system.md`, `design-tokens.json`); mirrors live tokens in `src/theme/` and `src/index.css`.
+
+### Fixed
+
+- **Raid table:** Sticky system columns no longer overlap the rounded table border at the top-left and bottom-left corners when scrolling horizontally.
+
 ## [1.55.0] - 2026-08-03
 
 ### Added

@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-1.55.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.0.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -69,8 +69,9 @@ First visit defaults to Russian.
 
 ### Theme
 
-Light/dark mode, saved locally.
+Light/dark mode, saved locally (palette, typography, and link styles).
 Header links to GitHub and [sergimax.ru](https://sergimax.ru).
+Design tokens / recipes: [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Development
 
