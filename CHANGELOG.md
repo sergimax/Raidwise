@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-08-05
+
+### Added
+
+- **Character names:** New names must be Unicode letters only; display capitalizes the first letter. Legacy names with digits/symbols still load.
+- **Class-colored name chips:** Character names use a darkened WoW class-color fill with accessible ink (same in light and dark).
+- **Raid completion progress:** Complete column shows a determinate progress bar; `completed/total` is in the hover tooltip only. Bar colors follow the theme (muted → danger → brand/warning → info → ok; dimmer in light mode).
+
+### Changed
+
+- **Character column header:** Stack is name → main/off GS (always two slots with `/`; missing sides show `-`) → edit / reset / delete on one row. Per-character completion bar and sort-by-CD control removed from the header.
+- **Delete icon buttons:** Softer danger red at rest in light mode (`error.light`), full danger on hover.
+- **Type column:** Wider (88px) so Heroic skull labels like `25 ☠️` are not clipped.
+- **Character pick / Soft pick:** Side-by-side layout breakpoint raised from 1600px to 1680px.
+- **Theme polish:** Switch on/off styles; stronger outlined and inherit-button hovers; stepped filter sections use a brand title, step badge, and left edge.
+- **Docs:** Design system / tokens, README EN+RU, and project rules updated for the above.
+
+### Fixed
+
+- **App header:** Theme toggle sits before the EN/RU locale control.
+
 ## [2.0.1] - 2026-08-04
 
 ### Changed
