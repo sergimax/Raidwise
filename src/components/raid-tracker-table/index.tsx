@@ -15,16 +15,10 @@ import "./styles.css";
 
 type RaidTrackerTableProps = {
   tableState: RaidTrackerTableState;
-  /**
-   * Stick the table header under the AppBar while scrolling the page.
-   * Off while a toolbar panel is open. Uses document scroll only (no nested table scroll).
-   */
-  stickyPageHeader?: boolean;
 };
 
 export const RaidTrackerTable = memo(function RaidTrackerTable({
   tableState,
-  stickyPageHeader = false,
 }: RaidTrackerTableProps) {
   const { t } = useTranslation();
   const domain = useRaidTrackerContext();
@@ -97,16 +91,10 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
         sx={{
           // Theme border is redrawn via ::after above sticky system columns.
           borderColor: "transparent",
-          ...(stickyPageHeader
-            ? {
-                // Must stay visible: overflow-x:auto (MUI default) creates a
-                // scrollport and stops thead from sticking to the page under AppBar.
-                overflowX: "visible",
-                overflowY: "visible",
-              }
-            : {
-                overflowX: "auto",
-              }),
+          // Always contain wide character columns here — overflow-x:visible
+          // (needed for viewport-sticky thead) expands the page horizontally.
+          overflowX: "auto",
+          maxWidth: "100%",
         }}
       >
         <Table
@@ -118,12 +106,10 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
           className={[
             "raid-tracker-table",
             compactTable ? "raid-tracker-table--compact" : null,
-            stickyPageHeader ? "raid-tracker-table--sticky-page-header" : null,
           ]
             .filter(Boolean)
             .join(" ")}
           size="small"
-          stickyHeader={stickyPageHeader}
           sx={{
             tableLayout: "fixed",
             width: "max-content",

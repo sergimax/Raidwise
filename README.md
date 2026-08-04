@@ -30,7 +30,7 @@ Reset one character from the table header, or everyone from the **Data** panel.
 
 Sort and search raids (name, size, mode — EN/RU, e.g. `ICC25H` / `ЦЛК25хм`).
 Compact layout on small screens.
-With no toolbar panel open, the table header stays under the app bar while scrolling.
+Wide character columns scroll horizontally inside the table (page stays put).
 
 ### Data controls
 

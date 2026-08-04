@@ -231,10 +231,7 @@ export function RaidTrackerMain({
         <GearHintLegend onDismiss={dismissGearHintLegend} />
       ) : null}
 
-      <RaidTrackerTable
-        tableState={tableState}
-        stickyPageHeader={toolbarPanelId == null}
-      />
+      <RaidTrackerTable tableState={tableState} />
     </Stack>
   );
 }
