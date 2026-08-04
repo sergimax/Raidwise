@@ -18,6 +18,7 @@ Toolbar panels are mutually exclusive (only one open at a time).
 ### Characters & dungeons
 
 Add manually (**Add character** / **Add raid**, stepped forms) or load the WotLK raid template when the list is empty.
+New character names are letters only; the UI capitalizes the first letter.
 Edit specs, WowSims gear, also-owned items (bags / other spec / vendors for hints), and raid metadata later.
 Header **info** toggles a short usage-help intro (scenarios for CDs, gear planning, or BiS-only).
 
