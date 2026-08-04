@@ -196,6 +196,8 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
           gap: EXPORT_FILTER_GRID_GAP_SPACING,
           alignItems: "stretch",
           width: "100%",
+          minWidth: 0,
+          maxWidth: "100%",
           [EXPORT_PANEL_SIDE_BY_SIDE_MQ_KEY]: {
             flexDirection: "row",
           },
@@ -220,7 +222,9 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
             alignItems: "stretch",
             width: { xs: "100%", md: "fit-content" },
             maxWidth: "100%",
-            flexShrink: 0,
+            // Shrink with the Paper instead of forcing results past the right edge.
+            flexShrink: 1,
+            minWidth: 0,
           }}
         >
           {hasDungeonFilter ? (
@@ -303,11 +307,14 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
             flex: "none",
             minWidth: 0,
             width: "100%",
+            maxWidth: "100%",
             [EXPORT_PANEL_SIDE_BY_SIDE_MQ_KEY]: {
+              // Prefer 2-unit width; allow shrink so the column stays inside Paper padding.
               flex: "1 1 auto",
+              flexBasis: getExportResultColumnMinWidth(),
               display: "flex",
               flexDirection: "column",
-              minWidth: getExportResultColumnMinWidth(),
+              minWidth: 0,
               minHeight: 0,
               height: getExportFilterGridHeight(),
               maxHeight: getExportFilterGridHeight(),

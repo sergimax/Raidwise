@@ -60,6 +60,10 @@ export function TrackerToolbarPanel({
         p: { xs: 1.5, sm: 2 },
         width: maxWidth ? "100%" : undefined,
         maxWidth,
+        minWidth: 0,
+        boxSizing: "border-box",
+        // Keep unit-grid children (Character / Soft pick) from painting past the outlined edge.
+        overflow: "hidden",
       }}
     >
       <Stack spacing={1.5}>
