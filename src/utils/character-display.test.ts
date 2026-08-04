@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { ClassName, Classes } from "../types/characters.ts";
 import {
+  CLASS_CHIP_BG_BRIGHTNESS,
   CLASS_CHIP_FG_ON_DARK_BG,
   CLASS_CHIP_FG_ON_LIGHT_BG,
   accessibleForegroundForClassColor,
   characterNameDisplaySx,
+  darkenClassColorHex,
   formatCharacterDisplayName,
   formatClassColorHex,
 } from "./character-display.ts";
@@ -55,17 +57,31 @@ describe("accessibleForegroundForClassColor", () => {
   });
 });
 
+describe("darkenClassColorHex", () => {
+  it("scales RGB toward black by the chip brightness factor", () => {
+    expect(darkenClassColorHex("FFFFFF")).toBe(
+      darkenClassColorHex("FFFFFF", CLASS_CHIP_BG_BRIGHTNESS),
+    );
+    expect(darkenClassColorHex("FFFFFF", 0.5)).toBe("808080");
+    expect(darkenClassColorHex("C41E3A", 1)).toBe("c41e3a");
+  });
+});
+
 describe("characterNameDisplaySx", () => {
-  it("uses class color as background and accessible foreground", () => {
+  it("uses a slightly darkened class color as background", () => {
     const priest = characterNameDisplaySx(classByName(ClassName.Priest), "light");
-    expect(priest.bgcolor).toBe("#FFFFFF");
+    expect(priest.bgcolor).toBe(
+      formatClassColorHex(darkenClassColorHex("FFFFFF")),
+    );
     expect(priest.color).toBe(CLASS_CHIP_FG_ON_LIGHT_BG);
 
     const deathKnight = characterNameDisplaySx(
       classByName(ClassName.DeathKnight),
       "dark",
     );
-    expect(deathKnight.bgcolor).toBe("#C41E3A");
+    expect(deathKnight.bgcolor).toBe(
+      formatClassColorHex(darkenClassColorHex("C41E3A")),
+    );
     expect(deathKnight.color).toBe(CLASS_CHIP_FG_ON_DARK_BG);
   });
 
