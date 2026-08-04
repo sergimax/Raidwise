@@ -9,7 +9,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { characterNameDisplaySx, formatCharacterDisplayName } from "../../utils/character-display.ts";
 import { formatCharacterDetailsTooltip } from "../../utils/format-character-details.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
@@ -55,7 +54,6 @@ export function CharacterHeaderCell({
   onDeleteCharacter,
 }: CharacterHeaderCellProps) {
   const { t, locale } = useTranslation();
-  const theme = useTheme();
   const displayName = formatCharacterDisplayName(character.name);
   const detailsTooltip = formatCharacterDetailsTooltip(character, locale);
   const characterClass = character.class;
@@ -121,7 +119,7 @@ export function CharacterHeaderCell({
             <Typography
               variant="caption"
               sx={{
-                ...characterNameDisplaySx(characterClass, theme.palette.mode),
+                ...characterNameDisplaySx(characterClass),
                 minWidth: 0,
                 overflow: "hidden",
                 textOverflow: "ellipsis",

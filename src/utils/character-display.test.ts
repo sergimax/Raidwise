@@ -82,16 +82,16 @@ describe("characterNameDisplaySx", () => {
     );
     expect(deathKnight.color).toBe(CLASS_CHIP_FG_ON_DARK_BG);
 
-    expect(characterNameDisplaySx(classByName(ClassName.Priest), "light")).toEqual(
+    expect(characterNameDisplaySx(classByName(ClassName.Priest))).toEqual(
       priest,
     );
-    expect(
-      characterNameDisplaySx(classByName(ClassName.DeathKnight), "dark"),
-    ).toEqual(deathKnight);
+    expect(characterNameDisplaySx(classByName(ClassName.DeathKnight))).toEqual(
+      deathKnight,
+    );
   });
 
   it("returns weight-only styles when class is missing", () => {
-    expect(characterNameDisplaySx(undefined, "light")).toEqual({
+    expect(characterNameDisplaySx(undefined)).toEqual({
       fontWeight: 600,
     });
   });
