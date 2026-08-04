@@ -6,8 +6,7 @@ Portable visual tokens and UI recipes used by this app. Use as:
 2. **Import seed** for another project (`docs/design/design-tokens.json` + this file)
 3. **Cross-project alignment** — keep core tokens stable; extend domain layers per app
 
-**Theme contract:** [theme-super.md](./theme-super.md) · [theme-super.json](./theme-super.json) (Super ★)  
-**Location:** `docs/design/` — documentation only; not part of the Vite app bundle.
+**Theme contract:** [theme-super.md](./theme-super.md) · [theme-super.json](./theme-super.json) (Super ★)
 
 **Source of truth (code):**
 
