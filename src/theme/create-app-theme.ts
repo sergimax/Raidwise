@@ -358,23 +358,40 @@ export function createAppTheme(mode: PaletteMode) {
       },
       MuiSwitch: {
         styleOverrides: {
-          switchBase: ({ theme }) =>
-            theme.palette.mode === "dark"
-              ? {
-                  color: tokens.textMuted,
-                  "& + .MuiSwitch-track": {
-                    backgroundColor: tokens.chipBg,
-                    opacity: 1,
-                  },
-                  "&.Mui-checked": {
-                    color: tokens.primaryFg,
-                    "& + .MuiSwitch-track": {
-                      backgroundColor: theme.palette.primary.main,
-                      opacity: 1,
+          // Quiet off, loud on — track + thumb both use ok greens so active CDs scan.
+          switchBase: {
+            color: isLight ? "#b0afa9" : "#5c5c5c",
+            "&.Mui-checked": {
+              // Light: mint thumb on forest (locked). Dark: softer green, no hard glow edge.
+              color: isLight ? "#86efac" : "#6ee7a0",
+              ...(isLight
+                ? {
+                    "& .MuiSwitch-thumb": {
+                      boxShadow:
+                        "0 0 0 1px #166534, 0 1px 5px rgba(22, 101, 52, 0.5)",
                     },
-                  },
-                }
-              : {},
+                  }
+                : {
+                    "& .MuiSwitch-thumb": {
+                      boxShadow: "0 1px 2px rgba(0, 0, 0, 0.35)",
+                    },
+                  }),
+              "& + .MuiSwitch-track": {
+                backgroundColor: isLight ? tokens.ok : "rgba(134, 239, 172, 0.55)",
+                opacity: 1,
+                borderColor: isLight ? tokens.ok : "transparent",
+              },
+            },
+          },
+          thumb: {
+            boxShadow: "none",
+          },
+          track: {
+            backgroundColor: isLight ? tokens.chipBg : "#2e2e2e",
+            opacity: isLight ? 0.85 : 0.9,
+            border: `1px solid ${isLight ? "transparent" : "#3a3a3a"}`,
+            boxSizing: "border-box",
+          },
         },
       },
       MuiOutlinedInput: {
