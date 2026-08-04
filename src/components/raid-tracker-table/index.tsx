@@ -89,10 +89,7 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
       <TableContainer
         className="raid-tracker-table-container"
         sx={{
-          // Theme border is redrawn via ::after above sticky system columns.
-          borderColor: "transparent",
-          // Always contain wide character columns here — overflow-x:visible
-          // (needed for viewport-sticky thead) expands the page horizontally.
+          // Contain wide character columns so the page does not scroll horizontally.
           overflowX: "auto",
           maxWidth: "100%",
         }}

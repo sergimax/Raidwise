@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Raid table:** Wide character columns always scroll inside the table container; the page no longer scrolls horizontally when many characters are present (including with the usage-help intro open).
+- **Raid table:** Left/right borders stay on the container while scrolling horizontally (removed the overlay border that tracked the full scroll width).
 
 ## [2.0.0] - 2026-08-04
 
