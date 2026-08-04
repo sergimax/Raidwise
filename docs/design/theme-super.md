@@ -1,10 +1,8 @@
 # Super ★ — unified theme rules
 
-**Status:** Applied to live `src/theme/` (site **v1.3.0+**).  
-**Interactive preview:** [theme-proposals.html](./theme-proposals.html) → **Super ★**  
+**Status:** Applied in this app (`src/theme/`, `src/index.css`).  
 **Machine tokens:** [theme-super.json](./theme-super.json)  
-**Live mirror:** [design-system.md](../design-system.md) · [design-tokens.json](../design-tokens.json) · `src/theme/tokens.css`  
-**Shortlist context:** [theme-liked.md](./theme-liked.md)
+**Live mirror:** [design-system.md](./design-system.md) · [design-tokens.json](./design-tokens.json) · `src/theme/create-app-theme.ts` · `src/index.css` · `src/theme/links.css`
 
 Rules below are the contract for porting Super across bilingual (RU+EN) portfolio apps: `my`, my-raid-cds, simple-name-picker, keyboard-heatmap.
 

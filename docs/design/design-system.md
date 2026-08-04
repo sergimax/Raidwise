@@ -3,10 +3,11 @@
 Portable visual tokens and UI recipes used by this app. Use as:
 
 1. **In-repo reference** when adding panels, forms, and surfaces
-2. **Import seed** for another project (`docs/design-tokens.json` + this file)
+2. **Import seed** for another project (`docs/design/design-tokens.json` + this file)
 3. **Cross-project alignment** — keep core tokens stable; extend domain layers per app
 
-**Theme contract:** [theme-super.md](./theme-super.md) · [theme-super.json](./theme-super.json) (Super ★)
+**Theme contract:** [theme-super.md](./theme-super.md) · [theme-super.json](./theme-super.json) (Super ★)  
+**Location:** `docs/design/` — documentation only; not part of the Vite app bundle.
 
 **Source of truth (code):**
 
@@ -18,7 +19,7 @@ Portable visual tokens and UI recipes used by this app. Use as:
 | CSS variables + scrollbars | `src/index.css` |
 | App shell spacing | `src/App.css` |
 | Color mode sync | `src/contexts/color-mode-provider.tsx`, `src/hooks/color-mode.ts` |
-| Machine tokens | `docs/design-tokens.json` |
+| Machine tokens | `docs/design/design-tokens.json` |
 
 When tokens change in code, update this doc and `design-tokens.json` in the same change.
 

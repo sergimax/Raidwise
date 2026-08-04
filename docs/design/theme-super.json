@@ -7,16 +7,15 @@
     "status": "applied",
     "updatedAt": "2026-08-03",
     "docs": [
-      "docs/theme-lab/theme-super.md",
-      "docs/theme-lab/theme-liked.md",
-      "docs/design-system.md"
+      "docs/design/theme-super.md",
+      "docs/design/design-system.md"
     ],
     "live": [
-      "src/theme/tokens.css",
+      "src/theme/create-app-theme.ts",
       "src/theme/links.css",
-      "docs/design-tokens.json"
+      "src/index.css",
+      "docs/design/design-tokens.json"
     ],
-    "preview": "docs/theme-lab/theme-proposals.html",
     "bilingualFonts": {
       "rule": "RU+EN — Cyrillic + Latin required",
       "body": "Noto Sans",
