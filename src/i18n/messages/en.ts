@@ -101,6 +101,7 @@ export const enMessages = {
     addCharacter: "Add character",
     closeAria: "Close add character panel",
     stepIdentity: "Name and class",
+    nameLettersOnlyHint: "{{count}}/{{max}} · letters only (no numbers or symbols)",
     stepMain: "Main specialization",
     stepOff: "Off specialization",
     importGear: "Import gear",
@@ -410,6 +411,8 @@ export const enMessages = {
     characterNameRequired: "Enter a name and choose a class.",
     characterNameTooLong:
       "Character name must be at most {{max}} characters.",
+    characterNameLettersOnly:
+      "Character name may only contain letters (no numbers or symbols).",
     characterDuplicate:
       "A character with this name and class already exists.",
     gearScoreRange:

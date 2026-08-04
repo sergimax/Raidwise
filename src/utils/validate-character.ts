@@ -14,6 +14,11 @@ import type {
 } from "../types/characters.ts";
 import { parseOptionalGearScore } from "./parse-optional-gear-score.ts";
 
+/** New names only: Unicode letters (incl. Cyrillic). Digits/symbols rejected; legacy names are not re-checked. */
+export function isCharacterNameLettersOnly(name: string): boolean {
+  return /^\p{L}+$/u.test(name);
+}
+
 export type CharacterFormValues = {
   name: string;
   characterClass: CharacterClass | "";
@@ -163,6 +168,9 @@ export function parseCharacterForm(
         max: MAX_CHARACTER_NAME_LENGTH,
       }),
     };
+  }
+  if (!isCharacterNameLettersOnly(trimmedName)) {
+    return { ok: false, error: t("validation.characterNameLettersOnly") };
   }
   const isDuplicate = existingCharacters.some(
     (existing) =>

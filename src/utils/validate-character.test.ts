@@ -44,6 +44,46 @@ describe("parseCharacterForm", () => {
     });
   });
 
+  it("rejects names with digits or symbols on create", () => {
+    for (const name of ["Elst1", "Elst!", "Elst_x", "El st"]) {
+      expect(
+        parseCharacterForm(
+          {
+            name,
+            characterClass: Classes[0],
+            mainSpec: "",
+            mainGearScoreText: "",
+            offSpec: "",
+            offGearScoreText: "",
+          },
+          [],
+        ),
+      ).toEqual({
+        ok: false,
+        error:
+          "Character name may only contain letters (no numbers or symbols).",
+      });
+    }
+  });
+
+  it("accepts Cyrillic letters on create", () => {
+    const result = parseCharacterForm(
+      {
+        name: "Элст",
+        characterClass: Classes[0],
+        mainSpec: "",
+        mainGearScoreText: "",
+        offSpec: "",
+        offGearScoreText: "",
+      },
+      [],
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.name).toBe("Элст");
+    }
+  });
+
   it("rejects duplicate name and class case-insensitively", () => {
     const existing = createTestCharacter({
       name: "Alpha",

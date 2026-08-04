@@ -103,6 +103,7 @@ export const ruMessages: Messages = {
     addCharacter: "Добавить персонажа",
     closeAria: "Закрыть форму добавления персонажа",
     stepIdentity: "Имя и класс",
+    nameLettersOnlyHint: "{{count}}/{{max}} · только буквы (без цифр и символов)",
     stepMain: "Основной спек",
     stepOff: "Второй спек",
     importGear: "Импорт экипировки",
@@ -411,6 +412,8 @@ export const ruMessages: Messages = {
   validation: {
     characterNameRequired: "Введите имя и выберите класс.",
     characterNameTooLong: "Имя персонажа — не более {{max}} символов.",
+    characterNameLettersOnly:
+      "Имя персонажа может содержать только буквы (без цифр и символов).",
     characterDuplicate: "Персонаж с таким именем и классом уже есть.",
     gearScoreRange:
       "GearScore {{specLabel}} — целое число от {{min}} до {{max}}.",
