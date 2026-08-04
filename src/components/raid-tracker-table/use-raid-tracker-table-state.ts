@@ -8,10 +8,7 @@ import { useCompactLayout } from "../../hooks/use-compact-layout.ts";
 import { usePendingDelete } from "../../hooks/use-pending-delete.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { DungeonRecord } from "../../types/dungeons.ts";
-import {
-  countCompletedForCharacter,
-  countCompletedForDungeon,
-} from "../../utils/completion-counts.ts";
+import { countCompletedForDungeon } from "../../utils/completion-counts.ts";
 import { filterDungeonsByName } from "../../utils/filter-dungeons-by-name.ts";
 import {
   defaultSortDirectionForKey,
@@ -134,18 +131,6 @@ export function useRaidTrackerTableState({
     return counts;
   }, [characters, dungeonToggles, dungeons]);
 
-  const completionsByCharacterId = useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const character of characters) {
-      counts[character.id] = countCompletedForCharacter(
-        character.id,
-        dungeons,
-        dungeonToggles,
-      );
-    }
-    return counts;
-  }, [characters, dungeonToggles, dungeons]);
-
   const sortedDungeons = useMemo(() => {
     if (characterSortId) {
       return sortDungeonsByCharacterToggle(
@@ -186,7 +171,6 @@ export function useRaidTrackerTableState({
       pendingDelete,
       sortedDungeons,
       completionsByDungeonId,
-      completionsByCharacterId,
       handleSort,
       handleCharacterSort,
       handleRequestDeleteCharacter,
@@ -200,7 +184,6 @@ export function useRaidTrackerTableState({
       characterSortDirection,
       characterSortId,
       compactTable,
-      completionsByCharacterId,
       completionsByDungeonId,
       confirmDelete,
       dungeonCount,

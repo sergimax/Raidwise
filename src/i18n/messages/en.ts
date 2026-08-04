@@ -90,6 +90,7 @@ export const enMessages = {
     editCharacter: "Edit details for {{name}}",
     resetCharacterToggles: "Reset toggles for {{name}}",
     removeCharacter: "Remove character {{name}}",
+    sortByCharacter: "Sort raids by {{name}} cooldown",
     toggleAria: "{{character}} — {{dungeon}}",
     difficultyNormal: "N",
     difficultyHeroic: "H ☠️",

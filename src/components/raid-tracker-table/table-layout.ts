@@ -171,6 +171,7 @@ export function pinnedHeaderCellSx(left: number, width: number) {
 export const CHARACTER_HEADER_CELL_SX = {
   /** Above body pinned cells; below pinned header corners (zIndex 4). */
   zIndex: 3,
+  verticalAlign: "top",
   width: CHARACTER_COLUMN_WIDTH,
   minWidth: CHARACTER_COLUMN_WIDTH,
   maxWidth: CHARACTER_COLUMN_WIDTH,

@@ -92,6 +92,7 @@ export const ruMessages: Messages = {
     editCharacter: "Изменить: {{name}}",
     resetCharacterToggles: "Сбросить переключатели для {{name}}",
     removeCharacter: "Удалить персонажа {{name}}",
+    sortByCharacter: "Сортировать рейды по КД {{name}}",
     toggleAria: "{{character}} — {{dungeon}}",
     difficultyNormal: "N",
     difficultyHeroic: "H ☠️",
