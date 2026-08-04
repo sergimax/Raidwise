@@ -1,6 +1,7 @@
 import { getLocalizedSpecName } from "../i18n/localized-domain.ts";
 import type { AppLocale } from "../i18n/types.ts";
 import type { ClassName, CharacterRecord, CharacterSpecGear } from "../types/characters.ts";
+import { formatCharacterDisplayName } from "./character-display.ts";
 import { formatExportGearScore } from "./format-character-details.ts";
 import {
   DEFAULT_EXPORT_ROLE_FILTER,
@@ -291,8 +292,8 @@ export function formatCharacterExportLabel(
     if (characterHasExportSpecs(character)) {
       return null;
     }
-    return character.name;
+    return formatCharacterDisplayName(character.name);
   }
 
-  return `${character.name}: ${specSegments.join(", ")}`;
+  return `${formatCharacterDisplayName(character.name)}: ${specSegments.join(", ")}`;
 }

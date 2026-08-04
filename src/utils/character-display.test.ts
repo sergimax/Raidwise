@@ -5,6 +5,7 @@ import {
   CLASS_CHIP_FG_ON_LIGHT_BG,
   accessibleForegroundForClassColor,
   characterNameDisplaySx,
+  formatCharacterDisplayName,
   formatClassColorHex,
 } from "./character-display.ts";
 
@@ -15,6 +16,14 @@ function classByName(name: ClassName) {
   }
   return found;
 }
+
+describe("formatCharacterDisplayName", () => {
+  it("capitalizes the first letter", () => {
+    expect(formatCharacterDisplayName("qwe")).toBe("Qwe");
+    expect(formatCharacterDisplayName("элст")).toBe("Элст");
+    expect(formatCharacterDisplayName("Elst")).toBe("Elst");
+  });
+});
 
 describe("formatClassColorHex", () => {
   it("prefixes a hash when missing", () => {

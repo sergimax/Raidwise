@@ -69,7 +69,7 @@ describe("parseCharacterForm", () => {
   it("accepts Cyrillic letters on create", () => {
     const result = parseCharacterForm(
       {
-        name: "Элст",
+        name: "элст",
         characterClass: Classes[0],
         mainSpec: "",
         mainGearScoreText: "",
@@ -81,6 +81,24 @@ describe("parseCharacterForm", () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.name).toBe("Элст");
+    }
+  });
+
+  it("capitalizes the first letter on create", () => {
+    const result = parseCharacterForm(
+      {
+        name: "qwe",
+        characterClass: Classes[0],
+        mainSpec: "",
+        mainGearScoreText: "",
+        offSpec: "",
+        offGearScoreText: "",
+      },
+      [],
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.name).toBe("Qwe");
     }
   });
 

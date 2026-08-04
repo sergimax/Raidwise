@@ -1,3 +1,5 @@
+import { formatCharacterDisplayName } from "./character-display.ts";
+
 /** Soft-roll system: +100 per soft, or extra /rolls (best wins). */
 export type SoftRollSystem = "plus100" | "reroll";
 
@@ -238,7 +240,7 @@ export function formatGearPickCopyText(options: FormatGearPickCopyOptions): stri
 
   const characterName = options.characterName?.trim();
   if (characterName) {
-    return [`${characterName}:`, ...lines].join("\n");
+    return [`${formatCharacterDisplayName(characterName)}:`, ...lines].join("\n");
   }
 
   return lines.join("\n");

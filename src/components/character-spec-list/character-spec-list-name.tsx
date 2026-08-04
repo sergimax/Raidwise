@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import { formatCharacterDisplayName } from "../../utils/character-display.ts";
 
 type CharacterSpecListNameProps = {
   name: string;
@@ -13,6 +14,7 @@ export function CharacterSpecListName({
   inactive = false,
   inactiveTone = "cooldown",
 }: CharacterSpecListNameProps) {
+  const displayName = formatCharacterDisplayName(name);
   const color =
     !inactive
       ? "text.primary"
@@ -23,7 +25,7 @@ export function CharacterSpecListName({
   return (
     <Typography
       variant="body2"
-      title={name}
+      title={displayName}
       sx={{
         fontWeight: inactive ? 500 : 600,
         whiteSpace: "nowrap",
@@ -34,7 +36,7 @@ export function CharacterSpecListName({
         fontStyle: inactive && inactiveTone === "cooldown" ? "italic" : "normal",
       }}
     >
-      {name}
+      {displayName}
     </Typography>
   );
 }

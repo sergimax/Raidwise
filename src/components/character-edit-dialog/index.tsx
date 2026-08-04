@@ -19,7 +19,7 @@ import {
   characterSpecGearFormValues,
   parseCharacterSpecGearFields,
 } from "../../utils/validate-character.ts";
-import { characterNameDisplaySx } from "../../utils/character-display.ts";
+import { characterNameDisplaySx, formatCharacterDisplayName } from "../../utils/character-display.ts";
 import { hideExternalWowTooltips } from "../../utils/hide-external-wow-tooltips.ts";
 import { ClassOptionLabel } from "../class-option-label/index.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
@@ -235,7 +235,7 @@ function CharacterEditDialogContent({
               lineHeight: 1.2,
             }}
           >
-            {character.name}
+            {formatCharacterDisplayName(character.name)}
           </Typography>
           {character.class ? (
             <ClassOptionLabel

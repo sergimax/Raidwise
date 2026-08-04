@@ -13,6 +13,7 @@ import type {
   CharacterSpecGear,
 } from "../types/characters.ts";
 import { parseOptionalGearScore } from "./parse-optional-gear-score.ts";
+import { formatCharacterDisplayName } from "./character-display.ts";
 
 /** New names only: Unicode letters (incl. Cyrillic). Digits/symbols rejected; legacy names are not re-checked. */
 export function isCharacterNameLettersOnly(name: string): boolean {
@@ -188,7 +189,7 @@ export function parseCharacterForm(
 
   return {
     ok: true,
-    name: trimmedName,
+    name: formatCharacterDisplayName(trimmedName),
     characterClass,
     mainSpec: specGearResult.mainSpec,
     offSpec: specGearResult.offSpec,
