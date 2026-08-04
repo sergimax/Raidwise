@@ -6,7 +6,7 @@
 Данные хранятся локально в `localStorage`.
 Активная ссылка: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![Версия приложения](https://img.shields.io/badge/App_version-1.55.0-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-2.0.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -69,8 +69,9 @@
 
 ### Тема
 
-Светлая/тёмная тема, сохраняется локально.
+Светлая/тёмная тема, сохраняется локально (палитра, типографика и стили ссылок).
 В хедере ссылки на GitHub и [sergimax.ru](https://sergimax.ru).
+Дизайн-токены / рецепты: [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Разработка
 
