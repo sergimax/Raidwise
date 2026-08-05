@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-08-05
+
+### Added
+
+- **Raid chip exceptions:** In Character pick and Soft pick, click a Selected raid chip to exclude it from results (chip stays visible and muted; click again to include). Reset all filters clears exclusions in Character pick. Selected/matched count stays by the search field; total raid count is shown in the Selected raid header as `(N total)`.
+- **Soft pick helper:** Soft reserve targets note that the active BiS list from BiS builds is used.
+
+### Changed
+
+- **Russian emblem labels:** Emblem names use genitive forms (e.g. «Льда», «Доблести») to match in-game phrasing.
+- **Docs:** README EN+RU and project rules updated for raid chip exclusions and Soft pick BiS-list note.
+
 ## [2.1.0] - 2026-08-05
 
 ### Added
@@ -14,8 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Character names:** New names must be Unicode letters only; display capitalizes the first letter. Legacy names with digits/symbols still load.
 - **Class-colored name chips:** Character names use a darkened WoW class-color fill with accessible ink (same chip in light and dark).
 - **Raid completion progress:** Complete column shows a determinate progress bar; `completed/total` is in the hover tooltip only. Bar colors follow the theme (muted → danger → brand/warning → info → ok; dimmer in light mode).
-- **Raid chip exceptions:** In Character pick and Soft pick, click a Selected raid chip to exclude it from results (chip stays visible and muted; click again to include). Reset all filters clears exclusions in Character pick. Selected/matched count stays by the search field; total raid count is shown in the Selected raid header as `(N total)`.
-- **Soft pick helper:** Soft reserve targets note that the active BiS list from BiS builds is used.
 
 ### Changed
 

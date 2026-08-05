@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-2.1.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.2.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
