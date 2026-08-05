@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from "react";
 import type { CharacterRecord } from "../../types/characters.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
@@ -119,14 +119,14 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
       [characters, exportSpecSelectionByCharacterId, includedCharacterIds],
     );
 
-    const resetAllFilters = () => {
+    const resetAllFilters = useCallback(() => {
       setExportSpecSelectionByCharacterId({});
       setMinGearScoreFilterEnabled(false);
       setMinGearScoreCompact(EXPORT_MIN_GS_COMPACT_DEFAULT);
       setRoleFilter({ ...DEFAULT_EXPORT_ROLE_FILTER });
       setExcludedDungeonIds(new Set());
       onDungeonNameSearchChange("");
-    };
+    }, [onDungeonNameSearchChange]);
 
     const resetDungeonFilter = () => {
       onDungeonNameSearchChange("");
@@ -152,7 +152,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
       setExportSpecSelectionByCharacterId(buildClearAllExportSpecSelection(characters));
     };
 
-    useImperativeHandle(ref, () => ({ resetAllFilters }), []);
+    useImperativeHandle(ref, () => ({ resetAllFilters }), [resetAllFilters]);
 
     const includedCharacters = useMemo(
       () =>
