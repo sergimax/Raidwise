@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-2.3.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.4.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -90,6 +90,9 @@ On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in p
 
 **Layout:**
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
+
+**Performance:**
+WoW item JSON is code-split and loaded after the app shell (`WowDataProvider` / `ensure-wow-data`); fonts are self-hosted under `public/fonts/`; class/spec icons are 32×32 WebP; item tooltip scripts load on first item-link interaction for the active locale only.
 
 Contributor/agent conventions: [`.cursor/rules/project-rules.mdc`](.cursor/rules/project-rules.mdc).
 
