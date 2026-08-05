@@ -6,7 +6,7 @@
 Данные хранятся локально в `localStorage`.
 Активная ссылка: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![Версия приложения](https://img.shields.io/badge/App_version-2.3.0-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-2.4.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -91,6 +91,9 @@ React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 **Структура:**
 `src/components/` (UI), `src/hooks/` (домен + оверлей-панели), `src/utils/`, `src/data/` (бандлы WoW + BiS-пресеты), `src/storage/`.
 Тесты рядом: `*.test.ts(x)`.
+
+**Производительность:**
+JSON предметов WoW грузится отдельными чанками после оболочки (`WowDataProvider` / `ensure-wow-data`); шрифты локальные в `public/fonts/`; иконки классов/спеков — WebP 32×32; скрипты тултипов предметов — при первом наведении/фокусе на ссылку, только для активной локали.
 
 Соглашения для контрибьюторов/агентов: [`.cursor/rules/project-rules.mdc`](.cursor/rules/project-rules.mdc).
 

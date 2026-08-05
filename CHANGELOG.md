@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-08-06
+
+### Changed
+
+- **Faster first load:** Large WoW item JSON (names, stats, equip props, drops, tier sets, raid loot) loads in separate chunks after the shell; gear-hint cell tints appear once hint data is ready. Active UI locale names load first; English names load with the hint payload when needed for variants.
+- **Fonts:** Onest, Noto Sans, and JetBrains Mono are self-hosted (latin + Cyrillic woff2) with `font-display: swap`; Google Fonts CSS removed. Regenerate with `npm run download:fonts`.
+- **Item tooltips:** Third-party tooltip scripts (WowRoad for RU, Cavern of Time for EN) load only on first item-link hover/focus for the active locale, instead of both scripts on app mount.
+- **Class/spec icons:** Shipped as 32×32 WebP (regenerate with `npm run compress:class-icons`).
+- **Docs:** README EN+RU deployment notes for long-cache hashed assets/fonts, short-cache `index.html`, HTTP/2, and compression; Development performance notes; project rules updated for deferred WoW JSON, self-hosted fonts, WebP icons, and on-demand tooltips.
+
 ## [2.3.0] - 2026-08-05
 
 ### Added

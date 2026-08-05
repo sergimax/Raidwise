@@ -1,6 +1,6 @@
 /**
  * Resize class/spec PNGs to 32×32 WebP for table/header display (~14–18 CSS px @2x).
- * Writes `.webp` next to each `.png` and leaves PNGs in place until imports are switched.
+ * Writes `.webp` next to each `.png`, then removes the source PNGs.
  *
  * Usage: node scripts/compress-class-icons.mjs
  */
