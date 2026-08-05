@@ -118,6 +118,8 @@ npm run dev
 | `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis-list-sources.md` + `scripts/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Комментарии слотов в файлах BiS-пресетов |
 | `npm run download:gear-slot-icons` | PNG-заглушки слотов paper-doll в `src/assets/gear-slot-icons/` |
+| `npm run download:fonts` | Локальные Onest / Noto Sans / JetBrains Mono woff2 + `src/fonts.css` |
+| `npm run compress:class-icons` | Иконки классов/спеков 32×32 WebP в `src/assets/class-icons/` |
 
 Встроенные BiS пишутся в `scripts/bis-list-sources.md` (Titans + community) и `scripts/bis-list-mix.md` (Kingdom. With variants: нумерованное оружие и альтернативы `N-M`).
 После правок markdown перегенерируйте TypeScript-пресеты.
@@ -136,3 +138,29 @@ npm run dev
 
 Повреждённые данные трекера сбрасываются с алертом.
 Старые сейвы мигрируют при загрузке.
+
+### Деплой (кэш и HTTP)
+
+Vite кладёт файлы с хэшем в имени в `assets/` (напр. `/my-raid-cds/assets/index-….js`). Для нормального кэша в Lighthouse на [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds):
+
+| Путь | Cache-Control | Зачем |
+|------|---------------|--------|
+| `/my-raid-cds/assets/*` | `public, max-age=31536000, immutable` | Имя файла меняется при каждой сборке |
+| `/my-raid-cds/index.html` | `no-cache` или короткий `max-age` (напр. 60) | Клиенты должны подхватывать новые хэши |
+| `/my-raid-cds/fonts/*` | `public, max-age=31536000, immutable` | Локальные woff2 |
+
+Также включите **HTTP/2** (или HTTP/3) и **brotli**/**gzip** для JS/CSS/JSON/SVG/woff2.
+
+Пример для Nginx:
+
+```nginx
+location /my-raid-cds/assets/ {
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+location = /my-raid-cds/index.html {
+  add_header Cache-Control "no-cache";
+}
+location /my-raid-cds/fonts/ {
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+```

@@ -25,6 +25,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (id.includes("src/data/") && id.endsWith(".json")) {
+            const fileName = id.split(/[/\\]/).pop() ?? "wow-data";
+            return `wow-${fileName.replace(/\.json$/, "")}`;
+          }
           if (!id.includes("node_modules")) return;
           if (id.includes("@mui/icons-material")) return "mui-icons";
           if (id.includes("@mui") || id.includes("@emotion")) return "mui";

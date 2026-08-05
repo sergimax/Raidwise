@@ -117,6 +117,8 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis-list-sources.md` + `scripts/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Add slot comments to BiS preset files |
 | `npm run download:gear-slot-icons` | Regenerate WoW paper-doll slot placeholder PNGs in `src/assets/gear-slot-icons/` |
+| `npm run download:fonts` | Regenerate self-hosted Onest / Noto Sans / JetBrains Mono woff2 + `src/fonts.css` |
+| `npm run compress:class-icons` | Resize class/spec icons to 32×32 WebP in `src/assets/class-icons/` |
 
 Built-in BiS lists are authored in `scripts/bis-list-sources.md` (Titans + community) and `scripts/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
 Regenerate TypeScript presets after editing the markdown.
@@ -135,3 +137,29 @@ Character names: new names are letters only (Unicode `\p{L}+`); display capitali
 
 Corrupted tracker data resets with an error alert.
 Legacy saves migrate on load.
+
+### Deployment (caching & HTTP)
+
+Vite emits content-hashed files under `assets/` (e.g. `/my-raid-cds/assets/index-….js`). For good Lighthouse cache scores on [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds):
+
+| Path | Cache-Control | Notes |
+|------|---------------|--------|
+| `/my-raid-cds/assets/*` | `public, max-age=31536000, immutable` | Filenames change every build |
+| `/my-raid-cds/index.html` | `no-cache` or short `max-age` (e.g. 60) | Must revalidate so clients pick up new hashes |
+| `/my-raid-cds/fonts/*` | `public, max-age=31536000, immutable` | Self-hosted woff2 |
+
+Also enable **HTTP/2** (or HTTP/3) and **brotli** or **gzip** for JS/CSS/JSON/SVG/woff2.
+
+Example Nginx location snippets:
+
+```nginx
+location /my-raid-cds/assets/ {
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+location = /my-raid-cds/index.html {
+  add_header Cache-Control "no-cache";
+}
+location /my-raid-cds/fonts/ {
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+```
