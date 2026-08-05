@@ -2,7 +2,7 @@
   "$schemaComment": "Portable design tokens for my-raid-cds — chrome + domain overlays.",
   "meta": {
     "name": "my-raid-cds",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "versionNote": "Tracks app package.json when design tokens change with a release; not an independent semver stream.",
     "sources": [
       "src/theme/create-app-theme.ts",
