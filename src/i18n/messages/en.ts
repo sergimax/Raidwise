@@ -273,7 +273,7 @@ export const enMessages = {
     noCharacters: "Add a character to build a character pick",
     exportLinesTitle: "Who fits for the raid",
     exportLinesHelper:
-      "Find the raid you're interested in in the search. Select the specs you want, roles, and GS. If a line appears below, copy it and send it to the raid leader in a private message",
+      "Search for the raid you want. Select specs, roles, and GS. When a line appears below, copy it and send it to the raid leader in a private message",
     exportLinesHelperSingle:
       "Characters you can offer for this raid. Copy the line and paste it in a PM to the raid leader",
     copyLine: "Copy",
@@ -304,7 +304,7 @@ export const enMessages = {
     minGearScoreEnable: "Minimum GS filter",
     minGearScoreEnableAria: "Enable minimum gear score filter for character pick",
     minGearScoreHelper:
-      "Minimum gear score for character to join the pick",
+      "Minimum gear score for a character to join the pick",
     minGearScoreSliderValue: "≥ {{value}}k GS",
     minGearScoreAria: "Minimum GearScore for character pick lines",
     roleFilterLabel: "Required roles",
@@ -351,7 +351,7 @@ export const enMessages = {
     itemsEmptyNoGearSuffix:
       "on the character column header and import gear from WowSimsExporter to see soft reserve targets",
     itemsEmptyNoBis: "Select a BiS list for this spec to see soft reserve targets",
-    itemsEmptyNoItems: "No BiS upgrades in the filtered raids for this spec soft reserve",
+    itemsEmptyNoItems: "No BiS upgrades in the filtered raids for soft reserves on this spec",
     mySoftsLabel: "My soft reserves",
     mySoftsAria: "Soft reserves to spend on {{item}}",
     decreaseMySoftsAria: "Decrease softs for {{item}}",
@@ -365,7 +365,7 @@ export const enMessages = {
     competitionPlus100MaxCaller:
       "{{count}} already at ×{{max}} — lower softs lose",
     competitionPlus100Dominated:
-      "You ×{{my}} loses to ×{{max}} ({{count}} full soft)",
+      "You ×{{my}} loses to ×{{max}} ({{count}} at full softs)",
     competitionPlus100Hint:
       "Soft weight = Σ(softs × callers). Higher soft beats lower; anyone at ×{{max}} beats ×1…×{{belowMax}}.",
     competitionReroll:
