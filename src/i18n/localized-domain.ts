@@ -42,11 +42,11 @@ const gearSlotNamesRu = [
 ] as const;
 
 const emblemLabelsRu: Record<EmblemKey, string> = {
-  [EmblemKey.CONQUEST]: "Завоевание",
-  [EmblemKey.FROST]: "Ледяной",
-  [EmblemKey.HEROISM]: "Героизм",
-  [EmblemKey.TRIUMPH]: "Триумф",
-  [EmblemKey.VALOR]: "Доблесть",
+  [EmblemKey.CONQUEST]: "Завоевания",
+  [EmblemKey.FROST]: "Льда",
+  [EmblemKey.HEROISM]: "Героизма",
+  [EmblemKey.TRIUMPH]: "Триумфа",
+  [EmblemKey.VALOR]: "Доблести",
 };
 
 function raidDisplayName(raidKey: RaidKey, locale: AppLocale, compact: boolean): string {
