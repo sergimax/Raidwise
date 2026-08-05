@@ -346,7 +346,8 @@ export const ruMessages: Messages = {
     dungeonFilterHelper:
       "Текстовый поиск по таблице. Нажмите на чип - исключить или добавить рейд",
     itemsTitle: "Предметы для софта",
-    itemsHelper: "BiS и варианты BiS из отфильтрованных рейдов. Назначьте свои софты и учтите чужие заявки",
+    itemsHelper:
+      "Используется активный BiS-список из BIS сборок. BiS и варианты BiS из отфильтрованных рейдов — назначьте свои софты и учтите чужие заявки",
     itemsEmptyNoSelection: "Выберите персонажа и спек, чтобы увидеть предметы для софта",
     itemsEmptyNoGearPrefix: "Нажмите",
     itemsEmptyNoGearSuffix:

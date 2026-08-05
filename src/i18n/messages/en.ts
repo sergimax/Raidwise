@@ -344,7 +344,8 @@ export const enMessages = {
     dungeonFilterHelper:
       "Search here or in the table header — both stay in sync. Soft reserve targets come from matching raid rows. Click a chip to exclude it (stays visible; click again to include)",
     itemsTitle: "Soft reserve targets",
-    itemsHelper: "BiS and BiS-variant upgrades from filtered raids. Assign your soft reserves and track others",
+    itemsHelper:
+      "Uses the active BiS list from BiS builds. BiS and BiS-variant upgrades from filtered raids — assign your softs and track others",
     itemsEmptyNoSelection: "Select a character and spec to see soft reserve targets",
     itemsEmptyNoGearPrefix: "Click",
     itemsEmptyNoGearSuffix:

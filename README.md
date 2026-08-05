@@ -47,7 +47,7 @@ Filters: min GS, role, specs. Click Selected raid chips to exclude false matches
 
 ### Soft pick for a raid
 
-Soft reserves for one character + spec on BiS upgrades from filtered raids.
+Soft reserves for one character + spec on BiS upgrades from filtered raids (active list from **BiS builds**).
 Session-only; pasteable call lines start with the character name. Same clickable raid chips to exclude rows.
 
 ### BiS builds
