@@ -284,8 +284,8 @@ export const ruMessages: Messages = {
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
       "Поиск по таблице. Нажмите на чип - исключить или добавить рейд",
-    dungeonFilterMatchCount:
-      "{{selected}} из {{matched}} выбрано ({{total}} всего)",
+    dungeonFilterMatchCount: "{{selected}} из {{matched}} выбрано",
+    dungeonFilterTotalMark: "{{total}} всего",
     dungeonFilterNoMatches: "Нет рейдов по текущему поиску.",
     dungeonChipExcludeAria: "Исключить {{raid}} из подбора",
     dungeonChipIncludeAria: "Включить {{raid}} в подбор",

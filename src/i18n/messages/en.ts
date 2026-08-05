@@ -282,8 +282,8 @@ export const enMessages = {
     dungeonFilterTitle: "Selected raid",
     dungeonFilterHelper:
       "Search here or in the table header — both stay in sync. Character pick includes one line per matching raid row. Click a chip to exclude it (stays visible; click again to include)",
-    dungeonFilterMatchCount:
-      "{{selected}} of {{matched}} selected ({{total}} total)",
+    dungeonFilterMatchCount: "{{selected}} of {{matched}} selected",
+    dungeonFilterTotalMark: "{{total}} total",
     dungeonFilterNoMatches: "No raids match the current search.",
     dungeonChipExcludeAria: "Exclude {{raid}} from character pick",
     dungeonChipIncludeAria: "Include {{raid}} in character pick",
@@ -304,7 +304,7 @@ export const enMessages = {
     minGearScoreEnable: "Minimum GS filter",
     minGearScoreEnableAria: "Enable minimum gear score filter for character pick",
     minGearScoreHelper:
-      "When enabled, specs below the selected GS are disabled and omitted from character pick lines",
+      "Minimum gear score for character to join the pick",
     minGearScoreSliderValue: "≥ {{value}}k GS",
     minGearScoreAria: "Minimum GearScore for character pick lines",
     roleFilterLabel: "Required roles",

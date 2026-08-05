@@ -267,6 +267,9 @@ export function GearPickPanel({
         <ExportFilterSection
           step={1}
           title={t("gearPickPanel.dungeonFilterTitle")}
+          titleMark={t("exportPanel.dungeonFilterTotalMark", {
+            total: totalDungeonCount,
+          })}
           description={t("gearPickPanel.dungeonFilterHelper")}
           contentSx={exportDungeonFilterContentSx}
         >
@@ -276,7 +279,6 @@ export function GearPickPanel({
             visibleDungeons={visibleDungeons}
             excludedDungeonIds={excludedDungeonIds}
             onToggleDungeonExcluded={toggleDungeonExcluded}
-            totalDungeonCount={totalDungeonCount}
             locale={locale}
             t={t}
           />
