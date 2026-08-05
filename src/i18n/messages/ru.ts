@@ -18,8 +18,8 @@ export const ruMessages: Messages = {
   },
   header: {
     appTitle: "My Raid CDs",
-    themeLight: "Светлая тема",
-    themeDark: "Тёмная тема",
+    themeLight: "Переключить на светлую тему",
+    themeDark: "Переключить на тёмную тему",
     introShowAria: "Показать, чем поможет приложение",
     introHideAria: "Скрыть подсказку «чем поможет приложение»",
     localeTooltipEn:
@@ -275,7 +275,7 @@ export const ruMessages: Messages = {
     noCharacters: "Добавьте персонажа для работы подбора",
     exportLinesTitle: "Кто подходит для рейда",
     exportLinesHelper:
-      "По строке на рейд с персонажами без КД. Отфильтруйте таблицу до одного рейда и скопируйте нужную строку",
+      "Найдите нужный рейд в поиске. Выберите спеки, роли и GS. Когда ниже появится строка — скопируйте и отправьте рейд-лидеру в личные сообщения",
     exportLinesHelperSingle:
       "Персонажи, которых можно предложить на этот рейд. Скопируйте строку и вставьте в ЛС рейдлидеру.",
     copyLine: "Скопировать",
@@ -283,7 +283,7 @@ export const ruMessages: Messages = {
     copied: "Скопировано",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
-      "Текстовый поиск по таблице. Нажмите на чип - исключить или добавить рейд",
+      "Текстовый поиск по таблице. Нажмите на значок рейда — исключить или добавить рейд",
     dungeonFilterMatchCount: "{{selected}} из {{matched}} выбрано",
     dungeonFilterTotalMark: "{{total}} всего",
     dungeonFilterNoMatches: "Нет рейдов по текущему поиску.",
@@ -312,7 +312,7 @@ export const ruMessages: Messages = {
     roleFilterLabel: "Необходимые роли",
     roleFilterTitle: "Необходимые роли",
     roleFilterHelper:
-      "Выбранные роли участвуют в подборе",
+      "Снятые роли отключают соответствующие спеки и убирают их из строк подбора",
     roleTank: "Танк",
     roleHealer: "Хил",
     roleMeleeDps: "Мдд",
@@ -334,17 +334,17 @@ export const ruMessages: Messages = {
     rulesHelper: "Сколько софт-резервов разрешено в рейде и как они работают: +100 или переролл",
     maxSoftsLabel: "Максимум софт-резервов",
     maxSoftsAria: "Максимум софт-резервов в этом рейде",
-    systemLabel: "Система софт резервов",
+    systemLabel: "Система софт-резервов",
     systemPlus100: "+100 за софт",
     systemPlus100Aria: "Каждый софт добавляет +100 к роллу",
     systemReroll: "Переролл",
     systemRerollAria:
-      "Каждый, кто зявляет софт-резерв, получает 1 обычный /roll плюс /roll за каждый софт-резерв; побеждает лучший результат",
+      "Каждый, кто заявляет софт-резерв, получает 1 обычный /roll плюс /roll за каждый софт-резерв; побеждает лучший результат",
     characterTitle: "Персонаж и спек",
     characterHelper: "Выберите одного персонажа и один спек для планирования софтов",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
-      "Текстовый поиск по таблице. Нажмите на чип - исключить или добавить рейд",
+      "Текстовый поиск по таблице. Нажмите на значок рейда — исключить или добавить рейд",
     itemsTitle: "Предметы для софта",
     itemsHelper:
       "Используется активный BiS-список из BIS сборок. BiS и варианты BiS из отфильтрованных рейдов — назначьте свои софты и учтите чужие заявки",
@@ -353,7 +353,7 @@ export const ruMessages: Messages = {
     itemsEmptyNoGearSuffix:
       "в заголовке колонки персонажа и импортируйте шмот из WowSimsExporter, чтобы увидеть предметы для софта",
     itemsEmptyNoBis: "Выберите BiS-список для этого спека, чтобы увидеть предметы для софта",
-    itemsEmptyNoItems: "Нет BiS-апгрейдов в отфильтрованных рейдах для этого спека софт-резервов",
+    itemsEmptyNoItems: "Нет BiS-апгрейдов в отфильтрованных рейдах для софт-резервов по этому спеку",
     mySoftsLabel: "Мои софт-резервы",
     mySoftsAria: "Софт-резервы на {{item}}",
     decreaseMySoftsAria: "Уменьшить софт-резервы на {{item}}",
@@ -391,7 +391,7 @@ export const ruMessages: Messages = {
     kindLabelBis: "BiS",
     kindLabelUpgrades: "Улучшения",
     legendBisMeaning: "нет BiS по выбранному списку",
-    legendUpgradesMeaning: "улучшения по ilvl (с примерным учетом статов)",
+    legendUpgradesMeaning: "улучшения по ilvl (с примерным учётом статов)",
     legendDismissAria: "Скрыть подсказку о цветах",
     bisMissing: "{{count}} BiS без предмета",
     bisVariantMissing: "{{count}} обычн. версий",
