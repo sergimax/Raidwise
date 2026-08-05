@@ -1,13 +1,13 @@
-import deathKnightIcon from "./death-knight.png";
-import druidIcon from "./druid.png";
-import hunterIcon from "./hunter.png";
-import mageIcon from "./mage.png";
-import paladinIcon from "./paladin.png";
-import priestIcon from "./priest.png";
-import rogueIcon from "./rogue.png";
-import shamanIcon from "./shaman.png";
-import warlockIcon from "./warlock.png";
-import warriorIcon from "./warrior.png";
+import deathKnightIcon from "./death-knight.webp";
+import druidIcon from "./druid.webp";
+import hunterIcon from "./hunter.webp";
+import mageIcon from "./mage.webp";
+import paladinIcon from "./paladin.webp";
+import priestIcon from "./priest.webp";
+import rogueIcon from "./rogue.webp";
+import shamanIcon from "./shaman.webp";
+import warlockIcon from "./warlock.webp";
+import warriorIcon from "./warrior.webp";
 
 export const classIcons = {
   "Death Knight": deathKnightIcon,
