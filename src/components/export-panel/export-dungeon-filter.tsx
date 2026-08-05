@@ -12,6 +12,8 @@ type ExportDungeonFilterProps = {
   dungeonNameSearch: string;
   onDungeonNameSearchChange: (query: string) => void;
   visibleDungeons: readonly DungeonRecord[];
+  excludedDungeonIds: ReadonlySet<string>;
+  onToggleDungeonExcluded: (dungeonId: string) => void;
   totalDungeonCount: number;
   locale: AppLocale;
   t: TranslateFn;
@@ -21,10 +23,18 @@ export function ExportDungeonFilter({
   dungeonNameSearch,
   onDungeonNameSearchChange,
   visibleDungeons,
+  excludedDungeonIds,
+  onToggleDungeonExcluded,
   totalDungeonCount,
   locale,
   t,
 }: ExportDungeonFilterProps) {
+  const selectedCount = visibleDungeons.reduce(
+    (count, dungeon) =>
+      excludedDungeonIds.has(dungeon.id) ? count : count + 1,
+    0,
+  );
+
   return (
     <Stack spacing={0.75} sx={{ flex: 1, minHeight: 0, height: "100%" }}>
       <Stack
@@ -53,7 +63,8 @@ export function ExportDungeonFilter({
           sx={{ flexShrink: 0, lineHeight: 1.35, whiteSpace: "nowrap" }}
         >
           {t("exportPanel.dungeonFilterMatchCount", {
-            count: visibleDungeons.length,
+            selected: selectedCount,
+            matched: visibleDungeons.length,
             total: totalDungeonCount,
           })}
         </Typography>
@@ -81,13 +92,31 @@ export function ExportDungeonFilter({
             {visibleDungeons.map((dungeon) => {
               const raidKey = resolveDungeonRaidKey(dungeon);
               const raidIcon = getRaidIcon(raidKey);
+              const isActive = !excludedDungeonIds.has(dungeon.id);
+              const label = formatDungeonExportLabel(dungeon, locale);
 
               return (
                 <Chip
                   key={dungeon.id}
                   size="small"
+                  clickable
                   variant="outlined"
+                  aria-pressed={isActive}
+                  aria-label={
+                    isActive
+                      ? t("exportPanel.dungeonChipExcludeAria", { raid: label })
+                      : t("exportPanel.dungeonChipIncludeAria", { raid: label })
+                  }
+                  onClick={() => onToggleDungeonExcluded(dungeon.id)}
                   sx={{
+                    opacity: isActive ? 1 : 0.55,
+                    bgcolor: isActive
+                      ? "var(--brand-soft)"
+                      : "transparent",
+                    borderColor: isActive
+                      ? "color-mix(in srgb, var(--brand) 45%, transparent)"
+                      : "divider",
+                    color: isActive ? "var(--brand)" : "text.secondary",
                     "& .MuiChip-label": {
                       display: "inline-flex",
                       alignItems: "center",
@@ -102,7 +131,7 @@ export function ExportDungeonFilter({
                         <ExportRaidIcon raidKey={raidKey} size={14} />
                       ) : null}
                       <Box component="span" sx={{ lineHeight: 1 }}>
-                        {formatDungeonExportLabel(dungeon, locale)}
+                        {label}
                       </Box>
                     </>
                   }

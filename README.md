@@ -43,12 +43,12 @@ When there are no dungeons — **Add raids from template**.
 ### Character pick for a raid
 
 Copyable signup line of characters still missing CD on filtered raids.
-Filters: min GS, role, specs.
+Filters: min GS, role, specs. Click Selected raid chips to exclude false matches from the results (chips stay visible).
 
 ### Soft pick for a raid
 
 Soft reserves for one character + spec on BiS upgrades from filtered raids.
-Session-only; pasteable call lines start with the character name.
+Session-only; pasteable call lines start with the character name. Same clickable raid chips to exclude rows.
 
 ### BiS builds
 

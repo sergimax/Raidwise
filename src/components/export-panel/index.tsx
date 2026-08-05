@@ -42,6 +42,10 @@ import {
   DEFAULT_EXPORT_ROLE_FILTER,
   type ExportRoleFilter,
 } from "../../utils/export-spec-role.ts";
+import {
+  filterDungeonsExcludingIds,
+  toggleDungeonIdExclusion,
+} from "../../utils/filter-dungeons-excluding-ids.ts";
 
 type StoredExportSpecSelection = Partial<CharacterExportSpecSelection>;
 
@@ -71,8 +75,16 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
     const [roleFilter, setRoleFilter] = useState<ExportRoleFilter>(
       () => ({ ...DEFAULT_EXPORT_ROLE_FILTER }),
     );
+    const [excludedDungeonIds, setExcludedDungeonIds] = useState<Set<string>>(
+      () => new Set(),
+    );
 
     const hasDungeonFilter = totalDungeonCount > 0;
+
+    const activeDungeons = useMemo(
+      () => filterDungeonsExcludingIds(visibleDungeons, excludedDungeonIds),
+      [excludedDungeonIds, visibleDungeons],
+    );
 
     const minGearScore = useMemo(
       () =>
@@ -87,13 +99,13 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
             .filter((character) =>
               hasCharacterWithoutCdInVisibleDungeons(
                 character.id,
-                visibleDungeons,
+                activeDungeons,
                 dungeonToggles,
               ),
             )
             .map((character) => character.id),
         ),
-      [characters, dungeonToggles, visibleDungeons],
+      [activeDungeons, characters, dungeonToggles],
     );
 
     const exportSpecSelectionForPanel = useMemo(
@@ -111,6 +123,13 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
       setMinGearScoreFilterEnabled(false);
       setMinGearScoreCompact(EXPORT_MIN_GS_COMPACT_DEFAULT);
       setRoleFilter({ ...DEFAULT_EXPORT_ROLE_FILTER });
+      setExcludedDungeonIds(new Set());
+    };
+
+    const toggleDungeonExcluded = (dungeonId: string) => {
+      setExcludedDungeonIds((previous) =>
+        toggleDungeonIdExclusion(previous, dungeonId),
+      );
     };
 
     const selectAllCharacterSpecs = () => {
@@ -145,7 +164,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
       () =>
         buildExportStatus({
           characters: includedCharacters,
-          dungeons: visibleDungeons,
+          dungeons: activeDungeons,
           dungeonToggles,
           exportSpecSelectionByCharacterId: exportSpecSelectionForPanel,
           minGearScore,
@@ -154,6 +173,7 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
           t,
         }),
       [
+        activeDungeons,
         dungeonToggles,
         exportSpecSelectionForPanel,
         includedCharacters,
@@ -161,7 +181,6 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
         minGearScore,
         roleFilter,
         t,
-        visibleDungeons,
       ],
     );
 
@@ -239,6 +258,8 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
                   dungeonNameSearch={dungeonNameSearch}
                   onDungeonNameSearchChange={onDungeonNameSearchChange}
                   visibleDungeons={visibleDungeons}
+                  excludedDungeonIds={excludedDungeonIds}
+                  onToggleDungeonExcluded={toggleDungeonExcluded}
                   totalDungeonCount={totalDungeonCount}
                   locale={locale}
                   t={t}
