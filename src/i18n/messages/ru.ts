@@ -283,7 +283,7 @@ export const ruMessages: Messages = {
     copied: "Скопировано",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
-      "Поиск по таблице. Нажмите на чип - исключить или добавить рейд",
+      "Текстовый поиск по таблице. Нажмите на чип - исключить или добавить рейд",
     dungeonFilterMatchCount: "{{selected}} из {{matched}} выбрано",
     dungeonFilterTotalMark: "{{total}} всего",
     dungeonFilterNoMatches: "Нет рейдов по текущему поиску.",
@@ -344,7 +344,7 @@ export const ruMessages: Messages = {
     characterHelper: "Выберите одного персонажа и один спек для планирования софтов",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
-      "Поиск по таблице. Нажмите на чип - исключить или добавить рейд",
+      "Текстовый поиск по таблице. Нажмите на чип - исключить или добавить рейд",
     itemsTitle: "Предметы для софта",
     itemsHelper: "BiS и варианты BiS из отфильтрованных рейдов. Назначьте свои софты и учтите чужие заявки",
     itemsEmptyNoSelection: "Выберите персонажа и спек, чтобы увидеть предметы для софта",
