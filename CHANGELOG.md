@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Raid chip exceptions:** In Character pick and Soft pick, click a Selected raid chip to exclude it from results (chip stays visible and muted; click again to include). Reset all filters clears exclusions in Character pick. Selected/matched count stays by the search field; total raid count is shown in the Selected raid header as `(N total)`.
+- **Raid chip exceptions:** In Character pick and Soft pick, click a Selected raid chip to exclude it from results (chip stays visible and muted; click again to include). Selected raid header has a reset control that clears the search field and re-includes all chips; Character pick **Reset all filters** does the same. Selected/matched count stays by the search field; total raid count is shown in the Selected raid header as `(N total)`.
 - **Soft pick helper:** Soft reserve targets note that the active BiS list from BiS builds is used.
 
 ### Changed

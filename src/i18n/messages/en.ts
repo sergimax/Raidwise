@@ -287,6 +287,8 @@ export const enMessages = {
     dungeonFilterNoMatches: "No raids match the current search.",
     dungeonChipExcludeAria: "Exclude {{raid}} from character pick",
     dungeonChipIncludeAria: "Include {{raid}} in character pick",
+    resetDungeonFilter: "Reset raid filter",
+    resetDungeonFilterAria: "Clear raid search and include all raid chips",
     gearScoreFilterTitle: "Minimum GS",
     characterSpecsFilterTitle: "Needed specs",
     characterSpecsFilterHelper:
