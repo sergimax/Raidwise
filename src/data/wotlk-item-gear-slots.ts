@@ -1,8 +1,15 @@
 import { buildItemIdMap } from "./build-item-id-map.ts";
-import itemGearSlotsJson from "./wotlk-item-gear-slots.json";
+import { createLazyJsonLoader } from "./lazy-json.ts";
 
-const itemGearSlotsById = buildItemIdMap(
-  itemGearSlotsJson as Record<string, readonly number[]>,
+let itemGearSlotsById = new Map<number, readonly number[]>();
+
+export const ensureWotlkItemGearSlotsLoaded = createLazyJsonLoader(
+  () => import("./wotlk-item-gear-slots.json"),
+  (data) => {
+    itemGearSlotsById = buildItemIdMap(
+      data as Record<string, readonly number[]>,
+    );
+  },
 );
 
 /** Valid WowSims gear slot indices for an item id, when known. */

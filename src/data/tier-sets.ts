@@ -1,26 +1,43 @@
 import { buildItemIdMap } from "./build-item-id-map.ts";
-import tierSetsByItemIdJson from "./tier-sets-by-item-id.json";
+import { createLazyJsonLoader } from "./lazy-json.ts";
 import type { TierSetItemEntry, TierSetTier } from "../types/tier-sets.ts";
 
-const tierSetsByItemId = buildItemIdMap(
-  tierSetsByItemIdJson as Record<string, TierSetItemEntry>,
-);
-
+let tierSetsByItemId = new Map<number, TierSetItemEntry>();
 /** `${setName}|${slot}` → piece item ids for that set/slot. */
-const pieceIdsBySetSlot = new Map<string, number[]>();
+let pieceIdsBySetSlot = new Map<string, number[]>();
 /** `${setName}|${slot}|${step}` → piece item id. */
-const pieceIdBySetSlotStep = new Map<string, number>();
+let pieceIdBySetSlotStep = new Map<string, number>();
 
-for (const [itemId, entry] of tierSetsByItemId) {
-  const setSlotKey = `${entry.setName}|${entry.slot}`;
-  const pieceIds = pieceIdsBySetSlot.get(setSlotKey);
-  if (pieceIds) {
-    pieceIds.push(itemId);
-  } else {
-    pieceIdsBySetSlot.set(setSlotKey, [itemId]);
+function rebuildTierSetIndexes(
+  nextTierSetsByItemId: Map<number, TierSetItemEntry>,
+): void {
+  const nextPieceIdsBySetSlot = new Map<string, number[]>();
+  const nextPieceIdBySetSlotStep = new Map<string, number>();
+
+  for (const [itemId, entry] of nextTierSetsByItemId) {
+    const setSlotKey = `${entry.setName}|${entry.slot}`;
+    const pieceIds = nextPieceIdsBySetSlot.get(setSlotKey);
+    if (pieceIds) {
+      pieceIds.push(itemId);
+    } else {
+      nextPieceIdsBySetSlot.set(setSlotKey, [itemId]);
+    }
+    nextPieceIdBySetSlotStep.set(`${setSlotKey}|${entry.step}`, itemId);
   }
-  pieceIdBySetSlotStep.set(`${setSlotKey}|${entry.step}`, itemId);
+
+  tierSetsByItemId = nextTierSetsByItemId;
+  pieceIdsBySetSlot = nextPieceIdsBySetSlot;
+  pieceIdBySetSlotStep = nextPieceIdBySetSlotStep;
 }
+
+export const ensureTierSetsLoaded = createLazyJsonLoader(
+  () => import("./tier-sets-by-item-id.json"),
+  (data) => {
+    rebuildTierSetIndexes(
+      buildItemIdMap(data as Record<string, TierSetItemEntry>),
+    );
+  },
+);
 
 /** Gear slots used by WotLK PvE tier sets (head, shoulder, chest, hands, legs). */
 export const TIER_SET_GEAR_SLOTS = [0, 2, 4, 6, 8, 10] as const;
@@ -33,7 +50,7 @@ export function getTierSetItemEntry(itemId: number): TierSetItemEntry | undefine
   return tierSetsByItemId.get(itemId);
 }
 
-/** All tier-set piece ids for a set name + gear slot (pre-indexed at module load). */
+/** All tier-set piece ids for a set name + gear slot (pre-indexed after load). */
 export function getTierSetPieceIdsForSlot(
   setName: string,
   slot: number,
