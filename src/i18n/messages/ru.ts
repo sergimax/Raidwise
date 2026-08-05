@@ -283,9 +283,12 @@ export const ruMessages: Messages = {
     copied: "Скопировано",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
-      "Ищите здесь или в заголовке таблицы — оба поля синхронизированы. В подбор попадает по одной строке на каждый подходящий рейд",
-    dungeonFilterMatchCount: "{{count}} из {{total}} рейдов",
+      "Поиск по таблице. Нажмите на чип - исключить или добавить рейд",
+    dungeonFilterMatchCount:
+      "{{selected}} из {{matched}} выбрано ({{total}} всего)",
     dungeonFilterNoMatches: "Нет рейдов по текущему поиску.",
+    dungeonChipExcludeAria: "Исключить {{raid}} из подбора",
+    dungeonChipIncludeAria: "Включить {{raid}} в подбор",
     gearScoreFilterTitle: "Минимальный GS",
     characterSpecsFilterTitle: "Нужные спеки",
     characterSpecsFilterHelper:
@@ -332,7 +335,7 @@ export const ruMessages: Messages = {
     maxSoftsLabel: "Максимум софт-резервов",
     maxSoftsAria: "Максимум софт-резервов в этом рейде",
     systemLabel: "Система софт резервов",
-    systemPlus100: "+100 за софт-резерв",
+    systemPlus100: "+100 за софт",
     systemPlus100Aria: "Каждый софт добавляет +100 к роллу",
     systemReroll: "Переролл",
     systemRerollAria:
@@ -341,7 +344,7 @@ export const ruMessages: Messages = {
     characterHelper: "Выберите одного персонажа и один спек для планирования софтов",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
-      "Ищите здесь или в заголовке таблицы — оба поля синхронизированы. Предметы для софта берутся из совпадающих строк рейдов",
+      "Поиск по таблице. Нажмите на чип - исключить или добавить рейд",
     itemsTitle: "Предметы для софта",
     itemsHelper: "BiS и варианты BiS из отфильтрованных рейдов. Назначьте свои софты и учтите чужие заявки",
     itemsEmptyNoSelection: "Выберите персонажа и спек, чтобы увидеть предметы для софта",
@@ -370,7 +373,7 @@ export const ruMessages: Messages = {
       "Вы {{myRolls}} роллов · чужие {{otherRolls}} ({{callers}} чел.)",
     competitionRerollHint:
       "Каждый: 1 обычный /roll + 1 /roll за софт-резерв. Вы: {{myRolls}} ({{mySofts}} софт-резервов). Чужие: {{callers}} обычных + {{weight}} софт-роллов = {{otherRolls}}.",
-    softBudget: "{{used}} / {{max}} софт-резервов занято",
+    softBudget: "{{used}} / {{max}} софт-резервов использовано",
     kindBis: "BiS",
     kindVariant: "Вариант",
     copyTitle: "Список софт-резервов",

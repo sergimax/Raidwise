@@ -20,6 +20,10 @@ import {
   type SoftAssignmentByItemId,
   type SoftRollRules,
 } from "../../utils/gear-pick-soft-roll.ts";
+import {
+  filterDungeonsExcludingIds,
+  toggleDungeonIdExclusion,
+} from "../../utils/filter-dungeons-excluding-ids.ts";
 import { ExportDungeonFilter } from "../export-panel/export-dungeon-filter.tsx";
 import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
 import {
@@ -69,6 +73,14 @@ export function GearPickPanel({
   const [rules, setRules] = useState<SoftRollRules>(DEFAULT_SOFT_ROLL_RULES);
   const [assignmentsByItemId, setAssignmentsByItemId] =
     useState<SoftAssignmentByItemId>({});
+  const [excludedDungeonIds, setExcludedDungeonIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+
+  const activeDungeons = useMemo(
+    () => filterDungeonsExcludingIds(visibleDungeons, excludedDungeonIds),
+    [excludedDungeonIds, visibleDungeons],
+  );
 
   const includedCharacterIds = useMemo(
     () =>
@@ -77,13 +89,13 @@ export function GearPickPanel({
           .filter((character) =>
             hasCharacterWithoutCdInVisibleDungeons(
               character.id,
-              visibleDungeons,
+              activeDungeons,
               dungeonToggles,
             ),
           )
           .map((character) => character.id),
       ),
-    [characters, dungeonToggles, visibleDungeons],
+    [activeDungeons, characters, dungeonToggles],
   );
 
   /** Ignore a stored pick when that character is on CD for every visible raid. */
@@ -119,17 +131,17 @@ export function GearPickPanel({
     return buildGearPickItems({
       character: selectedCharacter,
       specSide: activeSelection.side,
-      dungeons: visibleDungeons,
+      dungeons: activeDungeons,
       getBisSlotMapForSpec,
       locale,
     });
   }, [
+    activeDungeons,
     getBisSlotMapForSpec,
     locale,
     selectedCharacter,
     selectedSpecGear,
     activeSelection,
-    visibleDungeons,
   ]);
 
   const softBudgetUsed = sumMySofts(assignmentsByItemId);
@@ -219,6 +231,12 @@ export function GearPickPanel({
 
   const defaultAssignment = useMemo(() => emptySoftAssignment(), []);
 
+  const toggleDungeonExcluded = (dungeonId: string) => {
+    setExcludedDungeonIds((previous) =>
+      toggleDungeonIdExclusion(previous, dungeonId),
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -256,6 +274,8 @@ export function GearPickPanel({
             dungeonNameSearch={dungeonNameSearch}
             onDungeonNameSearchChange={onDungeonNameSearchChange}
             visibleDungeons={visibleDungeons}
+            excludedDungeonIds={excludedDungeonIds}
+            onToggleDungeonExcluded={toggleDungeonExcluded}
             totalDungeonCount={totalDungeonCount}
             locale={locale}
             t={t}

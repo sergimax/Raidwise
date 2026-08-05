@@ -281,9 +281,12 @@ export const enMessages = {
     copied: "Copied",
     dungeonFilterTitle: "Selected raid",
     dungeonFilterHelper:
-      "Search here or in the table header — both stay in sync. Character pick includes one line per matching raid row",
-    dungeonFilterMatchCount: "{{count}} of {{total}} raid(s)",
+      "Search here or in the table header — both stay in sync. Character pick includes one line per matching raid row. Click a chip to exclude it (stays visible; click again to include)",
+    dungeonFilterMatchCount:
+      "{{selected}} of {{matched}} selected ({{total}} total)",
     dungeonFilterNoMatches: "No raids match the current search.",
+    dungeonChipExcludeAria: "Exclude {{raid}} from character pick",
+    dungeonChipIncludeAria: "Include {{raid}} in character pick",
     gearScoreFilterTitle: "Minimum GS",
     characterSpecsFilterTitle: "Needed specs",
     characterSpecsFilterHelper:
@@ -339,7 +342,7 @@ export const enMessages = {
     characterHelper: "Select exactly one character and one spec for soft reserve planning",
     dungeonFilterTitle: "Selected raid",
     dungeonFilterHelper:
-      "Search here or in the table header — both stay in sync. Soft reserve targets come from matching raid rows",
+      "Search here or in the table header — both stay in sync. Soft reserve targets come from matching raid rows. Click a chip to exclude it (stays visible; click again to include)",
     itemsTitle: "Soft reserve targets",
     itemsHelper: "BiS and BiS-variant upgrades from filtered raids. Assign your soft reserves and track others",
     itemsEmptyNoSelection: "Select a character and spec to see soft reserve targets",
