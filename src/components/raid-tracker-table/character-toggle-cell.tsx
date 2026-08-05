@@ -8,6 +8,7 @@ import { isCooldownOn } from "../../utils/dungeon-toggles.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { getLocalizedDungeonDisplayName } from "../../i18n/localized-domain.ts";
 import { formatCharacterDisplayName } from "../../utils/character-display.ts";
+import { useWowDataReady } from "../../hooks/use-wow-data-ready.ts";
 import {
   evaluateCharacterGearHintsFromTints,
   evaluateCharacterGearHintTints,
@@ -66,15 +67,18 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
   getBisSlotMapForSpec,
 }: CharacterToggleCellProps) {
   const { t } = useTranslation();
+  const { hintReady } = useWowDataReady();
 
   const gearHintTints = useMemo(
     () =>
-      evaluateCharacterGearHintTints(
-        character,
-        dungeon,
-        getBisSlotMapForSpec,
-      ),
-    [character, dungeon, getBisSlotMapForSpec],
+      hintReady
+        ? evaluateCharacterGearHintTints(
+            character,
+            dungeon,
+            getBisSlotMapForSpec,
+          )
+        : {},
+    [character, dungeon, getBisSlotMapForSpec, hintReady],
   );
 
   const isDungeonMarkedComplete = isCooldownOn(

@@ -1,10 +1,10 @@
-import { useEffect } from "react";
 import {
   COT_TOOLTIP_SCRIPT_ID,
   COT_TOOLTIP_SCRIPT_URL,
   WOWROAD_TOOLTIP_CONFIG_SCRIPT_ID,
   WOWROAD_TOOLTIP_SCRIPT_ID,
   WOWROAD_TOOLTIP_SCRIPT_URL,
+  type ItemTooltipLocale,
 } from "../../constants/item-tooltips.ts";
 
 function appendScript(id: string, src: string): void {
@@ -30,16 +30,26 @@ function appendInlineScript(id: string, content: string): void {
   document.head.appendChild(script);
 }
 
-/** Loads third-party tooltip scripts once (EN + RU providers; links pick the active one). */
-export function WowItemTooltipsLoader() {
-  useEffect(() => {
+const loadedLocales = new Set<ItemTooltipLocale>();
+
+/**
+ * Injects the tooltip provider for the active UI locale only (RU → WowRoad, EN → CoT).
+ * Safe to call repeatedly; no-ops after the first successful load per locale.
+ */
+export function ensureItemTooltipsLoaded(locale: ItemTooltipLocale): void {
+  if (loadedLocales.has(locale)) {
+    return;
+  }
+  loadedLocales.add(locale);
+
+  if (locale === "ru") {
     appendInlineScript(
       WOWROAD_TOOLTIP_CONFIG_SCRIPT_ID,
       'var wowroad_tooltips = { "colorlinks": true, "iconizelinks": false, "renamelinks": false };',
     );
     appendScript(WOWROAD_TOOLTIP_SCRIPT_ID, WOWROAD_TOOLTIP_SCRIPT_URL);
-    appendScript(COT_TOOLTIP_SCRIPT_ID, COT_TOOLTIP_SCRIPT_URL);
-  }, []);
+    return;
+  }
 
-  return null;
+  appendScript(COT_TOOLTIP_SCRIPT_ID, COT_TOOLTIP_SCRIPT_URL);
 }
