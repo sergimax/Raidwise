@@ -1,45 +1,43 @@
-import itemNamesJson from "./wotlk-item-names.json";
-import itemGearSlotsJson from "./wotlk-item-gear-slots.json";
 import { getWotlkItemGearSlots } from "./wotlk-item-gear-slots.ts";
 import { getWotlkItemLevel } from "./wotlk-item-levels.ts";
-import { getWotlkItemName } from "./wotlk-item-names.ts";
-
-const itemNamesEn = itemNamesJson as Record<string, string>;
-const itemGearSlots = itemGearSlotsJson as Record<string, readonly number[]>;
+import {
+  getEnglishItemNameEntries,
+  getWotlkItemName,
+} from "./wotlk-item-names.ts";
 
 function variantGroupKey(gearSlot: number, englishName: string): string {
   return `${gearSlot}:${englishName}`;
 }
 
-function buildVariantIdsByGroupKey(): Map<string, number[]> {
-  const variantIdsByGroupKey = new Map<string, number[]>();
+let variantIdsByGroupKey = new Map<string, number[]>();
 
-  for (const [itemIdStr, englishName] of Object.entries(itemNamesEn)) {
+/** Build same-name N/H indexes after EN names + gear slots are loaded. */
+export function rebuildBisItemVariantIndex(): void {
+  const nextVariantIdsByGroupKey = new Map<string, number[]>();
+
+  for (const [itemId, englishName] of getEnglishItemNameEntries()) {
     if (!englishName) {
       continue;
     }
 
-    const gearSlots = itemGearSlots[itemIdStr];
+    const gearSlots = getWotlkItemGearSlots(itemId);
     if (!gearSlots || gearSlots.length === 0) {
       continue;
     }
 
-    const itemId = Number(itemIdStr);
     for (const gearSlot of gearSlots) {
       const groupKey = variantGroupKey(gearSlot, englishName);
-      const existingIds = variantIdsByGroupKey.get(groupKey);
+      const existingIds = nextVariantIdsByGroupKey.get(groupKey);
       if (existingIds) {
         existingIds.push(itemId);
       } else {
-        variantIdsByGroupKey.set(groupKey, [itemId]);
+        nextVariantIdsByGroupKey.set(groupKey, [itemId]);
       }
     }
   }
 
-  return variantIdsByGroupKey;
+  variantIdsByGroupKey = nextVariantIdsByGroupKey;
 }
-
-const variantIdsByGroupKey = buildVariantIdsByGroupKey();
 
 /** Alliance/Horde pairs with different English names (e.g. Solace of the Fallen / Defeated). */
 const FactionVariantGroups: readonly (readonly number[])[] = [

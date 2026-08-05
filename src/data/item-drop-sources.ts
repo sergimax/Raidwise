@@ -1,7 +1,7 @@
-import dropSourcesJson from "./wotlk-item-drop-sources.json";
 import type { RaidKey } from "./raid-names.ts";
 import { DungeonDifficulty, type DungeonSize } from "../types/dungeons.ts";
 import { buildItemIdMap } from "./build-item-id-map.ts";
+import { createLazyJsonLoader } from "./lazy-json.ts";
 
 /** Compact drop source row from bundled WowSims data (`wotlk-item-drop-sources.json`). */
 export type BundledItemDropSourceRow = {
@@ -31,20 +31,26 @@ function toItemDropSource(row: BundledItemDropSourceRow): ItemDropSource {
   };
 }
 
-const bundledRowsByItemId = buildItemIdMap(
-  dropSourcesJson as Record<string, BundledItemDropSourceRow[]>,
-);
-
-/** Eagerly mapped drop sources (empty array when the item has no raid drops). */
-const dropSourcesByItemId = new Map<number, readonly ItemDropSource[]>();
-for (const [itemId, rows] of bundledRowsByItemId) {
-  dropSourcesByItemId.set(
-    itemId,
-    rows.length > 0 ? rows.map(toItemDropSource) : [],
-  );
-}
+let dropSourcesByItemId = new Map<number, readonly ItemDropSource[]>();
 
 const EMPTY_DROP_SOURCES: readonly ItemDropSource[] = [];
+
+export const ensureItemDropSourcesLoaded = createLazyJsonLoader(
+  () => import("./wotlk-item-drop-sources.json"),
+  (data) => {
+    const bundledRowsByItemId = buildItemIdMap(
+      data as Record<string, BundledItemDropSourceRow[]>,
+    );
+    const next = new Map<number, readonly ItemDropSource[]>();
+    for (const [itemId, rows] of bundledRowsByItemId) {
+      next.set(
+        itemId,
+        rows.length > 0 ? rows.map(toItemDropSource) : [],
+      );
+    }
+    dropSourcesByItemId = next;
+  },
+);
 
 /** Boss / raid drop sources for a bundled item id (empty when unknown or non-raid). */
 export function getItemDropSources(itemId: number): readonly ItemDropSource[] {

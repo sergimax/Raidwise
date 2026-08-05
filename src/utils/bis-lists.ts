@@ -4,12 +4,14 @@ import {
 } from "../data/bis-presets/index.ts";
 import { gearSlotLabel } from "../data/gear-slot-names.ts";
 import { getWotlkItemGearSlots } from "../data/wotlk-item-gear-slots.ts";
-import { getWotlkItemName } from "../data/wotlk-item-names.ts";
+import {
+  getWotlkItemName,
+  getWotlkItemNameToIdEnMap,
+} from "../data/wotlk-item-names.ts";
 import {
   canEquipItemForCharacter,
   type CharacterEquipContext,
 } from "./item-equip-restrictions.ts";
-import itemNamesJson from "../data/wotlk-item-names.json";
 import type { ClassName } from "../types/characters.ts";
 import type {
   BisListPreset,
@@ -18,20 +20,10 @@ import type {
   LocalSpecBisEntry,
 } from "../types/bis-lists.ts";
 
-const itemNames = itemNamesJson as Record<string, string>;
-
 export type BisSlotValidationMode = "partial" | "strict";
 
-let bisItemNameToIdCache: Map<string, number> | undefined;
-
 function getBisItemNameToIdMap(): Map<string, number> {
-  if (!bisItemNameToIdCache) {
-    bisItemNameToIdCache = new Map();
-    for (const [itemId, itemName] of Object.entries(itemNames)) {
-      bisItemNameToIdCache.set(itemName.trim().toLowerCase(), Number(itemId));
-    }
-  }
-  return bisItemNameToIdCache;
+  return getWotlkItemNameToIdEnMap();
 }
 
 function resolveBisSegmentItemId(

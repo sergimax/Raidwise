@@ -1,12 +1,19 @@
 import type { ClassName as ClassNameType } from "../types/characters.ts";
 import { buildItemIdMap } from "./build-item-id-map.ts";
-import statsJson from "./wotlk-item-stats.json";
+import { createLazyJsonLoader } from "./lazy-json.ts";
 
 /** Sparse WowSims stat index → value for bundled item ids. */
 export type WotlkItemStatsSparse = Record<string, number>;
 
-const statsByItemId = buildItemIdMap(
-  statsJson as Record<string, WotlkItemStatsSparse>,
+let statsByItemId = new Map<number, WotlkItemStatsSparse>();
+
+export const ensureWotlkItemStatsLoaded = createLazyJsonLoader(
+  () => import("./wotlk-item-stats.json"),
+  (data) => {
+    statsByItemId = buildItemIdMap(
+      data as Record<string, WotlkItemStatsSparse>,
+    );
+  },
 );
 
 export function getWotlkItemStats(itemId: number): WotlkItemStatsSparse | undefined {
