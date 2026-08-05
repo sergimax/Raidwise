@@ -251,6 +251,9 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
               <ExportFilterSection
                 step={1}
                 title={t("exportPanel.dungeonFilterTitle")}
+                titleMark={t("exportPanel.dungeonFilterTotalMark", {
+                  total: totalDungeonCount,
+                })}
                 description={t("exportPanel.dungeonFilterHelper")}
                 contentSx={exportDungeonFilterContentSx}
               >
@@ -260,7 +263,6 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
                   visibleDungeons={visibleDungeons}
                   excludedDungeonIds={excludedDungeonIds}
                   onToggleDungeonExcluded={toggleDungeonExcluded}
-                  totalDungeonCount={totalDungeonCount}
                   locale={locale}
                   t={t}
                 />

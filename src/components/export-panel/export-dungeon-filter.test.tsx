@@ -46,7 +46,6 @@ function FilterHarness({
           return next;
         });
       }}
-      totalDungeonCount={13}
       locale="en"
       t={testTranslator}
     />
@@ -70,18 +69,14 @@ describe("ExportDungeonFilter", () => {
     const user = userEvent.setup();
     renderWithTheme(<FilterHarness />);
 
-    expect(
-      screen.getByText("2 of 2 selected (13 total)"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("2 of 2 selected")).toBeInTheDocument();
 
     const tocChip = screen.getByRole("button", {
       name: /Exclude ToC25 from character pick/i,
     });
     await user.click(tocChip);
 
-    expect(
-      screen.getByText("1 of 2 selected (13 total)"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("1 of 2 selected")).toBeInTheDocument();
     expect(
       screen.getByRole("button", {
         name: /Include ToC25 in character pick/i,

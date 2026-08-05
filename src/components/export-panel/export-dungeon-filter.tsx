@@ -14,7 +14,6 @@ type ExportDungeonFilterProps = {
   visibleDungeons: readonly DungeonRecord[];
   excludedDungeonIds: ReadonlySet<string>;
   onToggleDungeonExcluded: (dungeonId: string) => void;
-  totalDungeonCount: number;
   locale: AppLocale;
   t: TranslateFn;
 };
@@ -25,7 +24,6 @@ export function ExportDungeonFilter({
   visibleDungeons,
   excludedDungeonIds,
   onToggleDungeonExcluded,
-  totalDungeonCount,
   locale,
   t,
 }: ExportDungeonFilterProps) {
@@ -65,7 +63,6 @@ export function ExportDungeonFilter({
           {t("exportPanel.dungeonFilterMatchCount", {
             selected: selectedCount,
             matched: visibleDungeons.length,
-            total: totalDungeonCount,
           })}
         </Typography>
       </Stack>
