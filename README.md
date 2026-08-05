@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-2.2.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.3.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -43,12 +43,15 @@ When there are no dungeons — **Add raids from template**.
 ### Character pick for a raid
 
 Copyable signup line of characters still missing CD on filtered raids.
-Filters: min GS, role, specs. Click Selected raid chips to exclude false matches from the results (chips stay visible).
+Filters: min GS, role, specs.
+Click Selected raid chips to exclude false matches from the results (chips stay visible).
+Header reset clears the raid search and chip exclusions.
 
 ### Soft pick for a raid
 
 Soft reserves for one character + spec on BiS upgrades from filtered raids (active list from **BiS builds**).
-Session-only; pasteable call lines start with the character name. Same clickable raid chips to exclude rows.
+Session-only; pasteable call lines start with the character name.
+Same clickable raid chips to exclude rows, plus header reset for search/exclusions.
 
 ### BiS builds
 
@@ -82,6 +85,7 @@ Design tokens / recipes: [docs/design/design-system.md](docs/design/design-syste
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
+Locally, `npm run ci` runs lint + tests + build.
 On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in parallel, then **Release files** (validates that `package.json` was bumped and CHANGELOG / README badges / lockfile match — does not bump versions itself) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
 
 **Layout:**
@@ -107,7 +111,8 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run build` | Production build |
 | `npm run preview` | Preview production build |
 | `npm run lint` | ESLint |
-| `npm run test` / `npm run test:run` | Vitest (watch / CI) |
+| `npm run test` / `npm run test:run` | Vitest (watch / single run) |
+| `npm run ci` | Lint + test:run + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
 | `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis-list-sources.md` + `scripts/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Add slot comments to BiS preset files |
