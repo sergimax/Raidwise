@@ -105,11 +105,10 @@ export function ExportFilterSection({
                   color: "text.secondary",
                   fontWeight: 500,
                   fontFamily: "var(--font-body, inherit)",
-                  ml: 0.5,
+                  whiteSpace: "pre",
                 }}
               >
-                {" "}
-                ({titleMark})
+                {` (${titleMark})`}
               </Box>
             ) : null}
           </Box>
