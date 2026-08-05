@@ -22,6 +22,7 @@ import {
 import { ExportCharacterSpecFilter } from "./export-character-spec-filter.tsx";
 import { ExportCharacterSpecFilterActions } from "./export-character-spec-filter-actions.tsx";
 import { ExportDungeonFilter } from "./export-dungeon-filter.tsx";
+import { ExportDungeonFilterActions } from "./export-dungeon-filter-actions.tsx";
 import { ExportFilterBlock } from "./export-filter-block.tsx";
 import { ExportFilterSection } from "./export-filter-section.tsx";
 import { ExportMinGearScoreFilter } from "./export-min-gear-score-filter.tsx";
@@ -124,6 +125,12 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
       setMinGearScoreCompact(EXPORT_MIN_GS_COMPACT_DEFAULT);
       setRoleFilter({ ...DEFAULT_EXPORT_ROLE_FILTER });
       setExcludedDungeonIds(new Set());
+      onDungeonNameSearchChange("");
+    };
+
+    const resetDungeonFilter = () => {
+      onDungeonNameSearchChange("");
+      setExcludedDungeonIds(new Set());
     };
 
     const toggleDungeonExcluded = (dungeonId: string) => {
@@ -131,6 +138,9 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
         toggleDungeonIdExclusion(previous, dungeonId),
       );
     };
+
+    const dungeonFilterDirty =
+      dungeonNameSearch.trim() !== "" || excludedDungeonIds.size > 0;
 
     const selectAllCharacterSpecs = () => {
       setExportSpecSelectionByCharacterId(
@@ -255,6 +265,12 @@ export const ExportPanel = forwardRef<ExportPanelHandle, ExportPanelProps>(
                   total: totalDungeonCount,
                 })}
                 description={t("exportPanel.dungeonFilterHelper")}
+                titleActions={
+                  <ExportDungeonFilterActions
+                    disabled={!dungeonFilterDirty}
+                    onReset={resetDungeonFilter}
+                  />
+                }
                 contentSx={exportDungeonFilterContentSx}
               >
                 <ExportDungeonFilter

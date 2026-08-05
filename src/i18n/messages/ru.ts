@@ -289,6 +289,8 @@ export const ruMessages: Messages = {
     dungeonFilterNoMatches: "Нет рейдов по текущему поиску.",
     dungeonChipExcludeAria: "Исключить {{raid}} из подбора",
     dungeonChipIncludeAria: "Включить {{raid}} в подбор",
+    resetDungeonFilter: "Сбросить фильтр рейдов",
+    resetDungeonFilterAria: "Очистить поиск рейдов и включить все значки рейдов",
     gearScoreFilterTitle: "Минимальный GS",
     characterSpecsFilterTitle: "Нужные спеки",
     characterSpecsFilterHelper:

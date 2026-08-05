@@ -25,6 +25,7 @@ import {
   toggleDungeonIdExclusion,
 } from "../../utils/filter-dungeons-excluding-ids.ts";
 import { ExportDungeonFilter } from "../export-panel/export-dungeon-filter.tsx";
+import { ExportDungeonFilterActions } from "../export-panel/export-dungeon-filter-actions.tsx";
 import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
 import {
   exportDungeonFilterContentSx,
@@ -237,6 +238,14 @@ export function GearPickPanel({
     );
   };
 
+  const resetDungeonFilter = () => {
+    onDungeonNameSearchChange("");
+    setExcludedDungeonIds(new Set());
+  };
+
+  const dungeonFilterDirty =
+    dungeonNameSearch.trim() !== "" || excludedDungeonIds.size > 0;
+
   return (
     <Box
       sx={{
@@ -271,6 +280,12 @@ export function GearPickPanel({
             total: totalDungeonCount,
           })}
           description={t("gearPickPanel.dungeonFilterHelper")}
+          titleActions={
+            <ExportDungeonFilterActions
+              disabled={!dungeonFilterDirty}
+              onReset={resetDungeonFilter}
+            />
+          }
           contentSx={exportDungeonFilterContentSx}
         >
           <ExportDungeonFilter
