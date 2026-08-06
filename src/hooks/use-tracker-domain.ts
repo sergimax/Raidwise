@@ -14,6 +14,7 @@ import {
   removeDungeonFromToggles,
   resetCharacterToggles,
 } from "../utils/dungeon-toggles.ts";
+import { moveCharacterInList } from "../utils/move-character.ts";
 import { resolveAlsoOwnedItemIds } from "../utils/resolve-also-owned-item-ids.ts";
 import { generateUUID } from "../uuid.ts";
 
@@ -76,6 +77,15 @@ export function useTrackerDomain() {
           }
           return next;
         }),
+      );
+    },
+    [],
+  );
+
+  const moveCharacter = useCallback(
+    (characterId: string, direction: -1 | 1) => {
+      setCharacters((previous) =>
+        moveCharacterInList(previous, characterId, direction),
       );
     },
     [],
@@ -181,6 +191,7 @@ export function useTrackerDomain() {
       storageError,
       addCharacter,
       updateCharacter,
+      moveCharacter,
       addDungeon,
       updateDungeon,
       handleDungeonToggle,
@@ -208,6 +219,7 @@ export function useTrackerDomain() {
       handleDungeonToggle,
       handleResetAllToggles,
       handleResetCharacterToggles,
+      moveCharacter,
       storageError,
       updateCharacter,
       updateDungeon,

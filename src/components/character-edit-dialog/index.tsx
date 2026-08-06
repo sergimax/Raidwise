@@ -24,6 +24,7 @@ import { ClassOptionLabel } from "../class-option-label/index.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import { CharacterAlsoOwnedGearSection } from "./character-also-owned-gear-section.tsx";
 import { CharacterSpecGearColumn } from "./character-spec-gear-column.tsx";
+import { CharacterTableOrderControl } from "./character-table-order-section.tsx";
 import {
   attachGearToSpec,
   gearItemsForSpecSave,
@@ -34,20 +35,26 @@ import {
 
 type CharacterEditDialogProps = {
   character: CharacterRecord | null;
+  characters: CharacterRecord[];
   onClose: () => void;
   onSave: (characterId: string, specGear: CharacterSpecGearUpdate) => void;
+  onMoveCharacter: (characterId: string, direction: -1 | 1) => void;
 };
 
 type CharacterEditDialogContentProps = {
   character: CharacterRecord;
+  characters: CharacterRecord[];
   onClose: () => void;
   onSave: (characterId: string, specGear: CharacterSpecGearUpdate) => void;
+  onMoveCharacter: (characterId: string, direction: -1 | 1) => void;
 };
 
 function CharacterEditDialogContent({
   character,
+  characters,
   onClose,
   onSave,
+  onMoveCharacter,
 }: CharacterEditDialogContentProps) {
   const { t, locale } = useTranslation();
   const initialValues = characterSpecGearFormValues(character);
@@ -204,6 +211,7 @@ function CharacterEditDialogContent({
           alignItems: "center",
           gap: 1,
           columnGap: 1.5,
+          rowGap: 0.75,
           pb: 1.25,
         }}
       >
@@ -243,6 +251,12 @@ function CharacterEditDialogContent({
             />
           ) : null}
         </Box>
+        <CharacterTableOrderControl
+          character={character}
+          characters={characters}
+          onMove={(direction) => onMoveCharacter(character.id, direction)}
+          t={t}
+        />
       </DialogTitle>
       <DialogContent>
         <Stack spacing={1.25}>
@@ -331,8 +345,10 @@ function CharacterEditDialogContent({
 
 export function CharacterEditDialog({
   character,
+  characters,
   onClose,
   onSave,
+  onMoveCharacter,
 }: CharacterEditDialogProps) {
   return (
     <Dialog open={character !== null} onClose={onClose} maxWidth="lg" fullWidth>
@@ -340,8 +356,10 @@ export function CharacterEditDialog({
         <CharacterEditDialogContent
           key={character.id}
           character={character}
+          characters={characters}
           onClose={onClose}
           onSave={onSave}
+          onMoveCharacter={onMoveCharacter}
         />
       ) : null}
     </Dialog>

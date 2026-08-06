@@ -29,6 +29,7 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     handleDungeonToggle: onDungeonToggle,
     handleResetCharacterToggles: onResetCharacterToggles,
     updateCharacter,
+    moveCharacter,
     updateDungeon,
   } = domain;
 
@@ -162,8 +163,10 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
       />
       <CharacterEditDialog
         character={editingCharacter}
+        characters={characters}
         onClose={handleCloseEditCharacter}
         onSave={updateCharacter}
+        onMoveCharacter={moveCharacter}
       />
       <DungeonEditDialog
         dungeon={editingDungeon}
