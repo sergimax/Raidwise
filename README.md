@@ -81,6 +81,11 @@ Design tokens / recipes: [docs/design/design-system.md](docs/design/design-syste
 
 ## Development
 
+![Lighthouse Performance](https://img.shields.io/badge/Performance-89-%23ffa400?logo=lighthouse&logoColor=white)
+![Lighthouse Accessibility](https://img.shields.io/badge/Accessibility-100-%230cce6b?logo=lighthouse&logoColor=white)
+![Lighthouse Best Practices](https://img.shields.io/badge/Best_Practices-100-%230cce6b?logo=lighthouse&logoColor=white)
+![Lighthouse SEO](https://img.shields.io/badge/SEO-100-%230cce6b?logo=lighthouse&logoColor=white)
+
 **Stack:**
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
@@ -122,6 +127,8 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run download:gear-slot-icons` | Regenerate WoW paper-doll slot placeholder PNGs in `src/assets/gear-slot-icons/` |
 | `npm run download:fonts` | Regenerate self-hosted Onest / Noto Sans / JetBrains Mono woff2 + `src/fonts.css` |
 | `npm run compress:class-icons` | Resize class/spec icons to 32×32 WebP in `src/assets/class-icons/` |
+| `npm run lighthouse` | Desktop Lighthouse vs preview/production URL → `docs/lighthouse/` (run `preview` first for local) |
+| `npm run lighthouse:mobile` | Same with the mobile preset |
 
 Built-in BiS lists are authored in `scripts/bis-list-sources.md` (Titans + community) and `scripts/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
 Regenerate TypeScript presets after editing the markdown.
