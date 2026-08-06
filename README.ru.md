@@ -81,6 +81,11 @@
 
 ## Разработка
 
+![Lighthouse Performance](https://img.shields.io/badge/Performance-89-%23ffa400?logo=lighthouse&logoColor=white)
+![Lighthouse Accessibility](https://img.shields.io/badge/Accessibility-100-%230cce6b?logo=lighthouse&logoColor=white)
+![Lighthouse Best Practices](https://img.shields.io/badge/Best_Practices-100-%230cce6b?logo=lighthouse&logoColor=white)
+![Lighthouse SEO](https://img.shields.io/badge/SEO-100-%230cce6b?logo=lighthouse&logoColor=white)
+
 **Стек:**
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
@@ -123,6 +128,8 @@ npm run dev
 | `npm run download:gear-slot-icons` | PNG-заглушки слотов paper-doll в `src/assets/gear-slot-icons/` |
 | `npm run download:fonts` | Локальные Onest / Noto Sans / JetBrains Mono woff2 + `src/fonts.css` |
 | `npm run compress:class-icons` | Иконки классов/спеков 32×32 WebP в `src/assets/class-icons/` |
+| `npm run lighthouse` | Lighthouse desktop для preview/production → `docs/lighthouse/` (для локали сначала `preview`) |
+| `npm run lighthouse:mobile` | То же с mobile-пресетом |
 
 Встроенные BiS пишутся в `scripts/bis-list-sources.md` (Titans + community) и `scripts/bis-list-mix.md` (Kingdom. With variants: нумерованное оружие и альтернативы `N-M`).
 После правок markdown перегенерируйте TypeScript-пресеты.
