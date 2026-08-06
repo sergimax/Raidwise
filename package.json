@@ -16,6 +16,8 @@
     "download:raid-icons": "node scripts/download-raid-icons.mjs",
     "download:fonts": "node scripts/download-fonts.mjs",
     "compress:class-icons": "node scripts/compress-class-icons.mjs",
+    "lighthouse": "node scripts/run-lighthouse.mjs",
+    "lighthouse:mobile": "node scripts/run-lighthouse.mjs --mobile",
     "test:run": "vitest run",
     "ci": "npm run lint && npm run test:run && npm run build",
     "check:release-files": "node scripts/check-release-files.mjs"
@@ -42,6 +44,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^29.1.1",
+    "lighthouse": "^13.4.1",
     "sharp": "^0.35.3",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",
