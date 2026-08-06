@@ -1,7 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { getWotlkItemName } from "../../data/wotlk-item-names.ts";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
+import type { GearPickSessionState } from "../../hooks/use-gear-pick-session-state.ts";
 import { useItemTooltipLocale } from "../../hooks/use-item-tooltip-locale.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
@@ -9,21 +10,12 @@ import type { DungeonRecord, DungeonToggles } from "../../types/dungeons.ts";
 import { hasCharacterWithoutCdInVisibleDungeons } from "../../utils/build-export-status.ts";
 import { buildGearPickItems } from "../../utils/build-gear-pick-items.ts";
 import {
-  clampAssignmentsToMaxSofts,
-  DEFAULT_SOFT_ROLL_RULES,
   emptySoftAssignment,
   formatGearPickCopyText,
   remainingSoftBudget,
-  setMySoftsForItem,
-  setOthersCountForWeight,
   sumMySofts,
-  type SoftAssignmentByItemId,
-  type SoftRollRules,
 } from "../../utils/gear-pick-soft-roll.ts";
-import {
-  filterDungeonsExcludingIds,
-  toggleDungeonIdExclusion,
-} from "../../utils/filter-dungeons-excluding-ids.ts";
+import { filterDungeonsExcludingIds } from "../../utils/filter-dungeons-excluding-ids.ts";
 import { ExportDungeonFilter } from "../export-panel/export-dungeon-filter.tsx";
 import { ExportDungeonFilterActions } from "../export-panel/export-dungeon-filter-actions.tsx";
 import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
@@ -37,10 +29,7 @@ import {
   getGearPickGridTemplateColumns,
   getGearPickGridTemplateRows,
 } from "./constants.ts";
-import {
-  GearPickCharacterSelect,
-  type GearPickCharacterSelection,
-} from "./gear-pick-character-select.tsx";
+import { GearPickCharacterSelect } from "./gear-pick-character-select.tsx";
 import { GearPickCopyBlock } from "./gear-pick-copy-block.tsx";
 import { GearPickEmptyNoGear } from "./gear-pick-empty-no-gear.tsx";
 import { GearPickFilterBlock } from "./gear-pick-filter-block.tsx";
@@ -54,6 +43,7 @@ export type GearPickPanelProps = {
   dungeonNameSearch: string;
   onDungeonNameSearchChange: (query: string) => void;
   totalDungeonCount: number;
+  session: GearPickSessionState;
 };
 
 export function GearPickPanel({
@@ -63,20 +53,24 @@ export function GearPickPanel({
   dungeonNameSearch,
   onDungeonNameSearchChange,
   totalDungeonCount,
+  session,
 }: GearPickPanelProps) {
   const { t, locale } = useTranslation();
   const { locale: itemLocale } = useItemTooltipLocale();
   const { getBisSlotMapForSpec } = useBisListsContext();
 
-  const [selection, setSelection] = useState<GearPickCharacterSelection | null>(
-    null,
-  );
-  const [rules, setRules] = useState<SoftRollRules>(DEFAULT_SOFT_ROLL_RULES);
-  const [assignmentsByItemId, setAssignmentsByItemId] =
-    useState<SoftAssignmentByItemId>({});
-  const [excludedDungeonIds, setExcludedDungeonIds] = useState<Set<string>>(
-    () => new Set(),
-  );
+  const {
+    selection,
+    rules,
+    assignmentsByItemId,
+    excludedDungeonIds,
+    handleSelectionChange,
+    handleRulesChange,
+    handleMySoftsChange,
+    handleOthersCountChange,
+    toggleDungeonExcluded,
+    clearExcludedDungeonIds,
+  } = session;
 
   const activeDungeons = useMemo(
     () => filterDungeonsExcludingIds(visibleDungeons, excludedDungeonIds),
@@ -104,11 +98,6 @@ export function GearPickPanel({
     selection !== null && includedCharacterIds.has(selection.characterId)
       ? selection
       : null;
-
-  const handleSelectionChange = (next: GearPickCharacterSelection) => {
-    setSelection(next);
-    setAssignmentsByItemId({});
-  };
 
   const selectedCharacter = useMemo(
     () =>
@@ -203,44 +192,11 @@ export function GearPickPanel({
     [copyItems, selectedCharacter?.name],
   );
 
-  const handleRulesChange = (next: SoftRollRules) => {
-    setRules(next);
-    if (next.maxSofts !== rules.maxSofts) {
-      setAssignmentsByItemId((previous) =>
-        clampAssignmentsToMaxSofts(previous, next.maxSofts),
-      );
-    }
-  };
-
-  const handleMySoftsChange = useCallback(
-    (itemId: number, mySofts: number) => {
-      setAssignmentsByItemId((previous) =>
-        setMySoftsForItem(previous, itemId, mySofts, rules.maxSofts),
-      );
-    },
-    [rules.maxSofts],
-  );
-
-  const handleOthersCountChange = useCallback(
-    (itemId: number, weight: number, count: number) => {
-      setAssignmentsByItemId((previous) =>
-        setOthersCountForWeight(previous, itemId, weight, count, rules.maxSofts),
-      );
-    },
-    [rules.maxSofts],
-  );
-
   const defaultAssignment = useMemo(() => emptySoftAssignment(), []);
-
-  const toggleDungeonExcluded = (dungeonId: string) => {
-    setExcludedDungeonIds((previous) =>
-      toggleDungeonIdExclusion(previous, dungeonId),
-    );
-  };
 
   const resetDungeonFilter = () => {
     onDungeonNameSearchChange("");
-    setExcludedDungeonIds(new Set());
+    clearExcludedDungeonIds();
   };
 
   const dungeonFilterDirty =

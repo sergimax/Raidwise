@@ -1,6 +1,7 @@
 import { Alert, Stack } from "@mui/material";
 import { useCallback, useMemo, useRef } from "react";
 import { useGearHintLegendDismissed } from "../../hooks/use-gear-hint-legend-dismissed.ts";
+import { useGearPickSessionState } from "../../hooks/use-gear-pick-session-state.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
 import type { TrackerFormsState } from "../../hooks/use-overlay-panels.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
@@ -84,6 +85,7 @@ export function RaidTrackerMain({
     onDeleteDungeon: domain.handleDeleteDungeon,
   });
 
+  const gearPickSession = useGearPickSessionState();
   const exportPanelRef = useRef<ExportPanelHandle>(null);
 
   const toolbarPanelId = resolveToolbarPanelId({
@@ -216,6 +218,7 @@ export function RaidTrackerMain({
               dungeonNameSearch={tableState.dungeonNameSearch}
               onDungeonNameSearchChange={tableState.setDungeonNameSearch}
               totalDungeonCount={tableState.dungeonCount}
+              session={gearPickSession}
             />
           ) : null}
 
