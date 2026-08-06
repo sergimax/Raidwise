@@ -159,7 +159,7 @@ export const enMessages = {
       "Gear changed — update the gear score field so exports and filters reflect your current setup.",
     alsoOwnedTitle: "Also owned gear",
     alsoOwnedHelper:
-      "Items available to equip but not on the WowSims export (bags, other spec, or vendors). Counts for gear hints on both specs.",
+      "Items available to equip but not on the WowSims export (in bags or bank). Counts for gear hints on both specs.",
     alsoOwnedItemId: "Item ID",
     alsoOwnedAdd: "Add",
     alsoOwnedClear: "Clear",
