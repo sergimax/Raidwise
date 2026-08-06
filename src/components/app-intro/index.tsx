@@ -2,11 +2,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import type { MessageKey } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
+import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
 import type { AppIntroProps } from "./types.ts";
 import { renderIntroRichText } from "./render-intro-rich-text.tsx";
 
 type IntroScenario = {
-  letter: "A" | "B" | "C";
+  step: 1 | 2 | 3;
   titleKey: MessageKey;
   stepKeys: MessageKey[];
   outcomeKey: MessageKey;
@@ -14,7 +15,7 @@ type IntroScenario = {
 
 const INTRO_SCENARIOS: IntroScenario[] = [
   {
-    letter: "A",
+    step: 1,
     titleKey: "intro.scenarioATitle",
     stepKeys: [
       "intro.scenarioAStep1",
@@ -24,7 +25,7 @@ const INTRO_SCENARIOS: IntroScenario[] = [
     outcomeKey: "intro.scenarioAOutcome",
   },
   {
-    letter: "B",
+    step: 2,
     titleKey: "intro.scenarioBTitle",
     stepKeys: [
       "intro.scenarioBStep1",
@@ -37,7 +38,7 @@ const INTRO_SCENARIOS: IntroScenario[] = [
     outcomeKey: "intro.scenarioBOutcome",
   },
   {
-    letter: "C",
+    step: 3,
     titleKey: "intro.scenarioCTitle",
     stepKeys: ["intro.scenarioCStep1"],
     outcomeKey: "intro.scenarioCOutcome",
@@ -55,9 +56,10 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
     <Paper
       variant="outlined"
       sx={{
-        px: { xs: 1.75, sm: 2.25 },
-        py: { xs: 1.75, sm: 2.25 },
+        p: { xs: 1.5, sm: 2 },
         borderRadius: 1,
+        overflow: "hidden",
+        boxSizing: "border-box",
       }}
     >
       <Stack spacing={1.5}>
@@ -71,7 +73,13 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
         >
           <Typography
             variant="subtitle1"
-            sx={{ fontWeight: 700, lineHeight: 1.3, pt: 0.25 }}
+            sx={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 700,
+              lineHeight: 1.3,
+              pt: 0.25,
+              color: "var(--brand)",
+            }}
           >
             {t("intro.title")}
           </Typography>
@@ -94,40 +102,18 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
               xs: "1fr",
               md: "repeat(3, minmax(0, 1fr))",
             },
-            gap: { xs: 1.5, md: 2 },
+            gap: { xs: 1.25, md: 1.5 },
+            alignItems: "stretch",
           }}
         >
           {INTRO_SCENARIOS.map((scenario) => (
-            <Box
-              key={scenario.letter}
-              sx={{
-                minWidth: 0,
-                pl: { md: scenario.letter === "A" ? 0 : 2 },
-                borderLeft: {
-                  xs: "none",
-                  md: scenario.letter === "A" ? "none" : "1px solid",
-                },
-                borderColor: { md: "divider" },
-                pt: { xs: scenario.letter === "A" ? 0 : 1.25, md: 0 },
-                borderTop: {
-                  xs: scenario.letter === "A" ? "none" : "1px solid",
-                  md: "none",
-                },
-              }}
+            <ExportFilterSection
+              key={scenario.step}
+              step={scenario.step}
+              title={t(scenario.titleKey)}
+              contentSx={{ overflow: "visible" }}
             >
-              <Stack spacing={0.75}>
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: 700, lineHeight: 1.35 }}
-                >
-                  <Box
-                    component="span"
-                    sx={{ color: "text.secondary", fontWeight: 700 }}
-                  >
-                    {scenario.letter}.{" "}
-                  </Box>
-                  {t(scenario.titleKey)}
-                </Typography>
+              <Stack spacing={1}>
                 <Box
                   component="ol"
                   sx={{
@@ -157,18 +143,26 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
                 <Typography variant="body2" sx={{ lineHeight: 1.45 }}>
                   <Box
                     component="span"
-                    sx={{ color: "text.secondary", fontWeight: 700 }}
+                    sx={{
+                      color: "var(--brand)",
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 700,
+                    }}
                   >
                     {t("intro.whatYouGet")}:{" "}
                   </Box>
                   {t(scenario.outcomeKey)}
                 </Typography>
               </Stack>
-            </Box>
+            </ExportFilterSection>
           ))}
         </Box>
 
-        <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.4 }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ lineHeight: 1.4 }}
+        >
           {t("intro.saveNote")}
         </Typography>
       </Stack>
