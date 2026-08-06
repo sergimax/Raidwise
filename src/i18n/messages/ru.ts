@@ -170,6 +170,10 @@ export const ruMessages: Messages = {
     alsoOwnedInvalidId: "Введите корректный числовой id предмета.",
     alsoOwnedUnknownId: "Этого id нет в базе предметов приложения.",
     alsoOwnedDuplicate: "Этот предмет уже есть в списке.",
+    orderLabel: "Позиция:",
+    orderPosition: "Столбец {{position}} из {{total}}",
+    orderMoveLeft: "Сдвинуть столбец влево",
+    orderMoveRight: "Сдвинуть столбец вправо",
   },
   dungeonEdit: {
     title: "Изменить подземелье",

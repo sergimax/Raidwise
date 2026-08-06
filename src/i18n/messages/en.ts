@@ -168,6 +168,10 @@ export const enMessages = {
     alsoOwnedInvalidId: "Enter a valid numeric item id.",
     alsoOwnedUnknownId: "That item id is not in the bundled WoW item database.",
     alsoOwnedDuplicate: "That item is already in the also-owned list.",
+    orderLabel: "Position:",
+    orderPosition: "Column {{position}} of {{total}}",
+    orderMoveLeft: "Move column left",
+    orderMoveRight: "Move column right",
   },
   dungeonEdit: {
     title: "Edit dungeon details",
