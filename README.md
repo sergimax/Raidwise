@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-2.4.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.5.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -20,7 +20,8 @@ Toolbar panels are mutually exclusive (only one open at a time).
 Add manually (**Add character** / **Add raid**, stepped forms) or load the WotLK raid template when the list is empty.
 New character names are letters only; the UI capitalizes the first letter.
 Edit specs, WowSims gear, also-owned items (bags / other spec / vendors for hints), and raid metadata later.
-Header **info** toggles a short usage-help intro (scenarios for CDs, gear planning, or BiS-only).
+Reorder table columns from the edit dialog (`Position: < n >`).
+Header **info** toggles a short usage-help intro (three ways to use the app: CDs, gear planning, or BiS-only).
 
 ### Cooldown toggles
 
@@ -43,19 +44,20 @@ When there are no dungeons — **Add raids from template**.
 ### Character pick for a raid
 
 Copyable signup line of characters still missing CD on filtered raids.
-Filters: min GS, role, specs.
+Filters: min GS, role, specs (kept for the browser session when you close or switch panels).
 Click Selected raid chips to exclude false matches from the results (chips stay visible).
 Header reset clears the raid search and chip exclusions.
 
 ### Soft pick for a raid
 
 Soft reserves for one character + spec on BiS upgrades from filtered raids (active list from **BiS builds**).
-Session-only; pasteable call lines start with the character name.
-Same clickable raid chips to exclude rows, plus header reset for search/exclusions.
+Session-only (character, rules, softs, and raid exclusions survive closing the panel); pasteable call lines start with the character name.
+Same clickable raid chips to exclude rows (softs for items that drop off the list are cleared); header reset for search/exclusions.
 
 ### BiS builds
 
 Built-in presets per spec (Kingdom with slot variants first, then Titans/community); local copies are editable and used for gear-choice hints.
+Class/spec choice stays for the browser session when you leave the panel; preset selection is already saved in BiS storage.
 Slot layout matches the in-game paper doll; alternative items stack under the primary choice.
 Custom lists support clear-slot / clear-all; Items shows the active list name and scrolls with Lists within fixed height budgets.
 
@@ -81,8 +83,8 @@ Design tokens / recipes: [docs/design/design-system.md](docs/design/design-syste
 
 ## Development
 
-![Lighthouse Performance](https://img.shields.io/badge/Performance-89-%23ffa400?logo=lighthouse&logoColor=white)
-![Lighthouse Accessibility](https://img.shields.io/badge/Accessibility-100-%230cce6b?logo=lighthouse&logoColor=white)
+![Lighthouse Performance](https://img.shields.io/badge/Performance-93-%230cce6b?logo=lighthouse&logoColor=white)
+![Lighthouse Accessibility](https://img.shields.io/badge/Accessibility-98-%230cce6b?logo=lighthouse&logoColor=white)
 ![Lighthouse Best Practices](https://img.shields.io/badge/Best_Practices-100-%230cce6b?logo=lighthouse&logoColor=white)
 ![Lighthouse SEO](https://img.shields.io/badge/SEO-100-%230cce6b?logo=lighthouse&logoColor=white)
 
