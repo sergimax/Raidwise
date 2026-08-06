@@ -34,7 +34,7 @@ $specIcons = @{
     "warrior-protection"         = "ability_warrior_defensivestance"
 }
 
-$outDir = Join-Path $PSScriptRoot "..\src\assets\class-icons\specs"
+$outDir = Join-Path $PSScriptRoot "..\..\src\assets\class-icons\specs"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
 $failed = @()

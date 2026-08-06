@@ -1,11 +1,11 @@
 /**
  * Parse BiS markdown sources and write preset `.ts` files under src/data/bis-presets/.
- * - scripts/bis-list-sources.md — Titans + community
- * - scripts/bis-list-mix.md — Kingdom. With variants (numbered weapons + slot alts)
+ * - scripts/bis/bis-list-sources.md — Titans + community
+ * - scripts/bis/bis-list-mix.md — Kingdom. With variants (numbered weapons + slot alts)
  *
  * Run: npm run generate:bis-presets
  *
- * Also writes scripts/bis-list-sources-resolved.json and bis-list-mix-resolved.json.
+ * Also writes scripts/bis/bis-list-sources-resolved.json and bis-list-mix-resolved.json.
  */
 import fs from "fs";
 import path from "path";
@@ -18,7 +18,7 @@ import {
 import { isTitansGuildList, resolveTitansListLines } from "./bis-resolve-titans.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.join(__dirname, "..");
+const rootDir = path.join(__dirname, "../..");
 
 const namesEn = JSON.parse(
   fs.readFileSync(path.join(rootDir, "src/data/wotlk-item-names.json"), "utf8"),
@@ -752,7 +752,7 @@ fs.writeFileSync(
   path.join(__dirname, "bis-list-sources-resolved.json"),
   `${JSON.stringify(entries, null, 2)}\n`,
 );
-console.log("\nWrote scripts/bis-list-sources-resolved.json");
+console.log("\nWrote scripts/bis/bis-list-sources-resolved.json");
 
 const CLASS_ENUM = {
   "Death Knight": "ClassName.DeathKnight",
@@ -981,7 +981,7 @@ fs.writeFileSync(
   path.join(__dirname, "bis-list-mix-resolved.json"),
   `${JSON.stringify(mixEntries, null, 2)}\n`,
 );
-console.log("\nWrote scripts/bis-list-mix-resolved.json");
+console.log("\nWrote scripts/bis/bis-list-mix-resolved.json");
 
 const allEntries = [...entries, ...mixEntries];
 

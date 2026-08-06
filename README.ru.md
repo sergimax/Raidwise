@@ -122,8 +122,8 @@ npm run dev
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / один прогон) |
 | `npm run ci` | Lint + test:run + build (проверки перед push) |
-| `npm run build:wow-data` | Пересборка бандлов WoW JSON из `scripts/wowsims-db.json` (в т.ч. лут тира VoA из метаданных сетов, если WowSims не отдаёт зону 4603) |
-| `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis-list-sources.md` + `scripts/bis-list-mix.md` |
+| `npm run build:wow-data` | Пересборка бандлов WoW JSON из `scripts/wow-data/wowsims-db.json` (в т.ч. лут тира VoA из метаданных сетов, если WowSims не отдаёт зону 4603) |
+| `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Комментарии слотов в файлах BiS-пресетов |
 | `npm run download:gear-slot-icons` | PNG-заглушки слотов paper-doll в `src/assets/gear-slot-icons/` |
 | `npm run download:fonts` | Локальные Onest / Noto Sans / JetBrains Mono woff2 + `src/fonts.css` |
@@ -131,7 +131,7 @@ npm run dev
 | `npm run lighthouse` | Lighthouse desktop для preview/production → `docs/lighthouse/` (для локали сначала `preview`) |
 | `npm run lighthouse:mobile` | То же с mobile-пресетом |
 
-Встроенные BiS пишутся в `scripts/bis-list-sources.md` (Titans + community) и `scripts/bis-list-mix.md` (Kingdom. With variants: нумерованное оружие и альтернативы `N-M`).
+Встроенные BiS пишутся в `scripts/bis/bis-list-sources.md` (Titans + community) и `scripts/bis/bis-list-mix.md` (Kingdom. With variants: нумерованное оружие и альтернативы `N-M`).
 После правок markdown перегенерируйте TypeScript-пресеты.
 
 ### Хранение

@@ -1,14 +1,14 @@
 /**
  * Download WoW paper doll empty-slot icons from the vanilla UI texture mirror.
  *
- * Usage: node scripts/download-gear-slot-icons.mjs
+ * Usage: node scripts/assets/download-gear-slot-icons.mjs
  */
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.resolve(__dirname, "..");
+const rootDir = path.resolve(__dirname, "../..");
 const outDir = path.join(rootDir, "src/assets/gear-slot-icons");
 
 const VANILLA_BASE =

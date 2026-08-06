@@ -38,7 +38,7 @@ jobs:
       - run: npm run build
 
   # Requires a package.json version bump + matching release-file content.
-  # See scripts/check-release-files.mjs.
+  # See scripts/release/check-release-files.mjs.
   release-files:
     name: Release files
     needs: [lint, test, build]
@@ -53,4 +53,4 @@ jobs:
           RELEASE_CHECK_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
           # Checked-out commit (PR merge commit or push SHA).
           RELEASE_CHECK_HEAD: ${{ github.sha }}
-        run: node scripts/check-release-files.mjs
+        run: node scripts/release/check-release-files.mjs

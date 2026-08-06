@@ -121,8 +121,8 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / single run) |
 | `npm run ci` | Lint + test:run + build (pre-push checks) |
-| `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
-| `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis-list-sources.md` + `scripts/bis-list-mix.md` |
+| `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
+| `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Add slot comments to BiS preset files |
 | `npm run download:gear-slot-icons` | Regenerate WoW paper-doll slot placeholder PNGs in `src/assets/gear-slot-icons/` |
 | `npm run download:fonts` | Regenerate self-hosted Onest / Noto Sans / JetBrains Mono woff2 + `src/fonts.css` |
@@ -130,7 +130,7 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run lighthouse` | Desktop Lighthouse vs preview/production URL → `docs/lighthouse/` (run `preview` first for local) |
 | `npm run lighthouse:mobile` | Same with the mobile preset |
 
-Built-in BiS lists are authored in `scripts/bis-list-sources.md` (Titans + community) and `scripts/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
+Built-in BiS lists are authored in `scripts/bis/bis-list-sources.md` (Titans + community) and `scripts/bis/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
 Regenerate TypeScript presets after editing the markdown.
 
 ### Persistence
