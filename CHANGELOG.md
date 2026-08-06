@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-08-07
+
+### Added
+
+- **Character column order:** Edit character dialog includes a compact table position control (`Position: < n >`) to move characters left/right; order persists with the existing save debounce (no schema change).
+- **Panel session state:** Character pick, Soft pick, and BiS builds keep their in-session selections when you close or switch toolbar panels (not localStorage). Soft pick also clears softs for items that leave the list when a raid is excluded.
+- **App intro subtitle:** Caption under the title explaining there are three ways to use the app (EN/RU).
+- **Lighthouse tooling:** `npm run lighthouse` / `lighthouse:mobile` write reports under `docs/lighthouse/`; README EN+RU document the workflow and show Lighthouse score badges.
+
+### Changed
+
+- **App intro:** Scenario cards use the stepped filter chrome (brand title, step badges, brand left edge) aligned with Character pick / Soft pick.
+- **Scripts layout:** Tooling scripts live under thematic folders (`scripts/bis/`, `wow-data/`, `assets/`, `release/`, `lighthouse/`); README commands and CI release check path updated.
+- **Docs:** Project rules updated for character reorder, panel session state, Soft pick soft pruning, empty BiS-slot hints, intro chrome, and script paths.
+
+### Fixed
+
+- **BiS / Soft pick empty slots:** Missing BiS pieces in unequipped slots (e.g. off-hand while wearing a 2H staff) now appear in Soft pick and amber gear hints for all specs.
+- **Also owned helper copy:** EN/RU clarify that listed items are available in bags or bank.
+
 ## [2.4.0] - 2026-08-06
 
 ### Changed
