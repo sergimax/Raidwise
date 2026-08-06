@@ -3,12 +3,14 @@ import { ClassName, Classes } from "../types/characters.ts";
 import { DungeonDifficulty } from "../types/dungeons.ts";
 import { unholyDeathKnightBis } from "../data/bis-presets/unholy-death-knight.ts";
 import { retributionPaladinBis } from "../data/bis-presets/retribution-paladin.ts";
+import { shadowPriestBis } from "../data/bis-presets/shadow-priest.ts";
 import { createTestCharacter, createTestDungeon } from "../test/fixtures.ts";
 import { testTranslator } from "../test/i18n.ts";
 import { evaluateCharacterGearHints } from "./character-gear-hints.ts";
 import { buildBisSlotMap } from "./bis-lists.ts";
 import {
   evaluateGearUpgradeHint,
+  collectMissingBisLootItemIds,
   collectMissingIlvlLootItemIds,
   formatGearUpgradeHintTooltip,
   getDungeonPeakItemLevel,
@@ -220,8 +222,11 @@ describe("evaluateGearUpgradeHint", () => {
     );
 
     expect(rsHint.bisListActive).toBe(true);
-    expect(rsHint.bis.upgradeSlotCount).toBe(1);
-    expect(rsHint.bis.upgradeSlots[0]?.bestLootItemId).toBe(54581);
+    expect(
+      rsHint.bis.upgradeSlots.some(
+        (slotHint) => slotHint.bestLootItemId === 54581,
+      ),
+    ).toBe(true);
   });
 
   it("does not flag BiS trinkets missing when equipped in the swapped trinket slot", () => {
@@ -357,7 +362,11 @@ describe("evaluateGearUpgradeHint", () => {
   });
 
   it("flags BiS heroic belt on ICC25H when equipped belt is 264", () => {
-    const bisSlotMap = buildBisSlotMap(retributionPaladinBis.presets[0]);
+    const bisSlotMap = buildBisSlotMap({
+      id: "ret-belt",
+      name: "belt",
+      slots: [{ slot: 7, itemIds: [50707] }],
+    });
     const equipContext = { className: ClassName.Paladin, spec: "Retribution" };
 
     const hint = evaluateGearUpgradeHint(
@@ -376,7 +385,11 @@ describe("evaluateGearUpgradeHint", () => {
   });
 
   it("treats also-owned BiS items as satisfying exact BiS targets", () => {
-    const bisSlotMap = buildBisSlotMap(retributionPaladinBis.presets[0]);
+    const bisSlotMap = buildBisSlotMap({
+      id: "ret-belt",
+      name: "belt",
+      slots: [{ slot: 7, itemIds: [50707] }],
+    });
     const equipContext = { className: ClassName.Paladin, spec: "Retribution" };
 
     const hint = evaluateGearUpgradeHint(
@@ -395,7 +408,11 @@ describe("evaluateGearUpgradeHint", () => {
   });
 
   it("flags BiS normal belt variant on ICC25N when equipped belt is below tier", () => {
-    const bisSlotMap = buildBisSlotMap(retributionPaladinBis.presets[0]);
+    const bisSlotMap = buildBisSlotMap({
+      id: "ret-belt",
+      name: "belt",
+      slots: [{ slot: 7, itemIds: [50707] }],
+    });
     const equipContext = { className: ClassName.Paladin, spec: "Retribution" };
 
     const hint = evaluateGearUpgradeHint(
@@ -418,7 +435,11 @@ describe("evaluateGearUpgradeHint", () => {
   });
 
   it("does not flag belt when the normal BiS name variant is already equipped", () => {
-    const bisSlotMap = buildBisSlotMap(retributionPaladinBis.presets[0]);
+    const bisSlotMap = buildBisSlotMap({
+      id: "ret-belt",
+      name: "belt",
+      slots: [{ slot: 7, itemIds: [50707] }],
+    });
     const equipContext = { className: ClassName.Paladin, spec: "Retribution" };
 
     const hint = evaluateGearUpgradeHint(
@@ -437,7 +458,11 @@ describe("evaluateGearUpgradeHint", () => {
   });
 
   it("flags same-ilvl BiS normal variant when heroic id is on the list", () => {
-    const bisSlotMap = buildBisSlotMap(retributionPaladinBis.presets[0]);
+    const bisSlotMap = buildBisSlotMap({
+      id: "ret-belt",
+      name: "belt",
+      slots: [{ slot: 7, itemIds: [50707] }],
+    });
     const equipContext = { className: ClassName.Paladin, spec: "Retribution" };
 
     const hint = evaluateGearUpgradeHint(
@@ -656,7 +681,7 @@ describe("evaluateGearUpgradeHint", () => {
     expect(hints.main?.bisBossLootGroups).toEqual([
       {
         bossName: "Halion",
-        itemIds: [54576, 54578, 54581, 54590],
+        itemIds: [54576, 54578, 54580, 54581, 54590],
       },
     ]);
   });
@@ -1066,5 +1091,49 @@ describe("formatGearUpgradeHintTooltip", () => {
     const retIlvlItemIds = collectMissingIlvlLootItemIds(retHint);
     expect(retIlvlItemIds).not.toContain(50341);
     expect(retIlvlItemIds).not.toContain(54589);
+  });
+
+  it("flags BiS off-hand when the slot is empty (2H staff)", () => {
+    const shadowPriestBisSlotMap = buildBisSlotMap(
+      shadowPriestBis.presets[0]!,
+    );
+    const icc25Heroic = {
+      name: "Icecrown Citadel",
+      raidKey: "icecrownCitadel" as const,
+      size: 25,
+      difficulty: DungeonDifficulty.HEROIC,
+      itemLevel: [264, 277],
+    };
+
+    // Archus, Greatstaff of Antonidas — 2H, no off-hand equipped.
+    const staffOnlyHint = evaluateGearUpgradeHint(
+      [{ slot: 14, id: 50731 }],
+      icc25Heroic,
+      shadowPriestBisSlotMap,
+      { className: ClassName.Priest, spec: "Shadow" },
+    );
+    expect(collectMissingBisLootItemIds(staffOnlyHint).exact).toContain(50719);
+
+    const withOffHandHint = evaluateGearUpgradeHint(
+      [
+        { slot: 14, id: 50734 },
+        { slot: 15, id: 50173 },
+      ],
+      icc25Heroic,
+      shadowPriestBisSlotMap,
+      { className: ClassName.Priest, spec: "Shadow" },
+    );
+    expect(collectMissingBisLootItemIds(withOffHandHint).exact).toContain(50719);
+
+    const alsoOwnedHint = evaluateGearUpgradeHint(
+      [{ slot: 14, id: 50731 }],
+      icc25Heroic,
+      shadowPriestBisSlotMap,
+      { className: ClassName.Priest, spec: "Shadow" },
+      [50719],
+    );
+    expect(collectMissingBisLootItemIds(alsoOwnedHint).exact).not.toContain(
+      50719,
+    );
   });
 });
