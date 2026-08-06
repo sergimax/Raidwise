@@ -1,5 +1,6 @@
 import { Alert, Stack } from "@mui/material";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
+import { useExportSessionState } from "../../hooks/use-export-session-state.ts";
 import { useGearHintLegendDismissed } from "../../hooks/use-gear-hint-legend-dismissed.ts";
 import { useGearPickSessionState } from "../../hooks/use-gear-pick-session-state.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
@@ -13,7 +14,7 @@ import { BisListsPanel } from "../bis-lists-panel/index.tsx";
 import { CharacterForm } from "../character-form/index.tsx";
 import { DataControlsPanel } from "../data-controls-panel/index.tsx";
 import { DungeonForm } from "../dungeon-form/index.tsx";
-import { ExportPanel, type ExportPanelHandle } from "../export-panel/index.tsx";
+import { ExportPanel } from "../export-panel/index.tsx";
 import { ExportPanelHeaderActions } from "../export-panel/export-panel-header-actions.tsx";
 import { GearHintLegend } from "../gear-hint-legend/index.tsx";
 import { GearPickPanel } from "../gear-pick-panel/index.tsx";
@@ -86,7 +87,9 @@ export function RaidTrackerMain({
   });
 
   const gearPickSession = useGearPickSessionState();
-  const exportPanelRef = useRef<ExportPanelHandle>(null);
+  const exportSession = useExportSessionState();
+  const { resetAllFilters: resetExportSessionFilters } = exportSession;
+  const { setDungeonNameSearch } = tableState;
 
   const toolbarPanelId = resolveToolbarPanelId({
     showCharacterForm: forms.showCharacterForm,
@@ -107,6 +110,11 @@ export function RaidTrackerMain({
     closeGearPickPanel();
   }, [closeGearPickPanel]);
 
+  const resetExportAllFilters = useCallback(() => {
+    resetExportSessionFilters();
+    setDungeonNameSearch("");
+  }, [resetExportSessionFilters, setDungeonNameSearch]);
+
   const toolbarPanelMeta = useMemo(() => {
     if (!toolbarPanelId) {
       return null;
@@ -125,9 +133,7 @@ export function RaidTrackerMain({
       return {
         ...meta,
         headerActions: (
-          <ExportPanelHeaderActions
-            onResetAllFilters={() => exportPanelRef.current?.resetAllFilters()}
-          />
+          <ExportPanelHeaderActions onResetAllFilters={resetExportAllFilters} />
         ),
       };
     }
@@ -140,6 +146,7 @@ export function RaidTrackerMain({
     closeGearPickPanelWithTooltips,
     forms.closeCharacterForm,
     forms.closeDungeonForm,
+    resetExportAllFilters,
     t,
     toolbarPanelId,
   ]);
@@ -200,13 +207,13 @@ export function RaidTrackerMain({
 
           {showExportPanel ? (
             <ExportPanel
-              ref={exportPanelRef}
               characters={domain.characters}
               visibleDungeons={tableState.sortedDungeons}
               dungeonToggles={domain.dungeonToggles}
               dungeonNameSearch={tableState.dungeonNameSearch}
               onDungeonNameSearchChange={tableState.setDungeonNameSearch}
               totalDungeonCount={tableState.dungeonCount}
+              session={exportSession}
             />
           ) : null}
 
