@@ -71,18 +71,27 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
             gap: 1,
           }}
         >
-          <Typography
-            variant="subtitle1"
-            sx={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 700,
-              lineHeight: 1.3,
-              pt: 0.25,
-              color: "var(--brand)",
-            }}
-          >
-            {t("intro.title")}
-          </Typography>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                lineHeight: 1.3,
+                pt: 0.25,
+                color: "var(--brand)",
+              }}
+            >
+              {t("intro.title")}
+            </Typography>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "block", mt: 0.35, lineHeight: 1.35 }}
+            >
+              {t("intro.subtitle")}
+            </Typography>
+          </Box>
           {onDismiss ? (
             <IconButton
               size="small"

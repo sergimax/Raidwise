@@ -31,6 +31,7 @@ export const enMessages = {
   },
   intro: {
     title: "How this app can help",
+    subtitle: "There are three ways to use this app",
     closeAria: "Hide how this app can help",
     saveNote: "Data is saved automatically in your browser.",
     whatYouGet: "What you get",
