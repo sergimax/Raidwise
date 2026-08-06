@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { commentPresetSource } from "./bis-preset-format.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const presetsDir = path.join(__dirname, "../src/data/bis-presets");
+const presetsDir = path.join(__dirname, "../../src/data/bis-presets");
 
 for (const fileName of fs.readdirSync(presetsDir)) {
   if (!fileName.endsWith(".ts") || fileName === "index.ts") continue;

@@ -3,8 +3,8 @@ logs
 *.log
 
 # Generated BiS resolution debug output
-scripts/bis-list-sources-resolved.json
-scripts/bis-list-mix-resolved.json
+scripts/bis/bis-list-sources-resolved.json
+scripts/bis/bis-list-mix-resolved.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

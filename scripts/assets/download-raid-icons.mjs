@@ -3,14 +3,14 @@
  *
  * Icons match in-game achievement / LFG raid artwork (see raid-icons.ts).
  *
- * Usage: node scripts/download-raid-icons.mjs
+ * Usage: node scripts/assets/download-raid-icons.mjs
  */
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.resolve(__dirname, "..");
+const rootDir = path.resolve(__dirname, "../..");
 const outDir = path.join(rootDir, "src/assets/raid-icons");
 
 const TEXTURE_BASE =

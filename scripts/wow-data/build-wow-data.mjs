@@ -1,5 +1,5 @@
 /**
- * Builds bundled WowSims data for the app from scripts/wowsims-db.json.
+ * Builds bundled WowSims data for the app from scripts/wow-data/wowsims-db.json.
  *
  * Outputs:
  * - src/data/wotlk-item-names.json — English item names for bundled ilvl ids
@@ -23,7 +23,7 @@ import {
 } from "./tier-set-token-names.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.join(__dirname, "..");
+const rootDir = path.join(__dirname, "../..");
 
 const WOWROAD_RU_LOCALE = 8;
 const WOWROAD_FETCH_CONCURRENCY = 12;
@@ -764,7 +764,7 @@ async function buildRussianItemNames(itemLevelIds) {
 
 async function main() {
   const skipRu = process.argv.includes("--skip-ru");
-  const dbPath = path.join(rootDir, "scripts/wowsims-db.json");
+  const dbPath = path.join(rootDir, "scripts/wow-data/wowsims-db.json");
   const itemLevelsPath = path.join(rootDir, "src/data/wotlk-item-levels.json");
   const namesOutPath = path.join(rootDir, "src/data/wotlk-item-names.json");
   const namesRuOutPath = path.join(rootDir, "src/data/wotlk-item-names-ru.json");

@@ -6,7 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = path.join(__dirname, "../src/data");
+const dataDir = path.join(__dirname, "../../src/data");
 
 const namesRu = JSON.parse(
   fs.readFileSync(path.join(dataDir, "wotlk-item-names-ru.json"), "utf8"),

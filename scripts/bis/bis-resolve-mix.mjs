@@ -1,5 +1,5 @@
 /**
- * Resolve Kingdom / mix BiS lists from scripts/bis-list-mix.md.
+ * Resolve Kingdom / mix BiS lists from scripts/bis/bis-list-mix.md.
  *
  * Dialect: `# Class - Ru`, `## Spec - Ru (aliases)`, `- Label[ N[-M]]: Item (source)`.
  * Numbered weapons: Оружие 1=MH, 2=OH, 3=ranged; Щит/Оффхэнд=15; Жезл=16.
@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 import { T10_BY_SPEC } from "./bis-resolve-titans.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = path.join(__dirname, "../src/data");
+const dataDir = path.join(__dirname, "../../src/data");
 
 const namesRu = JSON.parse(
   fs.readFileSync(path.join(dataDir, "wotlk-item-names-ru.json"), "utf8"),
