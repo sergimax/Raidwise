@@ -3,6 +3,7 @@ import type { GearPickCharacterSelection } from "../components/gear-pick-panel/g
 import {
   clampAssignmentsToMaxSofts,
   DEFAULT_SOFT_ROLL_RULES,
+  pruneSoftAssignmentsToItemIds,
   setMySoftsForItem,
   setOthersCountForWeight,
   type SoftAssignmentByItemId,
@@ -79,6 +80,15 @@ export function useGearPickSessionState() {
     setExcludedDungeonIds(new Set());
   }, []);
 
+  const pruneAssignmentsToItemIds = useCallback(
+    (keepItemIds: ReadonlySet<number>) => {
+      setAssignmentsByItemId((previous) =>
+        pruneSoftAssignmentsToItemIds(previous, keepItemIds),
+      );
+    },
+    [],
+  );
+
   return {
     selection,
     rules,
@@ -90,6 +100,7 @@ export function useGearPickSessionState() {
     handleOthersCountChange,
     toggleDungeonExcluded,
     clearExcludedDungeonIds,
+    pruneAssignmentsToItemIds,
   };
 }
 

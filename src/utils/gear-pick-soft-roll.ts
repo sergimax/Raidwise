@@ -138,6 +138,27 @@ export function clampAssignmentsToMaxSofts(
   return next;
 }
 
+/**
+ * Drop soft assignments for item ids no longer in the active Soft pick list
+ * (e.g. after excluding a raid). Returns the same object when nothing changes.
+ */
+export function pruneSoftAssignmentsToItemIds(
+  byItemId: SoftAssignmentByItemId,
+  keepItemIds: ReadonlySet<number>,
+): SoftAssignmentByItemId {
+  let changed = false;
+  const next: SoftAssignmentByItemId = {};
+  for (const [itemIdStr, assignment] of Object.entries(byItemId)) {
+    const itemId = Number(itemIdStr);
+    if (keepItemIds.has(itemId)) {
+      next[itemId] = assignment;
+    } else {
+      changed = true;
+    }
+  }
+  return changed ? next : byItemId;
+}
+
 /** Total soft-weight from others: Σ(weight × playerCount). */
 export function competingSoftWeight(othersByWeight: OthersSoftHistogram): number {
   let total = 0;

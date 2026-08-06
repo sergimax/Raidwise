@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getWotlkItemName } from "../../data/wotlk-item-names.ts";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
 import type { GearPickSessionState } from "../../hooks/use-gear-pick-session-state.ts";
@@ -70,6 +70,7 @@ export function GearPickPanel({
     handleOthersCountChange,
     toggleDungeonExcluded,
     clearExcludedDungeonIds,
+    pruneAssignmentsToItemIds,
   } = session;
 
   const activeDungeons = useMemo(
@@ -133,6 +134,17 @@ export function GearPickPanel({
     selectedSpecGear,
     activeSelection,
   ]);
+
+  // Free soft budget for items that left the list (excluded / filtered raids).
+  // Skip when selection is inactive so CD-all-raids does not wipe session softs.
+  useEffect(() => {
+    if (!activeSelection) {
+      return;
+    }
+    pruneAssignmentsToItemIds(
+      new Set(gearPickItems.map((item) => item.itemId)),
+    );
+  }, [activeSelection, gearPickItems, pruneAssignmentsToItemIds]);
 
   const softBudgetUsed = sumMySofts(assignmentsByItemId);
 
