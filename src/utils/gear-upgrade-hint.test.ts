@@ -1100,7 +1100,7 @@ describe("formatGearUpgradeHintTooltip", () => {
     const icc25Heroic = {
       name: "Icecrown Citadel",
       raidKey: "icecrownCitadel" as const,
-      size: 25,
+      size: 25 as const,
       difficulty: DungeonDifficulty.HEROIC,
       itemLevel: [264, 277],
     };

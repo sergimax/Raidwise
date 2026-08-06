@@ -1,5 +1,6 @@
 import { Alert, Stack } from "@mui/material";
 import { useCallback, useMemo } from "react";
+import { useBisListsSessionState } from "../../hooks/use-bis-lists-session-state.ts";
 import { useExportSessionState } from "../../hooks/use-export-session-state.ts";
 import { useGearHintLegendDismissed } from "../../hooks/use-gear-hint-legend-dismissed.ts";
 import { useGearPickSessionState } from "../../hooks/use-gear-pick-session-state.ts";
@@ -88,6 +89,7 @@ export function RaidTrackerMain({
 
   const gearPickSession = useGearPickSessionState();
   const exportSession = useExportSessionState();
+  const bisListsSession = useBisListsSessionState();
   const { resetAllFilters: resetExportSessionFilters } = exportSession;
   const { setDungeonNameSearch } = tableState;
 
@@ -229,7 +231,7 @@ export function RaidTrackerMain({
             />
           ) : null}
 
-          {showBisListsPanel ? <BisListsPanel /> : null}
+          {showBisListsPanel ? <BisListsPanel session={bisListsSession} /> : null}
 
           {showDataControlsPanel ? (
             <DataControlsPanel onAddFromTemplate={onAddFromTemplate} />

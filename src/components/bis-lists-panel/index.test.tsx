@@ -1,6 +1,7 @@
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BisListsPanel } from "./index.tsx";
+import { useBisListsSessionState } from "../../hooks/use-bis-lists-session-state.ts";
 import {
   BIS_LISTS_SCHEMA_VERSION,
   BIS_LISTS_STORAGE_KEY,
@@ -13,6 +14,11 @@ import {
   within,
 } from "../../test/render-with-theme.tsx";
 import { specBisStorageKey } from "../../utils/bis-lists.ts";
+
+function BisListsPanelHarness() {
+  const session = useBisListsSessionState();
+  return <BisListsPanel session={session} />;
+}
 
 function seedLocalUnholyPreset(presetName: string, presetId = "local-test") {
   const storageKey = specBisStorageKey(ClassName.DeathKnight, "Unholy");
@@ -42,7 +48,7 @@ describe("BisListsPanel", () => {
   });
 
   it("shows slot items for the default Unholy DK preset on open", () => {
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     expect(screen.getAllByText(/Kingdom\. With variants/i).length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText(/Head/i)).toBeInTheDocument();
@@ -53,7 +59,7 @@ describe("BisListsPanel", () => {
 
   it("shows the selected list name under the Items step header", () => {
     seedLocalUnholyPreset("Editable local");
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     const itemsHeading = screen.getByText((_, element) => {
       return element?.tagName === "P" && element.textContent === "3Items";
@@ -73,7 +79,7 @@ describe("BisListsPanel", () => {
       value: { writeText },
     });
 
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     await user.click(screen.getByRole("button", { name: /Copy current BiS list/i }));
 
@@ -88,7 +94,7 @@ describe("BisListsPanel", () => {
 
   it("shows built-in preset items for Warrior Arms", async () => {
     const user = userEvent.setup();
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     await user.click(screen.getByRole("combobox", { name: /^Class/ }));
     await user.click(screen.getByRole("option", { name: /Warrior/ }));
@@ -100,7 +106,7 @@ describe("BisListsPanel", () => {
   });
 
   it("shows built-in lists as read-only without slot edit controls", () => {
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     expect(
       screen.getByText(/Built-in list \(read-only\)/i),
@@ -110,7 +116,7 @@ describe("BisListsPanel", () => {
 
   it("saves a copy of the built-in list under a custom name", async () => {
     const user = userEvent.setup();
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     await user.type(screen.getByRole("textbox", { name: /List name/i }), "My DK copy");
     await user.click(screen.getByRole("button", { name: /Save list/i }));
@@ -126,7 +132,7 @@ describe("BisListsPanel", () => {
 
   it("shows list-name required on the Save list field", async () => {
     const user = userEvent.setup();
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     await user.click(screen.getByRole("button", { name: /Save list/i }));
 
@@ -138,7 +144,7 @@ describe("BisListsPanel", () => {
   it("disables save while edited slots are unconfirmed", async () => {
     const user = userEvent.setup();
     seedLocalUnholyPreset("Editable local");
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     await user.click(screen.getByRole("button", { name: /Edit Head item/i }));
     const headInput = screen.getByPlaceholderText("Name, id, or #id");
@@ -151,7 +157,7 @@ describe("BisListsPanel", () => {
   it("clears one slot while editing a custom list", async () => {
     const user = userEvent.setup();
     seedLocalUnholyPreset("Editable local");
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     expect(
       screen.getByRole("link", { name: /Sanctified Scourgelord Helmet/i }),
@@ -174,7 +180,7 @@ describe("BisListsPanel", () => {
   it("clears all slots on a custom list", async () => {
     const user = userEvent.setup();
     seedLocalUnholyPreset("Editable local");
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     await user.click(screen.getByRole("button", { name: /Clear all BiS list slots/i }));
 
@@ -191,7 +197,7 @@ describe("BisListsPanel", () => {
   });
 
   it("hides clear-all for built-in lists", () => {
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     expect(
       screen.queryByRole("button", { name: /Clear all BiS list slots/i }),
@@ -201,7 +207,7 @@ describe("BisListsPanel", () => {
   it("shows validation errors for items in the wrong slot", async () => {
     const user = userEvent.setup();
     seedLocalUnholyPreset("Editable local");
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     await user.click(screen.getByRole("button", { name: /Edit Head item/i }));
     const headInput = screen.getByPlaceholderText("Name, id, or #id");
@@ -220,7 +226,7 @@ describe("BisListsPanel", () => {
   it("confirms a slot edit and persists it for a local preset", async () => {
     const user = userEvent.setup();
     seedLocalUnholyPreset("Editable local");
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     await user.click(screen.getByRole("button", { name: /Edit Head item/i }));
     const headInput = screen.getByPlaceholderText("Name, id, or #id");
@@ -244,7 +250,7 @@ describe("BisListsPanel", () => {
   it("deletes a local preset from the sidebar", async () => {
     const user = userEvent.setup();
     seedLocalUnholyPreset("Deletable list");
-    renderWithTheme(<BisListsPanel />);
+    renderWithTheme(<BisListsPanelHarness />);
 
     const localChip = screen.getByRole("button", { name: /Deletable list/i });
     await user.click(within(localChip).getByTestId("CancelIcon"));

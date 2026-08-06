@@ -32,12 +32,13 @@ import {
   getLocalizedSpecName,
 } from "../../i18n/localized-domain.ts";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
+import type { BisListsSessionState } from "../../hooks/use-bis-lists-session-state.ts";
 import { useBisListsEditorState } from "../../hooks/use-bis-lists-editor-state.ts";
 import {
   BIS_LISTS_STORAGE_QUOTA_MESSAGE,
   BIS_LISTS_STORAGE_SAVE_FAILED_MESSAGE,
 } from "../../storage/bis-lists/index.ts";
-import { Classes, ClassName, type ClassName as ClassNameType } from "../../types/characters.ts";
+import { Classes, type ClassName as ClassNameType } from "../../types/characters.ts";
 import {
   hasBuiltInBisForSpec,
   isLocalBisPreset,
@@ -114,11 +115,14 @@ const bisListsContentSx = {
   pr: 0.25,
 } as const;
 
-export function BisListsPanel() {
+export type BisListsPanelProps = {
+  session: BisListsSessionState;
+};
+
+export function BisListsPanel({ session }: BisListsPanelProps) {
   const { t, locale } = useTranslation();
   const bisLists = useBisListsContext();
-  const [className, setClassName] = useState<ClassNameType>(ClassName.DeathKnight);
-  const [spec, setSpec] = useState("Unholy");
+  const { className, spec, setClassName, setSpec } = session;
 
   const classSpecs = useMemo(() => specsForClass(className), [className]);
   const activeSpec = classSpecs.includes(spec) ? spec : (classSpecs[0] ?? "");
@@ -466,9 +470,7 @@ export function BisListsPanel() {
                     return <ClassOptionLabel characterClass={selectedClass} />;
                   }}
                   onChange={(event) => {
-                    const nextClass = event.target.value as ClassNameType;
-                    setClassName(nextClass);
-                    setSpec(specsForClass(nextClass)[0] ?? "");
+                    setClassName(event.target.value as ClassNameType);
                     clearError();
                   }}
                 >
