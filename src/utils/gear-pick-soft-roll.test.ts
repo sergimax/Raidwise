@@ -4,6 +4,7 @@ import {
   clampMySofts,
   competingSoftWeight,
   formatGearPickCopyText,
+  pruneSoftAssignmentsToItemIds,
   remainingSoftBudget,
   setMySoftsForItem,
   setOthersCountForWeight,
@@ -44,6 +45,23 @@ describe("gear-pick-soft-roll", () => {
     expect(clamped[1]?.othersByWeight).toEqual({ 1: 1 });
     expect(clamped[2]).toBeUndefined();
     expect(sumMySofts(clamped)).toBe(2);
+  });
+
+  it("prunes soft assignments to active item ids", () => {
+    const byItemId = {
+      10: { mySofts: 1, othersByWeight: { 2: 1 } },
+      20: { mySofts: 2, othersByWeight: {} },
+      30: { mySofts: 0, othersByWeight: { 1: 3 } },
+    };
+    const pruned = pruneSoftAssignmentsToItemIds(byItemId, new Set([10, 30]));
+    expect(pruned).toEqual({
+      10: { mySofts: 1, othersByWeight: { 2: 1 } },
+      30: { mySofts: 0, othersByWeight: { 1: 3 } },
+    });
+    expect(sumMySofts(pruned)).toBe(1);
+    expect(pruneSoftAssignmentsToItemIds(pruned, new Set([10, 30]))).toBe(
+      pruned,
+    );
   });
 
   it("summarizes +100 competition and dominated softs", () => {
