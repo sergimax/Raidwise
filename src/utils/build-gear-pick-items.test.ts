@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { retributionPaladinBis } from "../data/bis-presets/retribution-paladin.ts";
+import { shadowPriestBis } from "../data/bis-presets/shadow-priest.ts";
 import { ClassName, Classes } from "../types/characters.ts";
 import { DungeonDifficulty } from "../types/dungeons.ts";
 import { createTestCharacter, createTestDungeon } from "../test/fixtures.ts";
@@ -88,7 +89,7 @@ describe("buildGearPickItems", () => {
     });
 
     expect(mainItems.map((item) => item.itemId).sort((left, right) => left - right)).toEqual([
-      54576, 54578, 54581, 54590,
+      54576, 54578, 54580, 54581, 54590,
     ]);
     expect(mainItems.every((item) => item.kind === "bis")).toBe(true);
     expect(mainItems.every((item) => item.bossName === "Halion")).toBe(true);
@@ -103,5 +104,43 @@ describe("buildGearPickItems", () => {
 
     // Holy has no BiS map from the stub resolver — selected side only, no main leakage.
     expect(offItems).toEqual([]);
+  });
+
+  it("includes empty-slot BiS off-hand for Shadow priest on a 2H staff", () => {
+    const priestClass = Classes.find(
+      (characterClass) => characterClass.name === ClassName.Priest,
+    )!;
+    const shadowBisSlotMap = buildBisSlotMap(shadowPriestBis.presets[0]!);
+    const getShadowBisSlotMap = (className: ClassName, spec: string) => {
+      if (className === ClassName.Priest && spec === "Shadow") {
+        return shadowBisSlotMap;
+      }
+      return new Map();
+    };
+
+    const icc25Heroic = createTestDungeon({
+      name: "Icecrown Citadel",
+      raidKey: "icecrownCitadel",
+      size: 25,
+      difficulty: DungeonDifficulty.HEROIC,
+      itemLevel: [264, 277],
+    });
+
+    const items = buildGearPickItems({
+      character: createTestCharacter({
+        class: priestClass,
+        mainSpec: {
+          spec: "Shadow",
+          // Archus, Greatstaff of Antonidas — no off-hand.
+          gearItems: [{ slot: 14, id: 50731 }],
+        },
+      }),
+      specSide: "main",
+      dungeons: [icc25Heroic],
+      getBisSlotMapForSpec: getShadowBisSlotMap,
+      locale: "en",
+    });
+
+    expect(items.map((item) => item.itemId)).toContain(50719);
   });
 });

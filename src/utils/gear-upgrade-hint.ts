@@ -310,6 +310,7 @@ function evaluateSlotTracks(
   alsoOwnedItemIds: readonly number[],
   bisItemIdsForSlot: readonly number[] | undefined,
   evaluateBisTracks: boolean,
+  options: { includeIlvl: boolean } = { includeIlvl: true },
 ): SlotTrackHints {
   const rawLootIds = getRaidLootItemIdsForDungeonRow(raidKey, item.slot, dungeon);
 
@@ -366,6 +367,10 @@ function evaluateSlotTracks(
         variantOnlyBisIds,
       );
     }
+  }
+
+  if (!options.includeIlvl) {
+    return { exactBis, variantBis, ilvl: null };
   }
 
   const statUsableLootIds = filterUsableLootItemIds(
@@ -474,8 +479,10 @@ export function evaluateGearUpgradeHint(
     const exactBisSlots: GearUpgradeSlotHint[] = [];
     const variantBisSlots: GearUpgradeSlotHint[] = [];
     const ilvlSlots: GearUpgradeSlotHint[] = [];
+    const evaluatedSlots = new Set<number>();
 
     for (const item of gearItems) {
+      evaluatedSlots.add(item.slot);
       const bisItemIdsForSlot = bisListActive
         ? bisSlotMap?.get(item.slot)
         : undefined;
@@ -498,6 +505,34 @@ export function evaluateGearUpgradeHint(
       }
       if (slotTracks.ilvl) {
         ilvlSlots.push(slotTracks.ilvl);
+      }
+    }
+
+    // Unequipped BiS slots (e.g. off-hand while wearing a 2H staff) still need
+    // Soft pick / amber hints — walk the BiS map like tier-set hints do.
+    if (bisListActive && bisSlotMap) {
+      for (const [slot, bisItemIdsForSlot] of bisSlotMap) {
+        if (evaluatedSlots.has(slot) || bisItemIdsForSlot.length === 0) {
+          continue;
+        }
+        const emptySlotItem: CharacterGearItem = { slot, id: 0 };
+        const slotTracks = evaluateSlotTracks(
+          emptySlotItem,
+          dungeon,
+          raidKey,
+          equipContext,
+          gearItems,
+          alsoOwnedItemIds,
+          bisItemIdsForSlot,
+          true,
+          { includeIlvl: false },
+        );
+        if (slotTracks.exactBis) {
+          exactBisSlots.push(slotTracks.exactBis);
+        }
+        if (slotTracks.variantBis) {
+          variantBisSlots.push(slotTracks.variantBis);
+        }
       }
     }
 
