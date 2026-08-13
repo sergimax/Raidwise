@@ -380,6 +380,9 @@ export const enMessages = {
     competitionRerollHint:
       "Each soft caller: 1 default /roll + 1 /roll per soft. You: {{myRolls}} ({{mySofts}} softs). Others: {{callers}} defaults + {{weight}} soft rolls = {{otherRolls}}.",
     softBudget: "{{used}} / {{max}} softs used",
+    resetSoftAssignments: "Reset soft assignments",
+    resetSoftAssignmentsAria:
+      "Clear my soft reserves and others' calls for all soft targets",
     kindBis: "BiS",
     kindVariant: "Variant",
     copyTitle: "Soft reserve list",

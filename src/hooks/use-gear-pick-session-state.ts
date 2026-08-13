@@ -89,6 +89,10 @@ export function useGearPickSessionState() {
     [],
   );
 
+  const clearAssignments = useCallback(() => {
+    setAssignmentsByItemId({});
+  }, []);
+
   return {
     selection,
     rules,
@@ -101,6 +105,7 @@ export function useGearPickSessionState() {
     toggleDungeonExcluded,
     clearExcludedDungeonIds,
     pruneAssignmentsToItemIds,
+    clearAssignments,
   };
 }
 

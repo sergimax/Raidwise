@@ -382,6 +382,9 @@ export const ruMessages: Messages = {
     competitionRerollHint:
       "Каждый: 1 обычный /roll + 1 /roll за софт-резерв. Вы: {{myRolls}} ({{mySofts}} софт-резервов). Чужие: {{callers}} обычных + {{weight}} софт-роллов = {{otherRolls}}.",
     softBudget: "{{used}} / {{max}} софт-резервов использовано",
+    resetSoftAssignments: "Сбросить назначения софтов",
+    resetSoftAssignmentsAria:
+      "Очистить мои софт-резервы и чужие заявки по всем предметам",
     kindBis: "BiS",
     kindVariant: "Вариант",
     copyTitle: "Список софт-резервов",

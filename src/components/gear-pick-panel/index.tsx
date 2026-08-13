@@ -34,6 +34,7 @@ import { GearPickCopyBlock } from "./gear-pick-copy-block.tsx";
 import { GearPickEmptyNoGear } from "./gear-pick-empty-no-gear.tsx";
 import { GearPickFilterBlock } from "./gear-pick-filter-block.tsx";
 import { GearPickItemRow } from "./gear-pick-item-row.tsx";
+import { GearPickItemsActions } from "./gear-pick-items-actions.tsx";
 import { GearPickRules } from "./gear-pick-rules.tsx";
 
 export type GearPickPanelProps = {
@@ -71,6 +72,7 @@ export function GearPickPanel({
     toggleDungeonExcluded,
     clearExcludedDungeonIds,
     pruneAssignmentsToItemIds,
+    clearAssignments,
   } = session;
 
   const activeDungeons = useMemo(
@@ -214,6 +216,12 @@ export function GearPickPanel({
   const dungeonFilterDirty =
     dungeonNameSearch.trim() !== "" || excludedDungeonIds.size > 0;
 
+  const softAssignmentsDirty = Object.values(assignmentsByItemId).some(
+    (assignment) =>
+      assignment.mySofts > 0 ||
+      Object.keys(assignment.othersByWeight).length > 0,
+  );
+
   return (
     <Box
       sx={{
@@ -305,6 +313,12 @@ export function GearPickPanel({
           step={4}
           title={t("gearPickPanel.itemsTitle")}
           description={t("gearPickPanel.itemsHelper")}
+          titleActions={
+            <GearPickItemsActions
+              disabled={!softAssignmentsDirty}
+              onReset={clearAssignments}
+            />
+          }
           contentSx={{
             overflowY: "auto",
           }}
