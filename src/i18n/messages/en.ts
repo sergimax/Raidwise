@@ -406,7 +406,7 @@ export const enMessages = {
     copyIncludeNameAria: "Include character name in the soft reserve list",
     copyIncludeDetails: "Details",
     copyIncludeDetailsAria:
-      "Include bullets and boss names in soft reserve lines",
+      "Include boss names in soft reserve lines",
     copyLine: "Copy",
     copyLineAria: "Copy soft reserve call list",
     copied: "Copied",

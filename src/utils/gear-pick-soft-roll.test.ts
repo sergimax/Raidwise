@@ -248,7 +248,7 @@ describe("gear-pick-soft-roll", () => {
         items,
         compactLines: true,
       }),
-    ).toBe(["Elst:", "Belt x3", "Trinket x1"].join("\n"));
+    ).toBe(["Elst:", "- Belt x3", "- Trinket x1"].join("\n"));
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
@@ -256,7 +256,7 @@ describe("gear-pick-soft-roll", () => {
         includeCharacterName: false,
         compactLines: true,
       }),
-    ).toBe(["Belt x3", "Trinket x1"].join("\n"));
+    ).toBe(["- Belt x3", "- Trinket x1"].join("\n"));
   });
 
   it("returns empty when no softs even if a character name is set", () => {

@@ -408,7 +408,7 @@ export const ruMessages: Messages = {
     copyIncludeNameAria: "Включать имя персонажа в список софт-резервов",
     copyIncludeDetails: "Подробности",
     copyIncludeDetailsAria:
-      "Включать маркеры списка и имена боссов в строки софт-резервов",
+      "Включать имена боссов в строки софт-резервов",
     copyLine: "Скопировать",
     copyLineAria: "Скопировать список софт-резервов",
     copied: "Скопировано",

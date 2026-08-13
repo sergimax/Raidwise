@@ -376,7 +376,7 @@ export type FormatGearPickCopyOptions = {
   /** When false, omit the character name line. Default true. */
   includeCharacterName?: boolean;
   /**
-   * When true, each line is only `Item xN` (no bullet, no boss).
+   * When true, each line is only `- Item xN` (no boss).
    * Default false → `- Item (Boss) xN `.
    */
   compactLines?: boolean;
@@ -393,7 +393,7 @@ export function formatGearPickCopyText(options: FormatGearPickCopyOptions): stri
       continue;
     }
     if (compactLines) {
-      lines.push(`${item.itemName} x${item.mySofts}`);
+      lines.push(`- ${item.itemName} x${item.mySofts}`);
       continue;
     }
     const bossSuffix = item.bossName ? ` (${item.bossName})` : "";
