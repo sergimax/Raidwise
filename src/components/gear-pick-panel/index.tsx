@@ -74,6 +74,10 @@ export function GearPickPanel({
     clearExcludedDungeonIds,
     pruneAssignmentsToItemIds,
     clearAssignments,
+    includeCopyCharacterName,
+    compactCopyLines,
+    setIncludeCopyCharacterName,
+    setCompactCopyLines,
   } = session;
 
   const activeDungeons = useMemo(
@@ -203,8 +207,15 @@ export function GearPickPanel({
       formatGearPickCopyText({
         characterName: selectedCharacter?.name,
         items: copyItems,
+        includeCharacterName: includeCopyCharacterName,
+        compactLines: compactCopyLines,
       }),
-    [copyItems, selectedCharacter?.name],
+    [
+      compactCopyLines,
+      copyItems,
+      includeCopyCharacterName,
+      selectedCharacter?.name,
+    ],
   );
 
   const defaultAssignment = useMemo(() => emptySoftAssignment(), []);
@@ -371,6 +382,10 @@ export function GearPickPanel({
         <GearPickCopyBlock
           copyText={copyText}
           hasSoftCalls={copyItems.length > 0}
+          includeCharacterName={includeCopyCharacterName}
+          compactLines={compactCopyLines}
+          onIncludeCharacterNameChange={setIncludeCopyCharacterName}
+          onCompactLinesChange={setCompactCopyLines}
           t={t}
         />
       </GearPickFilterBlock>

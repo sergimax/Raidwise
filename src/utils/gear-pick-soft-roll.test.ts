@@ -230,6 +230,35 @@ describe("gear-pick-soft-roll", () => {
     );
   });
 
+  it("can hide the character name and compact item lines", () => {
+    const items = [
+      { itemName: "Belt", bossName: "Putricide", mySofts: 3 },
+      { itemName: "Trinket", bossName: "Halion", mySofts: 1 },
+    ];
+    expect(
+      formatGearPickCopyText({
+        characterName: "Elst",
+        items,
+        includeCharacterName: false,
+      }),
+    ).toBe(["- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"));
+    expect(
+      formatGearPickCopyText({
+        characterName: "Elst",
+        items,
+        compactLines: true,
+      }),
+    ).toBe(["Elst:", "Belt x3", "Trinket x1"].join("\n"));
+    expect(
+      formatGearPickCopyText({
+        characterName: "Elst",
+        items,
+        includeCharacterName: false,
+        compactLines: true,
+      }),
+    ).toBe(["Belt x3", "Trinket x1"].join("\n"));
+  });
+
   it("returns empty when no softs even if a character name is set", () => {
     expect(
       formatGearPickCopyText({

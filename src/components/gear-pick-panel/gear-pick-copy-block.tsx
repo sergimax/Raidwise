@@ -2,10 +2,15 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 import type { TranslateFn } from "../../i18n/translate.ts";
+import { GearPickCopyFormatActions } from "./gear-pick-copy-format-actions.tsx";
 
 type GearPickCopyBlockProps = {
   copyText: string;
   hasSoftCalls: boolean;
+  includeCharacterName: boolean;
+  compactLines: boolean;
+  onIncludeCharacterNameChange: (includeCharacterName: boolean) => void;
+  onCompactLinesChange: (compactLines: boolean) => void;
   t: TranslateFn;
 };
 
@@ -21,6 +26,10 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
 export function GearPickCopyBlock({
   copyText,
   hasSoftCalls,
+  includeCharacterName,
+  compactLines,
+  onIncludeCharacterNameChange,
+  onCompactLinesChange,
   t,
 }: GearPickCopyBlockProps) {
   const [copied, setCopied] = useState(false);
@@ -55,7 +64,7 @@ export function GearPickCopyBlock({
       <Stack
         direction="row"
         spacing={1}
-        sx={{ alignItems: "center", justifyContent: "space-between" }}
+        sx={{ alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}
       >
         <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
           <Box
@@ -79,6 +88,12 @@ export function GearPickCopyBlock({
           {copied ? t("gearPickPanel.copied") : t("gearPickPanel.copyLine")}
         </Button>
       </Stack>
+      <GearPickCopyFormatActions
+        includeCharacterName={includeCharacterName}
+        compactLines={compactLines}
+        onIncludeCharacterNameChange={onIncludeCharacterNameChange}
+        onCompactLinesChange={onCompactLinesChange}
+      />
       <Typography variant="caption" color="text.secondary">
         {t("gearPickPanel.copyHelper")}
       </Typography>

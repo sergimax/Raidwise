@@ -370,17 +370,30 @@ export type GearPickCopyItem = {
 };
 
 export type FormatGearPickCopyOptions = {
-  /** Character nickname prepended as `{name}:` when there is at least one soft line. */
+  /** Character nickname prepended as `{name}:` when included and softs exist. */
   characterName?: string;
   items: readonly GearPickCopyItem[];
+  /** When false, omit the character name line. Default true. */
+  includeCharacterName?: boolean;
+  /**
+   * When true, each line is only `Item xN` (no bullet, no boss).
+   * Default false → `- Item (Boss) xN `.
+   */
+  compactLines?: boolean;
 };
 
-/** Pasteable soft-call list: character name, then `- Item (Boss) xN` lines. */
+/** Pasteable soft-call list: optional name, then item soft lines. */
 export function formatGearPickCopyText(options: FormatGearPickCopyOptions): string {
+  const includeCharacterName = options.includeCharacterName !== false;
+  const compactLines = options.compactLines === true;
   const lines: string[] = [];
 
   for (const item of options.items) {
     if (item.mySofts <= 0) {
+      continue;
+    }
+    if (compactLines) {
+      lines.push(`${item.itemName} x${item.mySofts}`);
       continue;
     }
     const bossSuffix = item.bossName ? ` (${item.bossName})` : "";
@@ -392,7 +405,7 @@ export function formatGearPickCopyText(options: FormatGearPickCopyOptions): stri
   }
 
   const characterName = options.characterName?.trim();
-  if (characterName) {
+  if (includeCharacterName && characterName) {
     return [`${formatCharacterDisplayName(characterName)}:`, ...lines].join("\n");
   }
 

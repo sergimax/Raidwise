@@ -402,6 +402,11 @@ export const enMessages = {
     copyTitle: "Soft reserve list",
     copyHelper: "Items you assigned softs to. Copy and send to the raid",
     copyEmpty: "Assign soft reserves to at least one item to build a soft reserve call",
+    copyIncludeName: "Name",
+    copyIncludeNameAria: "Include character name in the soft reserve list",
+    copyIncludeDetails: "Details",
+    copyIncludeDetailsAria:
+      "Include bullets and boss names in soft reserve lines",
     copyLine: "Copy",
     copyLineAria: "Copy soft reserve call list",
     copied: "Copied",
