@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { disciplinePriestBis } from "../data/bis-presets/discipline-priest.ts";
 import { retributionPaladinBis } from "../data/bis-presets/retribution-paladin.ts";
 import { shadowPriestBis } from "../data/bis-presets/shadow-priest.ts";
 import { ClassName, Classes } from "../types/characters.ts";
@@ -11,13 +12,25 @@ const paladinClass = Classes.find(
   (characterClass) => characterClass.name === ClassName.Paladin,
 )!;
 
+const priestClass = Classes.find(
+  (characterClass) => characterClass.name === ClassName.Priest,
+)!;
+
 const retributionBisSlotMap = buildBisSlotMap(
   retributionPaladinBis.presets[0]!,
 );
+const disciplineBisSlotMap = buildBisSlotMap(disciplinePriestBis.presets[0]!);
 
 function getRetributionBisSlotMap(className: ClassName, spec: string) {
   if (className === ClassName.Paladin && spec === "Retribution") {
     return retributionBisSlotMap;
+  }
+  return new Map();
+}
+
+function getDisciplineBisSlotMap(className: ClassName, spec: string) {
+  if (className === ClassName.Priest && spec === "Discipline") {
+    return disciplineBisSlotMap;
   }
   return new Map();
 }
@@ -106,10 +119,42 @@ describe("buildGearPickItems", () => {
     expect(offItems).toEqual([]);
   });
 
+  it("omits BiS variants already equipped on the other spec", () => {
+    const icc25Normal = createTestDungeon({
+      name: "Icecrown Citadel",
+      raidKey: "icecrownCitadel",
+      size: 25,
+      difficulty: DungeonDifficulty.NORMAL,
+      itemLevel: [251, 258, 264],
+    });
+
+    const items = buildGearPickItems({
+      character: createTestCharacter({
+        class: priestClass,
+        mainSpec: {
+          spec: "Discipline",
+          gearItems: [
+            { slot: 1, id: 37646 },
+            { slot: 7, id: 37646 },
+          ],
+        },
+        offSpec: {
+          spec: "Shadow",
+          // Normal Crushing Coldwraith Belt — owned on Shadow, BiS heroic on Disc.
+          gearItems: [{ slot: 7, id: 49978 }],
+        },
+      }),
+      specSide: "main",
+      dungeons: [icc25Normal],
+      getBisSlotMapForSpec: getDisciplineBisSlotMap,
+      locale: "en",
+    });
+
+    expect(items.map((item) => item.itemId)).not.toContain(49978);
+    expect(items.map((item) => item.itemId)).not.toContain(50613);
+  });
+
   it("includes empty-slot BiS off-hand for Shadow priest on a 2H staff", () => {
-    const priestClass = Classes.find(
-      (characterClass) => characterClass.name === ClassName.Priest,
-    )!;
     const shadowBisSlotMap = buildBisSlotMap(shadowPriestBis.presets[0]!);
     const getShadowBisSlotMap = (className: ClassName, spec: string) => {
       if (className === ClassName.Priest && spec === "Shadow") {

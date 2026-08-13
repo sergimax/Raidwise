@@ -3,7 +3,10 @@ import type { RaidKey } from "../data/raid-names.ts";
 import type { CharacterRecord } from "../types/characters.ts";
 import type { DungeonRecord } from "../types/dungeons.ts";
 import { compareBossNamesByEncounterOrder } from "../data/raid-boss-encounter-order.ts";
-import { evaluateSpecGearHint } from "./character-gear-hints.ts";
+import {
+  evaluateSpecGearHint,
+  getEffectiveAlsoOwnedItemIds,
+} from "./character-gear-hints.ts";
 import { formatDungeonExportLabel } from "./format-dungeon-label.ts";
 import type { GetBisSlotMapForSpec } from "./bis-lists.ts";
 import { resolveDungeonRaidKey } from "./resolve-dungeon-raid-key.ts";
@@ -88,7 +91,7 @@ export function buildGearPickItems({
       dungeon,
       getBisSlotMapForSpec,
       locale,
-      character.alsoOwnedItemIds ?? [],
+      getEffectiveAlsoOwnedItemIds(character, specSide),
     );
 
     const raidLabel = formatDungeonExportLabel(dungeon, locale);

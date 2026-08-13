@@ -49,8 +49,9 @@ export type Character = {
   mainSpec?: CharacterSpecGear;
   offSpec?: CharacterSpecGear;
   /**
-   * Item ids available to equip but not on the current WowSims export
-   * (bags, other-spec sets, vendors). Shared across main/off for hint math.
+   * Item ids available to equip but not on either WowSims export
+   * (bags, bank, vendors). Shared across main/off for hint math.
+   * Gear imported on the other spec is counted automatically.
    */
   alsoOwnedItemIds?: number[];
 };

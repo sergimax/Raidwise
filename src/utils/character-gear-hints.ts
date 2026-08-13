@@ -15,6 +15,31 @@ import {
   type BossBisLootGroup,
 } from "./item-drop-sources.ts";
 
+export type SpecGearHintSide = "main" | "off";
+
+/**
+ * Also-owned ids for hint / Soft pick math on one spec: explicit character
+ * `alsoOwnedItemIds` plus item ids equipped on the other spec (same character).
+ */
+export function getEffectiveAlsoOwnedItemIds(
+  character: CharacterRecord,
+  specSide: SpecGearHintSide,
+): number[] {
+  const explicitIds = character.alsoOwnedItemIds ?? [];
+  const otherSpec =
+    specSide === "main" ? character.offSpec : character.mainSpec;
+  const otherSpecItemIds =
+    otherSpec?.gearItems
+      ?.map((item) => item.id)
+      .filter((itemId) => itemId > 0) ?? [];
+
+  if (explicitIds.length === 0 && otherSpecItemIds.length === 0) {
+    return [];
+  }
+
+  return [...new Set([...explicitIds, ...otherSpecItemIds])];
+}
+
 export type SpecGearHintCore = {
   specGear: CharacterSpecGear;
   gearHint: GearUpgradeHint;
@@ -163,7 +188,6 @@ export function evaluateCharacterGearHintTints(
     return {};
   }
 
-  const alsoOwnedItemIds = character.alsoOwnedItemIds ?? [];
   const tints: CharacterGearHintTints = {};
 
   if (character.mainSpec) {
@@ -172,7 +196,7 @@ export function evaluateCharacterGearHintTints(
       className,
       dungeon,
       getBisSlotMapForSpec,
-      alsoOwnedItemIds,
+      getEffectiveAlsoOwnedItemIds(character, "main"),
     );
   }
 
@@ -182,7 +206,7 @@ export function evaluateCharacterGearHintTints(
       className,
       dungeon,
       getBisSlotMapForSpec,
-      alsoOwnedItemIds,
+      getEffectiveAlsoOwnedItemIds(character, "off"),
     );
   }
 
