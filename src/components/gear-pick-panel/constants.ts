@@ -21,8 +21,8 @@ export {
  * Filter columns share one unit width so 1×1 / 2×1 blocks align visually.
  * Step order: raid (1) on top; character (2) spans right; rules (3) below raid.
  * - xs: stacked (DOM order)
- * - md: filters + softs; copy 1×2 below
- * - wide (≥1680): filters + softs; copy 1×2 top-right
+ * - md: filters + softs (softs capped at 2 units); copy 1×2 below
+ * - wide (≥1680): filters + softs (≤2 units) + copy 1×2 top-right
  */
 export type GearPickGridAreaId =
   | "rules"
@@ -39,6 +39,9 @@ export const GEAR_PICK_COPY_BLOCK_SPAN = {
   widthUnits: 2,
 } as const;
 
+/** Soft targets block max width — 2× standard filter unit (gap-inclusive). */
+export const GEAR_PICK_SOFTS_BLOCK_WIDTH_UNITS = 2;
+
 /**
  * Width of a 1×2 copy span: `widthUnits × unit + (widthUnits − 1) × gap`.
  * For the default 1×2 this is 600 + 12 = 612 (not 600).
@@ -49,6 +52,16 @@ export function getGearPickCopyBlockMaxWidth(
   const { widthUnits } = GEAR_PICK_COPY_BLOCK_SPAN;
   return (
     widthUnits * EXPORT_FILTER_UNIT_WIDTH + (widthUnits - 1) * gridColumnGapPx
+  );
+}
+
+/** Max width for the soft-targets column (2× unit + gap). */
+export function getGearPickSoftsBlockMaxWidth(
+  gridColumnGapPx = GEAR_PICK_GRID_GAP_PX,
+): number {
+  return (
+    GEAR_PICK_SOFTS_BLOCK_WIDTH_UNITS * EXPORT_FILTER_UNIT_WIDTH +
+    (GEAR_PICK_SOFTS_BLOCK_WIDTH_UNITS - 1) * gridColumnGapPx
   );
 }
 
@@ -81,12 +94,12 @@ export function getGearPickGridTemplateColumns(
 ): string {
   /** Same unit column as Character pick (rules / raids / character specs). */
   const unitColumn = getFilterUnitColumnTemplate();
-  /** Softs stay at least one unit wide so the block cannot collapse away. */
-  const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, 1fr)`;
-  const copyColumn = `minmax(0, ${getGearPickCopyBlockMaxWidth()}px)`;
+  /** Softs: ≥1 unit, ≤2 units — usable list without starving the copy block. */
+  const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, ${getGearPickSoftsBlockMaxWidth()}px)`;
 
   if (layout === "wide") {
-    return `${unitColumn} ${unitColumn} ${softsColumn} ${copyColumn}`;
+    const copyWidth = getGearPickCopyBlockMaxWidth();
+    return `${unitColumn} ${unitColumn} ${softsColumn} ${copyWidth}px`;
   }
 
   return `${unitColumn} ${unitColumn} ${softsColumn}`;

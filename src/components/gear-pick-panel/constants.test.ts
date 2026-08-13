@@ -12,6 +12,7 @@ import {
   getGearPickGridTemplateAreas,
   getGearPickGridTemplateColumns,
   getGearPickGridTemplateRows,
+  getGearPickSoftsBlockMaxWidth,
 } from "./constants.ts";
 
 describe("getGearPickGridTemplateAreas", () => {
@@ -48,20 +49,22 @@ describe("GEAR_PICK_COPY_BLOCK_SPAN", () => {
 });
 
 describe("getGearPickGridTemplateColumns", () => {
-  it("uses the shared unit column for rules and character specs on medium", () => {
+  it("caps softs at 2 units beside shared filter columns on medium", () => {
     const unitColumn = getFilterUnitColumnTemplate();
-    const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, 1fr)`;
+    const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, ${getGearPickSoftsBlockMaxWidth()}px)`;
     expect(getGearPickGridTemplateColumns("md")).toBe(
       `${unitColumn} ${unitColumn} ${softsColumn}`,
     );
+    expect(getGearPickSoftsBlockMaxWidth()).toBe(
+      EXPORT_FILTER_UNIT_WIDTH * 2 + 12,
+    );
   });
 
-  it("keeps shared unit columns and a 1×2 copy column on wide", () => {
+  it("keeps softs capped at 2 units and a 1×2 copy column on wide", () => {
     const unitColumn = getFilterUnitColumnTemplate();
-    const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, 1fr)`;
-    // Copy column max uses getGearPickCopyBlockMaxWidth() (gap-inclusive) — keep in sync.
+    const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, ${getGearPickSoftsBlockMaxWidth()}px)`;
     expect(getGearPickGridTemplateColumns("wide")).toBe(
-      `${unitColumn} ${unitColumn} ${softsColumn} minmax(0, ${getGearPickCopyBlockMaxWidth()}px)`,
+      `${unitColumn} ${unitColumn} ${softsColumn} ${getGearPickCopyBlockMaxWidth()}px`,
     );
   });
 });
