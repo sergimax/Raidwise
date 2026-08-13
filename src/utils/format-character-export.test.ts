@@ -46,7 +46,7 @@ describe("formatCharacterExportLabel", () => {
           mainSpec: { spec: "Unholy", gearScore: 6615 },
         }),
       ),
-    ).toBe("Elst: Udk 6.6");
+    ).toBe("Elst Udk 6.6");
   });
 
   it("can omit gear scores or the whole spec segment", () => {
@@ -60,7 +60,7 @@ describe("formatCharacterExportLabel", () => {
       formatCharacterExportLabel(character, mainOnlySelection, "en", {
         includeGearScore: false,
       }),
-    ).toBe("Elst: Udk");
+    ).toBe("Elst Udk");
     expect(
       formatCharacterExportLabel(character, mainOnlySelection, "en", {
         includeSpecs: false,
@@ -71,7 +71,7 @@ describe("formatCharacterExportLabel", () => {
         includeSpecs: true,
         includeGearScore: false,
       }),
-    ).toBe("Elst: Udk, Blood");
+    ).toBe("Elst Udk / Blood");
   });
 
   it("exports one or both specs based on selection", () => {
@@ -87,21 +87,21 @@ describe("formatCharacterExportLabel", () => {
         includeOff: false,
         includeWithoutSpec: true,
       }),
-    ).toBe("Elst: Udk 6.6");
+    ).toBe("Elst Udk 6.6");
     expect(
       formatCharacterExportLabel(character, {
         includeMain: false,
         includeOff: true,
         includeWithoutSpec: true,
       }),
-    ).toBe("Elst: Blood 6");
+    ).toBe("Elst Blood 6");
     expect(
       formatCharacterExportLabel(character, {
         includeMain: true,
         includeOff: true,
         includeWithoutSpec: true,
       }),
-    ).toBe("Elst: Udk 6.6, Blood 6");
+    ).toBe("Elst Udk 6.6 / Blood 6");
     expect(
       formatCharacterExportLabel(character, {
         includeMain: false,
@@ -135,7 +135,7 @@ describe("formatCharacterExportLabel", () => {
         }),
         mainOnlySelection,
       ),
-    ).toBe("Elst: Udk");
+    ).toBe("Elst Udk");
   });
 
   it("omits specs below the minimum gear score filter", () => {
@@ -157,7 +157,7 @@ describe("formatCharacterExportLabel", () => {
           6500,
         ),
       ),
-    ).toBe("Elst: Udk 6.6");
+    ).toBe("Elst Udk 6.6");
     expect(
       formatCharacterExportLabel(
         character,
@@ -190,7 +190,7 @@ describe("formatCharacterExportLabel", () => {
           6500,
         ),
       ),
-    ).toBe("Elst: Udk");
+    ).toBe("Elst Udk");
   });
 
   it("omits specs whose role is unchecked in the role filter", () => {
@@ -212,7 +212,7 @@ describe("formatCharacterExportLabel", () => {
         character,
         resolveEffectiveExportSpecSelection(character, undefined, tanksOnly),
       ),
-    ).toBe("Elst: Blood 6");
+    ).toBe("Elst Blood 6");
   });
 });
 

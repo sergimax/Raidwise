@@ -266,7 +266,7 @@ export type CharacterExportFormatOptions = {
 };
 
 /**
- * Compact roster label: `Name: MainShort mainGs, OffShort offGs`.
+ * Compact roster label: `Name MainShort mainGs / OffShort offGs`.
  * Returns `null` when the character should be omitted from export lines.
  */
 export function formatCharacterExportLabel(
@@ -281,9 +281,10 @@ export function formatCharacterExportLabel(
 
   const includeSpecs = format.includeSpecs !== false;
   const includeGearScore = format.includeGearScore !== false;
+  const displayName = formatCharacterDisplayName(character.name);
 
   if (!includeSpecs) {
-    return formatCharacterDisplayName(character.name);
+    return displayName;
   }
 
   const className = character.class?.name;
@@ -322,8 +323,8 @@ export function formatCharacterExportLabel(
     if (characterHasExportSpecs(character)) {
       return null;
     }
-    return formatCharacterDisplayName(character.name);
+    return displayName;
   }
 
-  return `${formatCharacterDisplayName(character.name)}: ${specSegments.join(", ")}`;
+  return `${displayName} ${specSegments.join(" / ")}`;
 }

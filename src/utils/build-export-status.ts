@@ -100,7 +100,7 @@ export function buildExportStatus({
         ),
       )
       .filter((entry): entry is string => entry !== null)
-      .join(" / ");
+      .join(", ");
     if (charactersLabel.length === 0) {
       continue;
     }
