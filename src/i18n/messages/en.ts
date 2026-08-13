@@ -284,6 +284,10 @@ export const enMessages = {
     copyLine: "Copy",
     copyLineAria: "Copy signup line for {{raid}}",
     copied: "Copied",
+    includeSpecs: "Include specs",
+    includeSpecsAria: "Include short specs in character pick lines",
+    includeGearScore: "Include GS",
+    includeGearScoreAria: "Include gear score after each short spec",
     dungeonFilterTitle: "Selected raid",
     dungeonFilterHelper:
       "Search here or in the table header — both stay in sync. Character pick includes one line per matching raid row. Click a chip to exclude it (stays visible; click again to include)",

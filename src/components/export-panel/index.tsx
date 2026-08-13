@@ -57,6 +57,10 @@ export function ExportPanel({
     selectAllCharacterSpecs,
     clearAllCharacterSpecs,
     setSpecIncluded,
+    includeExportSpecs,
+    includeExportGearScore,
+    setIncludeExportSpecs,
+    setIncludeExportGearScore,
   } = session;
 
   const hasDungeonFilter = totalDungeonCount > 0;
@@ -135,12 +139,18 @@ export function ExportPanel({
         minGearScore,
         roleFilter,
         locale,
+        format: {
+          includeSpecs: includeExportSpecs,
+          includeGearScore: includeExportGearScore,
+        },
         t,
       }),
     [
       activeDungeons,
       dungeonToggles,
       exportSpecSelectionForPanel,
+      includeExportGearScore,
+      includeExportSpecs,
       includedCharacters,
       locale,
       minGearScore,
@@ -295,7 +305,13 @@ export function ExportPanel({
           },
         }}
       >
-        <ExportResultLines result={exportStatus} />
+        <ExportResultLines
+          result={exportStatus}
+          includeSpecs={includeExportSpecs}
+          includeGearScore={includeExportGearScore}
+          onIncludeSpecsChange={setIncludeExportSpecs}
+          onIncludeGearScoreChange={setIncludeExportGearScore}
+        />
       </Box>
     </Box>
   );

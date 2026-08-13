@@ -49,6 +49,31 @@ describe("formatCharacterExportLabel", () => {
     ).toBe("Elst: Udk 6.6");
   });
 
+  it("can omit gear scores or the whole spec segment", () => {
+    const character = createTestCharacter({
+      name: "Elst",
+      class: Classes[0],
+      mainSpec: { spec: "Unholy", gearScore: 6615 },
+      offSpec: { spec: "Blood", gearScore: 6023 },
+    });
+    expect(
+      formatCharacterExportLabel(character, mainOnlySelection, "en", {
+        includeGearScore: false,
+      }),
+    ).toBe("Elst: Udk");
+    expect(
+      formatCharacterExportLabel(character, mainOnlySelection, "en", {
+        includeSpecs: false,
+      }),
+    ).toBe("Elst");
+    expect(
+      formatCharacterExportLabel(character, undefined, "en", {
+        includeSpecs: true,
+        includeGearScore: false,
+      }),
+    ).toBe("Elst: Udk, Blood");
+  });
+
   it("exports one or both specs based on selection", () => {
     const character = createTestCharacter({
       name: "Elst",

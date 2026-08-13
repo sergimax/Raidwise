@@ -6,6 +6,7 @@ import type { TranslateFn } from "../i18n/translate.ts";
 import {
   formatCharacterExportLabel,
   resolveEffectiveExportSpecSelection,
+  type CharacterExportFormatOptions,
   type ExportSpecSelectionByCharacterId,
 } from "./format-character-export.ts";
 import { formatDungeonExportLabel } from "./format-dungeon-label.ts";
@@ -22,6 +23,8 @@ export type BuildExportStatusParams = {
   minGearScore?: number;
   roleFilter?: ExportRoleFilter;
   locale?: AppLocale;
+  /** Controls whether copy lines include short specs and/or gear scores. */
+  format?: CharacterExportFormatOptions;
   t: TranslateFn;
 };
 
@@ -59,6 +62,7 @@ export function buildExportStatus({
   minGearScore,
   roleFilter,
   locale = "en",
+  format,
   t,
 }: BuildExportStatusParams): BuildExportStatusResult {
   const effectiveRoleFilter = roleFilter ?? DEFAULT_EXPORT_ROLE_FILTER;
@@ -92,6 +96,7 @@ export function buildExportStatus({
             minGearScore,
           ),
           locale,
+          format,
         ),
       )
       .filter((entry): entry is string => entry !== null)

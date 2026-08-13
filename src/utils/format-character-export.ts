@@ -249,13 +249,21 @@ function formatSpecExportSegment(
   className: ClassName,
   specGear: CharacterSpecGear,
   locale: AppLocale = "en",
+  includeGearScore = true,
 ): string {
   const spec = getLocalizedSpecName(className, specGear.spec, locale, true);
-  if (specGear.gearScore !== undefined) {
+  if (includeGearScore && specGear.gearScore !== undefined) {
     return `${spec} ${formatExportGearScore(specGear.gearScore)}`;
   }
   return spec;
 }
+
+export type CharacterExportFormatOptions = {
+  /** When false, export the character name only (no `: Spec` segment). Default true. */
+  includeSpecs?: boolean;
+  /** When false, omit gear score after each short spec. Default true. */
+  includeGearScore?: boolean;
+};
 
 /**
  * Compact roster label: `Name: MainShort mainGs, OffShort offGs`.
@@ -265,9 +273,17 @@ export function formatCharacterExportLabel(
   character: CharacterRecord,
   selection: CharacterExportSpecSelection = defaultExportSpecSelection(character),
   locale: AppLocale = "en",
+  format: CharacterExportFormatOptions = {},
 ): string | null {
   if (!isCharacterIncludedInExport(character, selection)) {
     return null;
+  }
+
+  const includeSpecs = format.includeSpecs !== false;
+  const includeGearScore = format.includeGearScore !== false;
+
+  if (!includeSpecs) {
+    return formatCharacterDisplayName(character.name);
   }
 
   const className = character.class?.name;
@@ -278,14 +294,28 @@ export function formatCharacterExportLabel(
     character.mainSpec &&
     className
   ) {
-    specSegments.push(formatSpecExportSegment(className, character.mainSpec, locale));
+    specSegments.push(
+      formatSpecExportSegment(
+        className,
+        character.mainSpec,
+        locale,
+        includeGearScore,
+      ),
+    );
   }
   if (
     selection.includeOff &&
     character.offSpec &&
     className
   ) {
-    specSegments.push(formatSpecExportSegment(className, character.offSpec, locale));
+    specSegments.push(
+      formatSpecExportSegment(
+        className,
+        character.offSpec,
+        locale,
+        includeGearScore,
+      ),
+    );
   }
 
   if (specSegments.length === 0) {

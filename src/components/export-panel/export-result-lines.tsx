@@ -15,10 +15,15 @@ import {
 import { EXPORT_RESULT_MAX_HEIGHT } from "./constants.ts";
 import { ExportFilterSection } from "./export-filter-section.tsx";
 import { ExportRaidIcon } from "./export-raid-icon.tsx";
+import { ExportResultFormatActions } from "./export-result-format-actions.tsx";
 import { useExportPanelSideBySide } from "./use-export-panel-side-by-side.ts";
 
 type ExportResultLinesProps = {
   result: BuildExportStatusResult;
+  includeSpecs: boolean;
+  includeGearScore: boolean;
+  onIncludeSpecsChange: (includeSpecs: boolean) => void;
+  onIncludeGearScoreChange: (includeGearScore: boolean) => void;
 };
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
@@ -122,7 +127,13 @@ function ExportResultLineRow({ line, emphasizeCopy }: ExportResultLineRowProps) 
   );
 }
 
-export function ExportResultLines({ result }: ExportResultLinesProps) {
+export function ExportResultLines({
+  result,
+  includeSpecs,
+  includeGearScore,
+  onIncludeSpecsChange,
+  onIncludeGearScoreChange,
+}: ExportResultLinesProps) {
   const { t } = useTranslation();
   const sideBySide = useExportPanelSideBySide();
 
@@ -134,12 +145,22 @@ export function ExportResultLines({ result }: ExportResultLinesProps) {
     ? { flex: 1, minHeight: 0, maxHeight: "none" }
     : { maxHeight: EXPORT_RESULT_MAX_HEIGHT };
 
+  const titleActions = (
+    <ExportResultFormatActions
+      includeSpecs={includeSpecs}
+      includeGearScore={includeGearScore}
+      onIncludeSpecsChange={onIncludeSpecsChange}
+      onIncludeGearScoreChange={onIncludeGearScoreChange}
+    />
+  );
+
   if (result.kind === "message") {
     return (
       <ExportFilterSection
         step={5}
         title={t("exportPanel.exportLinesTitle")}
         description={t("exportPanel.exportLinesHelper")}
+        titleActions={titleActions}
         sx={sectionLayoutSx}
         contentSx={sectionContentSx}
       >
@@ -161,6 +182,7 @@ export function ExportResultLines({ result }: ExportResultLinesProps) {
           ? t("exportPanel.exportLinesHelperSingle")
           : t("exportPanel.exportLinesHelper")
       }
+      titleActions={titleActions}
       sx={sectionLayoutSx}
       contentSx={sectionContentSx}
     >

@@ -31,6 +31,8 @@ export function useExportSessionState() {
   const [excludedDungeonIds, setExcludedDungeonIds] = useState<Set<string>>(
     () => new Set(),
   );
+  const [includeExportSpecs, setIncludeExportSpecs] = useState(true);
+  const [includeExportGearScore, setIncludeExportGearScore] = useState(true);
 
   const resetAllFilters = useCallback(() => {
     setExportSpecSelectionByCharacterId({});
@@ -103,9 +105,13 @@ export function useExportSessionState() {
     minGearScoreCompact,
     roleFilter,
     excludedDungeonIds,
+    includeExportSpecs,
+    includeExportGearScore,
     setMinGearScoreFilterEnabled,
     setMinGearScoreCompact,
     setRoleFilter,
+    setIncludeExportSpecs,
+    setIncludeExportGearScore,
     resetAllFilters,
     clearExcludedDungeonIds,
     toggleDungeonExcluded,
