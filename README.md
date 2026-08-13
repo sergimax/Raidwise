@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
 
-![App version](https://img.shields.io/badge/App_version-2.5.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.6.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -45,14 +45,19 @@ When there are no dungeons — **Add raids from template**.
 
 Copyable signup line of characters still missing CD on filtered raids.
 Filters: min GS, role, specs (kept for the browser session when you close or switch panels).
+Result line format toggles (**Specs** / **GS**); characters look like `Name Spec gs / Spec gs`, separated by commas.
 Click Selected raid chips to exclude false matches from the results (chips stay visible).
 Header reset clears the raid search and chip exclusions.
 
 ### Soft pick for a raid
 
 Soft reserves for one character + spec on BiS upgrades from filtered raids (active list from **BiS builds**).
-Session-only (character, rules, softs, and raid exclusions survive closing the panel); pasteable call lines start with the character name.
+Session-only (character, rules, softs, and raid exclusions survive closing the panel).
+Competition colors and win-odds hints help pick softs; reset one row or the whole Soft targets list.
+Pasteable call list can include/hide the character name and boss details.
+Gear on the other spec counts as already owned for Soft targets and table hints.
 Same clickable raid chips to exclude rows (softs for items that drop off the list are cleared); header reset for search/exclusions.
+Layout wraps Soft targets / the copy block onto their own rows when the panel is too narrow.
 
 ### BiS builds
 

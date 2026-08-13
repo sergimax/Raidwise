@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-08-14
+
+### Added
+
+- **Soft pick competition cues:** Demand-colored competition captions (green→red), approximate win odds by soft count (re-roll % / +100 tie-or-beat), dimmed zero-caller soft buckets, and reset controls for one item or the whole Soft targets list.
+- **Soft pick copy format:** Toggles to include/hide the character name and boss “Details”; compact lines keep `- Item xN`.
+- **Character pick line format:** Header toggles for **Specs** and **GS**; copy lines use `Name Spec gs / Spec gs` with `, ` between characters.
+- **Cross-spec ownership:** Gear imported on the other spec counts as owned for Soft pick targets and table gear hints (same character).
+
+### Changed
+
+- **Soft pick layout:** Fixed-width filter units and a 2-unit Soft targets column; Soft targets / copy wrap to their own rows when the panel is too narrow (container queries), instead of squeezing sideways.
+- **Docs:** README EN+RU and project rules updated for Soft pick competition/copy options, Character pick format toggles, cross-spec ownership, and responsive Soft pick layout.
+
 ## [2.5.0] - 2026-08-07
 
 ### Added
