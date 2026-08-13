@@ -352,7 +352,7 @@ export const enMessages = {
       "Search here or in the table header — both stay in sync. Soft reserve targets come from matching raid rows. Click a chip to exclude it (stays visible; click again to include)",
     itemsTitle: "Soft reserve targets",
     itemsHelper:
-      "Uses the active BiS list from BiS builds. BiS and BiS-variant upgrades from filtered raids — assign your softs and track others",
+      "From the active BiS list: missing BiS / variants in selected raids. Set your softs and others' calls — caption color shows demand (green→red), odds show how many softs improve your chance. Reset one row or the whole block.",
     itemsEmptyNoSelection: "Select a character and spec to see soft reserve targets",
     itemsEmptyNoGearPrefix: "Click",
     itemsEmptyNoGearSuffix:
