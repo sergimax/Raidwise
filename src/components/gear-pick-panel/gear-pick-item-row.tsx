@@ -219,7 +219,7 @@ export const GearPickItemRow = memo(function GearPickItemRow({
     <Box
       sx={{
         display: "grid",
-        gridTemplateColumns: "auto minmax(0, 1fr)",
+        gridTemplateColumns: "auto minmax(0, 1fr) auto",
         columnGap: 1,
         rowGap: 0.35,
         alignItems: "stretch",
@@ -261,7 +261,12 @@ export const GearPickItemRow = memo(function GearPickItemRow({
       <Stack
         direction="row"
         spacing={0.75}
-        sx={{ alignItems: "center", flexWrap: "wrap", minWidth: 0 }}
+        sx={{
+          gridColumn: 2,
+          alignItems: "center",
+          flexWrap: "wrap",
+          minWidth: 0,
+        }}
       >
         <Chip
           size="small"
@@ -287,10 +292,41 @@ export const GearPickItemRow = memo(function GearPickItemRow({
         ) : null}
       </Stack>
 
+      {/* Reset — full-height right column */}
+      <Stack
+        direction="row"
+        sx={{
+          gridRow: "1 / span 2",
+          gridColumn: 3,
+          alignSelf: "stretch",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100%",
+        }}
+      >
+        <Tooltip title={t("gearPickPanel.resetItemSoftAssignments")}>
+          <span>
+            <IconButton
+              size="small"
+              color="inherit"
+              disabled={!assignmentDirty}
+              aria-label={t("gearPickPanel.resetItemSoftAssignmentsAria", {
+                item: itemLabel,
+              })}
+              onClick={handleClearAssignment}
+              sx={{ p: 0.35 }}
+            >
+              <RestartAltIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Stack>
+
       {/* Line 2: others softs · competition */}
       <Stack
         direction="row"
         sx={{
+          gridColumn: 2,
           alignItems: "center",
           flexWrap: "wrap",
           columnGap: 0.75,
@@ -394,23 +430,6 @@ export const GearPickItemRow = memo(function GearPickItemRow({
           >
             {caption.text}
           </Typography>
-        </Tooltip>
-
-        <Tooltip title={t("gearPickPanel.resetItemSoftAssignments")}>
-          <span>
-            <IconButton
-              size="small"
-              color="inherit"
-              disabled={!assignmentDirty}
-              aria-label={t("gearPickPanel.resetItemSoftAssignmentsAria", {
-                item: itemLabel,
-              })}
-              onClick={handleClearAssignment}
-              sx={{ p: 0.25 }}
-            >
-              <RestartAltIcon sx={{ fontSize: 16 }} />
-            </IconButton>
-          </span>
         </Tooltip>
       </Stack>
     </Box>
