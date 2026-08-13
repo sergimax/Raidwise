@@ -231,6 +231,63 @@ export function summarizeSoftCompetition(
   };
 }
 
+/**
+ * Demand / contest intensity for Soft pick UI color.
+ * Lower demand → better odds to win the item; `blocked` is +100 dominated softs.
+ */
+export type SoftCompetitionDemandTone =
+  | "clear"
+  | "low"
+  | "medium"
+  | "high"
+  | "blocked";
+
+export function softCompetitionDemandTone(
+  summary: SoftCompetitionSummary,
+): SoftCompetitionDemandTone {
+  if (summary.mySoftsDominated) {
+    return "blocked";
+  }
+
+  const demandScore =
+    summary.system === "reroll"
+      ? summary.othersRollCount
+      : summary.competingWeight;
+
+  if (demandScore <= 0) {
+    return "clear";
+  }
+  if (demandScore <= 3) {
+    return "low";
+  }
+  if (demandScore <= 7) {
+    return "medium";
+  }
+  return "high";
+}
+
+/** MUI palette path for {@link softCompetitionDemandTone}. */
+export function softCompetitionDemandColor(
+  tone: SoftCompetitionDemandTone,
+):
+  | "success.main"
+  | "info.main"
+  | "warning.main"
+  | "error.main" {
+  switch (tone) {
+    case "clear":
+      return "success.main";
+    case "low":
+      return "info.main";
+    case "medium":
+      return "warning.main";
+    case "high":
+      return "error.main";
+    case "blocked":
+      return "warning.main";
+  }
+}
+
 export type GearPickCopyItem = {
   itemName: string;
   bossName: string;

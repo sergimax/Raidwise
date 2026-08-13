@@ -11,6 +11,8 @@ import {
   softWeightKeys,
   sumMySofts,
   summarizeSoftCompetition,
+  softCompetitionDemandColor,
+  softCompetitionDemandTone,
 } from "./gear-pick-soft-roll.ts";
 
 describe("gear-pick-soft-roll", () => {
@@ -107,6 +109,56 @@ describe("gear-pick-soft-roll", () => {
       myRollCount: 3,
       othersRollCount: 8,
     });
+  });
+
+  it("maps competition demand to UI color tones", () => {
+    expect(
+      softCompetitionDemandTone(
+        summarizeSoftCompetition(
+          { mySofts: 0, othersByWeight: {} },
+          "reroll",
+          3,
+        ),
+      ),
+    ).toBe("clear");
+    expect(
+      softCompetitionDemandTone(
+        summarizeSoftCompetition(
+          { mySofts: 1, othersByWeight: { 1: 1 } },
+          "reroll",
+          3,
+        ),
+      ),
+    ).toBe("low");
+    expect(
+      softCompetitionDemandTone(
+        summarizeSoftCompetition(
+          { mySofts: 0, othersByWeight: { 1: 2, 2: 1 } },
+          "reroll",
+          3,
+        ),
+      ),
+    ).toBe("medium");
+    expect(
+      softCompetitionDemandTone(
+        summarizeSoftCompetition(
+          { mySofts: 0, othersByWeight: { 1: 4, 2: 1, 3: 1 } },
+          "reroll",
+          3,
+        ),
+      ),
+    ).toBe("high");
+    expect(
+      softCompetitionDemandTone(
+        summarizeSoftCompetition(
+          { mySofts: 2, othersByWeight: { 3: 1 } },
+          "plus100",
+          3,
+        ),
+      ),
+    ).toBe("blocked");
+    expect(softCompetitionDemandColor("clear")).toBe("success.main");
+    expect(softCompetitionDemandColor("high")).toBe("error.main");
   });
 
   it("formats copy text for called softs only", () => {

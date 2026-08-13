@@ -6,9 +6,12 @@ import type { TranslateFn } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { GearPickItem } from "../../utils/build-gear-pick-items.ts";
 import {
+  softCompetitionDemandColor,
+  softCompetitionDemandTone,
   softWeightKeys,
   summarizeSoftCompetition,
   type ItemSoftAssignment,
+  type SoftCompetitionDemandTone,
   type SoftRollMax,
   type SoftRollSystem,
 } from "../../utils/gear-pick-soft-roll.ts";
@@ -105,8 +108,9 @@ function competitionCaption(
   competition: ReturnType<typeof summarizeSoftCompetition>,
   maxSofts: SoftRollMax,
   t: TranslateFn,
-): { text: string; hint: string; warn: boolean } {
+): { text: string; hint: string; demandTone: SoftCompetitionDemandTone } {
   const belowMax = Math.max(1, maxSofts - 1);
+  const demandTone = softCompetitionDemandTone(competition);
 
   if (competition.system === "reroll") {
     return {
@@ -122,7 +126,7 @@ function competitionCaption(
         weight: competition.competingWeight,
         otherRolls: competition.othersRollCount,
       }),
-      warn: false,
+      demandTone,
     };
   }
 
@@ -139,7 +143,7 @@ function competitionCaption(
         count: competition.maxSoftCallerCount,
       }),
       hint: plus100Hint,
-      warn: true,
+      demandTone,
     };
   }
 
@@ -150,7 +154,7 @@ function competitionCaption(
         count: competition.maxSoftCallerCount,
       }),
       hint: plus100Hint,
-      warn: true,
+      demandTone,
     };
   }
 
@@ -161,7 +165,7 @@ function competitionCaption(
       callers: competition.competingCallers,
     }),
     hint: plus100Hint,
-    warn: false,
+    demandTone,
   };
 }
 
@@ -179,7 +183,12 @@ export const GearPickItemRow = memo(function GearPickItemRow({
   const competition = summarizeSoftCompetition(assignment, system, maxSofts);
   const weightKeys = softWeightKeys(maxSofts);
   const caption = competitionCaption(competition, maxSofts, t);
+  const demandColor = softCompetitionDemandColor(caption.demandTone);
   const hasMaxSoftCaller = competition.maxSoftCallerCount > 0;
+  const demandEmphasized =
+    caption.demandTone === "medium" ||
+    caption.demandTone === "high" ||
+    caption.demandTone === "blocked";
 
   const handleMySoftsChange = useCallback(
     (mySofts: number) => {
@@ -288,6 +297,7 @@ export const GearPickItemRow = memo(function GearPickItemRow({
             const isMaxWeight = weight === maxSofts;
             const dominatedWeight =
               system === "plus100" && hasMaxSoftCaller && !isMaxWeight;
+            const noCallers = count === 0;
             return (
               <Stack
                 key={weight}
@@ -297,10 +307,15 @@ export const GearPickItemRow = memo(function GearPickItemRow({
                   alignItems: "stretch",
                   border: 1,
                   borderColor:
-                    isMaxWeight && hasMaxSoftCaller ? "warning.main" : "divider",
+                    isMaxWeight && hasMaxSoftCaller
+                      ? "warning.main"
+                      : noCallers
+                        ? "action.disabledBackground"
+                        : "divider",
                   borderRadius: 1,
                   overflow: "hidden",
-                  opacity: dominatedWeight ? 0.55 : 1,
+                  opacity: noCallers ? 0.4 : dominatedWeight ? 0.55 : 1,
+                  color: noCallers ? "text.disabled" : "inherit",
                 }}
               >
                 <Typography
@@ -312,7 +327,7 @@ export const GearPickItemRow = memo(function GearPickItemRow({
                     px: 0.75,
                     fontWeight: 700,
                     lineHeight: 1,
-                    bgcolor: "action.selected",
+                    bgcolor: noCallers ? "action.hover" : "action.selected",
                     borderRight: 1,
                     borderColor: "divider",
                     textDecoration: dominatedWeight ? "line-through" : "none",
@@ -322,7 +337,11 @@ export const GearPickItemRow = memo(function GearPickItemRow({
                 </Typography>
                 <Stack
                   direction="row"
-                  sx={{ alignItems: "center", px: 0.25, bgcolor: "background.paper" }}
+                  sx={{
+                    alignItems: "center",
+                    px: 0.25,
+                    bgcolor: noCallers ? "action.hover" : "background.paper",
+                  }}
                 >
                   <SoftStepper
                     value={count}
@@ -353,10 +372,10 @@ export const GearPickItemRow = memo(function GearPickItemRow({
         <Tooltip title={caption.hint}>
           <Typography
             variant="caption"
-            color={caption.warn ? "warning.main" : "text.secondary"}
+            color={demandColor}
             sx={{
               lineHeight: 1.2,
-              fontWeight: caption.warn ? 600 : 400,
+              fontWeight: demandEmphasized ? 700 : 600,
               borderBottom: "1px dotted",
               borderColor: "currentColor",
               cursor: "help",
