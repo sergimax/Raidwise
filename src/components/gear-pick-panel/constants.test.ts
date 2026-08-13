@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   EXPORT_FILTER_UNIT_HEIGHT,
   EXPORT_FILTER_UNIT_WIDTH,
-  getFilterUnitColumnTemplate,
 } from "../export-panel/constants.ts";
 import {
   GEAR_PICK_COPY_BLOCK_SPAN,
@@ -49,8 +48,8 @@ describe("GEAR_PICK_COPY_BLOCK_SPAN", () => {
 });
 
 describe("getGearPickGridTemplateColumns", () => {
-  it("caps softs at 2 units beside shared filter columns on medium", () => {
-    const unitColumn = getFilterUnitColumnTemplate();
+  it("uses fixed unit columns and caps softs at 2 units on medium", () => {
+    const unitColumn = `${EXPORT_FILTER_UNIT_WIDTH}px`;
     const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, ${getGearPickSoftsBlockMaxWidth()}px)`;
     expect(getGearPickGridTemplateColumns("md")).toBe(
       `${unitColumn} ${unitColumn} ${softsColumn}`,
@@ -60,8 +59,8 @@ describe("getGearPickGridTemplateColumns", () => {
     );
   });
 
-  it("keeps softs capped at 2 units and a 1×2 copy column on wide", () => {
-    const unitColumn = getFilterUnitColumnTemplate();
+  it("keeps fixed filter columns, softs capped at 2 units, and a 1×2 copy on wide", () => {
+    const unitColumn = `${EXPORT_FILTER_UNIT_WIDTH}px`;
     const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, ${getGearPickSoftsBlockMaxWidth()}px)`;
     expect(getGearPickGridTemplateColumns("wide")).toBe(
       `${unitColumn} ${unitColumn} ${softsColumn} ${getGearPickCopyBlockMaxWidth()}px`,

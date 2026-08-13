@@ -253,6 +253,9 @@ export function GearPickPanel({
         gap: EXPORT_FILTER_GRID_GAP_SPACING,
         alignItems: "stretch",
         width: "100%",
+        minWidth: 0,
+        // Prefer horizontal scroll over squeezing fixed filter unit columns.
+        overflowX: { xs: "visible", md: "auto" },
         [GEAR_PICK_SIDE_BY_SIDE_MQ_KEY]: {
           gridTemplateColumns: getGearPickGridTemplateColumns("wide"),
           gridTemplateRows: getGearPickGridTemplateRows("wide"),
