@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   clampAssignmentsToMaxSofts,
   clampMySofts,
+  clearAssignmentForItem,
   competingSoftWeight,
   formatGearPickCopyText,
   pruneSoftAssignmentsToItemIds,
@@ -35,6 +36,16 @@ describe("gear-pick-soft-roll", () => {
     byItemId = setOthersCountForWeight(byItemId, 10, 2, 2, 3);
     byItemId = setOthersCountForWeight(byItemId, 10, 3, 2, 3);
     expect(competingSoftWeight(byItemId[10]!.othersByWeight)).toBe(1 * 4 + 2 * 2 + 3 * 2);
+  });
+
+  it("clears one item assignment without touching others", () => {
+    let byItemId = setMySoftsForItem({}, 10, 2, 3);
+    byItemId = setOthersCountForWeight(byItemId, 10, 1, 2, 3);
+    byItemId = setMySoftsForItem(byItemId, 20, 1, 3);
+    const cleared = clearAssignmentForItem(byItemId, 10);
+    expect(cleared[10]).toBeUndefined();
+    expect(cleared[20]?.mySofts).toBe(1);
+    expect(clearAssignmentForItem(cleared, 10)).toBe(cleared);
   });
 
   it("clamps assignments when max softs decreases", () => {

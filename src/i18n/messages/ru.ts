@@ -385,6 +385,9 @@ export const ruMessages: Messages = {
     resetSoftAssignments: "Сбросить назначения софтов",
     resetSoftAssignmentsAria:
       "Очистить мои софт-резервы и чужие заявки по всем предметам",
+    resetItemSoftAssignments: "Сбросить этот предмет",
+    resetItemSoftAssignmentsAria:
+      "Очистить мои софт-резервы и чужие заявки для {{item}}",
     kindBis: "BiS",
     kindVariant: "Вариант",
     copyTitle: "Список софт-резервов",

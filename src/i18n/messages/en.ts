@@ -383,6 +383,9 @@ export const enMessages = {
     resetSoftAssignments: "Reset soft assignments",
     resetSoftAssignmentsAria:
       "Clear my soft reserves and others' calls for all soft targets",
+    resetItemSoftAssignments: "Reset this item",
+    resetItemSoftAssignmentsAria:
+      "Clear my soft reserves and others' calls for {{item}}",
     kindBis: "BiS",
     kindVariant: "Variant",
     copyTitle: "Soft reserve list",

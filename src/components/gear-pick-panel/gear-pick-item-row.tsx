@@ -1,5 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Box, Chip, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import type { TranslateFn } from "../../i18n/translate.ts";
@@ -26,6 +27,7 @@ type GearPickItemRowProps = {
   itemLabel: string;
   onMySoftsChange: (itemId: number, mySofts: number) => void;
   onOthersCountChange: (itemId: number, weight: number, count: number) => void;
+  onClearAssignment: (itemId: number) => void;
 };
 
 function areGearPickItemRowPropsEqual(
@@ -40,7 +42,8 @@ function areGearPickItemRowPropsEqual(
     previous.remainingBudgetForItem === next.remainingBudgetForItem &&
     previous.itemLabel === next.itemLabel &&
     previous.onMySoftsChange === next.onMySoftsChange &&
-    previous.onOthersCountChange === next.onOthersCountChange
+    previous.onOthersCountChange === next.onOthersCountChange &&
+    previous.onClearAssignment === next.onClearAssignment
   );
 }
 
@@ -178,6 +181,7 @@ export const GearPickItemRow = memo(function GearPickItemRow({
   itemLabel,
   onMySoftsChange,
   onOthersCountChange,
+  onClearAssignment,
 }: GearPickItemRowProps) {
   const { t } = useTranslation();
   const competition = summarizeSoftCompetition(assignment, system, maxSofts);
@@ -189,6 +193,9 @@ export const GearPickItemRow = memo(function GearPickItemRow({
     caption.demandTone === "medium" ||
     caption.demandTone === "high" ||
     caption.demandTone === "blocked";
+  const assignmentDirty =
+    assignment.mySofts > 0 ||
+    Object.keys(assignment.othersByWeight).length > 0;
 
   const handleMySoftsChange = useCallback(
     (mySofts: number) => {
@@ -203,6 +210,10 @@ export const GearPickItemRow = memo(function GearPickItemRow({
     },
     [item.itemId, onOthersCountChange],
   );
+
+  const handleClearAssignment = useCallback(() => {
+    onClearAssignment(item.itemId);
+  }, [item.itemId, onClearAssignment]);
 
   return (
     <Box
@@ -383,6 +394,23 @@ export const GearPickItemRow = memo(function GearPickItemRow({
           >
             {caption.text}
           </Typography>
+        </Tooltip>
+
+        <Tooltip title={t("gearPickPanel.resetItemSoftAssignments")}>
+          <span>
+            <IconButton
+              size="small"
+              color="inherit"
+              disabled={!assignmentDirty}
+              aria-label={t("gearPickPanel.resetItemSoftAssignmentsAria", {
+                item: itemLabel,
+              })}
+              onClick={handleClearAssignment}
+              sx={{ p: 0.25 }}
+            >
+              <RestartAltIcon sx={{ fontSize: 16 }} />
+            </IconButton>
+          </span>
         </Tooltip>
       </Stack>
     </Box>

@@ -69,6 +69,7 @@ export function GearPickPanel({
     handleRulesChange,
     handleMySoftsChange,
     handleOthersCountChange,
+    handleClearItemAssignment,
     toggleDungeonExcluded,
     clearExcludedDungeonIds,
     pruneAssignmentsToItemIds,
@@ -357,6 +358,7 @@ export function GearPickPanel({
                     itemLabel={itemLabel}
                     onMySoftsChange={handleMySoftsChange}
                     onOthersCountChange={handleOthersCountChange}
+                    onClearAssignment={handleClearItemAssignment}
                   />
                 );
               })}

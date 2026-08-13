@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import type { GearPickCharacterSelection } from "../components/gear-pick-panel/gear-pick-character-select.tsx";
 import {
   clampAssignmentsToMaxSofts,
+  clearAssignmentForItem,
   DEFAULT_SOFT_ROLL_RULES,
   pruneSoftAssignmentsToItemIds,
   setMySoftsForItem,
@@ -70,6 +71,12 @@ export function useGearPickSessionState() {
     [rules.maxSofts],
   );
 
+  const handleClearItemAssignment = useCallback((itemId: number) => {
+    setAssignmentsByItemId((previous) =>
+      clearAssignmentForItem(previous, itemId),
+    );
+  }, []);
+
   const toggleDungeonExcluded = useCallback((dungeonId: string) => {
     setExcludedDungeonIds((previous) =>
       toggleDungeonIdExclusion(previous, dungeonId),
@@ -102,6 +109,7 @@ export function useGearPickSessionState() {
     handleRulesChange,
     handleMySoftsChange,
     handleOthersCountChange,
+    handleClearItemAssignment,
     toggleDungeonExcluded,
     clearExcludedDungeonIds,
     pruneAssignmentsToItemIds,

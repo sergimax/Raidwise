@@ -110,6 +110,19 @@ export function setOthersCountForWeight(
   };
 }
 
+/** Remove my softs and others' histogram for one item. */
+export function clearAssignmentForItem(
+  byItemId: SoftAssignmentByItemId,
+  itemId: number,
+): SoftAssignmentByItemId {
+  if (!(itemId in byItemId)) {
+    return byItemId;
+  }
+  const next = { ...byItemId };
+  delete next[itemId];
+  return next;
+}
+
 /** Drop my softs / histogram keys above the new max when rules change. */
 export function clampAssignmentsToMaxSofts(
   byItemId: SoftAssignmentByItemId,
