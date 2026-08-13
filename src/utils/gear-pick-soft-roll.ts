@@ -266,25 +266,21 @@ export function softCompetitionDemandTone(
   return "high";
 }
 
-/** MUI palette path for {@link softCompetitionDemandTone}. */
+/** MUI Typography `color` token for {@link softCompetitionDemandTone}. */
 export function softCompetitionDemandColor(
   tone: SoftCompetitionDemandTone,
-):
-  | "success.main"
-  | "info.main"
-  | "warning.main"
-  | "error.main" {
+): "success" | "info" | "warning" | "error" {
   switch (tone) {
     case "clear":
-      return "success.main";
+      return "success";
     case "low":
-      return "info.main";
+      return "info";
     case "medium":
-      return "warning.main";
+      return "warning";
     case "high":
-      return "error.main";
+      return "error";
     case "blocked":
-      return "warning.main";
+      return "warning";
   }
 }
 

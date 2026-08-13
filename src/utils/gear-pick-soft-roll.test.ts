@@ -157,8 +157,8 @@ describe("gear-pick-soft-roll", () => {
         ),
       ),
     ).toBe("blocked");
-    expect(softCompetitionDemandColor("clear")).toBe("success.main");
-    expect(softCompetitionDemandColor("high")).toBe("error.main");
+    expect(softCompetitionDemandColor("clear")).toBe("success");
+    expect(softCompetitionDemandColor("high")).toBe("error");
   });
 
   it("formats copy text for called softs only", () => {
