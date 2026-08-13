@@ -20,14 +20,15 @@ import { ExportDungeonFilter } from "../export-panel/export-dungeon-filter.tsx";
 import { ExportDungeonFilterActions } from "../export-panel/export-dungeon-filter-actions.tsx";
 import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
 import {
-  exportDungeonFilterContentSx,
   EXPORT_FILTER_GRID_GAP_SPACING,
+  exportDungeonFilterContentSx,
 } from "../export-panel/constants.ts";
 import {
-  GEAR_PICK_SIDE_BY_SIDE_MQ_KEY,
   getGearPickGridTemplateAreas,
   getGearPickGridTemplateColumns,
   getGearPickGridTemplateRows,
+  getGearPickMdContainerMqKey,
+  getGearPickWideContainerMqKey,
 } from "./constants.ts";
 import { GearPickCharacterSelect } from "./gear-pick-character-select.tsx";
 import { GearPickCopyBlock } from "./gear-pick-copy-block.tsx";
@@ -235,34 +236,38 @@ export function GearPickPanel({
   );
 
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "minmax(0, 1fr)",
-          md: getGearPickGridTemplateColumns("md"),
-        },
-        gridTemplateRows: {
-          xs: "auto",
-          md: getGearPickGridTemplateRows("md"),
-        },
-        gridTemplateAreas: {
-          xs: "none",
-          md: getGearPickGridTemplateAreas("md"),
-        },
-        gap: EXPORT_FILTER_GRID_GAP_SPACING,
-        alignItems: "stretch",
-        width: "100%",
-        minWidth: 0,
-        // Prefer horizontal scroll over squeezing fixed filter unit columns.
-        overflowX: { xs: "visible", md: "auto" },
-        [GEAR_PICK_SIDE_BY_SIDE_MQ_KEY]: {
-          gridTemplateColumns: getGearPickGridTemplateColumns("wide"),
-          gridTemplateRows: getGearPickGridTemplateRows("wide"),
-          gridTemplateAreas: getGearPickGridTemplateAreas("wide"),
-        },
-      }}
-    >
+    <Box sx={{ containerType: "inline-size", width: "100%", minWidth: 0 }}>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "minmax(0, 1fr)",
+            md: getGearPickGridTemplateColumns("filters"),
+          },
+          gridTemplateRows: {
+            xs: "auto",
+            md: getGearPickGridTemplateRows("filters"),
+          },
+          gridTemplateAreas: {
+            xs: "none",
+            md: getGearPickGridTemplateAreas("filters"),
+          },
+          gap: EXPORT_FILTER_GRID_GAP_SPACING,
+          alignItems: "stretch",
+          width: "100%",
+          minWidth: 0,
+          [getGearPickMdContainerMqKey()]: {
+            gridTemplateColumns: getGearPickGridTemplateColumns("md"),
+            gridTemplateRows: getGearPickGridTemplateRows("md"),
+            gridTemplateAreas: getGearPickGridTemplateAreas("md"),
+          },
+          [getGearPickWideContainerMqKey()]: {
+            gridTemplateColumns: getGearPickGridTemplateColumns("wide"),
+            gridTemplateRows: getGearPickGridTemplateRows("wide"),
+            gridTemplateAreas: getGearPickGridTemplateAreas("wide"),
+          },
+        }}
+      >
       <GearPickFilterBlock gridArea="dungeon">
         <ExportFilterSection
           step={1}
@@ -392,6 +397,7 @@ export function GearPickPanel({
           t={t}
         />
       </GearPickFilterBlock>
+      </Box>
     </Box>
   );
 }

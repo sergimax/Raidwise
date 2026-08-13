@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import {
   getGearPickCopyBlockMaxHeight,
   getGearPickCopyBlockMaxWidth,
+  getGearPickSoftsBlockMaxWidth,
   type GearPickGridAreaId,
 } from "./constants.ts";
 
@@ -38,7 +39,12 @@ export function GearPickFilterBlock({
               xs: "100%",
               md: getGearPickCopyBlockMaxWidth(),
             }
-          : { xs: "100%", md: "none" },
+          : gridArea === "softs"
+            ? {
+                xs: "100%",
+                md: getGearPickSoftsBlockMaxWidth(),
+              }
+            : { xs: "100%", md: "none" },
         overflow: { xs: "visible", md: "hidden" },
         "& > *": {
           flex: 1,

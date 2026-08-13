@@ -8,20 +8,13 @@ import {
 /** Pixel gap between Soft pick grid tracks (`gap: 1.5` → 12px at default spacing). */
 const GEAR_PICK_GRID_GAP_PX = EXPORT_FILTER_GRID_GAP_SPACING * 8;
 
-/** Reuses Character pick side-by-side breakpoint (≥1680px) for the wide Soft pick layout. */
-export {
-  EXPORT_PANEL_SIDE_BY_SIDE_MIN_PX as GEAR_PICK_SIDE_BY_SIDE_MIN_PX,
-  EXPORT_PANEL_SIDE_BY_SIDE_MQ as GEAR_PICK_SIDE_BY_SIDE_MQ,
-  EXPORT_PANEL_SIDE_BY_SIDE_MQ_KEY as GEAR_PICK_SIDE_BY_SIDE_MQ_KEY,
-} from "../export-panel/constants.ts";
-
 /**
  * Soft pick panel grid areas.
- * Filter columns share one unit width so 1×1 / 2×1 blocks align visually.
- * Step order: raid (1) on top; character (2) spans right; rules (3) below raid.
- * - xs: stacked (DOM order)
- * - md: filters + softs (softs capped at 2 units); copy 1×2 below
- * - wide (≥1680): filters + softs (≤2 units) + copy 1×2 top-right
+ * Filter columns are fixed unit width; softs / copy are fixed 2-unit spans.
+ * Layout steps up by **available panel width** (container queries), not viewport:
+ * - filters: raids + character + rules; softs and copy each on their own row
+ * - md: softs beside filters when 2 filter units + softs fit; copy stays below
+ * - wide: copy joins top-right when softs + copy both fit beside filters
  */
 export type GearPickGridAreaId =
   | "rules"
@@ -30,7 +23,7 @@ export type GearPickGridAreaId =
   | "softs"
   | "copy";
 
-export type GearPickGridLayout = "md" | "wide";
+export type GearPickGridLayout = "filters" | "md" | "wide";
 
 /** Soft-reserve call (copy) block span — 1 row × 2 column units. */
 export const GEAR_PICK_COPY_BLOCK_SPAN = {
@@ -38,8 +31,11 @@ export const GEAR_PICK_COPY_BLOCK_SPAN = {
   widthUnits: 2,
 } as const;
 
-/** Soft targets block max width — 2× standard filter unit (gap-inclusive). */
+/** Soft targets block width — 2× standard filter unit (gap-inclusive). */
 export const GEAR_PICK_SOFTS_BLOCK_WIDTH_UNITS = 2;
+
+/** Soft targets block height — matches the two filter rows it spans in md/wide. */
+export const GEAR_PICK_SOFTS_BLOCK_HEIGHT_UNITS = 2;
 
 /**
  * Width of a 1×2 copy span: `widthUnits × unit + (widthUnits − 1) × gap`.
@@ -54,7 +50,7 @@ export function getGearPickCopyBlockMaxWidth(
   );
 }
 
-/** Max width for the soft-targets column (2× unit + gap). */
+/** Width for the soft-targets column (2× unit + gap). */
 export function getGearPickSoftsBlockMaxWidth(
   gridColumnGapPx = GEAR_PICK_GRID_GAP_PX,
 ): number {
@@ -73,6 +69,62 @@ export function getGearPickCopyBlockMaxHeight(
   );
 }
 
+/** Height when softs sits on its own row (2 filter units tall). */
+export function getGearPickSoftsBlockMaxHeight(
+  gridRowGapPx = GEAR_PICK_GRID_GAP_PX,
+): number {
+  return (
+    GEAR_PICK_SOFTS_BLOCK_HEIGHT_UNITS * EXPORT_FILTER_UNIT_HEIGHT +
+    (GEAR_PICK_SOFTS_BLOCK_HEIGHT_UNITS - 1) * gridRowGapPx
+  );
+}
+
+/** Content width for 2 fixed filter unit columns. */
+export function getGearPickFiltersRowWidth(
+  gridColumnGapPx = GEAR_PICK_GRID_GAP_PX,
+): number {
+  return 2 * EXPORT_FILTER_UNIT_WIDTH + gridColumnGapPx;
+}
+
+/** Min container width for softs beside filters (copy still below). */
+export function getGearPickMdLayoutMinWidth(
+  gridColumnGapPx = GEAR_PICK_GRID_GAP_PX,
+): number {
+  return (
+    getGearPickFiltersRowWidth(gridColumnGapPx) +
+    gridColumnGapPx +
+    getGearPickSoftsBlockMaxWidth(gridColumnGapPx)
+  );
+}
+
+/** Min container width for softs + copy beside filters. */
+export function getGearPickWideLayoutMinWidth(
+  gridColumnGapPx = GEAR_PICK_GRID_GAP_PX,
+): number {
+  return (
+    getGearPickMdLayoutMinWidth(gridColumnGapPx) +
+    gridColumnGapPx +
+    getGearPickCopyBlockMaxWidth(gridColumnGapPx)
+  );
+}
+
+/** `@container` query keys for Soft pick layout steps. */
+export function getGearPickMdContainerMqKey(): string {
+  return `@container (min-width: ${getGearPickMdLayoutMinWidth()}px)`;
+}
+
+export function getGearPickWideContainerMqKey(): string {
+  return `@container (min-width: ${getGearPickWideLayoutMinWidth()}px)`;
+}
+
+/**
+ * Legacy alias — Soft pick wide layout now uses container queries.
+ * Kept for the unused side-by-side hook export surface.
+ */
+export const GEAR_PICK_SIDE_BY_SIDE_MIN_PX = getGearPickWideLayoutMinWidth();
+export const GEAR_PICK_SIDE_BY_SIDE_MQ = `(min-width:${GEAR_PICK_SIDE_BY_SIDE_MIN_PX}px)`;
+export const GEAR_PICK_SIDE_BY_SIDE_MQ_KEY = `@media ${GEAR_PICK_SIDE_BY_SIDE_MQ}`;
+
 export function getGearPickGridTemplateAreas(layout: GearPickGridLayout): string {
   if (layout === "wide") {
     return [
@@ -81,10 +133,20 @@ export function getGearPickGridTemplateAreas(layout: GearPickGridLayout): string
     ].join(" ");
   }
 
+  if (layout === "md") {
+    return [
+      '"dungeon characterSpecs softs"',
+      '"rules characterSpecs softs"',
+      '"copy copy ."',
+    ].join(" ");
+  }
+
+  // filters: softs + copy each take a full row under the filter pair
   return [
-    '"dungeon characterSpecs softs"',
-    '"rules characterSpecs softs"',
-    '"copy copy ."',
+    '"dungeon characterSpecs"',
+    '"rules characterSpecs"',
+    '"softs softs"',
+    '"copy copy"',
   ].join(" ");
 }
 
@@ -96,15 +158,17 @@ export function getGearPickGridTemplateColumns(
    * the shared filter unit (unlike Character pick's minmax(0, unit)).
    */
   const unitColumn = `${EXPORT_FILTER_UNIT_WIDTH}px`;
-  /** Softs: ≥1 unit, ≤2 units — usable list without starving the copy block. */
-  const softsColumn = `minmax(${EXPORT_FILTER_UNIT_WIDTH}px, ${getGearPickSoftsBlockMaxWidth()}px)`;
+  const softsColumn = `${getGearPickSoftsBlockMaxWidth()}px`;
 
   if (layout === "wide") {
-    const copyWidth = getGearPickCopyBlockMaxWidth();
-    return `${unitColumn} ${unitColumn} ${softsColumn} ${copyWidth}px`;
+    return `${unitColumn} ${unitColumn} ${softsColumn} ${getGearPickCopyBlockMaxWidth()}px`;
   }
 
-  return `${unitColumn} ${unitColumn} ${softsColumn}`;
+  if (layout === "md") {
+    return `${unitColumn} ${unitColumn} ${softsColumn}`;
+  }
+
+  return `${unitColumn} ${unitColumn}`;
 }
 
 export function getGearPickGridTemplateRows(layout: GearPickGridLayout): string {
@@ -112,5 +176,8 @@ export function getGearPickGridTemplateRows(layout: GearPickGridLayout): string 
   if (layout === "wide") {
     return filterRows;
   }
-  return `${filterRows} ${getGearPickCopyBlockMaxHeight()}px`;
+  if (layout === "md") {
+    return `${filterRows} ${getGearPickCopyBlockMaxHeight()}px`;
+  }
+  return `${filterRows} ${getGearPickSoftsBlockMaxHeight()}px ${getGearPickCopyBlockMaxHeight()}px`;
 }
