@@ -14,6 +14,9 @@ import {
   summarizeSoftCompetition,
   softCompetitionDemandColor,
   softCompetitionDemandTone,
+  buildPlus100OddsAdvice,
+  buildRerollOddsOptions,
+  highestOthersSoftWeight,
 } from "./gear-pick-soft-roll.ts";
 
 describe("gear-pick-soft-roll", () => {
@@ -170,6 +173,34 @@ describe("gear-pick-soft-roll", () => {
     ).toBe("blocked");
     expect(softCompetitionDemandColor("clear")).toBe("success");
     expect(softCompetitionDemandColor("high")).toBe("error");
+  });
+
+  it("builds re-roll win-share options against others' rolls", () => {
+    // Others: 10 rolls → ×1=2/12≈17%, ×2=3/13≈23%, ×3=4/14≈29%.
+    expect(buildRerollOddsOptions(10, 3)).toEqual([
+      { softs: 1, myRolls: 2, chancePercent: 17 },
+      { softs: 2, myRolls: 3, chancePercent: 23 },
+      { softs: 3, myRolls: 4, chancePercent: 29 },
+    ]);
+  });
+
+  it("builds +100 tie/beat advice from the strongest other call", () => {
+    expect(highestOthersSoftWeight({ 1: 2, 2: 1 })).toBe(2);
+    expect(buildPlus100OddsAdvice({ 1: 1 }, 3)).toEqual({
+      highestOthers: 1,
+      softsToTie: 1,
+      softsToBeat: 2,
+    });
+    expect(buildPlus100OddsAdvice({ 3: 1 }, 3)).toEqual({
+      highestOthers: 3,
+      softsToTie: 3,
+      softsToBeat: null,
+    });
+    expect(buildPlus100OddsAdvice({}, 3)).toEqual({
+      highestOthers: 0,
+      softsToTie: null,
+      softsToBeat: null,
+    });
   });
 
   it("formats copy text for called softs only", () => {

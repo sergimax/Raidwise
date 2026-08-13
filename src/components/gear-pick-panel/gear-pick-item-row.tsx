@@ -7,6 +7,8 @@ import type { TranslateFn } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { GearPickItem } from "../../utils/build-gear-pick-items.ts";
 import {
+  buildPlus100OddsAdvice,
+  buildRerollOddsOptions,
   softCompetitionDemandColor,
   softCompetitionDemandTone,
   softWeightKeys,
@@ -170,6 +172,124 @@ function competitionCaption(
     hint: plus100Hint,
     demandTone,
   };
+}
+
+function SoftOddsCaption({
+  system,
+  maxSofts,
+  mySofts,
+  othersRollCount,
+  othersByWeight,
+  remainingBudgetForItem,
+  t,
+}: {
+  system: SoftRollSystem;
+  maxSofts: SoftRollMax;
+  mySofts: number;
+  othersRollCount: number;
+  othersByWeight: ItemSoftAssignment["othersByWeight"];
+  remainingBudgetForItem: number;
+  t: TranslateFn;
+}) {
+  if (system === "reroll") {
+    if (othersRollCount <= 0) {
+      return null;
+    }
+
+    const options = buildRerollOddsOptions(othersRollCount, maxSofts);
+    return (
+      <Tooltip title={t("gearPickPanel.oddsRerollHint")}>
+        <Typography
+          variant="caption"
+          component="span"
+          sx={{
+            lineHeight: 1.2,
+            borderBottom: "1px dotted",
+            borderColor: "text.disabled",
+            cursor: "help",
+            display: "inline-flex",
+            flexWrap: "wrap",
+            columnGap: 0.5,
+            rowGap: 0.15,
+          }}
+        >
+          {options.map((option, index) => {
+            const selected = mySofts === option.softs;
+            const affordable = option.softs <= remainingBudgetForItem;
+            return (
+              <Box
+                key={option.softs}
+                component="span"
+                sx={{
+                  color: selected
+                    ? "success.main"
+                    : affordable
+                      ? "text.secondary"
+                      : "text.disabled",
+                  fontWeight: selected ? 700 : 500,
+                  opacity: affordable || selected ? 1 : 0.55,
+                }}
+              >
+                {t("gearPickPanel.oddsRerollOption", {
+                  softs: option.softs,
+                  chance: option.chancePercent,
+                })}
+                {index < options.length - 1 ? " ·" : ""}
+              </Box>
+            );
+          })}
+        </Typography>
+      </Tooltip>
+    );
+  }
+
+  const advice = buildPlus100OddsAdvice(othersByWeight, maxSofts);
+  if (advice.softsToTie === null) {
+    return null;
+  }
+
+  const tieAffordable = advice.softsToTie <= remainingBudgetForItem;
+  const beatAffordable =
+    advice.softsToBeat !== null &&
+    advice.softsToBeat <= remainingBudgetForItem;
+
+  const text =
+    advice.softsToBeat === null
+      ? t("gearPickPanel.oddsPlus100TieOnly", { softs: advice.softsToTie })
+      : t("gearPickPanel.oddsPlus100TieAndBeat", {
+          tie: advice.softsToTie,
+          beat: advice.softsToBeat,
+        });
+
+  const selectedBeats =
+    advice.softsToBeat !== null && mySofts >= advice.softsToBeat;
+  const selectedTies =
+    !selectedBeats && mySofts >= advice.softsToTie;
+
+  return (
+    <Tooltip title={t("gearPickPanel.oddsPlus100Hint")}>
+      <Typography
+        variant="caption"
+        component="span"
+        sx={{
+          lineHeight: 1.2,
+          fontWeight: selectedBeats || selectedTies ? 700 : 500,
+          color: selectedBeats
+            ? "success.main"
+            : selectedTies
+              ? "info.main"
+              : tieAffordable || beatAffordable
+                ? "text.secondary"
+                : "text.disabled",
+          borderBottom: "1px dotted",
+          borderColor: "currentColor",
+          cursor: "help",
+        }}
+      >
+        {text}
+      </Typography>
+    </Tooltip>
+  );
 }
 
 export const GearPickItemRow = memo(function GearPickItemRow({
@@ -436,6 +556,16 @@ export const GearPickItemRow = memo(function GearPickItemRow({
             {caption.text}
           </Typography>
         </Tooltip>
+
+        <SoftOddsCaption
+          system={system}
+          maxSofts={maxSofts}
+          mySofts={assignment.mySofts}
+          othersRollCount={competition.othersRollCount}
+          othersByWeight={assignment.othersByWeight}
+          remainingBudgetForItem={remainingBudgetForItem}
+          t={t}
+        />
       </Stack>
     </Box>
   );

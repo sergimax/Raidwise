@@ -379,6 +379,13 @@ export const enMessages = {
       "You {{myRolls}} rolls · others {{otherRolls}} ({{callers}} callers)",
     competitionRerollHint:
       "Each soft caller: 1 default /roll + 1 /roll per soft. You: {{myRolls}} ({{mySofts}} softs). Others: {{callers}} defaults + {{weight}} soft rolls = {{otherRolls}}.",
+    oddsRerollOption: "×{{softs}}→{{chance}}%",
+    oddsRerollHint:
+      "Approximate win chance if every /roll is equally likely: your rolls ÷ (yours + others). More softs = more rolls.",
+    oddsPlus100TieAndBeat: "×{{tie}} ties · ×{{beat}}+ wins",
+    oddsPlus100TieOnly: "×{{softs}} ties (can't beat)",
+    oddsPlus100Hint:
+      "With +100, higher soft count wins. Match the strongest other call to tie; one more soft beats them when the raid max allows.",
     softBudget: "{{used}} / {{max}} softs used",
     resetSoftAssignments: "Reset soft assignments",
     resetSoftAssignmentsAria:

@@ -381,6 +381,13 @@ export const ruMessages: Messages = {
       "Вы {{myRolls}} роллов · чужие {{otherRolls}} ({{callers}} чел.)",
     competitionRerollHint:
       "Каждый: 1 обычный /roll + 1 /roll за софт-резерв. Вы: {{myRolls}} ({{mySofts}} софт-резервов). Чужие: {{callers}} обычных + {{weight}} софт-роллов = {{otherRolls}}.",
+    oddsRerollOption: "×{{softs}}→{{chance}}%",
+    oddsRerollHint:
+      "Примерный шанс победы, если каждый /roll равновероятен: ваши роллы ÷ (ваши + чужие). Больше софтов — больше роллов.",
+    oddsPlus100TieAndBeat: "×{{tie}} ничья · ×{{beat}}+ победа",
+    oddsPlus100TieOnly: "×{{softs}} ничья (не обогнать)",
+    oddsPlus100Hint:
+      "В системе +100 побеждает больший софт. Сравняйтесь с сильнейшей чужой заявкой для ничьей; +1 софт обходит её, если позволяет лимит рейда.",
     softBudget: "{{used}} / {{max}} софт-резервов использовано",
     resetSoftAssignments: "Сбросить назначения софтов",
     resetSoftAssignmentsAria:

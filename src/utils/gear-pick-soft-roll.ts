@@ -297,6 +297,72 @@ export function softCompetitionDemandColor(
   }
 }
 
+/** Highest soft weight any other player called on this item (0 if none). */
+export function highestOthersSoftWeight(
+  othersByWeight: OthersSoftHistogram,
+): number {
+  let highest = 0;
+  for (const [weightStr, count] of Object.entries(othersByWeight)) {
+    if ((count ?? 0) > 0) {
+      highest = Math.max(highest, Number(weightStr));
+    }
+  }
+  return highest;
+}
+
+export type RerollOddsOption = {
+  softs: number;
+  myRolls: number;
+  /** Approximate win share if each /roll is equally likely. */
+  chancePercent: number;
+};
+
+/**
+ * Re-roll odds for spending 1…maxSofts on this item against current others.
+ * Chance ≈ myRolls / (myRolls + othersRollCount).
+ */
+export function buildRerollOddsOptions(
+  othersRollCount: number,
+  maxSofts: SoftRollMax,
+): RerollOddsOption[] {
+  const options: RerollOddsOption[] = [];
+  for (let softs = 1; softs <= maxSofts; softs += 1) {
+    const myRolls = 1 + softs;
+    const totalRolls = myRolls + Math.max(0, othersRollCount);
+    options.push({
+      softs,
+      myRolls,
+      chancePercent: Math.round((100 * myRolls) / totalRolls),
+    });
+  }
+  return options;
+}
+
+export type Plus100OddsAdvice = {
+  highestOthers: number;
+  /** Softs needed to match the strongest other call. */
+  softsToTie: number | null;
+  /** Softs needed to strictly beat every other call; null if impossible. */
+  softsToBeat: number | null;
+};
+
+/** +100: how many softs tie / beat the strongest other caller. */
+export function buildPlus100OddsAdvice(
+  othersByWeight: OthersSoftHistogram,
+  maxSofts: SoftRollMax,
+): Plus100OddsAdvice {
+  const highestOthers = highestOthersSoftWeight(othersByWeight);
+  if (highestOthers <= 0) {
+    return { highestOthers: 0, softsToTie: null, softsToBeat: null };
+  }
+
+  return {
+    highestOthers,
+    softsToTie: highestOthers,
+    softsToBeat: highestOthers < maxSofts ? highestOthers + 1 : null,
+  };
+}
+
 export type GearPickCopyItem = {
   itemName: string;
   bossName: string;
