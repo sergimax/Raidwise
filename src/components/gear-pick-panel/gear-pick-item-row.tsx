@@ -257,7 +257,7 @@ export const GearPickItemRow = memo(function GearPickItemRow({
         />
       </Stack>
 
-      {/* Line 1: type · item · raid short · boss */}
+      {/* Line 1: type · item · boss · (raid right) */}
       <Stack
         direction="row"
         spacing={0.75}
@@ -266,6 +266,7 @@ export const GearPickItemRow = memo(function GearPickItemRow({
           alignItems: "center",
           flexWrap: "wrap",
           minWidth: 0,
+          columnGap: 0.75,
         }}
       >
         <Chip
@@ -280,14 +281,18 @@ export const GearPickItemRow = memo(function GearPickItemRow({
           sx={{ height: 20, "& .MuiChip-label": { px: 0.6, fontSize: "0.65rem" } }}
         />
         <WowItemLink itemId={item.itemId} />
-        {item.raidLabel ? (
-          <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.2 }}>
-            {item.raidLabel}
-          </Typography>
-        ) : null}
         {item.bossName ? (
           <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.2 }}>
             {item.bossName}
+          </Typography>
+        ) : null}
+        {item.raidLabel ? (
+          <Typography
+            variant="caption"
+            color="text.disabled"
+            sx={{ lineHeight: 1.2, ml: "auto", flexShrink: 0 }}
+          >
+            {item.raidLabel}
           </Typography>
         ) : null}
       </Stack>
