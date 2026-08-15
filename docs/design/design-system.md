@@ -1,4 +1,4 @@
-# Design system — My Raid CDs
+# Design system — Raidwise
 
 Portable visual tokens and UI recipes used by this app. Use as:
 
@@ -41,7 +41,7 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 - Attribute: `document.documentElement.dataset.colorMode` = `light` | `dark`
 - CSS: `:root` / `:root[data-color-mode="dark"]` in `index.css`
-- Storage key: `my-raid-cds-color-mode`
+- Storage key: `raidwise-color-mode`
 - Theme-color meta: light `#fcfbf9`, dark `#1a1a1a`
 - Default for new ports: `light`
 
@@ -344,7 +344,7 @@ UI: MUI determinate `LinearProgress` only (`CompletionCountChip` in `dungeon-cel
 
 - Raid/BiS/export layout constants
 - WoW item link / emblem assets
-- Storage keys prefixed `my-raid-cds-*` (rename per app)
+- Storage keys prefixed `raidwise-*` (rename per app)
 
 ---
 

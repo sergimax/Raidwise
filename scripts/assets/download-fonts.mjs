@@ -74,7 +74,7 @@ for (const family of families) {
     }
     let next = block.replace(
       /url\([^)]+\)\s*format\('woff2'\)/,
-      `url('/my-raid-cds/fonts/${fileName}') format('woff2')`,
+      `url('/raidwise/fonts/${fileName}') format('woff2')`,
     );
     if (!/font-display:/.test(next)) {
       next = next.replace(

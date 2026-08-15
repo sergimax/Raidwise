@@ -5,10 +5,10 @@
  *   npm run build && npm run preview
  *
  * Usage:
- *   npm run lighthouse              # desktop → http://localhost:4173/my-raid-cds/
+ *   npm run lighthouse              # desktop → http://localhost:4173/raidwise/
  *   npm run lighthouse:mobile       # mobile preset, same URL
- *   node scripts/lighthouse/run-lighthouse.mjs https://sergimax.ru/my-raid-cds/
- *   node scripts/lighthouse/run-lighthouse.mjs http://localhost:4173/my-raid-cds/ --mobile
+ *   node scripts/lighthouse/run-lighthouse.mjs https://sergimax.ru/raidwise/
+ *   node scripts/lighthouse/run-lighthouse.mjs http://localhost:4173/raidwise/ --mobile
  *
  * On Windows, a project-local temp dir reduces chrome-launcher EPERM cleanup noise.
  * A non-zero exit after the report is written is often that cleanup race — check the output files.
@@ -21,7 +21,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const outDir = path.join(root, "docs", "lighthouse");
-const defaultUrl = "http://localhost:4173/my-raid-cds/";
+const defaultUrl = "http://localhost:4173/raidwise/";
 
 function parseArgs(argv) {
   const flags = new Set(argv.filter((arg) => arg.startsWith("--")));
