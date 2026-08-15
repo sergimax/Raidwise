@@ -3,8 +3,10 @@ import {
   DEFAULT_ITEM_TOOLTIP_LOCALE,
   ITEM_TOOLTIP_LOCALE_STORAGE_KEY,
   ITEM_TOOLTIP_LOCALES,
+  LEGACY_ITEM_TOOLTIP_LOCALE_STORAGE_KEY,
   type ItemTooltipLocale,
 } from "../constants/item-tooltips.ts";
+import { getLocalStorageItemMigrating } from "../utils/local-storage-migrate.ts";
 
 export type ItemTooltipLocaleContextValue = {
   locale: ItemTooltipLocale;
@@ -16,13 +18,12 @@ export const ItemTooltipLocaleContext =
   createContext<ItemTooltipLocaleContextValue | null>(null);
 
 function readStoredItemTooltipLocale(): ItemTooltipLocale | null {
-  try {
-    const raw = localStorage.getItem(ITEM_TOOLTIP_LOCALE_STORAGE_KEY);
-    if (raw && ITEM_TOOLTIP_LOCALES.includes(raw as ItemTooltipLocale)) {
-      return raw as ItemTooltipLocale;
-    }
-  } catch {
-    // ignore quota / private mode
+  const raw = getLocalStorageItemMigrating(
+    ITEM_TOOLTIP_LOCALE_STORAGE_KEY,
+    LEGACY_ITEM_TOOLTIP_LOCALE_STORAGE_KEY,
+  );
+  if (raw && ITEM_TOOLTIP_LOCALES.includes(raw as ItemTooltipLocale)) {
+    return raw as ItemTooltipLocale;
   }
   return null;
 }

@@ -1,12 +1,17 @@
 import { useCallback, useMemo, useState } from "react";
-import { APP_INTRO_DISMISSED_STORAGE_KEY } from "../constants/app-intro.ts";
+import {
+  APP_INTRO_DISMISSED_STORAGE_KEY,
+  LEGACY_APP_INTRO_DISMISSED_STORAGE_KEY,
+} from "../constants/app-intro.ts";
+import { getLocalStorageItemMigrating } from "../utils/local-storage-migrate.ts";
 
 function readAppIntroDismissed(): boolean {
-  try {
-    return localStorage.getItem(APP_INTRO_DISMISSED_STORAGE_KEY) === "1";
-  } catch {
-    return false;
-  }
+  return (
+    getLocalStorageItemMigrating(
+      APP_INTRO_DISMISSED_STORAGE_KEY,
+      LEGACY_APP_INTRO_DISMISSED_STORAGE_KEY,
+    ) === "1"
+  );
 }
 
 function writeAppIntroDismissed(dismissed: boolean) {
@@ -16,6 +21,7 @@ function writeAppIntroDismissed(dismissed: boolean) {
     } else {
       localStorage.removeItem(APP_INTRO_DISMISSED_STORAGE_KEY);
     }
+    localStorage.removeItem(LEGACY_APP_INTRO_DISMISSED_STORAGE_KEY);
   } catch {
     // ignore quota / private mode
   }

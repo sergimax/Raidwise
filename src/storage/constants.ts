@@ -1,4 +1,7 @@
-export const STORAGE_KEY = "my-raid-cds";
+export const STORAGE_KEY = "raidwise";
+
+/** Pre-rename key; migrated on load via `getLocalStorageItemMigrating`. */
+export const LEGACY_STORAGE_KEY = "my-raid-cds";
 
 /** Bump when stored JSON shape or migrations change. */
 export const CURRENT_SCHEMA_VERSION = 6;

@@ -1,5 +1,5 @@
 /**
- * Tracker localStorage migrations (`my-raid-cds` key).
+ * Tracker localStorage migrations (`raidwise` key).
  *
  * Runs on load before row parsers in `parse.ts`. Steps are sequential and
  * idempotent enough that re-running a later step on already-migrated data is safe.

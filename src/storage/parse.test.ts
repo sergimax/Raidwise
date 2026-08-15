@@ -4,6 +4,7 @@ import { RaidNames } from "../data/raid-names.ts";
 import { Classes } from "../types/characters.ts";
 import { DungeonDifficulty } from "../types/dungeons.ts";
 import {
+  LEGACY_STORAGE_KEY,
   LOAD_WARNING_CORRUPTED_SAVE,
   STORAGE_KEY,
 } from "./constants.ts";
@@ -21,6 +22,23 @@ describe("loadRaidTrackerState", () => {
       state: EMPTY_STATE,
       loadWarning: null,
     });
+  });
+
+  it("migrates a legacy my-raid-cds payload to the raidwise key", () => {
+    const payload: StoredPayload = {
+      schemaVersion: 6,
+      characters: [],
+      dungeons: [],
+      dungeonToggles: {},
+    };
+    localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(payload));
+
+    expect(loadRaidTrackerState()).toEqual({
+      state: EMPTY_STATE,
+      loadWarning: null,
+    });
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(payload));
+    expect(localStorage.getItem(LEGACY_STORAGE_KEY)).toBeNull();
   });
 
   it("returns corrupted warning for invalid JSON", () => {

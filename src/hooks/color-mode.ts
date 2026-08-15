@@ -9,9 +9,13 @@
  */
 import { createContext } from "react";
 import type { PaletteMode } from "@mui/material";
+import { getLocalStorageItemMigrating } from "../utils/local-storage-migrate.ts";
 
-/** Same key as index.html pre-paint script (my-raid-cds-color-mode). */
-export const COLOR_MODE_STORAGE_KEY = "my-raid-cds-color-mode";
+/** Same key as index.html pre-paint script (raidwise-color-mode). */
+export const COLOR_MODE_STORAGE_KEY = "raidwise-color-mode";
+
+/** Pre-rename key; migrated on load via `getLocalStorageItemMigrating`. */
+export const LEGACY_COLOR_MODE_STORAGE_KEY = "my-raid-cds-color-mode";
 
 export type ColorMode = PaletteMode;
 
@@ -25,13 +29,12 @@ export type ColorModeContextValue = {
 export const ColorModeContext = createContext<ColorModeContextValue | null>(null);
 
 function readStoredColorMode(): ColorMode | null {
-  try {
-    const raw = localStorage.getItem(COLOR_MODE_STORAGE_KEY);
-    if (raw === "light" || raw === "dark") {
-      return raw;
-    }
-  } catch {
-    // ignore quota / private mode
+  const raw = getLocalStorageItemMigrating(
+    COLOR_MODE_STORAGE_KEY,
+    LEGACY_COLOR_MODE_STORAGE_KEY,
+  );
+  if (raw === "light" || raw === "dark") {
+    return raw;
   }
   return null;
 }

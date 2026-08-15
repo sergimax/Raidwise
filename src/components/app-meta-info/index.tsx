@@ -3,7 +3,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 
-const GITHUB_REPO_URL = "https://github.com/sergimax/my-raid-cds";
+const GITHUB_REPO_URL = "https://github.com/sergimax/Raidwise";
 const AUTHOR_SITE_URL = "https://sergimax.ru";
 
 export function AppVersionLabel() {

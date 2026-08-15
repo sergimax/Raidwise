@@ -7,8 +7,10 @@ import type {
 import {
   BIS_LISTS_SCHEMA_VERSION,
   BIS_LISTS_STORAGE_KEY,
+  LEGACY_BIS_LISTS_STORAGE_KEY,
 } from "./constants.ts";
 import { isRecord } from "../guards.ts";
+import { getLocalStorageItemMigrating } from "../../utils/local-storage-migrate.ts";
 
 const EMPTY_STATE: LocalBisListsState = {
   schemaVersion: BIS_LISTS_SCHEMA_VERSION,
@@ -122,12 +124,16 @@ function parseEntries(
 }
 
 /**
- * Load BiS lists from `my-raid-cds-bis-lists`. Wrong schema or corrupt JSON → empty.
+ * Load BiS lists from `raidwise-bis-lists` (migrates legacy `my-raid-cds-bis-lists`).
+ * Wrong schema or corrupt JSON → empty.
  * Entries are soft-validated; bad rows are dropped rather than failing the whole load.
  */
 export function loadLocalBisListsState(): LocalBisListsState {
   try {
-    const raw = localStorage.getItem(BIS_LISTS_STORAGE_KEY);
+    const raw = getLocalStorageItemMigrating(
+      BIS_LISTS_STORAGE_KEY,
+      LEGACY_BIS_LISTS_STORAGE_KEY,
+    );
     if (!raw) {
       return EMPTY_STATE;
     }

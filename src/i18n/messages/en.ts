@@ -15,7 +15,7 @@ export const enMessages = {
     optional: "optional",
   },
   header: {
-    appTitle: "My Raid CDs",
+    appTitle: "Raidwise",
     themeLight: "Switch to light mode",
     themeDark: "Switch to dark mode",
     introShowAria: "Show how this app can help",
