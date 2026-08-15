@@ -1,0 +1,11 @@
+---
+description: Naming conventions for files and symbols
+alwaysApply: true
+---
+
+# Naming
+
+- Prefer **kebab-case** for file names (e.g. `use-raid-tracker.ts`, `raid-tracker-table/index.tsx`)
+- Prefer **kebab-case** for component dirs (e.g. `character-form/`)
+- Keep exported symbols idiomatic (e.g. `useRaidTracker` is fine), but keep **file paths** kebab-case
+- Avoid oversimplified names for locals and callback params (e.g. `v`, `d`, `c`, `e`); prefer descriptive names like `event`, `nextValue`, `character`, `dungeon`

@@ -1,0 +1,27 @@
+---
+description: Semantic versioning and Keep a Changelog rules
+alwaysApply: true
+---
+
+# Versioning & Changelog
+
+- Use [Semantic Versioning](https://semver.org/): MAJOR.MINOR.PATCH
+- Version lives in `package.json`; shown in the app header via Vite `define` (`AppVersionLabel` / `__APP_VERSION__`)
+- When releasing: bump `package.json` (and matching `package-lock.json` root + `packages[""]` versions), then add a `CHANGELOG.md` entry and sync README EN+RU `App_version` badges
+- CI **Release files** (`scripts/release/check-release-files.mjs`) validates that bump — it does not bump versions itself
+- Changelog entries must describe **actual user-facing changes** included in the release (derived from commits/diff since the previous release), not just “bump version”
+
+## Changelog format
+
+- Follow [Keep a Changelog](https://keepachangelog.com/)
+- File: `CHANGELOG.md` at project root
+- Sections: `### Added`, `### Changed`, `### Deprecated`, `### Removed`, `### Fixed`, `### Security`
+- Entry format: `## [X.Y.Z] - YYYY-MM-DD`
+- Add new entries at the top (above previous releases)
+- Do **not** add filler entries like “version bump for release”; if a release contains no notable changes, do not cut a release (or explicitly document why)
+
+## Version bump rules
+
+- **PATCH** — bug fixes, minor tweaks
+- **MINOR** — new features, non-breaking changes
+- **MAJOR** — breaking changes (use `BREAKING CHANGE` in commit)
