@@ -1,10 +1,10 @@
-# My Raid CDs
+# Raidwise
 
 **English** | [Русский](README.ru.md)
 
 Web app to track raid cooldowns per character and dungeon, with BiS gear hints and raid signup helpers (WotLK-focused).
 Data persists locally in `localStorage`.
-Live site: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
+Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
 ![App version](https://img.shields.io/badge/App_version-2.6.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
@@ -144,11 +144,13 @@ Regenerate TypeScript presets after editing the markdown.
 
 | Key | Contents |
 |-----|----------|
-| `my-raid-cds` | Characters, dungeons, toggles (`schemaVersion` 6) |
-| `my-raid-cds-bis-lists` | BiS preset selections and local lists (`schemaVersion` 1; malformed entries skipped on load) |
-| `my-raid-cds-item-tooltip-locale` | `en` or `ru` (defaults to `ru`) |
-| `my-raid-cds-color-mode` | Light/dark preference |
-| `my-raid-cds-gear-hint-legend-dismissed` | Dismissed gear-hint legend above the table |
+| `raidwise` | Characters, dungeons, toggles (`schemaVersion` 6) |
+| `raidwise-bis-lists` | BiS preset selections and local lists (`schemaVersion` 1; malformed entries skipped on load) |
+| `raidwise-item-tooltip-locale` | `en` or `ru` (defaults to `ru`) |
+| `raidwise-color-mode` | Light/dark preference |
+| `raidwise-gear-hint-legend-dismissed` | Dismissed gear-hint legend above the table |
+
+Legacy `my-raid-cds*` keys are copied to the new names on first load, then removed.
 
 Character names: new names are letters only (Unicode `\p{L}+`); display capitalizes the first letter. Legacy names with digits/symbols still load.
 
@@ -157,26 +159,26 @@ Legacy saves migrate on load.
 
 ### Deployment (caching & HTTP)
 
-Vite emits content-hashed files under `assets/` (e.g. `/my-raid-cds/assets/index-….js`). For good Lighthouse cache scores on [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds):
+Vite emits content-hashed files under `assets/` (e.g. `/raidwise/assets/index-….js`). For good Lighthouse cache scores on [sergimax.ru/raidwise](https://sergimax.ru/raidwise):
 
 | Path | Cache-Control | Notes |
 |------|---------------|--------|
-| `/my-raid-cds/assets/*` | `public, max-age=31536000, immutable` | Filenames change every build |
-| `/my-raid-cds/index.html` | `no-cache` or short `max-age` (e.g. 60) | Must revalidate so clients pick up new hashes |
-| `/my-raid-cds/fonts/*` | `public, max-age=31536000, immutable` | Self-hosted woff2 |
+| `/raidwise/assets/*` | `public, max-age=31536000, immutable` | Filenames change every build |
+| `/raidwise/index.html` | `no-cache` or short `max-age` (e.g. 60) | Must revalidate so clients pick up new hashes |
+| `/raidwise/fonts/*` | `public, max-age=31536000, immutable` | Self-hosted woff2 |
 
 Also enable **HTTP/2** (or HTTP/3) and **brotli** or **gzip** for JS/CSS/JSON/SVG/woff2.
 
 Example Nginx location snippets:
 
 ```nginx
-location /my-raid-cds/assets/ {
+location /raidwise/assets/ {
   add_header Cache-Control "public, max-age=31536000, immutable";
 }
-location = /my-raid-cds/index.html {
+location = /raidwise/index.html {
   add_header Cache-Control "no-cache";
 }
-location /my-raid-cds/fonts/ {
+location /raidwise/fonts/ {
   add_header Cache-Control "public, max-age=31536000, immutable";
 }
 ```

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Project rename:** App branding, package name, Vite base path (`/raidwise/`), and `localStorage` keys are now **Raidwise**. Existing `my-raid-cds*` saves and preferences migrate automatically on load.
+
 ## [2.6.0] - 2026-08-14
 
 ### Added
