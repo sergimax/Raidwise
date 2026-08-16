@@ -17,7 +17,7 @@ export const ruMessages: Messages = {
     optional: "необязательно",
   },
   header: {
-    appTitle: "My Raid CDs",
+    appTitle: "Raidwise",
     themeLight: "Переключить на светлую тему",
     themeDark: "Переключить на тёмную тему",
     introShowAria: "Показать, чем поможет приложение",

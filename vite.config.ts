@@ -7,7 +7,7 @@ const pkg = JSON.parse(readFileSync("package.json", "utf-8")) as { version: stri
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/my-raid-cds/",
+  base: "/raidwise/",
   plugins: [react()],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),

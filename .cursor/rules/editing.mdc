@@ -1,0 +1,14 @@
+---
+description: How to edit files in this repo
+alwaysApply: true
+---
+
+# Editing
+
+- Prefer editing existing files over creating new ones
+- Preserve existing formatting and indentation
+- Do not expand scope beyond the requested change
+- Run the linter after changes; fix any new issues (`npm run lint`)
+- Typical component folder: `index.tsx`; add `types.ts` and/or `styles.css` when needed (not every component has all three)
+- Complex components (e.g. `raid-tracker-table/`) may include colocated subcomponents
+- Colocate tests as `*.test.ts` / `*.test.tsx` beside the module under test; use `src/test/fixtures.ts` and `renderWithTheme` for MUI component tests

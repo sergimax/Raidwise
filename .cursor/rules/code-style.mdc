@@ -1,0 +1,12 @@
+---
+description: TypeScript and React code style for this Vite app
+alwaysApply: true
+---
+
+# Code Style
+
+- Use TypeScript strictly; avoid `any` unless necessary
+- Prefer functional components and hooks in React
+- Use meaningful names; keep functions small and focused
+- Match existing formatting and indentation in touched files
+- Follow existing patterns; check README before adding dependencies

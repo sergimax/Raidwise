@@ -28,7 +28,7 @@ describe("GearHintLegend", () => {
 describe("GEAR_HINT_LEGEND_DISMISSED_STORAGE_KEY", () => {
   it("uses a dedicated localStorage key", () => {
     expect(GEAR_HINT_LEGEND_DISMISSED_STORAGE_KEY).toBe(
-      "my-raid-cds-gear-hint-legend-dismissed",
+      "raidwise-gear-hint-legend-dismissed",
     );
   });
 });

@@ -12,15 +12,15 @@ npm run preview
 In another terminal:
 
 ```bash
-npm run lighthouse          # desktop → http://localhost:4173/my-raid-cds/
+npm run lighthouse          # desktop → http://localhost:4173/raidwise/
 npm run lighthouse:mobile   # mobile preset
 ```
 
 ## Production URL
 
 ```bash
-npm run lighthouse -- https://sergimax.ru/my-raid-cds/
-npm run lighthouse:mobile -- https://sergimax.ru/my-raid-cds/
+npm run lighthouse -- https://sergimax.ru/raidwise/
+npm run lighthouse:mobile -- https://sergimax.ru/raidwise/
 ```
 
 Reports are written as `docs/lighthouse/<host>-<preset>-<timestamp>.report.{json,html}`.

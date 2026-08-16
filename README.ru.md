@@ -1,12 +1,12 @@
-# My Raid CDs
+# Raidwise
 
 [English](README.md) | **Русский**
 
 Веб-приложение для учёта рейдовых КД по персонажам и подземельям, с BiS-подсказками по гиру и помощниками для набора в рейд (фокус на WotLK).
 Данные хранятся локально в `localStorage`.
-Активная ссылка: [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds)
+Активная ссылка: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![Версия приложения](https://img.shields.io/badge/App_version-2.6.0-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-2.7.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 <img src="./public/logo.svg" width="148" height="148">
@@ -145,11 +145,13 @@ npm run dev
 
 | Ключ | Содержимое |
 |------|------------|
-| `my-raid-cds` | Персонажи, подземелья, переключатели (`schemaVersion` 6) |
-| `my-raid-cds-bis-lists` | Выбранные BiS и локальные списки (`schemaVersion` 1; битые записи пропускаются) |
-| `my-raid-cds-item-tooltip-locale` | `en` или `ru` (по умолчанию `ru`) |
-| `my-raid-cds-color-mode` | Светлая/тёмная тема |
-| `my-raid-cds-gear-hint-legend-dismissed` | Скрытая легенда подсказок экипировки над таблицей |
+| `raidwise` | Персонажи, подземелья, переключатели (`schemaVersion` 6) |
+| `raidwise-bis-lists` | Выбранные BiS и локальные списки (`schemaVersion` 1; битые записи пропускаются) |
+| `raidwise-item-tooltip-locale` | `en` или `ru` (по умолчанию `ru`) |
+| `raidwise-color-mode` | Светлая/тёмная тема |
+| `raidwise-gear-hint-legend-dismissed` | Скрытая легенда подсказок экипировки над таблицей |
+
+Старые ключи `my-raid-cds*` при первой загрузке копируются в новые и удаляются.
 
 Имена персонажей: при создании — только буквы (Unicode `\p{L}+`); в UI первая буква с заглавной. Старые имена с цифрами/символами по-прежнему загружаются.
 
@@ -158,26 +160,26 @@ npm run dev
 
 ### Деплой (кэш и HTTP)
 
-Vite кладёт файлы с хэшем в имени в `assets/` (напр. `/my-raid-cds/assets/index-….js`). Для нормального кэша в Lighthouse на [sergimax.ru/my-raid-cds](https://sergimax.ru/my-raid-cds):
+Vite кладёт файлы с хэшем в имени в `assets/` (напр. `/raidwise/assets/index-….js`). Для нормального кэша в Lighthouse на [sergimax.ru/raidwise](https://sergimax.ru/raidwise):
 
 | Путь | Cache-Control | Зачем |
 |------|---------------|--------|
-| `/my-raid-cds/assets/*` | `public, max-age=31536000, immutable` | Имя файла меняется при каждой сборке |
-| `/my-raid-cds/index.html` | `no-cache` или короткий `max-age` (напр. 60) | Клиенты должны подхватывать новые хэши |
-| `/my-raid-cds/fonts/*` | `public, max-age=31536000, immutable` | Локальные woff2 |
+| `/raidwise/assets/*` | `public, max-age=31536000, immutable` | Имя файла меняется при каждой сборке |
+| `/raidwise/index.html` | `no-cache` или короткий `max-age` (напр. 60) | Клиенты должны подхватывать новые хэши |
+| `/raidwise/fonts/*` | `public, max-age=31536000, immutable` | Локальные woff2 |
 
 Также включите **HTTP/2** (или HTTP/3) и **brotli**/**gzip** для JS/CSS/JSON/SVG/woff2.
 
 Пример для Nginx:
 
 ```nginx
-location /my-raid-cds/assets/ {
+location /raidwise/assets/ {
   add_header Cache-Control "public, max-age=31536000, immutable";
 }
-location = /my-raid-cds/index.html {
+location = /raidwise/index.html {
   add_header Cache-Control "no-cache";
 }
-location /my-raid-cds/fonts/ {
+location /raidwise/fonts/ {
   add_header Cache-Control "public, max-age=31536000, immutable";
 }
 ```

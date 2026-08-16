@@ -12,6 +12,7 @@ import {
   type DungeonToggles,
 } from "../types/dungeons.ts";
 import {
+  LEGACY_STORAGE_KEY,
   LOAD_WARNING_CORRUPTED_SAVE,
   STORAGE_KEY,
 } from "./constants.ts";
@@ -24,6 +25,7 @@ import {
   type StoredPayload,
 } from "./types.ts";
 import { isRecord } from "./guards.ts";
+import { getLocalStorageItemMigrating } from "../utils/local-storage-migrate.ts";
 
 const VALID_EMBLEM_KEYS = new Set<string>(Object.values(EmblemKey));
 
@@ -37,7 +39,7 @@ function parseStoredEmblem(stored: StoredDungeon): EmblemKeyType | undefined {
 function readRawPayload(): { payload: StoredPayload | null; corrupted: boolean } {
   let raw: string | null;
   try {
-    raw = localStorage.getItem(STORAGE_KEY);
+    raw = getLocalStorageItemMigrating(STORAGE_KEY, LEGACY_STORAGE_KEY);
   } catch {
     return { payload: null, corrupted: true };
   }

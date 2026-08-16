@@ -1,12 +1,17 @@
 import { useCallback, useState } from "react";
-import { GEAR_HINT_LEGEND_DISMISSED_STORAGE_KEY } from "../constants/gear-hint-legend.ts";
+import {
+  GEAR_HINT_LEGEND_DISMISSED_STORAGE_KEY,
+  LEGACY_GEAR_HINT_LEGEND_DISMISSED_STORAGE_KEY,
+} from "../constants/gear-hint-legend.ts";
+import { getLocalStorageItemMigrating } from "../utils/local-storage-migrate.ts";
 
 function readGearHintLegendDismissed(): boolean {
-  try {
-    return localStorage.getItem(GEAR_HINT_LEGEND_DISMISSED_STORAGE_KEY) === "1";
-  } catch {
-    return false;
-  }
+  return (
+    getLocalStorageItemMigrating(
+      GEAR_HINT_LEGEND_DISMISSED_STORAGE_KEY,
+      LEGACY_GEAR_HINT_LEGEND_DISMISSED_STORAGE_KEY,
+    ) === "1"
+  );
 }
 
 export function useGearHintLegendDismissed() {
