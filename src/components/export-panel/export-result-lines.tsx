@@ -62,12 +62,14 @@ function ExportResultLineRow({ line, emphasizeCopy }: ExportResultLineRowProps) 
         flexDirection: { xs: "column", sm: "row" },
         alignItems: { xs: "stretch", sm: "center" },
         gap: 1.25,
-        border: 1,
+        px: 0.25,
+        py: 0.75,
+        borderBottom: 1,
         borderColor: "divider",
-        borderRadius: 1,
-        px: 1.25,
-        py: 1,
         minWidth: 0,
+        "&:last-child": {
+          borderBottom: 0,
+        },
       }}
     >
       <Button
@@ -93,12 +95,7 @@ function ExportResultLineRow({ line, emphasizeCopy }: ExportResultLineRowProps) 
           display: "flex",
           alignItems: "center",
           gap: 0.75,
-          px: 1,
-          py: 0.5,
-          borderRadius: 1,
-          bgcolor: "action.hover",
-          border: 1,
-          borderColor: "divider",
+          minWidth: 0,
         }}
       >
         <ExportRaidIcon raidKey={line.raidKey} />
@@ -186,7 +183,7 @@ export function ExportResultLines({
       sx={sectionLayoutSx}
       contentSx={sectionContentSx}
     >
-      <Stack spacing={1}>
+      <Stack spacing={0}>
         {result.lines.map((line) => (
           <ExportResultLineRow
             key={line.dungeonId}
