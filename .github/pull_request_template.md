@@ -8,8 +8,8 @@ Author fills every applicable box before merge. Mark N/A items as checked with a
 
 ### Quality
 
+- [ ] `npm i` - found 0 vulnerabilities
 - [ ] `npm run ci` passes locally (lint + `test:run` + build)
-- [ ] Tests added or updated for bug fixes and new features
 - [ ] No secrets, credentials, or local-only paths committed
 
 <!-- ### User-facing (skip if pure internal) -->
