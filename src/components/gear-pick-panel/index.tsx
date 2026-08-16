@@ -8,7 +8,10 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
 import type { DungeonRecord, DungeonToggles } from "../../types/dungeons.ts";
 import { hasCharacterWithoutCdInVisibleDungeons } from "../../utils/build-export-status.ts";
-import { buildGearPickItems } from "../../utils/build-gear-pick-items.ts";
+import {
+  buildGearPickItems,
+  characterHasGearPickUpgrades,
+} from "../../utils/build-gear-pick-items.ts";
 import {
   emptySoftAssignment,
   formatGearPickCopyText,
@@ -31,6 +34,7 @@ import {
   getGearPickWideContainerMqKey,
 } from "./constants.ts";
 import { GearPickCharacterSelect } from "./gear-pick-character-select.tsx";
+import { GearPickCharacterFilterActions } from "./gear-pick-character-filter-actions.tsx";
 import { GearPickCopyBlock } from "./gear-pick-copy-block.tsx";
 import { GearPickEmptyNoGear } from "./gear-pick-empty-no-gear.tsx";
 import { GearPickFilterBlock } from "./gear-pick-filter-block.tsx";
@@ -77,8 +81,10 @@ export function GearPickPanel({
     clearAssignments,
     includeCopyCharacterName,
     compactCopyLines,
+    onlyCharactersWithUpgrades,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
+    setOnlyCharactersWithUpgrades,
   } = session;
 
   const activeDungeons = useMemo(
@@ -86,7 +92,7 @@ export function GearPickPanel({
     [excludedDungeonIds, visibleDungeons],
   );
 
-  const includedCharacterIds = useMemo(
+  const availableCharacterIds = useMemo(
     () =>
       new Set(
         characters
@@ -102,9 +108,36 @@ export function GearPickPanel({
     [activeDungeons, characters, dungeonToggles],
   );
 
-  /** Ignore a stored pick when that character is on CD for every visible raid. */
+  const charactersWithUpgradesIds = useMemo(() => {
+    if (!onlyCharactersWithUpgrades) {
+      return new Set<string>();
+    }
+    return new Set(
+      characters
+        .filter((character) =>
+          characterHasGearPickUpgrades({
+            character,
+            dungeons: activeDungeons,
+            getBisSlotMapForSpec,
+            locale,
+          }),
+        )
+        .map((character) => character.id),
+    );
+  }, [
+    activeDungeons,
+    characters,
+    getBisSlotMapForSpec,
+    locale,
+    onlyCharactersWithUpgrades,
+  ]);
+
+  /** Ignore a stored pick when that character is on CD or dimmed by the upgrades filter. */
   const activeSelection =
-    selection !== null && includedCharacterIds.has(selection.characterId)
+    selection !== null &&
+    availableCharacterIds.has(selection.characterId) &&
+    (!onlyCharactersWithUpgrades ||
+      charactersWithUpgradesIds.has(selection.characterId))
       ? selection
       : null;
 
@@ -301,10 +334,18 @@ export function GearPickPanel({
           step={2}
           title={t("gearPickPanel.characterTitle")}
           description={t("gearPickPanel.characterHelper")}
+          titleActions={
+            <GearPickCharacterFilterActions
+              onlyWithUpgrades={onlyCharactersWithUpgrades}
+              onOnlyWithUpgradesChange={setOnlyCharactersWithUpgrades}
+            />
+          }
         >
           <GearPickCharacterSelect
             characters={characters}
-            includedCharacterIds={includedCharacterIds}
+            availableCharacterIds={availableCharacterIds}
+            charactersWithUpgradesIds={charactersWithUpgradesIds}
+            onlyWithUpgrades={onlyCharactersWithUpgrades}
             selection={activeSelection}
             onSelectionChange={handleSelectionChange}
             t={t}

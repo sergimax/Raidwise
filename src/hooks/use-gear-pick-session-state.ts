@@ -29,6 +29,8 @@ export function useGearPickSessionState() {
   const [includeCopyCharacterName, setIncludeCopyCharacterName] =
     useState(true);
   const [compactCopyLines, setCompactCopyLines] = useState(false);
+  const [onlyCharactersWithUpgrades, setOnlyCharactersWithUpgrades] =
+    useState(false);
 
   const handleSelectionChange = useCallback(
     (next: GearPickCharacterSelection) => {
@@ -110,6 +112,7 @@ export function useGearPickSessionState() {
     excludedDungeonIds,
     includeCopyCharacterName,
     compactCopyLines,
+    onlyCharactersWithUpgrades,
     handleSelectionChange,
     handleRulesChange,
     handleMySoftsChange,
@@ -121,6 +124,7 @@ export function useGearPickSessionState() {
     clearAssignments,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
+    setOnlyCharactersWithUpgrades,
   };
 }
 

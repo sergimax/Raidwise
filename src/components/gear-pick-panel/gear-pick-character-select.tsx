@@ -21,9 +21,16 @@ export type GearPickCharacterSelection = {
   side: GearPickSpecSide;
 };
 
+export type GearPickCharacterInactiveReason = "cooldown" | "noUpgrades";
+
 type GearPickCharacterSelectProps = {
   characters: readonly CharacterRecord[];
-  includedCharacterIds: ReadonlySet<string>;
+  /** Characters not on CD for every active raid. */
+  availableCharacterIds: ReadonlySet<string>;
+  /** Characters with Soft pick BiS targets in active raids. */
+  charactersWithUpgradesIds: ReadonlySet<string>;
+  /** When true, characters without upgrades are dimmed and non-selectable. */
+  onlyWithUpgrades: boolean;
   selection: GearPickCharacterSelection | null;
   onSelectionChange: (selection: GearPickCharacterSelection) => void;
   t: TranslateFn;
@@ -41,17 +48,42 @@ function parseSelectionValue(value: string): GearPickCharacterSelection | null {
   return { characterId, side };
 }
 
+function getInactiveReason(
+  characterId: string,
+  availableCharacterIds: ReadonlySet<string>,
+  charactersWithUpgradesIds: ReadonlySet<string>,
+  onlyWithUpgrades: boolean,
+): GearPickCharacterInactiveReason | null {
+  if (!availableCharacterIds.has(characterId)) {
+    return "cooldown";
+  }
+  if (onlyWithUpgrades && !charactersWithUpgradesIds.has(characterId)) {
+    return "noUpgrades";
+  }
+  return null;
+}
+
+function inactiveTooltipKey(
+  reason: GearPickCharacterInactiveReason,
+):
+  | "exportPanel.characterInactiveCooldownHint"
+  | "gearPickPanel.characterInactiveNoUpgradesHint" {
+  return reason === "cooldown"
+    ? "exportPanel.characterInactiveCooldownHint"
+    : "gearPickPanel.characterInactiveNoUpgradesHint";
+}
+
 function GearPickSpecRadio({
   character,
   specGear,
   side,
-  cooldownInactive,
+  inactiveReason,
   t,
 }: {
   character: CharacterRecord;
   specGear: CharacterSpecGear;
   side: GearPickSpecSide;
-  cooldownInactive: boolean;
+  inactiveReason: GearPickCharacterInactiveReason | null;
   t: TranslateFn;
 }) {
   const { locale } = useTranslation();
@@ -60,10 +92,14 @@ function GearPickSpecRadio({
     return null;
   }
 
+  const cooldownInactive = inactiveReason === "cooldown";
+  const upgradesInactive = inactiveReason === "noUpgrades";
+  const inactive = inactiveReason !== null;
+
   const control = (
     <FormControlLabel
       value={selectionValue({ characterId: character.id, side })}
-      control={<Radio size="small" disabled={cooldownInactive} />}
+      control={<Radio size="small" disabled={inactive} />}
       aria-label={t("gearPickPanel.selectSpecAria", {
         name: character.name,
         spec: getLocalizedSpecName(character.class.name, specGear.spec, locale),
@@ -77,7 +113,7 @@ function GearPickSpecRadio({
           variant="caption"
           showSpecName={false}
           showDetailTooltip={false}
-          color={cooldownInactive ? "text.secondary" : "inherit"}
+          color={inactive ? "text.secondary" : "inherit"}
         />
       }
       sx={{
@@ -86,21 +122,21 @@ function GearPickSpecRadio({
         minWidth: 0,
         "& .MuiRadio-root": {
           p: 0.25,
-          ...(cooldownInactive ? { opacity: 0.45 } : null),
+          ...(inactive ? { opacity: 0.45 } : null),
         },
         "& .MuiFormControlLabel-label": { ml: 0, minWidth: 0 },
         ...(cooldownInactive
           ? { "& img": { opacity: 0.45, filter: "grayscale(1)" } }
-          : null),
+          : upgradesInactive
+            ? { "& img": { opacity: 0.55 } }
+            : null),
       }}
     />
   );
 
   return (
     <InactiveSpecTooltip
-      title={
-        cooldownInactive ? t("exportPanel.characterInactiveCooldownHint") : null
-      }
+      title={inactiveReason ? t(inactiveTooltipKey(inactiveReason)) : null}
     >
       {control}
     </InactiveSpecTooltip>
@@ -109,7 +145,9 @@ function GearPickSpecRadio({
 
 export function GearPickCharacterSelect({
   characters,
-  includedCharacterIds,
+  availableCharacterIds,
+  charactersWithUpgradesIds,
+  onlyWithUpgrades,
   selection,
   onSelectionChange,
   t,
@@ -129,7 +167,15 @@ export function GearPickCharacterSelect({
       value={selection ? selectionValue(selection) : ""}
       onChange={(event) => {
         const next = parseSelectionValue(event.target.value);
-        if (next && includedCharacterIds.has(next.characterId)) {
+        if (
+          next &&
+          getInactiveReason(
+            next.characterId,
+            availableCharacterIds,
+            charactersWithUpgradesIds,
+            onlyWithUpgrades,
+          ) === null
+        ) {
           onSelectionChange(next);
         }
       }}
@@ -143,20 +189,26 @@ export function GearPickCharacterSelect({
         const hasMain = Boolean(character.mainSpec);
         const hasOff = Boolean(character.offSpec);
         const hasNoSpecs = !hasMain && !hasOff;
-        const cooldownInactive = !includedCharacterIds.has(character.id);
+        const inactiveReason = getInactiveReason(
+          character.id,
+          availableCharacterIds,
+          charactersWithUpgradesIds,
+          onlyWithUpgrades,
+        );
 
         return (
           <Box key={character.id} sx={{ display: "contents" }}>
             <InactiveSpecTooltip
               title={
-                cooldownInactive
-                  ? t("exportPanel.characterInactiveCooldownHint")
-                  : null
+                inactiveReason ? t(inactiveTooltipKey(inactiveReason)) : null
               }
             >
               <CharacterSpecListName
                 name={character.name}
-                inactive={cooldownInactive}
+                inactive={inactiveReason !== null}
+                inactiveTone={
+                  inactiveReason === "noUpgrades" ? "filters" : "cooldown"
+                }
               />
             </InactiveSpecTooltip>
             <SpecCell>
@@ -165,7 +217,7 @@ export function GearPickCharacterSelect({
                   character={character}
                   specGear={character.mainSpec}
                   side="main"
-                  cooldownInactive={cooldownInactive}
+                  inactiveReason={inactiveReason}
                   t={t}
                 />
               ) : hasNoSpecs ? (
@@ -180,7 +232,7 @@ export function GearPickCharacterSelect({
                   character={character}
                   specGear={character.offSpec}
                   side="off"
-                  cooldownInactive={cooldownInactive}
+                  inactiveReason={inactiveReason}
                   t={t}
                 />
               ) : null}

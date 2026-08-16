@@ -6,7 +6,10 @@ import { ClassName, Classes } from "../types/characters.ts";
 import { DungeonDifficulty } from "../types/dungeons.ts";
 import { createTestCharacter, createTestDungeon } from "../test/fixtures.ts";
 import { buildBisSlotMap } from "./bis-lists.ts";
-import { buildGearPickItems } from "./build-gear-pick-items.ts";
+import {
+  buildGearPickItems,
+  characterHasGearPickUpgrades,
+} from "./build-gear-pick-items.ts";
 
 const paladinClass = Classes.find(
   (characterClass) => characterClass.name === ClassName.Paladin,
@@ -187,5 +190,69 @@ describe("buildGearPickItems", () => {
     });
 
     expect(items.map((item) => item.itemId)).toContain(50719);
+  });
+});
+
+describe("characterHasGearPickUpgrades", () => {
+  it("is false when no dungeons or no class", () => {
+    expect(
+      characterHasGearPickUpgrades({
+        character: createTestCharacter({
+          class: paladinClass,
+          mainSpec: { spec: "Retribution" },
+        }),
+        dungeons: [],
+        getBisSlotMapForSpec: getRetributionBisSlotMap,
+        locale: "en",
+      }),
+    ).toBe(false);
+
+    expect(
+      characterHasGearPickUpgrades({
+        character: createTestCharacter({ class: undefined }),
+        dungeons: [rubySanctum25Heroic],
+        getBisSlotMapForSpec: getRetributionBisSlotMap,
+        locale: "en",
+      }),
+    ).toBe(false);
+  });
+
+  it("is true when main or off has Soft pick BiS targets", () => {
+    // Gear hints require imported gear (empty exports skip Soft pick targets).
+    const character = createTestCharacter({
+      class: paladinClass,
+      mainSpec: {
+        spec: "Retribution",
+        gearItems: [
+          { slot: 1, id: 37646 },
+          { slot: 9, id: 37646 },
+          { slot: 11, id: 37646 },
+          { slot: 13, id: 37646 },
+        ],
+      },
+    });
+
+    expect(
+      characterHasGearPickUpgrades({
+        character,
+        dungeons: [rubySanctum25Heroic],
+        getBisSlotMapForSpec: getRetributionBisSlotMap,
+        locale: "en",
+      }),
+    ).toBe(true);
+  });
+
+  it("is false when neither spec has Soft pick BiS targets", () => {
+    expect(
+      characterHasGearPickUpgrades({
+        character: createTestCharacter({
+          class: paladinClass,
+          mainSpec: { spec: "Retribution" },
+        }),
+        dungeons: [rubySanctum25Heroic],
+        getBisSlotMapForSpec: () => new Map(),
+        locale: "en",
+      }),
+    ).toBe(false);
   });
 });

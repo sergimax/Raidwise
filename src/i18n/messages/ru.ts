@@ -353,6 +353,11 @@ export const ruMessages: Messages = {
       "Каждый, кто заявляет софт-резерв, получает 1 обычный /roll плюс /roll за каждый софт-резерв; побеждает лучший результат",
     characterTitle: "Персонаж и спек",
     characterHelper: "Выберите одного персонажа и один спек для планирования софтов",
+    onlyCharactersWithUpgrades: "С апгрейдами",
+    onlyCharactersWithUpgradesAria:
+      "Приглушить и отключить персонажей без BiS-апгрейдов в выбранных рейдах",
+    characterInactiveNoUpgradesHint:
+      "Нет BiS-апгрейдов в выбранных рейдах",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
       "Текстовый поиск по таблице. Нажмите на значок рейда — исключить или добавить рейд",
