@@ -26,19 +26,20 @@ Header **info** toggles a short usage-help intro (three ways to use the app: CDs
 ### Cooldown toggles
 
 Mark which character has CD on which raid.
-Reset one character from the table header, or everyone from the **Data** panel.
+Reset one character from the table header, or everyone from **Settings**.
 
 ### Table
 
 Sort and search raids (name, size, mode — EN/RU, e.g. `ICC25H` / `ЦЛК25хм`).
+**Type** column shows size (+ skull for Heroic); per-row edit / delete for raids.
 Character headers show class-colored names, main/off GS (or `- / -`), and edit / reset / delete.
 Complete column uses a progress bar (count on hover).
 Compact layout on small screens.
 Wide character columns scroll horizontally inside the table (page stays put).
 
-### Data controls
+### Settings
 
-Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm).
+Toolbar **Settings** opens data controls: bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm).
 When there are no dungeons — **Add raids from template**.
 
 ### Character pick for a raid
@@ -52,6 +53,7 @@ Header reset clears the raid search and chip exclusions.
 ### Soft pick for a raid
 
 Soft reserves for one character + spec on BiS upgrades from filtered raids (active list from **BiS builds**).
+Rules: max softs (1–4) and system (**re-roll** or **+100**).
 Session-only (character, rules, softs, and raid exclusions survive closing the panel).
 Competition colors and win-odds hints help pick softs; reset one row or the whole Soft targets list.
 Pasteable call list can include/hide the character name and boss details.
@@ -64,16 +66,19 @@ Layout wraps Soft targets / the copy block onto their own rows when the panel is
 Built-in presets per spec (Kingdom with slot variants first, then Titans/community); local copies are editable and used for gear-choice hints.
 Class/spec choice stays for the browser session when you leave the panel; preset selection is already saved in BiS storage.
 Slot layout matches the in-game paper doll; alternative items stack under the primary choice.
+**Copy** exports pasteable `Slot: Item` lines.
 Custom lists support clear-slot / clear-all; Items shows the active list name and scrolls with Lists within fixed height budgets.
 
 ### Gear hints
 
-CD cells:
-- <span style="color:#d97706">amber</span> — missing BiS
-- <span style="color:#0284c7">blue</span> — ilvl upgrade
+CD cells (hidden once that character–raid CD is marked):
+- <span style="color:#d97706">amber</span> — missing BiS (exact or normal variant)
+- <span style="color:#0284c7">blue</span> — stat-filtered ilvl upgrade
 
-Tooltips group loot by boss.
-Also-owned items (edit character) count as available for BiS/ilvl hints without being on the WowSims export.
+Main and off specs split the cell tint when both are set.
+Dismissible legend above the table explains the colors.
+Tooltips group loot by boss and list tier set tokens for the character’s class.
+Also-owned items (edit character) count as available for BiS/ilvl/tier-token hints without being on the WowSims export.
 
 ### EN / RU
 
@@ -132,6 +137,7 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Add slot comments to BiS preset files |
 | `npm run download:gear-slot-icons` | Regenerate WoW paper-doll slot placeholder PNGs in `src/assets/gear-slot-icons/` |
+| `npm run download:raid-icons` | Regenerate template-raid achievement icons in `src/assets/raid-icons/` |
 | `npm run download:fonts` | Regenerate self-hosted Onest / Noto Sans / JetBrains Mono woff2 + `src/fonts.css` |
 | `npm run compress:class-icons` | Resize class/spec icons to 32×32 WebP in `src/assets/class-icons/` |
 | `npm run lighthouse` | Desktop Lighthouse vs preview/production URL → `docs/lighthouse/` (run `preview` first for local) |
