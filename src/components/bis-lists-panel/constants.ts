@@ -1,3 +1,8 @@
+import {
+  EXPORT_FILTER_GRID_GAP_SPACING,
+  getFilterUnitColumnTemplate,
+} from "../export-panel/constants.ts";
+
 /**
  * BiS panel scroll budgets for the Items paper-doll and Lists chips.
  *
@@ -47,6 +52,17 @@ export const BIS_CLASS_SPEC_CONTENT_HEIGHT_PX = 112;
 
 /** Left-column gap between Class & spec and Lists (`spacing={1.5}` → 12px). */
 export const BIS_LEFT_COLUMN_SECTION_GAP_PX = 12;
+
+/**
+ * Side columns (class/lists | save) use the shared 300px unit; Items fills the
+ * middle. Matches Character pick / Soft pick / form unit widths.
+ */
+export function getBisListsGridTemplateColumns(): string {
+  const unitColumn = getFilterUnitColumnTemplate();
+  return `${unitColumn} minmax(0, 1fr) ${unitColumn}`;
+}
+
+export { EXPORT_FILTER_GRID_GAP_SPACING };
 
 /** Max height of the Items paper-doll scroll viewport (md+). */
 export function getBisItemsContentMaxHeight(): number {

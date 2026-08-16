@@ -55,8 +55,10 @@ import { SpecOptionLabel } from "../spec-option-label/index.tsx";
 import { BisCosmeticSlotRow } from "./bis-cosmetic-slot-row.tsx";
 import {
   BIS_ITEMS_CONTENT_MAX_HEIGHT_XS_PX,
+  EXPORT_FILTER_GRID_GAP_SPACING,
   getBisItemsContentMaxHeight,
   getBisListsContentMaxHeight,
+  getBisListsGridTemplateColumns,
 } from "./constants.ts";
 
 function localizeBisStorageMessage(message: string, t: TranslateFn): string {
@@ -437,12 +439,13 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
         sx={{
           display: "grid",
           gridTemplateColumns: {
-            xs: "1fr",
-            md: "14rem minmax(0, 1fr) 13rem",
-            lg: "16rem minmax(0, 1fr) 14.5rem",
+            xs: "minmax(0, 1fr)",
+            md: getBisListsGridTemplateColumns(),
           },
-          gap: { xs: 1.5, md: 2 },
+          gap: EXPORT_FILTER_GRID_GAP_SPACING,
           alignItems: "start",
+          width: "100%",
+          maxWidth: "100%",
         }}
       >
         <Stack spacing={1.5} sx={{ minWidth: 0 }}>
