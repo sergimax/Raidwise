@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.7.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.8.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -34,12 +34,13 @@ Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with conf
 
 ### Character pick for a raid
 
-Copyable signup lines of characters still missing CD on filtered raids, with min GS / role / spec filters and optional **Specs** / **GS** in the line format.
-Session-kept filters; click Selected raid chips to exclude false matches.
+Copyable signup lines of characters still missing CD on filtered raids, with min GS / role / spec filters, optional **With upgrades**, and optional **Specs** / **GS** in the line format.
+Session-kept filters; **Reset parameters** clears them; click Selected raid chips to exclude false matches.
 
 ### Soft pick for a raid
 
 Plan soft reserves for one character + spec on BiS upgrades from filtered raids (**re-roll** or **+100**, max softs 1–4), with competition colors, win-odds hints, and a pasteable call list.
+Optional **With upgrades** dims characters with no BiS targets; **Reset parameters** clears the panel filters.
 Uses the active **BiS builds** list; other-spec gear counts as owned; session state survives closing the panel.
 
 ### BiS builds
@@ -58,7 +59,7 @@ Full UI and item tooltips; first visit defaults to Russian.
 
 ### Theme
 
-Light/dark mode saved locally; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
+Light/dark mode saved locally; quiet MUJI chrome with a subtle page/panel dot grid; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Development
 
