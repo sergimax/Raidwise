@@ -12,11 +12,12 @@ light/dark toggle to check both modes.
 
 | Piece | Role |
 |-------|------|
-| `--panel-bg-dot` / `--panel-bg-dot-size` | `src/index.css` |
-| Dot grid on `TrackerToolbarPanel` Paper | `src/components/tracker-toolbar-panel/index.tsx` |
+| `--dot-grid` / `--dot-grid-size` | `src/index.css` (page + panels) |
+| Dot grid on page (`body::before`, rotated 45°) | `src/index.css` + CssBaseline in `create-app-theme.ts` |
+| Dot grid on `TrackerToolbarPanel` (upright) | `src/components/tracker-toolbar-panel/index.tsx` |
 | Solid `bgcolor` on step blocks | `src/components/export-panel/export-filter-section.tsx` |
 
-Current shipping choice: **F — Dot grid** (`12px` pin dots).
+Current shipping choice: **F — Dot grid** (`12px` pin dots) on page chrome and toolbar panels.
 
 ## Variants in the gallery
 
