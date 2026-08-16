@@ -1,7 +1,9 @@
 # Raidwise logo concepts
 
 Exploration set for renaming the old **MRCD** medallion marks to **Raidwise**.
-Not production assets — pick a direction, then convert manually to `public/logo.svg` and `public/logo-as-icon.svg`.
+Not production assets — explore here, then ship the chosen mark as `public/logo.svg` (header + favicon share one file).
+
+**In use now:** letterforms from [`g12.svg`](./g12.svg) → `public/logo.svg`. Full-seal experiments such as [`g9-1 opt.svg`](./g9-1%20opt.svg) stay here for reference.
 
 **Browse locally:** open [`index.html`](./index.html) in a browser (PNG concepts at original / favicon / header sizes).
 
@@ -30,14 +32,13 @@ Not production assets — pick a direction, then convert manually to `public/log
 
 ## Suggested production pair
 
-| File | Likely pick |
-|------|-------------|
-| `public/logo-as-icon.svg` | **B**, **E**, **F**, or **I** |
-| `public/logo.svg` | **A**, **C**, **G**, or **H** |
-| Wide header / README | **D** or **J** as optional companion |
+| File | Notes |
+|------|-------|
+| `public/logo.svg` | Single mark for header + favicon (current: g12 letterforms) |
+| Wide / seal experiments | Optional companions only (e.g. g9-1 opt) — not required at small sizes |
 
 ## Notes
 
 - PNG previews are AI concept renders (fantasy letterforms closer to the old hand-drawn mark).
 - Convert the chosen concept to SVG manually (outlined paths) so fonts do not change across machines.
-- Keep chevron notches on the gold rim if you want continuity with the current seal.
+- Prefer a simpler mark for toolbar/favicon size; dense seals tend to stair-step at 28px.
