@@ -35,6 +35,8 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 **Avoid:** Facebook/SaaS blue as brand; pink/magenta identity; brand≈danger or brand≈ok pairs; Latin-only display fonts (Syne, Space Grotesk) as sole UI fonts.
 
+**Logo concepts (Raidwise rename):** [logo-variants/](./logo-variants/) — SVG templates + PNG previews; not production `public/` assets yet.
+
 ---
 
 ## Color mode
