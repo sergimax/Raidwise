@@ -1,5 +1,8 @@
-/** Matches add-dungeon form width. */
-export const TRACKER_NARROW_PANEL_MAX_WIDTH = 480;
+/**
+ * Cap for New raid (2× 300px unit columns + gap + panel padding).
+ * Content grid is 612px; padding keeps the outlined card from clipping.
+ */
+export const TRACKER_DUNGEON_FORM_PANEL_MAX_WIDTH = 680;
 
 /**
  * Cap for New character (1 + 2 + 2 unit columns + gaps + panel padding).

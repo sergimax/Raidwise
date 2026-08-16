@@ -3,7 +3,7 @@ import type { TranslateFn } from "../../i18n/translate.ts";
 import {
   TRACKER_CHARACTER_FORM_PANEL_MAX_WIDTH,
   TRACKER_DATA_CONTROLS_PANEL_MAX_WIDTH,
-  TRACKER_NARROW_PANEL_MAX_WIDTH,
+  TRACKER_DUNGEON_FORM_PANEL_MAX_WIDTH,
   TRACKER_UNIT_GRID_PANEL_MAX_WIDTH,
   TRACKER_WIDE_PANEL_MAX_WIDTH,
 } from "./constants.ts";
@@ -63,7 +63,7 @@ function getMainToolbarPanelMeta(
         title: t("dungeonForm.title"),
         closeAriaLabel: t("dungeonForm.closeAria"),
         onClose: handlers.closeDungeonForm,
-        maxWidth: TRACKER_NARROW_PANEL_MAX_WIDTH,
+        maxWidth: TRACKER_DUNGEON_FORM_PANEL_MAX_WIDTH,
       };
     case "bis":
       return {
