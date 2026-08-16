@@ -33,6 +33,8 @@ export function useExportSessionState() {
   );
   const [includeExportSpecs, setIncludeExportSpecs] = useState(true);
   const [includeExportGearScore, setIncludeExportGearScore] = useState(true);
+  const [onlyCharactersWithUpgrades, setOnlyCharactersWithUpgrades] =
+    useState(false);
 
   const resetAllFilters = useCallback(() => {
     setExportSpecSelectionByCharacterId({});
@@ -40,6 +42,7 @@ export function useExportSessionState() {
     setMinGearScoreCompact(EXPORT_MIN_GS_COMPACT_DEFAULT);
     setRoleFilter({ ...DEFAULT_EXPORT_ROLE_FILTER });
     setExcludedDungeonIds(new Set());
+    setOnlyCharactersWithUpgrades(false);
   }, []);
 
   const clearExcludedDungeonIds = useCallback(() => {
@@ -107,11 +110,13 @@ export function useExportSessionState() {
     excludedDungeonIds,
     includeExportSpecs,
     includeExportGearScore,
+    onlyCharactersWithUpgrades,
     setMinGearScoreFilterEnabled,
     setMinGearScoreCompact,
     setRoleFilter,
     setIncludeExportSpecs,
     setIncludeExportGearScore,
+    setOnlyCharactersWithUpgrades,
     resetAllFilters,
     clearExcludedDungeonIds,
     toggleDungeonExcluded,

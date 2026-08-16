@@ -1,5 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useMemo } from "react";
+import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   clearUnavailableExportSpecSelections,
@@ -10,8 +11,10 @@ import {
   buildExportStatus,
   hasCharacterWithoutCdInVisibleDungeons,
 } from "../../utils/build-export-status.ts";
+import { characterHasGearPickUpgrades } from "../../utils/build-gear-pick-items.ts";
 import { resolveExportMinGearScoreThreshold } from "../../utils/parse-export-min-gear-score.ts";
 import { filterDungeonsExcludingIds } from "../../utils/filter-dungeons-excluding-ids.ts";
+import { GearPickCharacterFilterActions } from "../gear-pick-panel/gear-pick-character-filter-actions.tsx";
 import { ExportCharacterSpecFilter } from "./export-character-spec-filter.tsx";
 import { ExportCharacterSpecFilterActions } from "./export-character-spec-filter-actions.tsx";
 import { ExportDungeonFilter } from "./export-dungeon-filter.tsx";
@@ -43,6 +46,7 @@ export function ExportPanel({
   session,
 }: ExportPanelProps) {
   const { t, locale } = useTranslation();
+  const { getBisSlotMapForSpec } = useBisListsContext();
   const {
     exportSpecSelectionByCharacterId,
     minGearScoreFilterEnabled,
@@ -61,6 +65,8 @@ export function ExportPanel({
     includeExportGearScore,
     setIncludeExportSpecs,
     setIncludeExportGearScore,
+    onlyCharactersWithUpgrades,
+    setOnlyCharactersWithUpgrades,
   } = session;
 
   const hasDungeonFilter = totalDungeonCount > 0;
@@ -79,7 +85,7 @@ export function ExportPanel({
     [minGearScoreCompact, minGearScoreFilterEnabled],
   );
 
-  const includedCharacterIds = useMemo(
+  const availableCharacterIds = useMemo(
     () =>
       new Set(
         characters
@@ -95,14 +101,54 @@ export function ExportPanel({
     [activeDungeons, characters, dungeonToggles],
   );
 
+  const charactersWithUpgradesIds = useMemo(() => {
+    if (!onlyCharactersWithUpgrades) {
+      return new Set<string>();
+    }
+    return new Set(
+      characters
+        .filter((character) =>
+          characterHasGearPickUpgrades({
+            character,
+            dungeons: activeDungeons,
+            getBisSlotMapForSpec,
+            locale,
+          }),
+        )
+        .map((character) => character.id),
+    );
+  }, [
+    activeDungeons,
+    characters,
+    getBisSlotMapForSpec,
+    locale,
+    onlyCharactersWithUpgrades,
+  ]);
+
+  /** Available for Select all / export lines: not on CD, and upgrades when toggled. */
+  const selectableCharacterIds = useMemo(() => {
+    if (!onlyCharactersWithUpgrades) {
+      return availableCharacterIds;
+    }
+    return new Set(
+      [...availableCharacterIds].filter((characterId) =>
+        charactersWithUpgradesIds.has(characterId),
+      ),
+    );
+  }, [
+    availableCharacterIds,
+    charactersWithUpgradesIds,
+    onlyCharactersWithUpgrades,
+  ]);
+
   const exportSpecSelectionForPanel = useMemo(
     () =>
       clearUnavailableExportSpecSelections(
         characters,
         exportSpecSelectionByCharacterId,
-        includedCharacterIds,
+        selectableCharacterIds,
       ),
-    [characters, exportSpecSelectionByCharacterId, includedCharacterIds],
+    [characters, exportSpecSelectionByCharacterId, selectableCharacterIds],
   );
 
   const resetDungeonFilter = () => {
@@ -264,17 +310,25 @@ export function ExportPanel({
             title={t("exportPanel.characterSpecsFilterTitle")}
             description={t("exportPanel.characterSpecsFilterHelper")}
             titleActions={
-              <ExportCharacterSpecFilterActions
-                disabled={characters.length === 0}
-                onSelectAll={() =>
-                  selectAllCharacterSpecs(characters, includedCharacterIds)
-                }
-                onClearAll={() => clearAllCharacterSpecs(characters)}
-              />
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <GearPickCharacterFilterActions
+                  onlyWithUpgrades={onlyCharactersWithUpgrades}
+                  onOnlyWithUpgradesChange={setOnlyCharactersWithUpgrades}
+                />
+                <ExportCharacterSpecFilterActions
+                  disabled={characters.length === 0}
+                  onSelectAll={() =>
+                    selectAllCharacterSpecs(characters, selectableCharacterIds)
+                  }
+                  onClearAll={() => clearAllCharacterSpecs(characters)}
+                />
+              </Stack>
             }
           >
             <ExportCharacterSpecFilter
-              includedCharacterIds={includedCharacterIds}
+              includedCharacterIds={availableCharacterIds}
+              charactersWithUpgradesIds={charactersWithUpgradesIds}
+              onlyWithUpgrades={onlyCharactersWithUpgrades}
               characters={characters}
               exportSpecSelectionByCharacterId={exportSpecSelectionForPanel}
               roleFilter={roleFilter}
