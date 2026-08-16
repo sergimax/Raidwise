@@ -73,6 +73,7 @@ export function ExportFilterSection({
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
+        bgcolor: "background.paper",
         ...sx,
       }}
     >

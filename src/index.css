@@ -14,6 +14,9 @@
   /* Light tokens */
   --bg: #fcfbf9;
   --page-bg: var(--bg);
+  /* Panel chrome pattern — gallery F dots (step blocks stay solid). */
+  --panel-bg-dot: color-mix(in srgb, #0a0a0a 5.5%, transparent);
+  --panel-bg-dot-size: 12px;
   --surface: #ffffff;
   --chip-bg: #f3f2ef;
   --header-bg: rgba(252, 251, 249, 0.96);
@@ -63,6 +66,7 @@
 :root[data-color-mode="dark"] {
   --bg: #1a1a1a;
   --page-bg: var(--bg);
+  --panel-bg-dot: color-mix(in srgb, #ffffff 6%, transparent);
   --surface: #242424;
   --chip-bg: #1f1f1f;
   --header-bg: rgba(26, 26, 26, 0.96);
