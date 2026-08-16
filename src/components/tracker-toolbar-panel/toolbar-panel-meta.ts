@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { TranslateFn } from "../../i18n/translate.ts";
 import {
+  TRACKER_CHARACTER_FORM_PANEL_MAX_WIDTH,
   TRACKER_DATA_CONTROLS_PANEL_MAX_WIDTH,
   TRACKER_NARROW_PANEL_MAX_WIDTH,
   TRACKER_UNIT_GRID_PANEL_MAX_WIDTH,
@@ -55,7 +56,7 @@ function getMainToolbarPanelMeta(
         title: t("characterForm.title"),
         closeAriaLabel: t("characterForm.closeAria"),
         onClose: handlers.closeCharacterForm,
-        maxWidth: TRACKER_NARROW_PANEL_MAX_WIDTH,
+        maxWidth: TRACKER_CHARACTER_FORM_PANEL_MAX_WIDTH,
       };
     case "dungeon":
       return {

@@ -1,5 +1,11 @@
-/** Matches add-character / add-dungeon form width. */
+/** Matches add-dungeon form width. */
 export const TRACKER_NARROW_PANEL_MAX_WIDTH = 480;
+
+/**
+ * Cap for New character (1 + 2 + 2 unit columns + gaps + panel padding).
+ * Content grid is 1524px; padding keeps the outlined card from clipping.
+ */
+export const TRACKER_CHARACTER_FORM_PANEL_MAX_WIDTH = 1600;
 
 /**
  * Cap for BiS lists (class/spec | items | lists). Narrower than the unit-grid
