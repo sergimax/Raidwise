@@ -5,13 +5,13 @@ export type TrackerControlsSource = {
   handleAddFromTemplate: () => void;
   showCharacterForm: boolean;
   showDungeonForm: boolean;
-  showExportPanel: boolean;
+  showCharacterPickPanel: boolean;
   showGearPickPanel: boolean;
   showBisListsPanel: boolean;
   showDataControlsPanel: boolean;
   toggleCharacterForm: () => void;
   toggleDungeonForm: () => void;
-  toggleExportPanel: () => void;
+  toggleCharacterPickPanel: () => void;
   toggleGearPickPanel: () => void;
   toggleBisListsPanel: () => void;
   toggleDataControlsPanel: () => void;

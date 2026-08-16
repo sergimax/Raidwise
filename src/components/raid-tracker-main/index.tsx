@@ -1,7 +1,7 @@
 import { Alert, Stack } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import { useBisListsSessionState } from "../../hooks/use-bis-lists-session-state.ts";
-import { useExportSessionState } from "../../hooks/use-export-session-state.ts";
+import { useCharacterPickSessionState } from "../../hooks/use-character-pick-session-state.ts";
 import { useGearHintLegendDismissed } from "../../hooks/use-gear-hint-legend-dismissed.ts";
 import { useGearPickSessionState } from "../../hooks/use-gear-pick-session-state.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
@@ -15,8 +15,8 @@ import { BisListsPanel } from "../bis-lists-panel/index.tsx";
 import { CharacterForm } from "../character-form/index.tsx";
 import { DataControlsPanel } from "../data-controls-panel/index.tsx";
 import { DungeonForm } from "../dungeon-form/index.tsx";
-import { ExportPanel } from "../export-panel/index.tsx";
-import { ExportPanelHeaderActions } from "../export-panel/export-panel-header-actions.tsx";
+import { CharacterPickPanel } from "../character-pick-panel/index.tsx";
+import { ResetParametersActions } from "../filter-unit/reset-parameters-actions.tsx";
 import { GearHintLegend } from "../gear-hint-legend/index.tsx";
 import { GearPickPanel } from "../gear-pick-panel/index.tsx";
 import { RaidTrackerTable } from "../raid-tracker-table/index.tsx";
@@ -30,8 +30,8 @@ type RaidTrackerMainProps = {
   onAddFromTemplate: () => void;
   introVisible: boolean;
   onDismissIntro: () => void;
-  showExportPanel: boolean;
-  closeExportPanel: () => void;
+  showCharacterPickPanel: boolean;
+  closeCharacterPickPanel: () => void;
   showGearPickPanel: boolean;
   closeGearPickPanel: () => void;
   showBisListsPanel: boolean;
@@ -61,8 +61,8 @@ export function RaidTrackerMain({
   onAddFromTemplate,
   introVisible,
   onDismissIntro,
-  showExportPanel,
-  closeExportPanel,
+  showCharacterPickPanel,
+  closeCharacterPickPanel,
   showGearPickPanel,
   closeGearPickPanel,
   showBisListsPanel,
@@ -88,7 +88,7 @@ export function RaidTrackerMain({
   });
 
   const gearPickSession = useGearPickSessionState();
-  const exportSession = useExportSessionState();
+  const exportSession = useCharacterPickSessionState();
   const bisListsSession = useBisListsSessionState();
   const { resetAllFilters: resetExportSessionFilters } = exportSession;
   const { resetAllFilters: resetGearPickSessionFilters } = gearPickSession;
@@ -98,7 +98,7 @@ export function RaidTrackerMain({
     showCharacterForm: forms.showCharacterForm,
     showDungeonForm: forms.showDungeonForm,
     showBisListsPanel,
-    showExportPanel,
+    showCharacterPickPanel,
     showGearPickPanel,
     showDataControlsPanel,
   });
@@ -133,15 +133,15 @@ export function RaidTrackerMain({
       closeDungeonForm: forms.closeDungeonForm,
       closeBisListsPanel: closeBisListsPanelWithTooltips,
       closeDataControlsPanel,
-      closeExportPanel,
+      closeCharacterPickPanel,
       closeGearPickPanel: closeGearPickPanelWithTooltips,
     });
 
-    if (toolbarPanelId === "export") {
+    if (toolbarPanelId === "characterPick") {
       return {
         ...meta,
         headerActions: (
-          <ExportPanelHeaderActions onResetParameters={resetExportAllFilters} />
+          <ResetParametersActions onResetParameters={resetExportAllFilters} />
         ),
       };
     }
@@ -150,7 +150,7 @@ export function RaidTrackerMain({
       return {
         ...meta,
         headerActions: (
-          <ExportPanelHeaderActions onResetParameters={resetGearPickAllFilters} />
+          <ResetParametersActions onResetParameters={resetGearPickAllFilters} />
         ),
       };
     }
@@ -159,7 +159,7 @@ export function RaidTrackerMain({
   }, [
     closeBisListsPanelWithTooltips,
     closeDataControlsPanel,
-    closeExportPanel,
+    closeCharacterPickPanel,
     closeGearPickPanelWithTooltips,
     forms.closeCharacterForm,
     forms.closeDungeonForm,
@@ -223,8 +223,8 @@ export function RaidTrackerMain({
             />
           ) : null}
 
-          {showExportPanel ? (
-            <ExportPanel
+          {showCharacterPickPanel ? (
+            <CharacterPickPanel
               characters={domain.characters}
               visibleDungeons={tableState.sortedDungeons}
               dungeonToggles={domain.dungeonToggles}

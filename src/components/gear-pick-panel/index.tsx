@@ -19,13 +19,13 @@ import {
   sumMySofts,
 } from "../../utils/gear-pick-soft-roll.ts";
 import { filterDungeonsExcludingIds } from "../../utils/filter-dungeons-excluding-ids.ts";
-import { ExportDungeonFilter } from "../export-panel/export-dungeon-filter.tsx";
-import { ExportDungeonFilterActions } from "../export-panel/export-dungeon-filter-actions.tsx";
-import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
+import { DungeonFilter } from "../filter-unit/dungeon-filter.tsx";
+import { DungeonFilterActions } from "../filter-unit/dungeon-filter-actions.tsx";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
-  exportDungeonFilterContentSx,
-} from "../export-panel/constants.ts";
+  FILTER_UNIT_GRID_GAP_SPACING,
+  dungeonFilterContentSx,
+} from "../filter-unit/constants.ts";
 import {
   getGearPickGridTemplateAreas,
   getGearPickGridTemplateColumns,
@@ -285,7 +285,7 @@ export function GearPickPanel({
             xs: "none",
             md: getGearPickGridTemplateAreas("filters"),
           },
-          gap: EXPORT_FILTER_GRID_GAP_SPACING,
+          gap: FILTER_UNIT_GRID_GAP_SPACING,
           alignItems: "stretch",
           width: "100%",
           minWidth: 0,
@@ -302,22 +302,22 @@ export function GearPickPanel({
         }}
       >
       <GearPickFilterBlock gridArea="dungeon">
-        <ExportFilterSection
+        <FilterSection
           step={1}
           title={t("gearPickPanel.dungeonFilterTitle")}
-          titleMark={t("exportPanel.dungeonFilterTotalMark", {
+          titleMark={t("characterPickPanel.dungeonFilterTotalMark", {
             total: totalDungeonCount,
           })}
           description={t("gearPickPanel.dungeonFilterHelper")}
           titleActions={
-            <ExportDungeonFilterActions
+            <DungeonFilterActions
               disabled={!dungeonFilterDirty}
               onReset={resetDungeonFilter}
             />
           }
-          contentSx={exportDungeonFilterContentSx}
+          contentSx={dungeonFilterContentSx}
         >
-          <ExportDungeonFilter
+          <DungeonFilter
             dungeonNameSearch={dungeonNameSearch}
             onDungeonNameSearchChange={onDungeonNameSearchChange}
             visibleDungeons={visibleDungeons}
@@ -326,11 +326,11 @@ export function GearPickPanel({
             locale={locale}
             t={t}
           />
-        </ExportFilterSection>
+        </FilterSection>
       </GearPickFilterBlock>
 
       <GearPickFilterBlock gridArea="characterSpecs">
-        <ExportFilterSection
+        <FilterSection
           step={2}
           title={t("gearPickPanel.characterTitle")}
           description={t("gearPickPanel.characterHelper")}
@@ -350,11 +350,11 @@ export function GearPickPanel({
             onSelectionChange={handleSelectionChange}
             t={t}
           />
-        </ExportFilterSection>
+        </FilterSection>
       </GearPickFilterBlock>
 
       <GearPickFilterBlock gridArea="rules">
-        <ExportFilterSection
+        <FilterSection
           step={3}
           title={t("gearPickPanel.rulesTitle")}
           description={t("gearPickPanel.rulesHelper")}
@@ -366,11 +366,11 @@ export function GearPickPanel({
             softBudgetUsed={softBudgetUsed}
             t={t}
           />
-        </ExportFilterSection>
+        </FilterSection>
       </GearPickFilterBlock>
 
       <GearPickFilterBlock gridArea="softs">
-        <ExportFilterSection
+        <FilterSection
           step={4}
           title={t("gearPickPanel.itemsTitle")}
           description={t("gearPickPanel.itemsHelper")}
@@ -424,7 +424,7 @@ export function GearPickPanel({
               })}
             </Stack>
           )}
-        </ExportFilterSection>
+        </FilterSection>
       </GearPickFilterBlock>
 
       <GearPickFilterBlock gridArea="copy" copyBlockSized>

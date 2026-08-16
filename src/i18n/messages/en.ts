@@ -272,7 +272,7 @@ export const enMessages = {
     clearSlot: "Clear slot",
     clearSlotAria: "Clear {{slot}} item",
   },
-  exportPanel: {
+  characterPickPanel: {
     title: "Character pick",
     closeAria: "Close character pick panel",
     noCharacters: "Add a character to build a character pick",

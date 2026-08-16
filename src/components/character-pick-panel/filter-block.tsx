@@ -1,13 +1,13 @@
 import { Box } from "@mui/material";
 import type { ReactNode } from "react";
-import type { ExportFilterGridAreaId } from "./constants.ts";
+import type { CharacterPickFilterGridAreaId } from "./constants.ts";
 
-type ExportFilterBlockProps = {
-  gridArea: ExportFilterGridAreaId;
+type CharacterPickFilterBlockProps = {
+  gridArea: CharacterPickFilterGridAreaId;
   children: ReactNode;
 };
 
-export function ExportFilterBlock({ gridArea, children }: ExportFilterBlockProps) {
+export function CharacterPickFilterBlock({ gridArea, children }: CharacterPickFilterBlockProps) {
   return (
     <Box
       sx={{

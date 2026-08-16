@@ -2,7 +2,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Box, Button, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 import type { TranslateFn } from "../../i18n/translate.ts";
-import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { GearPickCopyFormatActions } from "./gear-pick-copy-format-actions.tsx";
 
 type GearPickCopyBlockProps = {
@@ -50,7 +50,7 @@ export function GearPickCopyBlock({
   }, [copyText, hasSoftCalls]);
 
   return (
-    <ExportFilterSection
+    <FilterSection
       step={5}
       title={t("gearPickPanel.copyTitle")}
       description={t("gearPickPanel.copyHelper")}
@@ -101,6 +101,6 @@ export function GearPickCopyBlock({
           {t("gearPickPanel.copyEmpty")}
         </Typography>
       )}
-    </ExportFilterSection>
+    </FilterSection>
   );
 }

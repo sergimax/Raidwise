@@ -1,13 +1,13 @@
 import { Button } from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 
-type ExportPanelHeaderActionsProps = {
+type ResetParametersActionsProps = {
   onResetParameters: () => void;
 };
 
-export function ExportPanelHeaderActions({
+export function ResetParametersActions({
   onResetParameters,
-}: ExportPanelHeaderActionsProps) {
+}: ResetParametersActionsProps) {
   const { t } = useTranslation();
 
   return (
@@ -17,7 +17,7 @@ export function ExportPanelHeaderActions({
       onClick={onResetParameters}
       sx={{ whiteSpace: "nowrap", minWidth: 0, px: 1 }}
     >
-      {t("exportPanel.resetParameters")}
+      {t("characterPickPanel.resetParameters")}
     </Button>
   );
 }

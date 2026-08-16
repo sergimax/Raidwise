@@ -27,7 +27,7 @@ type MainToolbarPanelHandlers = {
 };
 
 type ToolbarPanelHandlers = MainToolbarPanelHandlers & {
-  closeExportPanel: () => void;
+  closeCharacterPickPanel: () => void;
   closeGearPickPanel: () => void;
 };
 
@@ -36,8 +36,8 @@ export function getToolbarPanelMeta(
   t: TranslateFn,
   handlers: ToolbarPanelHandlers,
 ): ToolbarPanelMeta {
-  if (panelId === "export") {
-    return getExportToolbarPanelMeta(t, handlers.closeExportPanel);
+  if (panelId === "characterPick") {
+    return getCharacterPickToolbarPanelMeta(t, handlers.closeCharacterPickPanel);
   }
   if (panelId === "gear") {
     return getGearPickToolbarPanelMeta(t, handlers.closeGearPickPanel);
@@ -83,13 +83,13 @@ function getMainToolbarPanelMeta(
   }
 }
 
-function getExportToolbarPanelMeta(
+function getCharacterPickToolbarPanelMeta(
   t: TranslateFn,
   onClose: () => void,
 ): ToolbarPanelMeta {
   return {
-    title: t("exportPanel.title"),
-    closeAriaLabel: t("exportPanel.closeAria"),
+    title: t("characterPickPanel.title"),
+    closeAriaLabel: t("characterPickPanel.closeAria"),
     onClose,
     maxWidth: TRACKER_UNIT_GRID_PANEL_MAX_WIDTH,
   };

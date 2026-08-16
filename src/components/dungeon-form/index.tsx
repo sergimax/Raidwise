@@ -23,11 +23,11 @@ import {
   type DungeonDifficulty as DungeonDifficultyValue,
   type DungeonSize,
 } from "../../types/dungeons.ts";
-import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { FormActionsRow } from "../form-actions-row/index.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
+  FILTER_UNIT_GRID_GAP_SPACING,
   getDungeonFormGridTemplateAreas,
   getDungeonFormGridTemplateColumns,
 } from "./constants.ts";
@@ -95,14 +95,14 @@ export function DungeonForm({
               `,
               md: getDungeonFormGridTemplateAreas(),
             },
-            gap: EXPORT_FILTER_GRID_GAP_SPACING,
+            gap: FILTER_UNIT_GRID_GAP_SPACING,
             alignItems: "stretch",
             width: "100%",
             maxWidth: "100%",
           }}
         >
           <Box sx={{ gridArea: "name", minWidth: 0, minHeight: 0 }}>
-            <ExportFilterSection
+            <FilterSection
               step={1}
               title={t("dungeonForm.stepName")}
               description={t("dungeonForm.nameHelper")}
@@ -125,11 +125,11 @@ export function DungeonForm({
                   />
                 )}
               />
-            </ExportFilterSection>
+            </FilterSection>
           </Box>
 
           <Box sx={{ gridArea: "shortName", minWidth: 0, minHeight: 0 }}>
-            <ExportFilterSection
+            <FilterSection
               step={2}
               title={t("dungeonForm.stepShortName")}
               titleMark={optionalMark}
@@ -150,11 +150,11 @@ export function DungeonForm({
                 autoComplete="off"
                 fullWidth
               />
-            </ExportFilterSection>
+            </FilterSection>
           </Box>
 
           <Box sx={{ gridArea: "type", minWidth: 0, minHeight: 0 }}>
-            <ExportFilterSection
+            <FilterSection
               step={3}
               title={t("dungeonForm.stepType")}
               description={t("dungeonForm.typeHelper")}
@@ -205,11 +205,11 @@ export function DungeonForm({
                   </Select>
                 </FormControl>
               </Stack>
-            </ExportFilterSection>
+            </FilterSection>
           </Box>
 
           <Box sx={{ gridArea: "itemLevels", minWidth: 0, minHeight: 0 }}>
-            <ExportFilterSection
+            <FilterSection
               step={4}
               title={t("dungeonForm.stepItemLevels")}
               description={t("dungeonForm.itemLevelsHelper")}
@@ -227,7 +227,7 @@ export function DungeonForm({
                 size="small"
                 fullWidth
               />
-            </ExportFilterSection>
+            </FilterSection>
           </Box>
         </Box>
 

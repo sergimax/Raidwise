@@ -15,11 +15,11 @@ import { Classes } from "../../types/characters.ts";
 import { CharacterSpecGearImportSection } from "../character-edit-dialog/character-spec-gear-import-section.tsx";
 import { CharacterSingleSpecGearFields } from "../character-spec-gear-fields/index.tsx";
 import { ClassOptionLabel } from "../class-option-label/index.tsx";
-import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { FormActionsRow } from "../form-actions-row/index.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
+  FILTER_UNIT_GRID_GAP_SPACING,
   getCharacterFormGridTemplateColumns,
 } from "./constants.ts";
 import type { CharacterFormProps } from "./types.ts";
@@ -75,13 +75,13 @@ export function CharacterForm({
               xs: "minmax(0, 1fr)",
               md: getCharacterFormGridTemplateColumns(),
             },
-            gap: EXPORT_FILTER_GRID_GAP_SPACING,
+            gap: FILTER_UNIT_GRID_GAP_SPACING,
             alignItems: "stretch",
             width: "100%",
             maxWidth: "100%",
           }}
         >
-          <ExportFilterSection
+          <FilterSection
             step={1}
             title={t("characterForm.stepIdentity")}
             contentSx={characterOverflowVisibleContentSx}
@@ -142,9 +142,9 @@ export function CharacterForm({
                 </Select>
               </FormControl>
             </Stack>
-          </ExportFilterSection>
+          </FilterSection>
 
-          <ExportFilterSection
+          <FilterSection
             step={2}
             title={t("characterForm.stepMain")}
             titleMark={optionalMark}
@@ -196,9 +196,9 @@ export function CharacterForm({
                 />
               </Stack>
             </Stack>
-          </ExportFilterSection>
+          </FilterSection>
 
-          <ExportFilterSection
+          <FilterSection
             step={3}
             title={t("characterForm.stepOff")}
             titleMark={optionalMark}
@@ -250,7 +250,7 @@ export function CharacterForm({
                 />
               </Stack>
             </Stack>
-          </ExportFilterSection>
+          </FilterSection>
         </Box>
 
         <FormActionsRow submitLabel={t("characterForm.addCharacter")} />

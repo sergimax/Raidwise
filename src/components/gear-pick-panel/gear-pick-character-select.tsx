@@ -12,8 +12,8 @@ import {
 import {
   CHARACTER_SPEC_LIST_ICON_SIZE,
   getCharacterSpecListGridSx,
-  getExportFilterSpecsListMaxHeight,
-} from "../export-panel/constants.ts";
+  getCharacterSpecListMaxHeight,
+} from "../filter-unit/constants.ts";
 import { CharacterSpecGearLabel } from "../spec-option-label/index.tsx";
 
 export type GearPickCharacterSelection = {
@@ -66,10 +66,10 @@ function getInactiveReason(
 function inactiveTooltipKey(
   reason: GearPickCharacterInactiveReason,
 ):
-  | "exportPanel.characterInactiveCooldownHint"
+  | "characterPickPanel.characterInactiveCooldownHint"
   | "gearPickPanel.characterInactiveNoUpgradesHint" {
   return reason === "cooldown"
-    ? "exportPanel.characterInactiveCooldownHint"
+    ? "characterPickPanel.characterInactiveCooldownHint"
     : "gearPickPanel.characterInactiveNoUpgradesHint";
 }
 
@@ -152,7 +152,7 @@ export function GearPickCharacterSelect({
   onSelectionChange,
   t,
 }: GearPickCharacterSelectProps) {
-  const listMaxHeight = getExportFilterSpecsListMaxHeight();
+  const listMaxHeight = getCharacterSpecListMaxHeight();
 
   if (characters.length === 0) {
     return (

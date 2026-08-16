@@ -274,7 +274,7 @@ export const ruMessages: Messages = {
     clearSlot: "Очистить слот",
     clearSlotAria: "Очистить {{slot}}",
   },
-  exportPanel: {
+  characterPickPanel: {
     title: "Подбор персонажа",
     closeAria: "Закрыть панель подбора персонажа",
     noCharacters: "Добавьте персонажа для работы подбора",

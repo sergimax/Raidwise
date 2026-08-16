@@ -45,11 +45,11 @@ export function buildTrackerActions(
     {
       id: "exportStatus",
       label: t("toolbar.export"),
-      onClick: source.toggleExportPanel,
-      selected: source.showExportPanel,
-      buttonVariant: source.showExportPanel ? "contained" : "outlined",
+      onClick: source.toggleCharacterPickPanel,
+      selected: source.showCharacterPickPanel,
+      buttonVariant: source.showCharacterPickPanel ? "contained" : "outlined",
       buttonColor: "inherit",
-      ariaExpanded: source.showExportPanel,
+      ariaExpanded: source.showCharacterPickPanel,
       disabled: source.charactersCount === 0 || source.dungeonsCount === 0,
     },
     {

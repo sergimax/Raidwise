@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { createTestDungeon } from "../../test/fixtures.ts";
 import { testTranslator } from "../../test/i18n.ts";
 import { renderWithTheme } from "../../test/render-with-theme.tsx";
-import { ExportDungeonFilter } from "./export-dungeon-filter.tsx";
+import { DungeonFilter } from "./dungeon-filter.tsx";
 
 function FilterHarness({
   initialExcludedIds = [] as string[],
@@ -30,7 +30,7 @@ function FilterHarness({
   });
 
   return (
-    <ExportDungeonFilter
+    <DungeonFilter
       dungeonNameSearch={dungeonNameSearch}
       onDungeonNameSearchChange={setDungeonNameSearch}
       visibleDungeons={[icc, toc]}
@@ -52,7 +52,7 @@ function FilterHarness({
   );
 }
 
-describe("ExportDungeonFilter", () => {
+describe("DungeonFilter", () => {
   it("keeps the raid search field editable and in sync with local state", async () => {
     const user = userEvent.setup();
     renderWithTheme(<FilterHarness />);

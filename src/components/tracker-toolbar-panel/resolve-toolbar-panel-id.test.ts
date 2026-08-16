@@ -8,46 +8,46 @@ describe("resolveToolbarPanelId", () => {
         showCharacterForm: false,
         showDungeonForm: false,
         showBisListsPanel: false,
-        showExportPanel: false,
+        showCharacterPickPanel: false,
         showGearPickPanel: false,
         showDataControlsPanel: false,
       }),
     ).toBeNull();
   });
 
-  it("prefers character over dungeon, export, gear, bis, and data", () => {
+  it("prefers character over dungeon, character pick, gear, bis, and data", () => {
     expect(
       resolveToolbarPanelId({
         showCharacterForm: true,
         showDungeonForm: true,
         showBisListsPanel: true,
-        showExportPanel: true,
+        showCharacterPickPanel: true,
         showGearPickPanel: true,
         showDataControlsPanel: true,
       }),
     ).toBe("character");
   });
 
-  it("returns export before gear, bis, and data when character and dungeon are closed", () => {
+  it("returns characterPick before gear, bis, and data when character and dungeon are closed", () => {
     expect(
       resolveToolbarPanelId({
         showCharacterForm: false,
         showDungeonForm: false,
         showBisListsPanel: true,
-        showExportPanel: true,
+        showCharacterPickPanel: true,
         showGearPickPanel: true,
         showDataControlsPanel: true,
       }),
-    ).toBe("export");
+    ).toBe("characterPick");
   });
 
-  it("returns gear before bis and data when export is closed", () => {
+  it("returns gear before bis and data when character pick is closed", () => {
     expect(
       resolveToolbarPanelId({
         showCharacterForm: false,
         showDungeonForm: false,
         showBisListsPanel: true,
-        showExportPanel: false,
+        showCharacterPickPanel: false,
         showGearPickPanel: true,
         showDataControlsPanel: true,
       }),
@@ -60,7 +60,7 @@ describe("resolveToolbarPanelId", () => {
         showCharacterForm: false,
         showDungeonForm: false,
         showBisListsPanel: false,
-        showExportPanel: false,
+        showCharacterPickPanel: false,
         showGearPickPanel: false,
         showDataControlsPanel: true,
       }),

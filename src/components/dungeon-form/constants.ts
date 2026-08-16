@@ -1,8 +1,8 @@
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
-  EXPORT_FILTER_UNIT_WIDTH,
+  FILTER_UNIT_GRID_GAP_SPACING,
+  FILTER_UNIT_WIDTH,
   getFilterUnitColumnTemplate,
-} from "../export-panel/constants.ts";
+} from "../filter-unit/constants.ts";
 
 /** Two columns: name/short | type/ilvl. */
 export const DUNGEON_FORM_GRID_COLUMN_COUNT = 2;
@@ -21,12 +21,12 @@ export function getDungeonFormGridTemplateAreas(): string {
 
 /** Content width of the 2-column unit grid (columns + inter-column gap). */
 export function getDungeonFormGridMaxWidth(
-  gridColumnGapPx = EXPORT_FILTER_GRID_GAP_SPACING * 8,
+  gridColumnGapPx = FILTER_UNIT_GRID_GAP_SPACING * 8,
 ): number {
   return (
-    DUNGEON_FORM_GRID_COLUMN_COUNT * EXPORT_FILTER_UNIT_WIDTH +
+    DUNGEON_FORM_GRID_COLUMN_COUNT * FILTER_UNIT_WIDTH +
     (DUNGEON_FORM_GRID_COLUMN_COUNT - 1) * gridColumnGapPx
   );
 }
 
-export { EXPORT_FILTER_GRID_GAP_SPACING };
+export { FILTER_UNIT_GRID_GAP_SPACING };

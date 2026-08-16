@@ -17,7 +17,7 @@ import { EXPORT_MIN_GS_COMPACT_DEFAULT } from "../utils/parse-export-min-gear-sc
  * Session-only Character pick UI state. Owned above the overlay so switching
  * toolbar panels does not reset filters / specs / raid exclusions.
  */
-export function useExportSessionState() {
+export function useCharacterPickSessionState() {
   const [exportSpecSelectionByCharacterId, setExportSpecSelectionByCharacterId] =
     useState<Record<string, Partial<CharacterExportSpecSelection>>>({});
   const [minGearScoreFilterEnabled, setMinGearScoreFilterEnabled] =
@@ -126,4 +126,4 @@ export function useExportSessionState() {
   };
 }
 
-export type ExportSessionState = ReturnType<typeof useExportSessionState>;
+export type CharacterPickSessionState = ReturnType<typeof useCharacterPickSessionState>;

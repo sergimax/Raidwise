@@ -3,41 +3,41 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import { IconButton, Tooltip } from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 
-type ExportCharacterSpecFilterActionsProps = {
+type CharacterPickSpecFilterActionsProps = {
   disabled?: boolean;
   onSelectAll: () => void;
   onClearAll: () => void;
 };
 
-export function ExportCharacterSpecFilterActions({
+export function CharacterPickSpecFilterActions({
   disabled = false,
   onSelectAll,
   onClearAll,
-}: ExportCharacterSpecFilterActionsProps) {
+}: CharacterPickSpecFilterActionsProps) {
   const { t } = useTranslation();
 
   return (
     <>
-      <Tooltip title={t("exportPanel.selectAllSpecs")}>
+      <Tooltip title={t("characterPickPanel.selectAllSpecs")}>
         <span>
           <IconButton
             size="small"
             color="inherit"
             disabled={disabled}
-            aria-label={t("exportPanel.selectAllSpecsAria")}
+            aria-label={t("characterPickPanel.selectAllSpecsAria")}
             onClick={onSelectAll}
           >
             <SelectAllIcon fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
-      <Tooltip title={t("exportPanel.clearAllSpecs")}>
+      <Tooltip title={t("characterPickPanel.clearAllSpecs")}>
         <span>
           <IconButton
             size="small"
             color="inherit"
             disabled={disabled}
-            aria-label={t("exportPanel.clearAllSpecsAria")}
+            aria-label={t("characterPickPanel.clearAllSpecsAria")}
             onClick={onClearAll}
           >
             <DeselectIcon fontSize="small" />

@@ -20,9 +20,9 @@ describe("useOverlayPanels", () => {
     const { result } = renderOverlayPanels();
 
     act(() => {
-      result.current.toggleExportPanel();
+      result.current.toggleCharacterPickPanel();
     });
-    expect(result.current.showExportPanel).toBe(true);
+    expect(result.current.showCharacterPickPanel).toBe(true);
     expect(result.current.showBisListsPanel).toBe(false);
     expect(result.current.showGearPickPanel).toBe(false);
     expect(result.current.showCharacterForm).toBe(false);
@@ -30,7 +30,7 @@ describe("useOverlayPanels", () => {
     act(() => {
       result.current.toggleCharacterForm();
     });
-    expect(result.current.showExportPanel).toBe(false);
+    expect(result.current.showCharacterPickPanel).toBe(false);
     expect(result.current.showCharacterForm).toBe(true);
 
     act(() => {
@@ -65,16 +65,16 @@ describe("useOverlayPanels", () => {
     const { result } = renderOverlayPanels();
 
     act(() => {
-      result.current.toggleExportPanel();
+      result.current.toggleCharacterPickPanel();
       result.current.toggleBisListsPanel();
     });
     expect(result.current.showBisListsPanel).toBe(true);
-    expect(result.current.showExportPanel).toBe(false);
+    expect(result.current.showCharacterPickPanel).toBe(false);
 
     act(() => {
       result.current.closeAllOverlayPanels();
     });
-    expect(result.current.showExportPanel).toBe(false);
+    expect(result.current.showCharacterPickPanel).toBe(false);
     expect(result.current.showGearPickPanel).toBe(false);
     expect(result.current.showBisListsPanel).toBe(false);
     expect(result.current.showCharacterForm).toBe(false);

@@ -1,9 +1,9 @@
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
-  EXPORT_FILTER_UNIT_HEIGHT,
-  EXPORT_FILTER_UNIT_WIDTH,
+  FILTER_UNIT_GRID_GAP_SPACING,
+  FILTER_UNIT_HEIGHT,
+  FILTER_UNIT_WIDTH,
   getFilterUnitColumnTemplate,
-} from "../export-panel/constants.ts";
+} from "../filter-unit/constants.ts";
 
 /** 2×2 unit grid: toggles | characters / dungeons | BiS. */
 export const DATA_CONTROLS_GRID_COLUMN_COUNT = 2;
@@ -21,7 +21,7 @@ export function getDataControlsGridTemplateColumns(): string {
 }
 
 export function getDataControlsGridTemplateRows(): string {
-  return `repeat(${DATA_CONTROLS_GRID_ROW_COUNT}, ${EXPORT_FILTER_UNIT_HEIGHT}px)`;
+  return `repeat(${DATA_CONTROLS_GRID_ROW_COUNT}, ${FILTER_UNIT_HEIGHT}px)`;
 }
 
 export function getDataControlsGridTemplateAreas(): string {
@@ -33,12 +33,12 @@ export function getDataControlsGridTemplateAreas(): string {
 
 /** Content width of the 2-column unit grid (columns + inter-column gap). */
 export function getDataControlsGridMaxWidth(
-  gridColumnGapPx = EXPORT_FILTER_GRID_GAP_SPACING * 8,
+  gridColumnGapPx = FILTER_UNIT_GRID_GAP_SPACING * 8,
 ): number {
   return (
-    DATA_CONTROLS_GRID_COLUMN_COUNT * EXPORT_FILTER_UNIT_WIDTH +
+    DATA_CONTROLS_GRID_COLUMN_COUNT * FILTER_UNIT_WIDTH +
     (DATA_CONTROLS_GRID_COLUMN_COUNT - 1) * gridColumnGapPx
   );
 }
 
-export { EXPORT_FILTER_GRID_GAP_SPACING, EXPORT_FILTER_UNIT_WIDTH };
+export { FILTER_UNIT_GRID_GAP_SPACING, FILTER_UNIT_WIDTH };

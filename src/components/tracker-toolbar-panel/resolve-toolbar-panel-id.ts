@@ -1,12 +1,12 @@
 export type MainToolbarPanelId = "character" | "dungeon" | "bis" | "data";
 
-export type ToolbarPanelId = MainToolbarPanelId | "export" | "gear";
+export type ToolbarPanelId = MainToolbarPanelId | "characterPick" | "gear";
 
 export function resolveToolbarPanelId(options: {
   showCharacterForm: boolean;
   showDungeonForm: boolean;
   showBisListsPanel: boolean;
-  showExportPanel: boolean;
+  showCharacterPickPanel: boolean;
   showGearPickPanel: boolean;
   showDataControlsPanel: boolean;
 }): ToolbarPanelId | null {
@@ -16,8 +16,8 @@ export function resolveToolbarPanelId(options: {
   if (options.showDungeonForm) {
     return "dungeon";
   }
-  if (options.showExportPanel) {
-    return "export";
+  if (options.showCharacterPickPanel) {
+    return "characterPick";
   }
   if (options.showGearPickPanel) {
     return "gear";

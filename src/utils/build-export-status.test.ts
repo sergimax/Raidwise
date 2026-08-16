@@ -25,7 +25,7 @@ describe("buildExportStatusString", () => {
         dungeons: [],
         dungeonToggles: {},
       }),
-    ).toBe(testTranslator("exportPanel.noDungeonsFilter"));
+    ).toBe(testTranslator("characterPickPanel.noDungeonsFilter"));
   });
 
   it("returns message when no characters are selected", () => {
@@ -36,7 +36,7 @@ describe("buildExportStatusString", () => {
         dungeons: [createTestDungeon()],
         dungeonToggles: {},
       }),
-    ).toBe(testTranslator("exportPanel.selectCharacter"));
+    ).toBe(testTranslator("characterPickPanel.selectCharacter"));
   });
 
   it("lists characters without CD per dungeon", () => {
@@ -116,7 +116,7 @@ describe("buildExportStatusString", () => {
         dungeons: [dungeon],
         dungeonToggles: toggles,
       }),
-    ).toBe(testTranslator("exportPanel.allHaveCd"));
+    ).toBe(testTranslator("characterPickPanel.allHaveCd"));
   });
 
   it("uses chosen export spec selection per character", () => {
@@ -176,7 +176,7 @@ describe("buildExportStatusString", () => {
           },
         },
       }),
-    ).toBe(testTranslator("exportPanel.allHaveCd"));
+    ).toBe(testTranslator("characterPickPanel.allHaveCd"));
   });
 
   it("defaults role filter when omitted or undefined", () => {

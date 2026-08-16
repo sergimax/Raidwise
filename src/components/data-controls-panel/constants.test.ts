@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
-  EXPORT_FILTER_UNIT_HEIGHT,
-  EXPORT_FILTER_UNIT_WIDTH,
+  FILTER_UNIT_HEIGHT,
+  FILTER_UNIT_WIDTH,
   getFilterUnitColumnTemplate,
-} from "../export-panel/constants.ts";
+} from "../filter-unit/constants.ts";
 import {
   DATA_CONTROLS_GRID_COLUMN_COUNT,
   getDataControlsGridMaxWidth,
@@ -20,7 +20,7 @@ describe("data controls grid", () => {
       `${unitColumn} ${unitColumn}`,
     );
     expect(getDataControlsGridTemplateRows()).toBe(
-      `repeat(2, ${EXPORT_FILTER_UNIT_HEIGHT}px)`,
+      `repeat(2, ${FILTER_UNIT_HEIGHT}px)`,
     );
     expect(getDataControlsGridTemplateAreas()).toContain(
       "resetToggles deleteCharacters",
@@ -29,7 +29,7 @@ describe("data controls grid", () => {
       "deleteDungeons deleteBisLists",
     );
     expect(getDataControlsGridMaxWidth()).toBe(
-      EXPORT_FILTER_UNIT_WIDTH * 2 + 12,
+      FILTER_UNIT_WIDTH * 2 + 12,
     );
   });
 });

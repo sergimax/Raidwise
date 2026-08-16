@@ -1,7 +1,7 @@
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
+  FILTER_UNIT_GRID_GAP_SPACING,
   getFilterUnitColumnTemplate,
-} from "../export-panel/constants.ts";
+} from "../filter-unit/constants.ts";
 
 /**
  * BiS panel scroll budgets for the Items paper-doll and Lists chips.
@@ -42,7 +42,7 @@ export const BIS_LISTS_CHIP_GAP_PX = 6;
 export const BIS_LISTS_VISIBLE_CHIP_COUNT = 6;
 
 /**
- * ExportFilterSection chrome shared by BiS steps (padding + title + description).
+ * FilterSection chrome shared by BiS steps (padding + title + description).
  * Items with titleActions / descriptionActions is close enough for column alignment math.
  */
 export const BIS_FILTER_SECTION_CHROME_HEIGHT_PX = 88;
@@ -62,7 +62,7 @@ export function getBisListsGridTemplateColumns(): string {
   return `${unitColumn} minmax(0, 1fr) ${unitColumn}`;
 }
 
-export { EXPORT_FILTER_GRID_GAP_SPACING };
+export { FILTER_UNIT_GRID_GAP_SPACING };
 
 /** Max height of the Items paper-doll scroll viewport (md+). */
 export function getBisItemsContentMaxHeight(): number {

@@ -15,13 +15,13 @@ import {
   type BuildExportStatusResult,
   type ExportStatusLine,
 } from "../../utils/build-export-status.ts";
-import { EXPORT_RESULT_MAX_HEIGHT } from "./constants.ts";
-import { ExportFilterSection } from "./export-filter-section.tsx";
-import { ExportRaidIcon } from "./export-raid-icon.tsx";
-import { ExportResultFormatActions } from "./export-result-format-actions.tsx";
-import { useExportPanelSideBySide } from "./use-export-panel-side-by-side.ts";
+import { CHARACTER_PICK_RESULT_MAX_HEIGHT } from "./constants.ts";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
+import { RaidIcon } from "../filter-unit/raid-icon.tsx";
+import { CharacterPickResultFormatActions } from "./result-format-actions.tsx";
+import { useCharacterPickPanelSideBySide } from "./use-character-pick-panel-side-by-side.ts";
 
-type ExportResultLinesProps = {
+type CharacterPickResultLinesProps = {
   result: BuildExportStatusResult;
   includeSpecs: boolean;
   includeGearScore: boolean;
@@ -46,17 +46,17 @@ const resultTableCellSx = {
   px: 0.5,
 } as const;
 
-type ExportResultLineRowProps = {
+type CharacterPickResultLineRowProps = {
   line: ExportStatusLine;
   emphasizeCopy: boolean;
   isLast: boolean;
 };
 
-function ExportResultLineRow({
+function CharacterPickResultLineRow({
   line,
   emphasizeCopy,
   isLast,
-}: ExportResultLineRowProps) {
+}: CharacterPickResultLineRowProps) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
 
@@ -95,7 +95,7 @@ function ExportResultLineRow({
             minWidth: 0,
           }}
         >
-          <ExportRaidIcon raidKey={line.raidKey} />
+          <RaidIcon raidKey={line.raidKey} />
           <Typography
             variant="body2"
             component="span"
@@ -119,10 +119,10 @@ function ExportResultLineRow({
           onClick={() => {
             void handleCopy();
           }}
-          aria-label={t("exportPanel.copyLineAria", { raid: line.raidLabel })}
+          aria-label={t("characterPickPanel.copyLineAria", { raid: line.raidLabel })}
           sx={{ whiteSpace: "nowrap" }}
         >
-          {copied ? t("exportPanel.copied") : t("exportPanel.copyLine")}
+          {copied ? t("characterPickPanel.copied") : t("characterPickPanel.copyLine")}
         </Button>
       </TableCell>
       <TableCell sx={{ ...cellSx, width: "100%", pr: 0.25 }}>
@@ -144,15 +144,15 @@ function ExportResultLineRow({
   );
 }
 
-export function ExportResultLines({
+export function CharacterPickResultLines({
   result,
   includeSpecs,
   includeGearScore,
   onIncludeSpecsChange,
   onIncludeGearScoreChange,
-}: ExportResultLinesProps) {
+}: CharacterPickResultLinesProps) {
   const { t } = useTranslation();
-  const sideBySide = useExportPanelSideBySide();
+  const sideBySide = useCharacterPickPanelSideBySide();
 
   const sectionLayoutSx = sideBySide
     ? { width: "100%", height: "100%", minHeight: 0, flex: 1 }
@@ -160,10 +160,10 @@ export function ExportResultLines({
 
   const sectionContentSx = sideBySide
     ? { flex: 1, minHeight: 0, maxHeight: "none" }
-    : { maxHeight: EXPORT_RESULT_MAX_HEIGHT };
+    : { maxHeight: CHARACTER_PICK_RESULT_MAX_HEIGHT };
 
   const descriptionActions = (
-    <ExportResultFormatActions
+    <CharacterPickResultFormatActions
       includeSpecs={includeSpecs}
       includeGearScore={includeGearScore}
       onIncludeSpecsChange={onIncludeSpecsChange}
@@ -173,10 +173,10 @@ export function ExportResultLines({
 
   if (result.kind === "message") {
     return (
-      <ExportFilterSection
+      <FilterSection
         step={5}
-        title={t("exportPanel.exportLinesTitle")}
-        description={t("exportPanel.exportLinesHelper")}
+        title={t("characterPickPanel.exportLinesTitle")}
+        description={t("characterPickPanel.exportLinesHelper")}
         descriptionActions={descriptionActions}
         sx={sectionLayoutSx}
         contentSx={sectionContentSx}
@@ -184,20 +184,20 @@ export function ExportResultLines({
         <Typography variant="body2" color="text.secondary">
           {result.message}
         </Typography>
-      </ExportFilterSection>
+      </FilterSection>
     );
   }
 
   const singleLine = result.lines.length === 1;
 
   return (
-    <ExportFilterSection
+    <FilterSection
       step={5}
-      title={t("exportPanel.exportLinesTitle")}
+      title={t("characterPickPanel.exportLinesTitle")}
       description={
         singleLine
-          ? t("exportPanel.exportLinesHelperSingle")
-          : t("exportPanel.exportLinesHelper")
+          ? t("characterPickPanel.exportLinesHelperSingle")
+          : t("characterPickPanel.exportLinesHelper")
       }
       descriptionActions={descriptionActions}
       sx={sectionLayoutSx}
@@ -205,7 +205,7 @@ export function ExportResultLines({
     >
       <Table
         size="small"
-        aria-label={t("exportPanel.exportLinesTitle")}
+        aria-label={t("characterPickPanel.exportLinesTitle")}
         sx={{
           width: "100%",
           tableLayout: "auto",
@@ -214,7 +214,7 @@ export function ExportResultLines({
       >
         <TableBody>
           {result.lines.map((line, index) => (
-            <ExportResultLineRow
+            <CharacterPickResultLineRow
               key={line.dungeonId}
               line={line}
               emphasizeCopy={singleLine}
@@ -223,6 +223,6 @@ export function ExportResultLines({
           ))}
         </TableBody>
       </Table>
-    </ExportFilterSection>
+    </FilterSection>
   );
 }

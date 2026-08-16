@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 
-type ExportFilterSectionProps = {
+type FilterSectionProps = {
   /** Optional workflow step number shown before the title (Character pick). */
   step?: number;
   title: string;
@@ -43,7 +43,7 @@ const stepBadgeSx = {
   verticalAlign: "middle",
 } as const;
 
-export function ExportFilterSection({
+export function FilterSection({
   step,
   title,
   titleMark,
@@ -54,7 +54,7 @@ export function ExportFilterSection({
   children,
   sx,
   contentSx,
-}: ExportFilterSectionProps) {
+}: FilterSectionProps) {
   const hasDescriptionBlock = Boolean(description || descriptionActions);
 
   return (
