@@ -2,7 +2,10 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
   Box,
   Button,
-  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { useCallback, useState } from "react";
@@ -35,12 +38,25 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
   }
 }
 
+const resultTableCellSx = {
+  borderBottom: 1,
+  borderColor: "divider",
+  verticalAlign: "middle",
+  py: 0.75,
+  px: 0.5,
+} as const;
+
 type ExportResultLineRowProps = {
   line: ExportStatusLine;
   emphasizeCopy: boolean;
+  isLast: boolean;
 };
 
-function ExportResultLineRow({ line, emphasizeCopy }: ExportResultLineRowProps) {
+function ExportResultLineRow({
+  line,
+  emphasizeCopy,
+  isLast,
+}: ExportResultLineRowProps) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
 
@@ -55,72 +71,76 @@ function ExportResultLineRow({ line, emphasizeCopy }: ExportResultLineRowProps) 
     }, 1500);
   }, [line]);
 
+  const cellSx = {
+    ...resultTableCellSx,
+    ...(isLast ? { borderBottom: 0 } : null),
+  };
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: { xs: "column", sm: "row" },
-        alignItems: { xs: "stretch", sm: "center" },
-        gap: 1.25,
-        px: 0.25,
-        py: 0.75,
-        borderBottom: 1,
-        borderColor: "divider",
-        minWidth: 0,
-        "&:last-child": {
-          borderBottom: 0,
-        },
-      }}
-    >
-      <Button
-        size="small"
-        variant={emphasizeCopy ? "contained" : "outlined"}
-        startIcon={<ContentCopyIcon fontSize="small" />}
-        onClick={() => {
-          void handleCopy();
-        }}
-        aria-label={t("exportPanel.copyLineAria", { raid: line.raidLabel })}
+    <TableRow>
+      <TableCell
         sx={{
-          flexShrink: 0,
-          alignSelf: { xs: "stretch", sm: "center" },
+          ...cellSx,
+          // Shrink-wrap so all raid labels share one column width.
+          width: "1%",
+          whiteSpace: "nowrap",
+          pl: 0.25,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.75,
+            minWidth: 0,
+          }}
+        >
+          <ExportRaidIcon raidKey={line.raidKey} />
+          <Typography
+            variant="body2"
+            component="span"
+            sx={{ fontWeight: 600, lineHeight: 1.3, whiteSpace: "nowrap" }}
+          >
+            {line.raidLabel}
+          </Typography>
+        </Box>
+      </TableCell>
+      <TableCell
+        sx={{
+          ...cellSx,
+          width: "1%",
           whiteSpace: "nowrap",
         }}
       >
-        {copied ? t("exportPanel.copied") : t("exportPanel.copyLine")}
-      </Button>
-      <Box
-        sx={{
-          flexShrink: 0,
-          alignSelf: { xs: "flex-start", sm: "center" },
-          display: "flex",
-          alignItems: "center",
-          gap: 0.75,
-          minWidth: 0,
-        }}
-      >
-        <ExportRaidIcon raidKey={line.raidKey} />
+        <Button
+          size="small"
+          variant={emphasizeCopy ? "contained" : "outlined"}
+          startIcon={<ContentCopyIcon fontSize="small" />}
+          onClick={() => {
+            void handleCopy();
+          }}
+          aria-label={t("exportPanel.copyLineAria", { raid: line.raidLabel })}
+          sx={{ whiteSpace: "nowrap" }}
+        >
+          {copied ? t("exportPanel.copied") : t("exportPanel.copyLine")}
+        </Button>
+      </TableCell>
+      <TableCell sx={{ ...cellSx, width: "100%", pr: 0.25 }}>
         <Typography
           variant="body2"
-          component="span"
-          sx={{ fontWeight: 600, lineHeight: 1.3, whiteSpace: "nowrap" }}
+          component="p"
+          sx={{
+            m: 0,
+            minWidth: 0,
+            lineHeight: 1.4,
+            wordBreak: "break-word",
+            fontVariantNumeric: "tabular-nums",
+          }}
         >
-          {line.raidLabel}
+          {line.charactersLabel}
         </Typography>
-      </Box>
-      <Typography
-        variant="body2"
-        component="p"
-        sx={{
-          flex: 1,
-          minWidth: 0,
-          lineHeight: 1.4,
-          wordBreak: "break-word",
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
-        {line.charactersLabel}
-      </Typography>
-    </Box>
+      </TableCell>
+    </TableRow>
   );
 }
 
@@ -183,15 +203,26 @@ export function ExportResultLines({
       sx={sectionLayoutSx}
       contentSx={sectionContentSx}
     >
-      <Stack spacing={0}>
-        {result.lines.map((line) => (
-          <ExportResultLineRow
-            key={line.dungeonId}
-            line={line}
-            emphasizeCopy={singleLine}
-          />
-        ))}
-      </Stack>
+      <Table
+        size="small"
+        aria-label={t("exportPanel.exportLinesTitle")}
+        sx={{
+          width: "100%",
+          tableLayout: "auto",
+          borderCollapse: "collapse",
+        }}
+      >
+        <TableBody>
+          {result.lines.map((line, index) => (
+            <ExportResultLineRow
+              key={line.dungeonId}
+              line={line}
+              emphasizeCopy={singleLine}
+              isLast={index === result.lines.length - 1}
+            />
+          ))}
+        </TableBody>
+      </Table>
     </ExportFilterSection>
   );
 }
