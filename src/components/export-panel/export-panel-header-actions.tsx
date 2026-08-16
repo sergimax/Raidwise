@@ -2,11 +2,11 @@ import { Button } from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 
 type ExportPanelHeaderActionsProps = {
-  onResetAllFilters: () => void;
+  onResetParameters: () => void;
 };
 
 export function ExportPanelHeaderActions({
-  onResetAllFilters,
+  onResetParameters,
 }: ExportPanelHeaderActionsProps) {
   const { t } = useTranslation();
 
@@ -14,10 +14,10 @@ export function ExportPanelHeaderActions({
     <Button
       size="small"
       variant="text"
-      onClick={onResetAllFilters}
+      onClick={onResetParameters}
       sx={{ whiteSpace: "nowrap", minWidth: 0, px: 1 }}
     >
-      {t("exportPanel.resetAllFilters")}
+      {t("exportPanel.resetParameters")}
     </Button>
   );
 }

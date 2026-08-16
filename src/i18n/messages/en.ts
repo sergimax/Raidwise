@@ -311,7 +311,7 @@ export const enMessages = {
     selectAllSpecsAria: "Select all character specs",
     clearAllSpecs: "Clear all",
     clearAllSpecsAria: "Clear all character specs",
-    resetAllFilters: "Reset all filters",
+    resetParameters: "Reset parameters",
     minGearScoreEnable: "Minimum GS filter",
     minGearScoreEnableAria: "Enable minimum gear score filter for character pick",
     minGearScoreHelper:

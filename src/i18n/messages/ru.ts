@@ -313,7 +313,7 @@ export const ruMessages: Messages = {
     selectAllSpecsAria: "Выбрать все спеки персонажей",
     clearAllSpecs: "Снять все",
     clearAllSpecsAria: "Снять все спеки персонажей",
-    resetAllFilters: "Сбросить все фильтры",
+    resetParameters: "Сбросить параметры",
     minGearScoreEnable: "Фильтр по мин. GS",
     minGearScoreEnableAria: "Включить фильтр по минимальному GS для подбора",
     minGearScoreHelper:

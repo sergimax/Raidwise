@@ -141,7 +141,7 @@ export function RaidTrackerMain({
       return {
         ...meta,
         headerActions: (
-          <ExportPanelHeaderActions onResetAllFilters={resetExportAllFilters} />
+          <ExportPanelHeaderActions onResetParameters={resetExportAllFilters} />
         ),
       };
     }
@@ -150,7 +150,7 @@ export function RaidTrackerMain({
       return {
         ...meta,
         headerActions: (
-          <ExportPanelHeaderActions onResetAllFilters={resetGearPickAllFilters} />
+          <ExportPanelHeaderActions onResetParameters={resetGearPickAllFilters} />
         ),
       };
     }
