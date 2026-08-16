@@ -17,11 +17,8 @@ Toolbar panels are mutually exclusive (only one open at a time).
 
 ### Characters & dungeons
 
-Add manually (**Add character** / **Add raid**, stepped forms) or load the WotLK raid template when the list is empty.
-New character names are letters only; the UI capitalizes the first letter.
-Edit specs, WowSims gear, also-owned items (bags / other spec / vendors for hints), and raid metadata later.
-Reorder table columns from the edit dialog (`Position: < n >`).
-Header **info** toggles a short usage-help intro (three ways to use the app: CDs, gear planning, or BiS-only).
+Add characters and raids manually, or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
+Header **info** opens a short intro (CDs, gear planning, or BiS-only).
 
 ### Cooldown toggles
 
@@ -30,66 +27,40 @@ Reset one character from the table header, or everyone from **Settings**.
 
 ### Table
 
-Sort and search raids (name, size, mode — EN/RU, e.g. `ICC25H` / `ЦЛК25хм`).
-**Type** column shows size (+ skull for Heroic); per-row edit / delete for raids.
-Character headers show class-colored names, main/off GS (or `- / -`), and edit / reset / delete.
-Complete column uses a progress bar (count on hover).
-Compact layout on small screens.
-Wide character columns scroll horizontally inside the table (page stays put).
+Sort and search raids (EN/RU, e.g. `ICC25H` / `ЦЛК25хм`); **Type** shows size (+ skull for Heroic), with per-row edit/delete.
+Character columns use class-colored names and main/off GS; Complete is a progress bar; compact on small screens, with horizontal scroll inside the table when many characters are present.
 
 ### Settings
 
-Toolbar **Settings** opens data controls: bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm).
-When there are no dungeons — **Add raids from template**.
+Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm); when empty, **Add raids from template**.
 
 ### Character pick for a raid
 
-Copyable signup line of characters still missing CD on filtered raids.
-Filters: min GS, role, specs (kept for the browser session when you close or switch panels).
-Result line format toggles (**Specs** / **GS**); characters look like `Name Spec gs / Spec gs`, separated by commas.
-Click Selected raid chips to exclude false matches from the results (chips stay visible).
-Header reset clears the raid search and chip exclusions.
+Copyable signup lines of characters still missing CD on filtered raids, with min GS / role / spec filters and optional **Specs** / **GS** in the line format.
+Session-kept filters; click Selected raid chips to exclude false matches.
 
 ### Soft pick for a raid
 
-Soft reserves for one character + spec on BiS upgrades from filtered raids (active list from **BiS builds**).
-Rules: max softs (1–4) and system (**re-roll** or **+100**).
-Session-only (character, rules, softs, and raid exclusions survive closing the panel).
-Competition colors and win-odds hints help pick softs; reset one row or the whole Soft targets list.
-Pasteable call list can include/hide the character name and boss details.
-Gear on the other spec counts as already owned for Soft targets and table hints.
-Same clickable raid chips to exclude rows (softs for items that drop off the list are cleared); header reset for search/exclusions.
-Layout wraps Soft targets / the copy block onto their own rows when the panel is too narrow.
+Plan soft reserves for one character + spec on BiS upgrades from filtered raids (**re-roll** or **+100**, max softs 1–4), with competition colors, win-odds hints, and a pasteable call list.
+Uses the active **BiS builds** list; other-spec gear counts as owned; session state survives closing the panel.
 
 ### BiS builds
 
-Built-in presets per spec (Kingdom with slot variants first, then Titans/community); local copies are editable and used for gear-choice hints.
-Class/spec choice stays for the browser session when you leave the panel; preset selection is already saved in BiS storage.
-Slot layout matches the in-game paper doll; alternative items stack under the primary choice.
-**Copy** exports pasteable `Slot: Item` lines.
-Custom lists support clear-slot / clear-all; Items shows the active list name and scrolls with Lists within fixed height budgets.
+Built-in presets per spec (Kingdom first, then Titans/community); local copies are editable for gear-choice hints.
+Paper-doll slot layout with alternatives; **Copy** exports `Slot: Item` lines.
 
 ### Gear hints
 
-CD cells (hidden once that character–raid CD is marked):
-- <span style="color:#d97706">amber</span> — missing BiS (exact or normal variant)
-- <span style="color:#0284c7">blue</span> — stat-filtered ilvl upgrade
-
-Main and off specs split the cell tint when both are set.
-Dismissible legend above the table explains the colors.
-Tooltips group loot by boss and list tier set tokens for the character’s class.
-Also-owned items (edit character) count as available for BiS/ilvl/tier-token hints without being on the WowSims export.
+CD cells tint <span style="color:#d97706">amber</span> for missing BiS and <span style="color:#0284c7">blue</span> for stat-filtered ilvl upgrades (hidden when that CD is marked; main/off split when both specs are set).
+Boss-grouped tooltips include tier tokens; also-owned items count without being on the WowSims export.
 
 ### EN / RU
 
-Full UI and item tooltips.
-First visit defaults to Russian.
+Full UI and item tooltips; first visit defaults to Russian.
 
 ### Theme
 
-Light/dark mode, saved locally (palette, typography, and link styles).
-Header links to GitHub and [sergimax.ru](https://sergimax.ru).
-Design tokens / recipes: [docs/design/design-system.md](docs/design/design-system.md).
+Light/dark mode saved locally; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Development
 
