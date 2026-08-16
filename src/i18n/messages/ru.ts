@@ -286,9 +286,9 @@ export const ruMessages: Messages = {
     copyLine: "Скопировать",
     copyLineAria: "Скопировать строку записи для {{raid}}",
     copied: "Скопировано",
-    includeSpecs: "Спеки",
+    includeSpecs: "Отображать спеки",
     includeSpecsAria: "Включать короткие спеки в строки подбора",
-    includeGearScore: "GS",
+    includeGearScore: "Отображать GS",
     includeGearScoreAria: "Включать GS после каждого короткого спека",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
