@@ -37,6 +37,8 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 **Logo concepts (Raidwise rename):** [logo-variants/](./logo-variants/) — SVG templates + PNG previews; not production `public/` assets yet.
 
+**Toolbar panel backgrounds:** [panel-backgrounds/](./panel-backgrounds/) — hatch / grid / wash variants for `TrackerToolbarPanel` (step blocks stay solid).
+
 ---
 
 ## Color mode

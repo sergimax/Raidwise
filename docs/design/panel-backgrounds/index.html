@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Raidwise — toolbar panel background variants</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --page: #fcfbf9;
+        --ink: #141414;
+        --muted: #555555;
+        --line: #8a8a8a;
+        --surface: #ffffff;
+        --brand: #9a3412;
+        --brand-soft: #fff7ed;
+        --panel-hatch: color-mix(in srgb, #0a0a0a 5.5%, transparent);
+        --shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+      }
+
+      :root[data-color-mode="dark"] {
+        color-scheme: dark;
+        --page: #1a1a1a;
+        --ink: #f2f2f2;
+        --muted: #a3a3a3;
+        --line: #8a8a8a;
+        --surface: #242424;
+        --brand: #fb923c;
+        --brand-soft: #3d2818;
+        --panel-hatch: color-mix(in srgb, #ffffff 6%, transparent);
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: var(--page);
+        color: var(--ink);
+        line-height: 1.45;
+      }
+
+      header {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+
+      header h1 {
+        margin: 0 0 0.35rem;
+        font-size: 1.5rem;
+      }
+
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+        max-width: 42rem;
+      }
+
+      .mode-toggle {
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--ink);
+        border-radius: 8px;
+        padding: 0.45rem 0.75rem;
+        cursor: pointer;
+        font: inherit;
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.25rem 3rem;
+        display: grid;
+        gap: 1rem;
+      }
+
+      article {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .meta {
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+      }
+
+      .meta h2 {
+        margin: 0 0 0.2rem;
+        font-size: 1.05rem;
+      }
+
+      .meta p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .meta code {
+        font-size: 0.75rem;
+        color: var(--brand);
+      }
+
+      /* Mock toolbar panel — pattern lives here */
+      .panel {
+        margin: 1rem;
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        background-color: var(--surface);
+        min-height: 220px;
+      }
+
+      .panel-title {
+        font-weight: 700;
+        margin: 0 0 0.75rem;
+        font-size: 1rem;
+      }
+
+      .blocks {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      @media (max-width: 720px) {
+        .blocks {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Step blocks stay plane fill (current app rule) */
+      .block {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--brand);
+        border-radius: 8px;
+        padding: 0.75rem;
+        min-height: 112px;
+      }
+
+      .block-step {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.35rem;
+        height: 1.35rem;
+        margin-right: 0.4rem;
+        border-radius: 6px;
+        background: var(--brand-soft);
+        color: var(--brand);
+        border: 1px solid color-mix(in srgb, var(--brand) 40%, transparent);
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      .block h3 {
+        margin: 0 0 0.35rem;
+        font-size: 0.9rem;
+        color: var(--brand);
+      }
+
+      .block p {
+        margin: 0;
+        font-size: 0.75rem;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      /* --- Variants (CSS custom properties on .panel) --- */
+
+      .v-none {
+        background-image: none;
+      }
+
+      .v-stage-14 {
+        background-image:
+          linear-gradient(45deg, var(--panel-hatch) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--panel-hatch) 25%, transparent 25%);
+        background-size: 14px 14px, 14px 14px;
+        background-position: 0 0, 0 0;
+      }
+
+      .v-stage-10 {
+        background-image:
+          linear-gradient(45deg, var(--panel-hatch) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--panel-hatch) 25%, transparent 25%);
+        background-size: 10px 10px, 10px 10px;
+      }
+
+      .v-stage-20 {
+        background-image:
+          linear-gradient(45deg, var(--panel-hatch) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--panel-hatch) 25%, transparent 25%);
+        background-size: 20px 20px, 20px 20px;
+      }
+
+      .v-stage-strong {
+        --panel-hatch: color-mix(in srgb, #0a0a0a 9%, transparent);
+        background-image:
+          linear-gradient(45deg, var(--panel-hatch) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--panel-hatch) 25%, transparent 25%);
+        background-size: 14px 14px, 14px 14px;
+      }
+
+      :root[data-color-mode="dark"] .v-stage-strong {
+        --panel-hatch: color-mix(in srgb, #ffffff 10%, transparent);
+      }
+
+      .v-dots {
+        background-image: radial-gradient(
+          var(--panel-hatch) 1px,
+          transparent 1px
+        );
+        background-size: 12px 12px;
+      }
+
+      .v-grid {
+        background-image:
+          linear-gradient(var(--panel-hatch) 1px, transparent 1px),
+          linear-gradient(90deg, var(--panel-hatch) 1px, transparent 1px);
+        background-size: 16px 16px;
+      }
+
+      .v-lines {
+        background-image: repeating-linear-gradient(
+          -12deg,
+          transparent,
+          transparent 7px,
+          var(--panel-hatch) 7px,
+          var(--panel-hatch) 8px
+        );
+      }
+
+      .v-brand-wash {
+        background-image:
+          radial-gradient(
+            520px 280px at 8% -20%,
+            color-mix(in srgb, var(--brand) 10%, transparent),
+            transparent 60%
+          ),
+          radial-gradient(
+            420px 240px at 100% 0%,
+            color-mix(in srgb, var(--brand) 6%, transparent),
+            transparent 55%
+          );
+        background-repeat: no-repeat;
+      }
+
+      .v-stage-plus-wash {
+        background-image:
+          linear-gradient(45deg, var(--panel-hatch) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--panel-hatch) 25%, transparent 25%),
+          radial-gradient(
+            520px 280px at 8% -20%,
+            color-mix(in srgb, var(--brand) 8%, transparent),
+            transparent 60%
+          );
+        background-size: 14px 14px, 14px 14px, auto;
+        background-repeat: repeat, repeat, no-repeat;
+      }
+
+      .v-checker {
+        background-image:
+          linear-gradient(45deg, var(--panel-hatch) 25%, transparent 25%),
+          linear-gradient(-45deg, transparent 75%, var(--panel-hatch) 75%),
+          linear-gradient(45deg, transparent 75%, var(--panel-hatch) 75%),
+          linear-gradient(-45deg, var(--panel-hatch) 25%, transparent 25%);
+        background-size: 16px 16px;
+        background-position: 0 0, 8px 0, 8px -8px, 0 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Toolbar panel backgrounds</h1>
+        <p>
+          Mock of <code>TrackerToolbarPanel</code>: pattern on the outer view,
+          solid plane fill on step blocks (<code>ExportFilterSection</code>).
+          Pick a variant, then wire CSS vars in
+          <code>src/index.css</code> + panel shell.
+        </p>
+      </div>
+      <button type="button" class="mode-toggle" id="modeToggle">
+        Switch to dark
+      </button>
+    </header>
+
+    <main id="gallery"></main>
+
+    <script>
+      const variants = [
+        {
+          id: "none",
+          className: "v-none",
+          title: "A — None (control)",
+          note: "Solid paper only. Baseline before patterning.",
+        },
+        {
+          id: "stage-14",
+          className: "v-stage-14",
+          title: "B — Stage hatch 14px",
+          note: "Logo gallery .stage diagonal hatch at app panel size.",
+        },
+        {
+          id: "stage-10",
+          className: "v-stage-10",
+          title: "C — Stage hatch 10px",
+          note: "Finer weave; denser texture in gaps between blocks.",
+        },
+        {
+          id: "stage-20",
+          className: "v-stage-20",
+          title: "D — Stage hatch 20px",
+          note: "Coarser; fewer lines, calmer on wide Soft pick panels.",
+        },
+        {
+          id: "stage-strong",
+          className: "v-stage-strong",
+          title: "E — Stage hatch stronger",
+          note: "Same 14px geometry, higher contrast (~9–10% mix).",
+        },
+        {
+          id: "dots",
+          className: "v-dots",
+          title: "F — Dot grid (current)",
+          note: "Subtle pin dots; less directional than hatch. In app now.",
+        },
+        {
+          id: "grid",
+          className: "v-grid",
+          title: "G — Square grid",
+          note: "1px graph paper; reads technical / raid-planner.",
+        },
+        {
+          id: "lines",
+          className: "v-lines",
+          title: "H — Soft diagonal lines",
+          note: "Repeating strokes; lighter than full hatch weave.",
+        },
+        {
+          id: "brand-wash",
+          className: "v-brand-wash",
+          title: "I — Brand wash only",
+          note: "No hatch — soft brand radials inside the panel.",
+        },
+        {
+          id: "stage-plus-wash",
+          className: "v-stage-plus-wash",
+          title: "J — Hatch + brand wash",
+          note: "Stage hatch with a quiet brand glow in the corner.",
+        },
+        {
+          id: "checker",
+          className: "v-checker",
+          title: "K — Checker weave",
+          note: "Offset hatch positions; closer to fabric / tarp.",
+        },
+      ];
+
+      const gallery = document.getElementById("gallery");
+
+      for (const variant of variants) {
+        const article = document.createElement("article");
+        article.innerHTML = `
+          <div class="meta">
+            <h2>${variant.title}</h2>
+            <p>${variant.note} <code>${variant.id}</code></p>
+          </div>
+          <div class="panel ${variant.className}">
+            <p class="panel-title">Soft reserve pick</p>
+            <div class="blocks">
+              <div class="block">
+                <h3><span class="block-step">1</span>Selected raid</h3>
+                <p>Plane fill — hatch should not show through this block.</p>
+              </div>
+              <div class="block">
+                <h3><span class="block-step">2</span>Character &amp; spec</h3>
+                <p>Solid surface over panel pattern.</p>
+              </div>
+              <div class="block">
+                <h3><span class="block-step">3</span>Soft rules</h3>
+                <p>Gaps between cards reveal the panel background.</p>
+              </div>
+            </div>
+          </div>
+        `;
+        gallery.appendChild(article);
+      }
+
+      const root = document.documentElement;
+      const toggle = document.getElementById("modeToggle");
+
+      function syncToggleLabel() {
+        const isDark = root.getAttribute("data-color-mode") === "dark";
+        toggle.textContent = isDark ? "Switch to light" : "Switch to dark";
+      }
+
+      toggle.addEventListener("click", () => {
+        const next =
+          root.getAttribute("data-color-mode") === "dark" ? "light" : "dark";
+        root.setAttribute("data-color-mode", next);
+        syncToggleLabel();
+      });
+
+      syncToggleLabel();
+    </script>
+  </body>
+</html>
