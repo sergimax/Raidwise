@@ -38,7 +38,7 @@ export const BIS_LISTS_VISIBLE_CHIP_COUNT = 6;
 
 /**
  * ExportFilterSection chrome shared by BiS steps (padding + title + description).
- * Items with titleActions is close enough for column alignment math.
+ * Items with titleActions / descriptionActions is close enough for column alignment math.
  */
 export const BIS_FILTER_SECTION_CHROME_HEIGHT_PX = 88;
 

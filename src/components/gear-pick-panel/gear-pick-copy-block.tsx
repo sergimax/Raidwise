@@ -1,7 +1,8 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 import type { TranslateFn } from "../../i18n/translate.ts";
+import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
 import { GearPickCopyFormatActions } from "./gear-pick-copy-format-actions.tsx";
 
 type GearPickCopyBlockProps = {
@@ -49,32 +50,11 @@ export function GearPickCopyBlock({
   }, [copyText, hasSoftCalls]);
 
   return (
-    <Box
-      sx={{
-        border: 1,
-        borderColor: "divider",
-        borderRadius: 1,
-        p: 1.25,
-        display: "flex",
-        flexDirection: "column",
-        gap: 1,
-        minHeight: 0,
-      }}
-    >
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{ alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}
-      >
-        <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
-          <Box
-            component="span"
-            sx={{ color: "text.secondary", fontWeight: 700, mr: 0.5 }}
-          >
-            5.
-          </Box>
-          {t("gearPickPanel.copyTitle")}
-        </Typography>
+    <ExportFilterSection
+      step={5}
+      title={t("gearPickPanel.copyTitle")}
+      description={t("gearPickPanel.copyHelper")}
+      titleActions={
         <Button
           size="small"
           variant="outlined"
@@ -87,16 +67,16 @@ export function GearPickCopyBlock({
         >
           {copied ? t("gearPickPanel.copied") : t("gearPickPanel.copyLine")}
         </Button>
-      </Stack>
-      <GearPickCopyFormatActions
-        includeCharacterName={includeCharacterName}
-        compactLines={compactLines}
-        onIncludeCharacterNameChange={onIncludeCharacterNameChange}
-        onCompactLinesChange={onCompactLinesChange}
-      />
-      <Typography variant="caption" color="text.secondary">
-        {t("gearPickPanel.copyHelper")}
-      </Typography>
+      }
+      descriptionActions={
+        <GearPickCopyFormatActions
+          includeCharacterName={includeCharacterName}
+          compactLines={compactLines}
+          onIncludeCharacterNameChange={onIncludeCharacterNameChange}
+          onCompactLinesChange={onCompactLinesChange}
+        />
+      }
+    >
       {hasSoftCalls ? (
         <Box
           component="pre"
@@ -110,7 +90,7 @@ export function GearPickCopyBlock({
             fontFamily: "inherit",
             fontSize: "0.875rem",
             lineHeight: 1.45,
-            flex: 1,
+            minHeight: 0,
             overflow: "auto",
           }}
         >
@@ -121,6 +101,6 @@ export function GearPickCopyBlock({
           {t("gearPickPanel.copyEmpty")}
         </Typography>
       )}
-    </Box>
+    </ExportFilterSection>
   );
 }

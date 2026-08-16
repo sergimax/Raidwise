@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box } from "@mui/material";
 import { useMemo } from "react";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
@@ -310,19 +310,19 @@ export function ExportPanel({
             title={t("exportPanel.characterSpecsFilterTitle")}
             description={t("exportPanel.characterSpecsFilterHelper")}
             titleActions={
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <GearPickCharacterFilterActions
-                  onlyWithUpgrades={onlyCharactersWithUpgrades}
-                  onOnlyWithUpgradesChange={setOnlyCharactersWithUpgrades}
-                />
-                <ExportCharacterSpecFilterActions
-                  disabled={characters.length === 0}
-                  onSelectAll={() =>
-                    selectAllCharacterSpecs(characters, selectableCharacterIds)
-                  }
-                  onClearAll={() => clearAllCharacterSpecs(characters)}
-                />
-              </Stack>
+              <ExportCharacterSpecFilterActions
+                disabled={characters.length === 0}
+                onSelectAll={() =>
+                  selectAllCharacterSpecs(characters, selectableCharacterIds)
+                }
+                onClearAll={() => clearAllCharacterSpecs(characters)}
+              />
+            }
+            descriptionActions={
+              <GearPickCharacterFilterActions
+                onlyWithUpgrades={onlyCharactersWithUpgrades}
+                onOnlyWithUpgradesChange={setOnlyCharactersWithUpgrades}
+              />
             }
           >
             <ExportCharacterSpecFilter

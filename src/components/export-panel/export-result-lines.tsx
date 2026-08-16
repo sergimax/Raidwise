@@ -145,7 +145,7 @@ export function ExportResultLines({
     ? { flex: 1, minHeight: 0, maxHeight: "none" }
     : { maxHeight: EXPORT_RESULT_MAX_HEIGHT };
 
-  const titleActions = (
+  const descriptionActions = (
     <ExportResultFormatActions
       includeSpecs={includeSpecs}
       includeGearScore={includeGearScore}
@@ -160,7 +160,7 @@ export function ExportResultLines({
         step={5}
         title={t("exportPanel.exportLinesTitle")}
         description={t("exportPanel.exportLinesHelper")}
-        titleActions={titleActions}
+        descriptionActions={descriptionActions}
         sx={sectionLayoutSx}
         contentSx={sectionContentSx}
       >
@@ -182,7 +182,7 @@ export function ExportResultLines({
           ? t("exportPanel.exportLinesHelperSingle")
           : t("exportPanel.exportLinesHelper")
       }
-      titleActions={titleActions}
+      descriptionActions={descriptionActions}
       sx={sectionLayoutSx}
       contentSx={sectionContentSx}
     >

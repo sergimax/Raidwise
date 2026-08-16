@@ -334,7 +334,7 @@ export function GearPickPanel({
           step={2}
           title={t("gearPickPanel.characterTitle")}
           description={t("gearPickPanel.characterHelper")}
-          titleActions={
+          descriptionActions={
             <GearPickCharacterFilterActions
               onlyWithUpgrades={onlyCharactersWithUpgrades}
               onOnlyWithUpgradesChange={setOnlyCharactersWithUpgrades}

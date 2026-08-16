@@ -8,10 +8,16 @@ type ExportFilterSectionProps = {
   title: string;
   /** When set, shown muted after the title as `(…)` — e.g. optional filters. */
   titleMark?: string;
+  /** Icon / button actions in the title row (reset, select all, copy, …). */
   titleActions?: ReactNode;
   /** Optional line under the title row (e.g. active BiS list name). */
   subtitle?: string;
   description?: string;
+  /**
+   * Format / filter toggles under the description (e.g. With upgrades,
+   * Include specs / GS, Name / Details). Prefer this over titleActions for switches.
+   */
+  descriptionActions?: ReactNode;
   children: ReactNode;
   sx?: SxProps<Theme>;
   contentSx?: SxProps<Theme>;
@@ -44,10 +50,13 @@ export function ExportFilterSection({
   titleActions,
   subtitle,
   description,
+  descriptionActions,
   children,
   sx,
   contentSx,
 }: ExportFilterSectionProps) {
+  const hasDescriptionBlock = Boolean(description || descriptionActions);
+
   return (
     <Box
       sx={{
@@ -144,16 +153,33 @@ export function ExportFilterSection({
           sx={{
             display: "block",
             mt: subtitle ? 0.15 : 0.25,
-            mb: 0.75,
+            mb: descriptionActions ? 0.35 : 0.75,
             lineHeight: 1.35,
             flexShrink: 0,
           }}
         >
           {description}
         </Typography>
-      ) : (
+      ) : null}
+      {descriptionActions ? (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 0.5,
+            mt: description || subtitle ? 0 : 0.25,
+            mb: 0.75,
+            flexShrink: 0,
+            minWidth: 0,
+          }}
+        >
+          {descriptionActions}
+        </Box>
+      ) : null}
+      {!hasDescriptionBlock ? (
         <Box sx={{ mb: 0.75, flexShrink: 0 }} />
-      )}
+      ) : null}
       <Box
         sx={{
           flex: 1,
