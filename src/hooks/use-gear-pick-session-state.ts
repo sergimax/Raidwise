@@ -105,6 +105,14 @@ export function useGearPickSessionState() {
     setAssignmentsByItemId({});
   }, []);
 
+  const resetAllFilters = useCallback(() => {
+    setSelection(null);
+    setRules(DEFAULT_SOFT_ROLL_RULES);
+    setAssignmentsByItemId({});
+    setExcludedDungeonIds(new Set());
+    setOnlyCharactersWithUpgrades(false);
+  }, []);
+
   return {
     selection,
     rules,
@@ -122,6 +130,7 @@ export function useGearPickSessionState() {
     clearExcludedDungeonIds,
     pruneAssignmentsToItemIds,
     clearAssignments,
+    resetAllFilters,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
     setOnlyCharactersWithUpgrades,

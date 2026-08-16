@@ -91,6 +91,7 @@ export function RaidTrackerMain({
   const exportSession = useExportSessionState();
   const bisListsSession = useBisListsSessionState();
   const { resetAllFilters: resetExportSessionFilters } = exportSession;
+  const { resetAllFilters: resetGearPickSessionFilters } = gearPickSession;
   const { setDungeonNameSearch } = tableState;
 
   const toolbarPanelId = resolveToolbarPanelId({
@@ -117,6 +118,11 @@ export function RaidTrackerMain({
     setDungeonNameSearch("");
   }, [resetExportSessionFilters, setDungeonNameSearch]);
 
+  const resetGearPickAllFilters = useCallback(() => {
+    resetGearPickSessionFilters();
+    setDungeonNameSearch("");
+  }, [resetGearPickSessionFilters, setDungeonNameSearch]);
+
   const toolbarPanelMeta = useMemo(() => {
     if (!toolbarPanelId) {
       return null;
@@ -140,6 +146,15 @@ export function RaidTrackerMain({
       };
     }
 
+    if (toolbarPanelId === "gear") {
+      return {
+        ...meta,
+        headerActions: (
+          <ExportPanelHeaderActions onResetAllFilters={resetGearPickAllFilters} />
+        ),
+      };
+    }
+
     return meta;
   }, [
     closeBisListsPanelWithTooltips,
@@ -149,6 +164,7 @@ export function RaidTrackerMain({
     forms.closeCharacterForm,
     forms.closeDungeonForm,
     resetExportAllFilters,
+    resetGearPickAllFilters,
     t,
     toolbarPanelId,
   ]);
