@@ -2,7 +2,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import type { MessageKey } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
-import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
 import type { AppIntroProps } from "./types.ts";
 import { renderIntroRichText } from "./render-intro-rich-text.tsx";
 
@@ -116,7 +116,7 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
           }}
         >
           {INTRO_SCENARIOS.map((scenario) => (
-            <ExportFilterSection
+            <FilterSection
               key={scenario.step}
               step={scenario.step}
               title={t(scenario.titleKey)}
@@ -163,7 +163,7 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
                   {t(scenario.outcomeKey)}
                 </Typography>
               </Stack>
-            </ExportFilterSection>
+            </FilterSection>
           ))}
         </Box>
 

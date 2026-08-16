@@ -50,13 +50,13 @@ export function TrackerLayout() {
       handleAddFromTemplate: requestAddFromTemplate,
       showCharacterForm: overlayPanels.showCharacterForm,
       showDungeonForm: overlayPanels.showDungeonForm,
-      showExportPanel: overlayPanels.showExportPanel,
+      showCharacterPickPanel: overlayPanels.showCharacterPickPanel,
       showGearPickPanel: overlayPanels.showGearPickPanel,
       showBisListsPanel: overlayPanels.showBisListsPanel,
       showDataControlsPanel: overlayPanels.showDataControlsPanel,
       toggleCharacterForm: overlayPanels.toggleCharacterForm,
       toggleDungeonForm: overlayPanels.toggleDungeonForm,
-      toggleExportPanel: overlayPanels.toggleExportPanel,
+      toggleCharacterPickPanel: overlayPanels.toggleCharacterPickPanel,
       toggleGearPickPanel: overlayPanels.toggleGearPickPanel,
       toggleBisListsPanel: overlayPanels.toggleBisListsPanel,
       toggleDataControlsPanel: overlayPanels.toggleDataControlsPanel,
@@ -69,13 +69,13 @@ export function TrackerLayout() {
       overlayPanels.showCharacterForm,
       overlayPanels.showDataControlsPanel,
       overlayPanels.showDungeonForm,
-      overlayPanels.showExportPanel,
+      overlayPanels.showCharacterPickPanel,
       overlayPanels.showGearPickPanel,
       overlayPanels.toggleBisListsPanel,
       overlayPanels.toggleCharacterForm,
       overlayPanels.toggleDataControlsPanel,
       overlayPanels.toggleDungeonForm,
-      overlayPanels.toggleExportPanel,
+      overlayPanels.toggleCharacterPickPanel,
       overlayPanels.toggleGearPickPanel,
     ],
   );
@@ -98,8 +98,8 @@ export function TrackerLayout() {
           onAddFromTemplate={requestAddFromTemplate}
           introVisible={appIntro.visible}
           onDismissIntro={appIntro.dismiss}
-          showExportPanel={overlayPanels.showExportPanel}
-          closeExportPanel={overlayPanels.closeExportPanel}
+          showCharacterPickPanel={overlayPanels.showCharacterPickPanel}
+          closeCharacterPickPanel={overlayPanels.closeCharacterPickPanel}
           showGearPickPanel={overlayPanels.showGearPickPanel}
           closeGearPickPanel={overlayPanels.closeGearPickPanel}
           showBisListsPanel={overlayPanels.showBisListsPanel}

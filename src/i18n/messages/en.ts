@@ -272,7 +272,7 @@ export const enMessages = {
     clearSlot: "Clear slot",
     clearSlotAria: "Clear {{slot}} item",
   },
-  exportPanel: {
+  characterPickPanel: {
     title: "Character pick",
     closeAria: "Close character pick panel",
     noCharacters: "Add a character to build a character pick",
@@ -311,7 +311,7 @@ export const enMessages = {
     selectAllSpecsAria: "Select all character specs",
     clearAllSpecs: "Clear all",
     clearAllSpecsAria: "Clear all character specs",
-    resetAllFilters: "Reset all filters",
+    resetParameters: "Reset parameters",
     minGearScoreEnable: "Minimum GS filter",
     minGearScoreEnableAria: "Enable minimum gear score filter for character pick",
     minGearScoreHelper:
@@ -351,6 +351,11 @@ export const enMessages = {
       "Each soft reserve caller gets one default /roll plus one /roll per soft reserve; best roll wins",
     characterTitle: "Character & spec",
     characterHelper: "Select exactly one character and one spec for soft reserve planning",
+    onlyCharactersWithUpgrades: "With upgrades",
+    onlyCharactersWithUpgradesAria:
+      "Dim and disable characters without BiS upgrades in the selected raids",
+    characterInactiveNoUpgradesHint:
+      "No BiS upgrades in the selected raids",
     dungeonFilterTitle: "Selected raid",
     dungeonFilterHelper:
       "Search here or in the table header — both stay in sync. Soft reserve targets come from matching raid rows. Click a chip to exclude it (stays visible; click again to include)",

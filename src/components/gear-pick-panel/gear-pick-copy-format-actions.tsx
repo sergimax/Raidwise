@@ -20,7 +20,7 @@ export function GearPickCopyFormatActions({
     <Stack
       direction="row"
       spacing={0.5}
-      sx={{ alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}
+      sx={{ alignItems: "center", flexWrap: "wrap", justifyContent: "flex-start" }}
     >
       <FormControlLabel
         control={

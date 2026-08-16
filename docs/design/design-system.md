@@ -35,6 +35,10 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 **Avoid:** Facebook/SaaS blue as brand; pink/magenta identity; brand≈danger or brand≈ok pairs; Latin-only display fonts (Syne, Space Grotesk) as sole UI fonts.
 
+**Logo concepts (Raidwise rename):** [logo-variants/](./logo-variants/) — SVG templates + PNG previews; not production `public/` assets yet.
+
+**Toolbar panel backgrounds:** [panel-backgrounds/](./panel-backgrounds/) — hatch / grid / wash variants for `TrackerToolbarPanel` (step blocks stay solid).
+
 ---
 
 ## Color mode
@@ -125,7 +129,7 @@ Warm brand-soft radials (not SaaS blue/teal):
 | `--radius` / `shape.borderRadius` | `10px` | Global MUI shape; tables, menus, alerts |
 | `--control-radius` / control | `8px` | Buttons, icon buttons, tooltips |
 | Dialog | `12px` | Dialog paper |
-| Filter / step card | `8px` (`borderRadius: 1`) | `ExportFilterSection` |
+| Filter / step card | `8px` (`borderRadius: 1`) | `FilterSection` |
 | Inline mention chip | `8px` | Intro feature chips |
 | Game / slot icon thumb | `4px` | Class, spec, raid, gear-slot thumbs |
 | Scrollbar thumb | `999` (pill) | WebKit thumb only |
@@ -146,7 +150,7 @@ border: 1px solid <divider>
 | Surface | Border | Notes |
 | --- | --- | --- |
 | Outlined `Paper` | `divider` | Toolbar panels (`TrackerToolbarPanel`) |
-| Step / filter card | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | `ExportFilterSection` |
+| Step / filter card | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | `FilterSection` |
 | Table container | `1px solid divider` | + paper fill + soft shadow |
 | Dialog paper | `1px solid divider` | radius 12 |
 | Menu paper | `1px solid divider` | radius 10 |
@@ -207,7 +211,7 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 ### Recipes
 
 1. **Toolbar shell** — `Paper variant="outlined"`, padding `{ xs: 1.5, sm: 2 }`, header row = title + close (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
-2. **Numbered step** — Always use `ExportFilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: **brand** title (Onest), soft brand **step badge** (number only — not a `N.` text prefix; DOM text is `N` + title), **3px brand left edge** on the block.
+2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: **brand** title (Onest), soft brand **step badge** (number only — not a `N.` text prefix; DOM text is `N` + title), **3px brand left edge** on the block.
 3. **Field density** — Prefer `size="small"` on TextField / Select / FormControl in add forms.
 4. **Stack rhythm** — Outer form / panel stacks use `spacing={1.5}`; fields inside a step often `1`–`1.25`.
 5. **Errors** — Field-level `helperText` + `error` when possible; otherwise `FormErrorMessage` under actions.
@@ -330,7 +334,7 @@ UI: MUI determinate `LinearProgress` only (`CompletionCountChip` in `dungeon-cel
 4. Load Noto Sans + Onest + JetBrains Mono (Cyrillic + Latin)
 5. Implement quiet vs `.link-spot` links (`links.css`)
 6. Keep border `#8a8a8a`, radii 8/10/12
-7. Prefer stepped `ExportFilterSection`-style cards for multi-field workflows (brand title, step badge, 3px brand left edge)
+7. Prefer stepped `FilterSection`-style cards for multi-field workflows (brand title, step badge, 3px brand left edge)
 8. Contrast-check text / muted / brand / ok / danger / link / link-spot / border
 9. Port class-color chips (`character-display.ts`) and completion chip fills (`completion-chip-color.ts`) when the product needs them
 

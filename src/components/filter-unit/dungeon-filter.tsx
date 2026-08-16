@@ -6,9 +6,9 @@ import { getRaidIcon } from "../../assets/raid-icons/raid-icons.ts";
 import { resolveDungeonRaidKey } from "../../utils/resolve-dungeon-raid-key.ts";
 import { formatDungeonExportLabel } from "../../utils/format-dungeon-label.ts";
 import { DungeonNameSearchField } from "../dungeon-name-search-field/index.tsx";
-import { ExportRaidIcon } from "./export-raid-icon.tsx";
+import { RaidIcon } from "./raid-icon.tsx";
 
-type ExportDungeonFilterProps = {
+type DungeonFilterProps = {
   dungeonNameSearch: string;
   onDungeonNameSearchChange: (query: string) => void;
   visibleDungeons: readonly DungeonRecord[];
@@ -18,7 +18,7 @@ type ExportDungeonFilterProps = {
   t: TranslateFn;
 };
 
-export function ExportDungeonFilter({
+export function DungeonFilter({
   dungeonNameSearch,
   onDungeonNameSearchChange,
   visibleDungeons,
@@ -26,7 +26,7 @@ export function ExportDungeonFilter({
   onToggleDungeonExcluded,
   locale,
   t,
-}: ExportDungeonFilterProps) {
+}: DungeonFilterProps) {
   const selectedCount = visibleDungeons.reduce(
     (count, dungeon) =>
       excludedDungeonIds.has(dungeon.id) ? count : count + 1,
@@ -60,7 +60,7 @@ export function ExportDungeonFilter({
           variant="body2"
           sx={{ flexShrink: 0, lineHeight: 1.35, whiteSpace: "nowrap" }}
         >
-          {t("exportPanel.dungeonFilterMatchCount", {
+          {t("characterPickPanel.dungeonFilterMatchCount", {
             selected: selectedCount,
             matched: visibleDungeons.length,
           })}
@@ -78,7 +78,7 @@ export function ExportDungeonFilter({
       >
         {visibleDungeons.length === 0 ? (
           <Typography variant="body2" color="text.secondary">
-            {t("exportPanel.dungeonFilterNoMatches")}
+            {t("characterPickPanel.dungeonFilterNoMatches")}
           </Typography>
         ) : (
           <Stack
@@ -101,8 +101,8 @@ export function ExportDungeonFilter({
                   aria-pressed={isActive}
                   aria-label={
                     isActive
-                      ? t("exportPanel.dungeonChipExcludeAria", { raid: label })
-                      : t("exportPanel.dungeonChipIncludeAria", { raid: label })
+                      ? t("characterPickPanel.dungeonChipExcludeAria", { raid: label })
+                      : t("characterPickPanel.dungeonChipIncludeAria", { raid: label })
                   }
                   onClick={() => onToggleDungeonExcluded(dungeon.id)}
                   sx={{
@@ -125,7 +125,7 @@ export function ExportDungeonFilter({
                   label={
                     <>
                       {raidIcon ? (
-                        <ExportRaidIcon raidKey={raidKey} size={14} />
+                        <RaidIcon raidKey={raidKey} size={14} />
                       ) : null}
                       <Box component="span" sx={{ lineHeight: 1 }}>
                         {label}

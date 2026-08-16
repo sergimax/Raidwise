@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-08-17
+
+### Added
+
+- **With upgrades filter:** Character pick and Soft pick can dim and disable characters with no BiS upgrade targets in the selected raids (toggle under Needed specs / character list).
+- **Soft pick reset:** Soft pick header **Reset parameters** clears character/spec, soft rules, softs, raid exclusions, and copy format toggles (same control as Character pick).
+- **Unit-grid forms:** Add character (identity + main/off), add dungeon, and BiS side columns align to the shared 300px filter unit grid used by Character pick / Soft pick / Settings.
+- **Page & panel atmosphere:** Subtle dot-grid background on the app page and toolbar panels; step cards stay solid.
+
+### Changed
+
+- **Character pick reset label:** Header control is **Reset parameters** / **Сбросить параметры** (was “Reset all filters”).
+- **Character pick result lines:** Raid badge and copy controls use a table layout for clearer column alignment.
+- **Docs:** README EN+RU cover With upgrades, Soft pick reset, and unit-grid / background polish; design gallery for panel backgrounds.
+
 ## [2.7.0] - 2026-08-16
 
 ### Changed

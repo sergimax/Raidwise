@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  EXPORT_FILTER_UNIT_HEIGHT,
-  EXPORT_FILTER_UNIT_WIDTH,
-} from "../export-panel/constants.ts";
+  FILTER_UNIT_HEIGHT,
+  FILTER_UNIT_WIDTH,
+} from "../filter-unit/constants.ts";
 import {
   GEAR_PICK_COPY_BLOCK_SPAN,
   getGearPickCopyBlockMaxHeight,
@@ -49,39 +49,40 @@ describe("GEAR_PICK_COPY_BLOCK_SPAN", () => {
       widthUnits: 2,
     });
     expect(getGearPickCopyBlockMaxWidth()).toBe(
-      EXPORT_FILTER_UNIT_WIDTH * 2 + 12,
+      FILTER_UNIT_WIDTH * 2 + 12,
     );
-    expect(getGearPickCopyBlockMaxHeight()).toBe(EXPORT_FILTER_UNIT_HEIGHT);
+    expect(getGearPickCopyBlockMaxHeight()).toBe(FILTER_UNIT_HEIGHT);
     expect(getGearPickSoftsBlockMaxWidth()).toBe(
-      EXPORT_FILTER_UNIT_WIDTH * 2 + 12,
+      FILTER_UNIT_WIDTH * 2 + 12,
     );
     expect(getGearPickSoftsBlockMaxHeight()).toBe(
-      EXPORT_FILTER_UNIT_HEIGHT * 2 + 12,
+      FILTER_UNIT_HEIGHT * 2 + 12,
     );
   });
 });
 
 describe("getGearPickGridTemplateColumns", () => {
-  it("uses two fixed filter columns when softs wraps below", () => {
-    const unitColumn = `${EXPORT_FILTER_UNIT_WIDTH}px`;
+  it("uses two shrinkable filter columns when softs wraps below", () => {
+    const unitColumn = `minmax(0, ${FILTER_UNIT_WIDTH}px)`;
     expect(getGearPickGridTemplateColumns("filters")).toBe(
       `${unitColumn} ${unitColumn}`,
     );
   });
 
-  it("adds a fixed 2-unit softs column when softs fits beside filters", () => {
-    const unitColumn = `${EXPORT_FILTER_UNIT_WIDTH}px`;
-    const softsColumn = `${getGearPickSoftsBlockMaxWidth()}px`;
+  it("adds a shrinkable 2-unit softs column when softs fits beside filters", () => {
+    const unitColumn = `minmax(0, ${FILTER_UNIT_WIDTH}px)`;
+    const softsColumn = `minmax(0, ${getGearPickSoftsBlockMaxWidth()}px)`;
     expect(getGearPickGridTemplateColumns("md")).toBe(
       `${unitColumn} ${unitColumn} ${softsColumn}`,
     );
   });
 
   it("adds softs and copy columns when both fit beside filters", () => {
-    const unitColumn = `${EXPORT_FILTER_UNIT_WIDTH}px`;
-    const softsColumn = `${getGearPickSoftsBlockMaxWidth()}px`;
+    const unitColumn = `minmax(0, ${FILTER_UNIT_WIDTH}px)`;
+    const softsColumn = `minmax(0, ${getGearPickSoftsBlockMaxWidth()}px)`;
+    const copyColumn = `minmax(0, ${getGearPickCopyBlockMaxWidth()}px)`;
     expect(getGearPickGridTemplateColumns("wide")).toBe(
-      `${unitColumn} ${unitColumn} ${softsColumn} ${getGearPickCopyBlockMaxWidth()}px`,
+      `${unitColumn} ${unitColumn} ${softsColumn} ${copyColumn}`,
     );
   });
 });
@@ -89,19 +90,19 @@ describe("getGearPickGridTemplateColumns", () => {
 describe("getGearPickGridTemplateRows", () => {
   it("adds softs and copy rows under filters when they wrap", () => {
     expect(getGearPickGridTemplateRows("filters")).toBe(
-      `repeat(2, ${EXPORT_FILTER_UNIT_HEIGHT}px) ${getGearPickSoftsBlockMaxHeight()}px ${getGearPickCopyBlockMaxHeight()}px`,
+      `repeat(2, ${FILTER_UNIT_HEIGHT}px) ${getGearPickSoftsBlockMaxHeight()}px ${getGearPickCopyBlockMaxHeight()}px`,
     );
   });
 
   it("keeps two filter rows plus a copy row when softs is beside", () => {
     expect(getGearPickGridTemplateRows("md")).toBe(
-      `repeat(2, ${EXPORT_FILTER_UNIT_HEIGHT}px) ${EXPORT_FILTER_UNIT_HEIGHT}px`,
+      `repeat(2, ${FILTER_UNIT_HEIGHT}px) ${FILTER_UNIT_HEIGHT}px`,
     );
   });
 
   it("uses only the two fixed rows on wide", () => {
     expect(getGearPickGridTemplateRows("wide")).toBe(
-      `repeat(2, ${EXPORT_FILTER_UNIT_HEIGHT}px)`,
+      `repeat(2, ${FILTER_UNIT_HEIGHT}px)`,
     );
   });
 });

@@ -4,9 +4,9 @@ import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog.tsx";
-import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
+  FILTER_UNIT_GRID_GAP_SPACING,
   getDataControlsGridTemplateAreas,
   getDataControlsGridTemplateColumns,
   getDataControlsGridTemplateRows,
@@ -119,14 +119,14 @@ export function DataControlsPanel({
             xs: "none",
             sm: getDataControlsGridTemplateAreas(),
           },
-          gap: EXPORT_FILTER_GRID_GAP_SPACING,
+          gap: FILTER_UNIT_GRID_GAP_SPACING,
           alignItems: "stretch",
           width: { xs: "100%", sm: "fit-content" },
           maxWidth: "100%",
         }}
       >
         <DataControlsBlock gridArea="resetToggles">
-          <ExportFilterSection
+          <FilterSection
             title={t("dataControlsPanel.resetTogglesTitle")}
             description={t("dataControlsPanel.resetTogglesDescription")}
           >
@@ -139,11 +139,11 @@ export function DataControlsPanel({
             >
               {t("toolbar.resetAllToggles")}
             </Button>
-          </ExportFilterSection>
+          </FilterSection>
         </DataControlsBlock>
 
         <DataControlsBlock gridArea="deleteCharacters">
-          <ExportFilterSection
+          <FilterSection
             title={t("dataControlsPanel.deleteCharactersTitle")}
             description={t("dataControlsPanel.deleteCharactersDescription")}
           >
@@ -156,11 +156,11 @@ export function DataControlsPanel({
             >
               {t("dataControlsPanel.deleteCharactersAction")}
             </Button>
-          </ExportFilterSection>
+          </FilterSection>
         </DataControlsBlock>
 
         <DataControlsBlock gridArea="deleteDungeons">
-          <ExportFilterSection
+          <FilterSection
             title={t("dataControlsPanel.deleteDungeonsTitle")}
             description={
               hasDungeons
@@ -187,11 +187,11 @@ export function DataControlsPanel({
                 {t("toolbar.addFromTemplate")}
               </Button>
             )}
-          </ExportFilterSection>
+          </FilterSection>
         </DataControlsBlock>
 
         <DataControlsBlock gridArea="deleteBisLists">
-          <ExportFilterSection
+          <FilterSection
             title={t("dataControlsPanel.deleteBisTitle")}
             description={t("dataControlsPanel.deleteBisDescription")}
           >
@@ -204,7 +204,7 @@ export function DataControlsPanel({
             >
               {t("dataControlsPanel.deleteBisAction")}
             </Button>
-          </ExportFilterSection>
+          </FilterSection>
         </DataControlsBlock>
       </Box>
 

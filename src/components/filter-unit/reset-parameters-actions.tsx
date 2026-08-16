@@ -1,23 +1,23 @@
 import { Button } from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 
-type ExportPanelHeaderActionsProps = {
-  onResetAllFilters: () => void;
+type ResetParametersActionsProps = {
+  onResetParameters: () => void;
 };
 
-export function ExportPanelHeaderActions({
-  onResetAllFilters,
-}: ExportPanelHeaderActionsProps) {
+export function ResetParametersActions({
+  onResetParameters,
+}: ResetParametersActionsProps) {
   const { t } = useTranslation();
 
   return (
     <Button
       size="small"
       variant="text"
-      onClick={onResetAllFilters}
+      onClick={onResetParameters}
       sx={{ whiteSpace: "nowrap", minWidth: 0, px: 1 }}
     >
-      {t("exportPanel.resetAllFilters")}
+      {t("characterPickPanel.resetParameters")}
     </Button>
   );
 }

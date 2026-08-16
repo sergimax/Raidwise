@@ -141,3 +141,37 @@ export function buildGearPickItems({
     return left.itemId - right.itemId;
   });
 }
+
+/**
+ * True when the character has at least one Soft pick BiS target (exact or
+ * variant) on main and/or off across the given dungeon rows.
+ */
+export function characterHasGearPickUpgrades({
+  character,
+  dungeons,
+  getBisSlotMapForSpec,
+  locale,
+}: Omit<BuildGearPickItemsOptions, "specSide">): boolean {
+  if (dungeons.length === 0 || !character.class) {
+    return false;
+  }
+
+  const sides: GearPickSpecSide[] = [];
+  if (character.mainSpec) {
+    sides.push("main");
+  }
+  if (character.offSpec) {
+    sides.push("off");
+  }
+
+  return sides.some(
+    (specSide) =>
+      buildGearPickItems({
+        character,
+        specSide,
+        dungeons,
+        getBisSlotMapForSpec,
+        locale,
+      }).length > 0,
+  );
+}

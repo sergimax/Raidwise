@@ -1,26 +1,26 @@
 import { FormControlLabel, Stack, Switch, Typography } from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 
-type ExportResultFormatActionsProps = {
+type CharacterPickResultFormatActionsProps = {
   includeSpecs: boolean;
   includeGearScore: boolean;
   onIncludeSpecsChange: (includeSpecs: boolean) => void;
   onIncludeGearScoreChange: (includeGearScore: boolean) => void;
 };
 
-export function ExportResultFormatActions({
+export function CharacterPickResultFormatActions({
   includeSpecs,
   includeGearScore,
   onIncludeSpecsChange,
   onIncludeGearScoreChange,
-}: ExportResultFormatActionsProps) {
+}: CharacterPickResultFormatActionsProps) {
   const { t } = useTranslation();
 
   return (
     <Stack
       direction="row"
       spacing={0.5}
-      sx={{ alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}
+      sx={{ alignItems: "center", flexWrap: "wrap", justifyContent: "flex-start" }}
     >
       <FormControlLabel
         control={
@@ -32,14 +32,14 @@ export function ExportResultFormatActions({
             }}
             slotProps={{
               input: {
-                "aria-label": t("exportPanel.includeSpecsAria"),
+                "aria-label": t("characterPickPanel.includeSpecsAria"),
               },
             }}
           />
         }
         label={
           <Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>
-            {t("exportPanel.includeSpecs")}
+            {t("characterPickPanel.includeSpecs")}
           </Typography>
         }
         sx={{ mr: 0.5, ml: 0 }}
@@ -55,7 +55,7 @@ export function ExportResultFormatActions({
             }}
             slotProps={{
               input: {
-                "aria-label": t("exportPanel.includeGearScoreAria"),
+                "aria-label": t("characterPickPanel.includeGearScoreAria"),
               },
             }}
           />
@@ -69,7 +69,7 @@ export function ExportResultFormatActions({
               color: includeSpecs ? "inherit" : "text.disabled",
             }}
           >
-            {t("exportPanel.includeGearScore")}
+            {t("characterPickPanel.includeGearScore")}
           </Typography>
         }
         sx={{ mr: 0, ml: 0 }}

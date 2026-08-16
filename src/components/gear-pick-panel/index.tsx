@@ -8,7 +8,10 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
 import type { DungeonRecord, DungeonToggles } from "../../types/dungeons.ts";
 import { hasCharacterWithoutCdInVisibleDungeons } from "../../utils/build-export-status.ts";
-import { buildGearPickItems } from "../../utils/build-gear-pick-items.ts";
+import {
+  buildGearPickItems,
+  characterHasGearPickUpgrades,
+} from "../../utils/build-gear-pick-items.ts";
 import {
   emptySoftAssignment,
   formatGearPickCopyText,
@@ -16,13 +19,13 @@ import {
   sumMySofts,
 } from "../../utils/gear-pick-soft-roll.ts";
 import { filterDungeonsExcludingIds } from "../../utils/filter-dungeons-excluding-ids.ts";
-import { ExportDungeonFilter } from "../export-panel/export-dungeon-filter.tsx";
-import { ExportDungeonFilterActions } from "../export-panel/export-dungeon-filter-actions.tsx";
-import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
+import { DungeonFilter } from "../filter-unit/dungeon-filter.tsx";
+import { DungeonFilterActions } from "../filter-unit/dungeon-filter-actions.tsx";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
-  exportDungeonFilterContentSx,
-} from "../export-panel/constants.ts";
+  FILTER_UNIT_GRID_GAP_SPACING,
+  dungeonFilterContentSx,
+} from "../filter-unit/constants.ts";
 import {
   getGearPickGridTemplateAreas,
   getGearPickGridTemplateColumns,
@@ -31,6 +34,7 @@ import {
   getGearPickWideContainerMqKey,
 } from "./constants.ts";
 import { GearPickCharacterSelect } from "./gear-pick-character-select.tsx";
+import { GearPickCharacterFilterActions } from "./gear-pick-character-filter-actions.tsx";
 import { GearPickCopyBlock } from "./gear-pick-copy-block.tsx";
 import { GearPickEmptyNoGear } from "./gear-pick-empty-no-gear.tsx";
 import { GearPickFilterBlock } from "./gear-pick-filter-block.tsx";
@@ -77,8 +81,10 @@ export function GearPickPanel({
     clearAssignments,
     includeCopyCharacterName,
     compactCopyLines,
+    onlyCharactersWithUpgrades,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
+    setOnlyCharactersWithUpgrades,
   } = session;
 
   const activeDungeons = useMemo(
@@ -86,7 +92,7 @@ export function GearPickPanel({
     [excludedDungeonIds, visibleDungeons],
   );
 
-  const includedCharacterIds = useMemo(
+  const availableCharacterIds = useMemo(
     () =>
       new Set(
         characters
@@ -102,9 +108,36 @@ export function GearPickPanel({
     [activeDungeons, characters, dungeonToggles],
   );
 
-  /** Ignore a stored pick when that character is on CD for every visible raid. */
+  const charactersWithUpgradesIds = useMemo(() => {
+    if (!onlyCharactersWithUpgrades) {
+      return new Set<string>();
+    }
+    return new Set(
+      characters
+        .filter((character) =>
+          characterHasGearPickUpgrades({
+            character,
+            dungeons: activeDungeons,
+            getBisSlotMapForSpec,
+            locale,
+          }),
+        )
+        .map((character) => character.id),
+    );
+  }, [
+    activeDungeons,
+    characters,
+    getBisSlotMapForSpec,
+    locale,
+    onlyCharactersWithUpgrades,
+  ]);
+
+  /** Ignore a stored pick when that character is on CD or dimmed by the upgrades filter. */
   const activeSelection =
-    selection !== null && includedCharacterIds.has(selection.characterId)
+    selection !== null &&
+    availableCharacterIds.has(selection.characterId) &&
+    (!onlyCharactersWithUpgrades ||
+      charactersWithUpgradesIds.has(selection.characterId))
       ? selection
       : null;
 
@@ -252,7 +285,7 @@ export function GearPickPanel({
             xs: "none",
             md: getGearPickGridTemplateAreas("filters"),
           },
-          gap: EXPORT_FILTER_GRID_GAP_SPACING,
+          gap: FILTER_UNIT_GRID_GAP_SPACING,
           alignItems: "stretch",
           width: "100%",
           minWidth: 0,
@@ -269,22 +302,22 @@ export function GearPickPanel({
         }}
       >
       <GearPickFilterBlock gridArea="dungeon">
-        <ExportFilterSection
+        <FilterSection
           step={1}
           title={t("gearPickPanel.dungeonFilterTitle")}
-          titleMark={t("exportPanel.dungeonFilterTotalMark", {
+          titleMark={t("characterPickPanel.dungeonFilterTotalMark", {
             total: totalDungeonCount,
           })}
           description={t("gearPickPanel.dungeonFilterHelper")}
           titleActions={
-            <ExportDungeonFilterActions
+            <DungeonFilterActions
               disabled={!dungeonFilterDirty}
               onReset={resetDungeonFilter}
             />
           }
-          contentSx={exportDungeonFilterContentSx}
+          contentSx={dungeonFilterContentSx}
         >
-          <ExportDungeonFilter
+          <DungeonFilter
             dungeonNameSearch={dungeonNameSearch}
             onDungeonNameSearchChange={onDungeonNameSearchChange}
             visibleDungeons={visibleDungeons}
@@ -293,27 +326,35 @@ export function GearPickPanel({
             locale={locale}
             t={t}
           />
-        </ExportFilterSection>
+        </FilterSection>
       </GearPickFilterBlock>
 
       <GearPickFilterBlock gridArea="characterSpecs">
-        <ExportFilterSection
+        <FilterSection
           step={2}
           title={t("gearPickPanel.characterTitle")}
           description={t("gearPickPanel.characterHelper")}
+          descriptionActions={
+            <GearPickCharacterFilterActions
+              onlyWithUpgrades={onlyCharactersWithUpgrades}
+              onOnlyWithUpgradesChange={setOnlyCharactersWithUpgrades}
+            />
+          }
         >
           <GearPickCharacterSelect
             characters={characters}
-            includedCharacterIds={includedCharacterIds}
+            availableCharacterIds={availableCharacterIds}
+            charactersWithUpgradesIds={charactersWithUpgradesIds}
+            onlyWithUpgrades={onlyCharactersWithUpgrades}
             selection={activeSelection}
             onSelectionChange={handleSelectionChange}
             t={t}
           />
-        </ExportFilterSection>
+        </FilterSection>
       </GearPickFilterBlock>
 
       <GearPickFilterBlock gridArea="rules">
-        <ExportFilterSection
+        <FilterSection
           step={3}
           title={t("gearPickPanel.rulesTitle")}
           description={t("gearPickPanel.rulesHelper")}
@@ -325,11 +366,11 @@ export function GearPickPanel({
             softBudgetUsed={softBudgetUsed}
             t={t}
           />
-        </ExportFilterSection>
+        </FilterSection>
       </GearPickFilterBlock>
 
       <GearPickFilterBlock gridArea="softs">
-        <ExportFilterSection
+        <FilterSection
           step={4}
           title={t("gearPickPanel.itemsTitle")}
           description={t("gearPickPanel.itemsHelper")}
@@ -383,7 +424,7 @@ export function GearPickPanel({
               })}
             </Stack>
           )}
-        </ExportFilterSection>
+        </FilterSection>
       </GearPickFilterBlock>
 
       <GearPickFilterBlock gridArea="copy" copyBlockSized>

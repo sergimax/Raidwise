@@ -92,7 +92,7 @@ function RoleFilterOption({
         }}
         slotProps={{
           input: {
-            "aria-label": t(`exportPanel.${ROLE_FILTER_ARIA_KEYS[roleId]}`),
+            "aria-label": t(`characterPickPanel.${ROLE_FILTER_ARIA_KEYS[roleId]}`),
           },
         }}
         sx={{ alignSelf: "flex-start", mt: 0.25, p: 0.5, flexShrink: 0 }}
@@ -111,14 +111,14 @@ function RoleFilterOption({
           component="span"
           sx={{ lineHeight: 1.2, textAlign: "center", width: "100%" }}
         >
-          {t(`exportPanel.${ROLE_FILTER_MESSAGE_KEYS[roleId]}`)}
+          {t(`characterPickPanel.${ROLE_FILTER_MESSAGE_KEYS[roleId]}`)}
         </Typography>
       </Stack>
     </Box>
   );
 }
 
-export function ExportRoleFilterPanel({
+export function CharacterPickRoleFilter({
   roleFilter,
   onRoleFilterChange,
 }: ExportRoleFilterProps) {

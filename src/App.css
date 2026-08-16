@@ -12,6 +12,7 @@
 /* Sticky AppBar: keep scrolled content from sitting under the toolbar. */
 html {
   scroll-padding-top: var(--app-toolbar-min-height);
+  background-color: var(--page-bg);
 }
 
 .app-shell {

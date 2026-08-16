@@ -17,7 +17,7 @@ import { EXPORT_MIN_GS_COMPACT_DEFAULT } from "../utils/parse-export-min-gear-sc
  * Session-only Character pick UI state. Owned above the overlay so switching
  * toolbar panels does not reset filters / specs / raid exclusions.
  */
-export function useExportSessionState() {
+export function useCharacterPickSessionState() {
   const [exportSpecSelectionByCharacterId, setExportSpecSelectionByCharacterId] =
     useState<Record<string, Partial<CharacterExportSpecSelection>>>({});
   const [minGearScoreFilterEnabled, setMinGearScoreFilterEnabled] =
@@ -33,6 +33,8 @@ export function useExportSessionState() {
   );
   const [includeExportSpecs, setIncludeExportSpecs] = useState(true);
   const [includeExportGearScore, setIncludeExportGearScore] = useState(true);
+  const [onlyCharactersWithUpgrades, setOnlyCharactersWithUpgrades] =
+    useState(false);
 
   const resetAllFilters = useCallback(() => {
     setExportSpecSelectionByCharacterId({});
@@ -40,6 +42,7 @@ export function useExportSessionState() {
     setMinGearScoreCompact(EXPORT_MIN_GS_COMPACT_DEFAULT);
     setRoleFilter({ ...DEFAULT_EXPORT_ROLE_FILTER });
     setExcludedDungeonIds(new Set());
+    setOnlyCharactersWithUpgrades(false);
   }, []);
 
   const clearExcludedDungeonIds = useCallback(() => {
@@ -107,11 +110,13 @@ export function useExportSessionState() {
     excludedDungeonIds,
     includeExportSpecs,
     includeExportGearScore,
+    onlyCharactersWithUpgrades,
     setMinGearScoreFilterEnabled,
     setMinGearScoreCompact,
     setRoleFilter,
     setIncludeExportSpecs,
     setIncludeExportGearScore,
+    setOnlyCharactersWithUpgrades,
     resetAllFilters,
     clearExcludedDungeonIds,
     toggleDungeonExcluded,
@@ -121,4 +126,4 @@ export function useExportSessionState() {
   };
 }
 
-export type ExportSessionState = ReturnType<typeof useExportSessionState>;
+export type CharacterPickSessionState = ReturnType<typeof useCharacterPickSessionState>;

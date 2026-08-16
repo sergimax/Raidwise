@@ -383,4 +383,38 @@ describe("getCharacterExportInactiveReason", () => {
       ),
     ).toBeNull();
   });
+
+  it("returns noUpgrades when With upgrades is on and character has none", () => {
+    const character = createTestCharacter({
+      id: "character-1",
+      class: Classes[5],
+      mainSpec: { spec: "Shadow", gearScore: 5800 },
+    });
+
+    expect(
+      getCharacterExportInactiveReason(
+        character,
+        new Set(["character-1"]),
+        DEFAULT_EXPORT_ROLE_FILTER,
+        undefined,
+        {
+          onlyWithUpgrades: true,
+          charactersWithUpgradesIds: new Set(),
+        },
+      ),
+    ).toBe("noUpgrades");
+
+    expect(
+      getCharacterExportInactiveReason(
+        character,
+        new Set(["character-1"]),
+        DEFAULT_EXPORT_ROLE_FILTER,
+        undefined,
+        {
+          onlyWithUpgrades: true,
+          charactersWithUpgradesIds: new Set(["character-1"]),
+        },
+      ),
+    ).toBeNull();
+  });
 });

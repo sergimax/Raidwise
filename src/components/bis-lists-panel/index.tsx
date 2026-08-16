@@ -49,14 +49,16 @@ import type { CharacterEquipContext } from "../../utils/item-equip-restrictions.
 import { hideExternalWowTooltips } from "../../utils/hide-external-wow-tooltips.ts";
 import { BisSlotRow } from "../bis-slot-row/index.tsx";
 import { ClassOptionLabel } from "../class-option-label/index.tsx";
-import { ExportFilterSection } from "../export-panel/export-filter-section.tsx";
+import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import { SpecOptionLabel } from "../spec-option-label/index.tsx";
 import { BisCosmeticSlotRow } from "./bis-cosmetic-slot-row.tsx";
 import {
   BIS_ITEMS_CONTENT_MAX_HEIGHT_XS_PX,
+  FILTER_UNIT_GRID_GAP_SPACING,
   getBisItemsContentMaxHeight,
   getBisListsContentMaxHeight,
+  getBisListsGridTemplateColumns,
 } from "./constants.ts";
 
 function localizeBisStorageMessage(message: string, t: TranslateFn): string {
@@ -437,16 +439,17 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
         sx={{
           display: "grid",
           gridTemplateColumns: {
-            xs: "1fr",
-            md: "14rem minmax(0, 1fr) 13rem",
-            lg: "16rem minmax(0, 1fr) 14.5rem",
+            xs: "minmax(0, 1fr)",
+            md: getBisListsGridTemplateColumns(),
           },
-          gap: { xs: 1.5, md: 2 },
+          gap: FILTER_UNIT_GRID_GAP_SPACING,
           alignItems: "start",
+          width: "100%",
+          maxWidth: "100%",
         }}
       >
         <Stack spacing={1.5} sx={{ minWidth: 0 }}>
-          <ExportFilterSection
+          <FilterSection
             step={1}
             title={t("bisPanel.classAndSpec")}
             description={t("bisPanel.classAndSpecHelper")}
@@ -505,9 +508,9 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
                 </Select>
               </FormControl>
             </Stack>
-          </ExportFilterSection>
+          </FilterSection>
 
-          <ExportFilterSection
+          <FilterSection
             step={2}
             title={t("bisPanel.lists")}
             description={listsDescription}
@@ -556,10 +559,10 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
                 ) : null}
               </Stack>
             )}
-          </ExportFilterSection>
+          </FilterSection>
         </Stack>
 
-        <ExportFilterSection
+        <FilterSection
           step={3}
           title={t("bisPanel.items")}
           subtitle={itemsListName}
@@ -568,9 +571,9 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
           contentSx={bisItemsContentSx}
         >
           {slotEditor}
-        </ExportFilterSection>
+        </FilterSection>
 
-        <ExportFilterSection
+        <FilterSection
           step={4}
           title={t("bisPanel.saveTitle")}
           titleMark={optionalMark}
@@ -578,7 +581,7 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
           contentSx={bisOverflowVisibleContentSx}
         >
           {saveListForm}
-        </ExportFilterSection>
+        </FilterSection>
       </Box>
 
       {error && !saveNameError ? <FormErrorMessage message={error} /> : null}

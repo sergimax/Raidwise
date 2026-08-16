@@ -14,6 +14,9 @@
   /* Light tokens */
   --bg: #fcfbf9;
   --page-bg: var(--bg);
+  /* Shared pin-dot grid — page chrome + toolbar panel shells (gallery F). */
+  --dot-grid: color-mix(in srgb, #0a0a0a 5.5%, transparent);
+  --dot-grid-size: 12px;
   --surface: #ffffff;
   --chip-bg: #f3f2ef;
   --header-bg: rgba(252, 251, 249, 0.96);
@@ -63,6 +66,7 @@
 :root[data-color-mode="dark"] {
   --bg: #1a1a1a;
   --page-bg: var(--bg);
+  --dot-grid: color-mix(in srgb, #ffffff 6%, transparent);
   --surface: #242424;
   --chip-bg: #1f1f1f;
   --header-bg: rgba(26, 26, 26, 0.96);
@@ -124,6 +128,26 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  /* Transparent so html page-bg + ::before dots show; washes stay on body. */
+  background-color: transparent;
+  /* Keep z-index:-1 ::before inside this context (above transparent bg). */
+  isolation: isolate;
+}
+
+/* Page dots — rotated 45°. Toolbar panels keep upright dots on their Paper. */
+body::before {
+  content: "";
+  position: fixed;
+  /* Extra extent so rotation still covers the viewport corners. */
+  top: -50vmax;
+  left: -50vmax;
+  width: 200vmax;
+  height: 200vmax;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(var(--dot-grid) 1px, transparent 1px);
+  background-size: var(--dot-grid-size) var(--dot-grid-size);
+  transform: rotate(45deg);
 }
 
 input,

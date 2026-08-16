@@ -29,6 +29,8 @@ export function useGearPickSessionState() {
   const [includeCopyCharacterName, setIncludeCopyCharacterName] =
     useState(true);
   const [compactCopyLines, setCompactCopyLines] = useState(false);
+  const [onlyCharactersWithUpgrades, setOnlyCharactersWithUpgrades] =
+    useState(false);
 
   const handleSelectionChange = useCallback(
     (next: GearPickCharacterSelection) => {
@@ -103,6 +105,14 @@ export function useGearPickSessionState() {
     setAssignmentsByItemId({});
   }, []);
 
+  const resetAllFilters = useCallback(() => {
+    setSelection(null);
+    setRules(DEFAULT_SOFT_ROLL_RULES);
+    setAssignmentsByItemId({});
+    setExcludedDungeonIds(new Set());
+    setOnlyCharactersWithUpgrades(false);
+  }, []);
+
   return {
     selection,
     rules,
@@ -110,6 +120,7 @@ export function useGearPickSessionState() {
     excludedDungeonIds,
     includeCopyCharacterName,
     compactCopyLines,
+    onlyCharactersWithUpgrades,
     handleSelectionChange,
     handleRulesChange,
     handleMySoftsChange,
@@ -119,8 +130,10 @@ export function useGearPickSessionState() {
     clearExcludedDungeonIds,
     pruneAssignmentsToItemIds,
     clearAssignments,
+    resetAllFilters,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
+    setOnlyCharactersWithUpgrades,
   };
 }
 

@@ -64,6 +64,12 @@ export function TrackerToolbarPanel({
         boxSizing: "border-box",
         // Keep unit-grid children (Character / Soft pick) from painting past the outlined edge.
         overflow: "hidden",
+        bgcolor: "background.paper",
+        // Gallery F — dot grid (shared with page); step blocks stay solid fill.
+        backgroundImage:
+          "radial-gradient(var(--dot-grid) 1px, transparent 1px)",
+        backgroundSize: "var(--dot-grid-size) var(--dot-grid-size)",
+        backgroundPosition: "0 0",
       }}
     >
       <Stack spacing={1.5}>

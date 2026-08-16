@@ -1,12 +1,13 @@
 import {
-  EXPORT_FILTER_GRID_GAP_SPACING,
-  EXPORT_FILTER_UNIT_HEIGHT,
-  EXPORT_FILTER_UNIT_WIDTH,
-  getExportFilterGridTemplateRows,
-} from "../export-panel/constants.ts";
+  FILTER_UNIT_GRID_GAP_SPACING,
+  FILTER_UNIT_HEIGHT,
+  FILTER_UNIT_WIDTH,
+  getFilterUnitColumnTemplate,
+  getFilterUnitTwoRowTemplateRows,
+} from "../filter-unit/constants.ts";
 
 /** Pixel gap between Soft pick grid tracks (`gap: 1.5` → 12px at default spacing). */
-const GEAR_PICK_GRID_GAP_PX = EXPORT_FILTER_GRID_GAP_SPACING * 8;
+const GEAR_PICK_GRID_GAP_PX = FILTER_UNIT_GRID_GAP_SPACING * 8;
 
 /**
  * Soft pick panel grid areas.
@@ -46,7 +47,7 @@ export function getGearPickCopyBlockMaxWidth(
 ): number {
   const { widthUnits } = GEAR_PICK_COPY_BLOCK_SPAN;
   return (
-    widthUnits * EXPORT_FILTER_UNIT_WIDTH + (widthUnits - 1) * gridColumnGapPx
+    widthUnits * FILTER_UNIT_WIDTH + (widthUnits - 1) * gridColumnGapPx
   );
 }
 
@@ -55,7 +56,7 @@ export function getGearPickSoftsBlockMaxWidth(
   gridColumnGapPx = GEAR_PICK_GRID_GAP_PX,
 ): number {
   return (
-    GEAR_PICK_SOFTS_BLOCK_WIDTH_UNITS * EXPORT_FILTER_UNIT_WIDTH +
+    GEAR_PICK_SOFTS_BLOCK_WIDTH_UNITS * FILTER_UNIT_WIDTH +
     (GEAR_PICK_SOFTS_BLOCK_WIDTH_UNITS - 1) * gridColumnGapPx
   );
 }
@@ -65,7 +66,7 @@ export function getGearPickCopyBlockMaxHeight(
 ): number {
   const { heightUnits } = GEAR_PICK_COPY_BLOCK_SPAN;
   return (
-    heightUnits * EXPORT_FILTER_UNIT_HEIGHT + (heightUnits - 1) * gridRowGapPx
+    heightUnits * FILTER_UNIT_HEIGHT + (heightUnits - 1) * gridRowGapPx
   );
 }
 
@@ -74,7 +75,7 @@ export function getGearPickSoftsBlockMaxHeight(
   gridRowGapPx = GEAR_PICK_GRID_GAP_PX,
 ): number {
   return (
-    GEAR_PICK_SOFTS_BLOCK_HEIGHT_UNITS * EXPORT_FILTER_UNIT_HEIGHT +
+    GEAR_PICK_SOFTS_BLOCK_HEIGHT_UNITS * FILTER_UNIT_HEIGHT +
     (GEAR_PICK_SOFTS_BLOCK_HEIGHT_UNITS - 1) * gridRowGapPx
   );
 }
@@ -83,7 +84,7 @@ export function getGearPickSoftsBlockMaxHeight(
 export function getGearPickFiltersRowWidth(
   gridColumnGapPx = GEAR_PICK_GRID_GAP_PX,
 ): number {
-  return 2 * EXPORT_FILTER_UNIT_WIDTH + gridColumnGapPx;
+  return 2 * FILTER_UNIT_WIDTH + gridColumnGapPx;
 }
 
 /** Min container width for softs beside filters (copy still below). */
@@ -153,15 +154,13 @@ export function getGearPickGridTemplateAreas(layout: GearPickGridLayout): string
 export function getGearPickGridTemplateColumns(
   layout: GearPickGridLayout,
 ): string {
-  /**
-   * Fixed unit columns — raids / character / rules must not shrink below
-   * the shared filter unit (unlike Character pick's minmax(0, unit)).
-   */
-  const unitColumn = `${EXPORT_FILTER_UNIT_WIDTH}px`;
-  const softsColumn = `${getGearPickSoftsBlockMaxWidth()}px`;
+  // Same shrinkable unit columns as Character pick (`filter-unit`).
+  const unitColumn = getFilterUnitColumnTemplate();
+  const softsColumn = `minmax(0, ${getGearPickSoftsBlockMaxWidth()}px)`;
+  const copyColumn = `minmax(0, ${getGearPickCopyBlockMaxWidth()}px)`;
 
   if (layout === "wide") {
-    return `${unitColumn} ${unitColumn} ${softsColumn} ${getGearPickCopyBlockMaxWidth()}px`;
+    return `${unitColumn} ${unitColumn} ${softsColumn} ${copyColumn}`;
   }
 
   if (layout === "md") {
@@ -172,7 +171,7 @@ export function getGearPickGridTemplateColumns(
 }
 
 export function getGearPickGridTemplateRows(layout: GearPickGridLayout): string {
-  const filterRows = getExportFilterGridTemplateRows();
+  const filterRows = getFilterUnitTwoRowTemplateRows();
   if (layout === "wide") {
     return filterRows;
   }

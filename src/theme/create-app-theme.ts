@@ -204,13 +204,34 @@ export function createAppTheme(mode: PaletteMode) {
     components: {
       MuiCssBaseline: {
         styleOverrides: {
+          html: {
+            backgroundColor: "var(--page-bg)",
+          },
           body: {
-            // Warm paper atmosphere — brand soft tint, not SaaS blue/teal.
+            // Washes on body; dots on ::before (rotated). Keep body fill transparent
+            // so dots are not covered by an opaque page color.
+            backgroundColor: "transparent",
+            isolation: "isolate",
             backgroundImage: isLight
               ? "radial-gradient(1200px 600px at 10% -10%, rgba(154, 52, 18, 0.06), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(194, 65, 12, 0.04), transparent 50%)"
               : "radial-gradient(1000px 520px at 8% -12%, rgba(251, 146, 60, 0.1), transparent 55%), radial-gradient(800px 480px at 100% 0%, rgba(61, 40, 24, 0.45), transparent 50%)",
             backgroundAttachment: "fixed",
+            backgroundRepeat: "no-repeat",
             lineHeight: 1.55,
+            "&::before": {
+              content: '""',
+              position: "fixed",
+              top: "-50vmax",
+              left: "-50vmax",
+              width: "200vmax",
+              height: "200vmax",
+              zIndex: -1,
+              pointerEvents: "none",
+              backgroundImage:
+                "radial-gradient(var(--dot-grid) 1px, transparent 1px)",
+              backgroundSize: "var(--dot-grid-size) var(--dot-grid-size)",
+              transform: "rotate(45deg)",
+            },
           },
         },
       },

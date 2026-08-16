@@ -23,11 +23,13 @@ import { CharacterSpecGearLabel } from "../spec-option-label/index.tsx";
 import {
   CHARACTER_SPEC_LIST_ICON_SIZE,
   getCharacterSpecListGridSx,
-} from "./constants.ts";
+} from "../filter-unit/constants.ts";
 
-type ExportCharacterSpecFilterProps = {
+type CharacterPickSpecFilterProps = {
   characters: CharacterRecord[];
   includedCharacterIds: ReadonlySet<string>;
+  charactersWithUpgradesIds: ReadonlySet<string>;
+  onlyWithUpgrades: boolean;
   exportSpecSelectionByCharacterId: ExportSpecSelectionByCharacterId;
   roleFilter: ExportRoleFilter;
   minGearScore: number | undefined;
@@ -38,13 +40,13 @@ type ExportCharacterSpecFilterProps = {
   ) => void;
 };
 
-type ExportSpecCheckboxProps = {
+type CharacterPickSpecCheckboxProps = {
   character: CharacterRecord;
   specGear: CharacterSpecGear;
   slot: keyof CharacterExportSpecSelection;
   checked: boolean;
   disabled?: boolean;
-  cooldownInactive?: boolean;
+  rowInactiveReason: CharacterExportInactiveReason | null;
   roleAllowed: boolean;
   gearScoreAllowed: boolean;
   onCheckedChange: (
@@ -55,16 +57,23 @@ type ExportSpecCheckboxProps = {
 };
 
 type SpecFilterTooltipKey =
-  | "exportPanel.specInactiveRoleFilter"
-  | "exportPanel.specInactiveGearScoreFilter"
-  | "exportPanel.specInactiveRoleAndGearScoreFilter";
+  | "characterPickPanel.specInactiveRoleFilter"
+  | "characterPickPanel.specInactiveGearScoreFilter"
+  | "characterPickPanel.specInactiveRoleAndGearScoreFilter";
 
 function characterInactiveTooltipKey(
   inactiveReason: CharacterExportInactiveReason,
-): "exportPanel.characterInactiveCooldownHint" | "exportPanel.characterInactiveFiltersHint" {
-  return inactiveReason === "cooldown"
-    ? "exportPanel.characterInactiveCooldownHint"
-    : "exportPanel.characterInactiveFiltersHint";
+):
+  | "characterPickPanel.characterInactiveCooldownHint"
+  | "characterPickPanel.characterInactiveFiltersHint"
+  | "gearPickPanel.characterInactiveNoUpgradesHint" {
+  if (inactiveReason === "cooldown") {
+    return "characterPickPanel.characterInactiveCooldownHint";
+  }
+  if (inactiveReason === "noUpgrades") {
+    return "gearPickPanel.characterInactiveNoUpgradesHint";
+  }
+  return "characterPickPanel.characterInactiveFiltersHint";
 }
 
 function specFilterTooltipKey(
@@ -75,26 +84,32 @@ function specFilterTooltipKey(
     return null;
   }
   if (!roleAllowed && !gearScoreAllowed) {
-    return "exportPanel.specInactiveRoleAndGearScoreFilter";
+    return "characterPickPanel.specInactiveRoleAndGearScoreFilter";
   }
   if (!roleAllowed) {
-    return "exportPanel.specInactiveRoleFilter";
+    return "characterPickPanel.specInactiveRoleFilter";
   }
-  return "exportPanel.specInactiveGearScoreFilter";
+  return "characterPickPanel.specInactiveGearScoreFilter";
 }
 
-function ExportSpecCheckbox({
+function isRowLevelInactive(
+  reason: CharacterExportInactiveReason | null,
+): reason is "cooldown" | "noUpgrades" {
+  return reason === "cooldown" || reason === "noUpgrades";
+}
+
+function CharacterPickSpecCheckbox({
   character,
   specGear,
   slot,
   checked,
   disabled = false,
-  cooldownInactive = false,
+  rowInactiveReason,
   roleAllowed,
   gearScoreAllowed,
   onCheckedChange,
   t,
-}: ExportSpecCheckboxProps) {
+}: CharacterPickSpecCheckboxProps) {
   const { locale } = useTranslation();
 
   if (!character.class) {
@@ -106,10 +121,13 @@ function ExportSpecCheckbox({
     specGear.spec,
     locale,
   );
-  const specFilteredOut = !cooldownInactive && (!roleAllowed || !gearScoreAllowed);
+  const cooldownInactive = rowInactiveReason === "cooldown";
+  const upgradesInactive = rowInactiveReason === "noUpgrades";
+  const rowInactive = isRowLevelInactive(rowInactiveReason);
+  const specFilteredOut = !rowInactive && (!roleAllowed || !gearScoreAllowed);
   const filterTooltipKey = specFilterTooltipKey(roleAllowed, gearScoreAllowed);
-  const tooltipTitle = cooldownInactive
-    ? t("exportPanel.characterInactiveCooldownHint")
+  const tooltipTitle = rowInactive
+    ? t(characterInactiveTooltipKey(rowInactiveReason))
     : filterTooltipKey
       ? t(filterTooltipKey)
       : null;
@@ -126,7 +144,7 @@ function ExportSpecCheckbox({
           }}
           slotProps={{
             input: {
-              "aria-label": t("exportPanel.includeSpecAria", {
+              "aria-label": t("characterPickPanel.includeSpecAria", {
                 spec: specLabel,
                 name: character.name,
               }),
@@ -143,7 +161,11 @@ function ExportSpecCheckbox({
           variant="caption"
           showSpecName={false}
           showDetailTooltip={false}
-          color={cooldownInactive || specFilteredOut ? "text.secondary" : "inherit"}
+          color={
+            cooldownInactive || upgradesInactive || specFilteredOut
+              ? "text.secondary"
+              : "inherit"
+          }
         />
       }
       sx={{
@@ -152,7 +174,7 @@ function ExportSpecCheckbox({
         minWidth: 0,
         "& .MuiCheckbox-root": {
           p: 0.25,
-          ...(cooldownInactive
+          ...(cooldownInactive || upgradesInactive
             ? { opacity: 0.45 }
             : specFilteredOut
               ? { opacity: 0.55 }
@@ -161,7 +183,9 @@ function ExportSpecCheckbox({
         "& .MuiFormControlLabel-label": { ml: 0, minWidth: 0 },
         ...(cooldownInactive
           ? { "& img": { opacity: 0.45, filter: "grayscale(1)" } }
-          : null),
+          : upgradesInactive
+            ? { "& img": { opacity: 0.55 } }
+            : null),
         ...(specFilteredOut
           ? { "& .MuiTypography-root": { textDecoration: "line-through" } }
           : null),
@@ -172,20 +196,22 @@ function ExportSpecCheckbox({
   return <InactiveSpecTooltip title={tooltipTitle}>{control}</InactiveSpecTooltip>;
 }
 
-export function ExportCharacterSpecFilter({
+export function CharacterPickSpecFilter({
   characters,
   includedCharacterIds,
+  charactersWithUpgradesIds,
+  onlyWithUpgrades,
   exportSpecSelectionByCharacterId,
   roleFilter,
   minGearScore,
   onSpecIncluded,
-}: ExportCharacterSpecFilterProps) {
+}: CharacterPickSpecFilterProps) {
   const { t } = useTranslation();
 
   if (characters.length === 0) {
     return (
       <Typography variant="body2" color="text.secondary">
-        {t("exportPanel.noCharacters")}
+        {t("characterPickPanel.noCharacters")}
       </Typography>
     );
   }
@@ -198,6 +224,10 @@ export function ExportCharacterSpecFilter({
           includedCharacterIds,
           roleFilter,
           minGearScore,
+          {
+            onlyWithUpgrades,
+            charactersWithUpgradesIds,
+          },
         );
         const selection = resolveEffectiveExportSpecSelection(
           character,
@@ -226,13 +256,15 @@ export function ExportCharacterSpecFilter({
         const offGearScoreAllowed =
           !character.offSpec ||
           specPassesExportMinGearScore(character.offSpec, minGearScore);
-        const cooldownInactive = inactiveReason === "cooldown";
+        const rowInactive = isRowLevelInactive(inactiveReason);
         const characterName = (
           <CharacterSpecListName
             name={character.name}
             inactive={Boolean(inactiveReason)}
             inactiveTone={
-              inactiveReason === "filters" ? "filters" : "cooldown"
+              inactiveReason === "filters" || inactiveReason === "noUpgrades"
+                ? "filters"
+                : "cooldown"
             }
           />
         );
@@ -240,7 +272,9 @@ export function ExportCharacterSpecFilter({
         return (
           <Box key={character.id} sx={{ display: "contents" }}>
             {inactiveReason ? (
-              <InactiveSpecTooltip title={t(characterInactiveTooltipKey(inactiveReason))}>
+              <InactiveSpecTooltip
+                title={t(characterInactiveTooltipKey(inactiveReason))}
+              >
                 {characterName}
               </InactiveSpecTooltip>
             ) : (
@@ -248,17 +282,15 @@ export function ExportCharacterSpecFilter({
             )}
             <SpecCell>
               {character.mainSpec ? (
-                <ExportSpecCheckbox
+                <CharacterPickSpecCheckbox
                   character={character}
                   specGear={character.mainSpec}
                   slot="includeMain"
                   checked={selection.includeMain}
                   disabled={
-                    cooldownInactive ||
-                    !mainRoleAllowed ||
-                    !mainGearScoreAllowed
+                    rowInactive || !mainRoleAllowed || !mainGearScoreAllowed
                   }
-                  cooldownInactive={cooldownInactive}
+                  rowInactiveReason={inactiveReason}
                   roleAllowed={mainRoleAllowed}
                   gearScoreAllowed={mainGearScoreAllowed}
                   onCheckedChange={(slot, included) => {
@@ -269,47 +301,45 @@ export function ExportCharacterSpecFilter({
               ) : !hasSpecs ? (
                 <InactiveSpecTooltip
                   title={
-                    cooldownInactive
-                      ? t("exportPanel.characterInactiveCooldownHint")
+                    rowInactive
+                      ? t(characterInactiveTooltipKey(inactiveReason))
                       : null
                   }
                 >
                   <Checkbox
                     size="small"
                     checked={selection.includeWithoutSpec}
-                    disabled={cooldownInactive}
-                    sx={cooldownInactive ? { opacity: 0.45 } : undefined}
+                    disabled={rowInactive}
+                    sx={rowInactive ? { opacity: 0.45 } : undefined}
                     onChange={(event) => {
-                    onSpecIncluded(
-                      character,
-                      "includeWithoutSpec",
-                      event.target.checked,
-                    );
-                  }}
-                  slotProps={{
-                    input: {
-                      "aria-label": t("exportPanel.includeCharacterAria", {
-                        name: character.name,
-                      }),
-                    },
-                  }}
-                />
+                      onSpecIncluded(
+                        character,
+                        "includeWithoutSpec",
+                        event.target.checked,
+                      );
+                    }}
+                    slotProps={{
+                      input: {
+                        "aria-label": t("characterPickPanel.includeCharacterAria", {
+                          name: character.name,
+                        }),
+                      },
+                    }}
+                  />
                 </InactiveSpecTooltip>
               ) : null}
             </SpecCell>
             <SpecCell>
               {character.offSpec ? (
-                <ExportSpecCheckbox
+                <CharacterPickSpecCheckbox
                   character={character}
                   specGear={character.offSpec}
                   slot="includeOff"
                   checked={selection.includeOff}
                   disabled={
-                    cooldownInactive ||
-                    !offRoleAllowed ||
-                    !offGearScoreAllowed
+                    rowInactive || !offRoleAllowed || !offGearScoreAllowed
                   }
-                  cooldownInactive={cooldownInactive}
+                  rowInactiveReason={inactiveReason}
                   roleAllowed={offRoleAllowed}
                   gearScoreAllowed={offGearScoreAllowed}
                   onCheckedChange={(slot, included) => {

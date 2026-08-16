@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import type { TranslateFn } from "../../i18n/translate.ts";
 import {
+  TRACKER_CHARACTER_FORM_PANEL_MAX_WIDTH,
   TRACKER_DATA_CONTROLS_PANEL_MAX_WIDTH,
-  TRACKER_NARROW_PANEL_MAX_WIDTH,
+  TRACKER_DUNGEON_FORM_PANEL_MAX_WIDTH,
   TRACKER_UNIT_GRID_PANEL_MAX_WIDTH,
   TRACKER_WIDE_PANEL_MAX_WIDTH,
 } from "./constants.ts";
@@ -26,7 +27,7 @@ type MainToolbarPanelHandlers = {
 };
 
 type ToolbarPanelHandlers = MainToolbarPanelHandlers & {
-  closeExportPanel: () => void;
+  closeCharacterPickPanel: () => void;
   closeGearPickPanel: () => void;
 };
 
@@ -35,8 +36,8 @@ export function getToolbarPanelMeta(
   t: TranslateFn,
   handlers: ToolbarPanelHandlers,
 ): ToolbarPanelMeta {
-  if (panelId === "export") {
-    return getExportToolbarPanelMeta(t, handlers.closeExportPanel);
+  if (panelId === "characterPick") {
+    return getCharacterPickToolbarPanelMeta(t, handlers.closeCharacterPickPanel);
   }
   if (panelId === "gear") {
     return getGearPickToolbarPanelMeta(t, handlers.closeGearPickPanel);
@@ -55,14 +56,14 @@ function getMainToolbarPanelMeta(
         title: t("characterForm.title"),
         closeAriaLabel: t("characterForm.closeAria"),
         onClose: handlers.closeCharacterForm,
-        maxWidth: TRACKER_NARROW_PANEL_MAX_WIDTH,
+        maxWidth: TRACKER_CHARACTER_FORM_PANEL_MAX_WIDTH,
       };
     case "dungeon":
       return {
         title: t("dungeonForm.title"),
         closeAriaLabel: t("dungeonForm.closeAria"),
         onClose: handlers.closeDungeonForm,
-        maxWidth: TRACKER_NARROW_PANEL_MAX_WIDTH,
+        maxWidth: TRACKER_DUNGEON_FORM_PANEL_MAX_WIDTH,
       };
     case "bis":
       return {
@@ -82,13 +83,13 @@ function getMainToolbarPanelMeta(
   }
 }
 
-function getExportToolbarPanelMeta(
+function getCharacterPickToolbarPanelMeta(
   t: TranslateFn,
   onClose: () => void,
 ): ToolbarPanelMeta {
   return {
-    title: t("exportPanel.title"),
-    closeAriaLabel: t("exportPanel.closeAria"),
+    title: t("characterPickPanel.title"),
+    closeAriaLabel: t("characterPickPanel.closeAria"),
     onClose,
     maxWidth: TRACKER_UNIT_GRID_PANEL_MAX_WIDTH,
   };

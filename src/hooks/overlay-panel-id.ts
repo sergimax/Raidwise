@@ -1,7 +1,7 @@
 export type OverlayPanelId =
   | "character"
   | "dungeon"
-  | "export"
+  | "characterPick"
   | "gear"
   | "bis"
   | "data";

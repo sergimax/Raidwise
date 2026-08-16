@@ -68,10 +68,10 @@ export function buildExportStatus({
   const effectiveRoleFilter = roleFilter ?? DEFAULT_EXPORT_ROLE_FILTER;
 
   if (dungeons.length === 0) {
-    return { kind: "message", message: t("exportPanel.noDungeonsFilter") };
+    return { kind: "message", message: t("characterPickPanel.noDungeonsFilter") };
   }
   if (characters.length === 0) {
-    return { kind: "message", message: t("exportPanel.selectCharacter") };
+    return { kind: "message", message: t("characterPickPanel.selectCharacter") };
   }
 
   const lines: ExportStatusLine[] = [];
@@ -113,7 +113,7 @@ export function buildExportStatus({
   }
 
   if (lines.length === 0) {
-    return { kind: "message", message: t("exportPanel.allHaveCd") };
+    return { kind: "message", message: t("characterPickPanel.allHaveCd") };
   }
 
   return { kind: "lines", lines };

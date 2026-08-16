@@ -2,12 +2,12 @@ import { Box } from "@mui/material";
 import { getRaidIcon } from "../../assets/raid-icons/raid-icons.ts";
 import type { RaidKey } from "../../data/raid-names.ts";
 
-type ExportRaidIconProps = {
+type RaidIconProps = {
   raidKey: RaidKey | undefined;
   size?: number;
 };
 
-export function ExportRaidIcon({ raidKey, size = 18 }: ExportRaidIconProps) {
+export function RaidIcon({ raidKey, size = 18 }: RaidIconProps) {
   const iconSrc = getRaidIcon(raidKey);
   if (!iconSrc) {
     return null;

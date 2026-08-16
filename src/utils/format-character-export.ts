@@ -182,7 +182,15 @@ export function specPassesExportMinGearScore(
   return specGear.gearScore >= minGearScore;
 }
 
-export type CharacterExportInactiveReason = "cooldown" | "filters";
+export type CharacterExportInactiveReason =
+  | "cooldown"
+  | "noUpgrades"
+  | "filters";
+
+export type CharacterExportInactiveOptions = {
+  onlyWithUpgrades?: boolean;
+  charactersWithUpgradesIds?: ReadonlySet<string>;
+};
 
 export function characterSpecPassesExportFilters(
   character: CharacterRecord,
@@ -226,15 +234,26 @@ export function characterHasSpecPassingExportFilters(
   return mainPasses || offPasses;
 }
 
-/** Why a character row is inactive in the spec filter (CD on all visible raids, or filters). */
+/**
+ * Why a character row is inactive in the spec filter (CD on all visible raids,
+ * no Soft/Character-pick BiS upgrades, or role/GS filters).
+ */
 export function getCharacterExportInactiveReason(
   character: CharacterRecord,
   includedCharacterIds: ReadonlySet<string>,
   roleFilter: ExportRoleFilter = DEFAULT_EXPORT_ROLE_FILTER,
   minGearScore?: number,
+  options: CharacterExportInactiveOptions = {},
 ): CharacterExportInactiveReason | null {
   if (!includedCharacterIds.has(character.id)) {
     return "cooldown";
+  }
+  if (
+    options.onlyWithUpgrades &&
+    options.charactersWithUpgradesIds &&
+    !options.charactersWithUpgradesIds.has(character.id)
+  ) {
+    return "noUpgrades";
   }
   if (
     characterHasExportSpecs(character) &&

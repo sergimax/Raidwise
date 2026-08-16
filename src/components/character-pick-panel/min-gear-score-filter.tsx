@@ -14,19 +14,19 @@ import {
   formatCompactExportMinGearScore,
 } from "../../utils/parse-export-min-gear-score.ts";
 
-type ExportMinGearScoreFilterProps = {
+type CharacterPickMinGearScoreFilterProps = {
   enabled: boolean;
   compactValue: number;
   onEnabledChange: (enabled: boolean) => void;
   onCompactValueChange: (compactValue: number) => void;
 };
 
-export function ExportMinGearScoreFilter({
+export function CharacterPickMinGearScoreFilter({
   enabled,
   compactValue,
   onEnabledChange,
   onCompactValueChange,
-}: ExportMinGearScoreFilterProps) {
+}: CharacterPickMinGearScoreFilterProps) {
   const { t } = useTranslation();
   const compactLabel = formatCompactExportMinGearScore(compactValue);
 
@@ -42,14 +42,14 @@ export function ExportMinGearScoreFilter({
             }}
             slotProps={{
               input: {
-                "aria-label": t("exportPanel.minGearScoreEnableAria"),
+                "aria-label": t("characterPickPanel.minGearScoreEnableAria"),
               },
             }}
           />
         }
         label={
           <Typography variant="body2" component="span" sx={{ lineHeight: 1.3 }}>
-            {t("exportPanel.minGearScoreEnable")}
+            {t("characterPickPanel.minGearScoreEnable")}
           </Typography>
         }
         sx={{
@@ -82,13 +82,13 @@ export function ExportMinGearScoreFilter({
             }}
             valueLabelDisplay="off"
             getAriaValueText={(value) =>
-              t("exportPanel.minGearScoreSliderValue", {
+              t("characterPickPanel.minGearScoreSliderValue", {
                 value: formatCompactExportMinGearScore(value),
               })
             }
             slotProps={{
               input: {
-                "aria-label": t("exportPanel.minGearScoreAria"),
+                "aria-label": t("characterPickPanel.minGearScoreAria"),
               },
             }}
             sx={{
@@ -115,7 +115,7 @@ export function ExportMinGearScoreFilter({
           }}
         >
           {enabled
-            ? t("exportPanel.minGearScoreSliderValue", { value: compactLabel })
+            ? t("characterPickPanel.minGearScoreSliderValue", { value: compactLabel })
             : "—"}
         </Typography>
       </Stack>

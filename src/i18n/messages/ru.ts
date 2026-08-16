@@ -274,7 +274,7 @@ export const ruMessages: Messages = {
     clearSlot: "Очистить слот",
     clearSlotAria: "Очистить {{slot}}",
   },
-  exportPanel: {
+  characterPickPanel: {
     title: "Подбор персонажа",
     closeAria: "Закрыть панель подбора персонажа",
     noCharacters: "Добавьте персонажа для работы подбора",
@@ -286,9 +286,9 @@ export const ruMessages: Messages = {
     copyLine: "Скопировать",
     copyLineAria: "Скопировать строку записи для {{raid}}",
     copied: "Скопировано",
-    includeSpecs: "Спеки",
+    includeSpecs: "Отображать спеки",
     includeSpecsAria: "Включать короткие спеки в строки подбора",
-    includeGearScore: "GS",
+    includeGearScore: "Отображать GS",
     includeGearScoreAria: "Включать GS после каждого короткого спека",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
@@ -313,7 +313,7 @@ export const ruMessages: Messages = {
     selectAllSpecsAria: "Выбрать все спеки персонажей",
     clearAllSpecs: "Снять все",
     clearAllSpecsAria: "Снять все спеки персонажей",
-    resetAllFilters: "Сбросить все фильтры",
+    resetParameters: "Сбросить параметры",
     minGearScoreEnable: "Фильтр по мин. GS",
     minGearScoreEnableAria: "Включить фильтр по минимальному GS для подбора",
     minGearScoreHelper:
@@ -353,6 +353,11 @@ export const ruMessages: Messages = {
       "Каждый, кто заявляет софт-резерв, получает 1 обычный /roll плюс /roll за каждый софт-резерв; побеждает лучший результат",
     characterTitle: "Персонаж и спек",
     characterHelper: "Выберите одного персонажа и один спек для планирования софтов",
+    onlyCharactersWithUpgrades: "С апгрейдами",
+    onlyCharactersWithUpgradesAria:
+      "Приглушить и отключить персонажей без BiS-апгрейдов в выбранных рейдах",
+    characterInactiveNoUpgradesHint:
+      "Нет BiS-апгрейдов в выбранных рейдах",
     dungeonFilterTitle: "Выбранный рейд",
     dungeonFilterHelper:
       "Текстовый поиск по таблице. Нажмите на значок рейда — исключить или добавить рейд",
