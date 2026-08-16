@@ -1,6 +1,6 @@
-# Raidwise
-
 [English](README.md) | **Русский**
+
+<img src="./public/logo.svg" width="148" height="148">
 
 Веб-приложение для учёта рейдовых КД по персонажам и подземельям, с BiS-подсказками по гиру и помощниками для набора в рейд (фокус на WotLK).
 Данные хранятся локально в `localStorage`.
@@ -8,8 +8,6 @@
 
 ![Версия приложения](https://img.shields.io/badge/App_version-2.7.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
-
-<img src="./public/logo.svg" width="148" height="148">
 
 ## Возможности
 
