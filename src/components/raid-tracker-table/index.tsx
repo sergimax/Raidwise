@@ -5,6 +5,7 @@ import { DungeonEditDialog } from "../dungeon-edit-dialog/index.tsx";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { DungeonRecord } from "../../types/dungeons.ts";
+import { AddDungeonRow } from "./add-dungeon-row.tsx";
 import { DungeonTableRow } from "./dungeon-table-row.tsx";
 import { RaidTrackerDeleteDialog } from "./raid-tracker-delete-dialog.tsx";
 import { raidTrackerTableAriaLabel } from "./raid-tracker-table-empty-state.ts";
@@ -15,10 +16,18 @@ import "./styles.css";
 
 type RaidTrackerTableProps = {
   tableState: RaidTrackerTableState;
+  onAddCharacter: () => void;
+  onAddDungeon: () => void;
+  characterFormOpen?: boolean;
+  dungeonFormOpen?: boolean;
 };
 
 export const RaidTrackerTable = memo(function RaidTrackerTable({
   tableState,
+  onAddCharacter,
+  onAddDungeon,
+  characterFormOpen = false,
+  dungeonFormOpen = false,
 }: RaidTrackerTableProps) {
   const { t } = useTranslation();
   const domain = useRaidTrackerContext();
@@ -122,15 +131,11 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
             onResetCharacterToggles={onResetCharacterToggles}
             onEditCharacter={handleEditCharacter}
             onRequestDeleteCharacter={handleRequestDeleteCharacter}
+            onAddCharacter={onAddCharacter}
+            characterFormOpen={characterFormOpen}
           />
           <TableBody>
-            {dungeons.length === 0 ? (
-              <RaidTrackerTableEmptyState
-                variant="no-dungeons"
-                visiblePinnedColumns={visiblePinnedColumns}
-                characterCount={characterCount}
-              />
-            ) : sortedDungeons.length === 0 ? (
+            {dungeons.length === 0 ? null : sortedDungeons.length === 0 ? (
               <RaidTrackerTableEmptyState
                 variant="no-search-matches"
                 visiblePinnedColumns={visiblePinnedColumns}
@@ -150,9 +155,21 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
                   onDungeonToggle={onDungeonToggle}
                   onEditDungeon={handleEditDungeon}
                   onRequestDeleteDungeon={handleRequestDeleteDungeon}
+                  onAddCharacter={onAddCharacter}
+                  characterFormOpen={characterFormOpen}
                 />
               ))
             )}
+            <AddDungeonRow
+              compactTable={compactTable}
+              visiblePinnedColumns={visiblePinnedColumns}
+              characterCount={characterCount}
+              onAddDungeon={onAddDungeon}
+              onAddCharacter={onAddCharacter}
+              active={dungeonFormOpen}
+              characterFormActive={characterFormOpen}
+              showEmptyHint={dungeons.length === 0}
+            />
           </TableBody>
         </Table>
       </TableContainer>

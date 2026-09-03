@@ -15,7 +15,7 @@ Toolbar panels are mutually exclusive (only one open at a time).
 
 ### Characters & dungeons
 
-Add characters and raids manually, or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
+Add characters and raids manually (toolbar buttons or the dotted empty column/row on the table), or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
 Header **info** opens a short intro (CDs, gear planning, or BiS-only).
 
 ### Cooldown toggles

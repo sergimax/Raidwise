@@ -85,6 +85,12 @@ export const ruMessages: Messages = {
     emptyNoDungeons:
       "Добавьте подземелье или используйте «Добавить рейды из шаблона».",
     emptyNoSearchMatches: "Нет подземелий по вашему запросу.",
+    addCharacterColumn: "+ Добавить персонажа",
+    addCharacterAria: "Добавить персонажа",
+    addRaidRow: "+ Добавить рейд",
+    addRaidAria: "Добавить рейд",
+    addRaidHint:
+      "Или используйте «Добавить рейды из шаблона», если список пуст.",
     ariaNoDungeons: "Трекер КД рейдов, нет подземелий",
     ariaNoSearchMatches: "Трекер КД рейдов, нет совпадений по поиску",
     ariaDefault: "Трекер КД рейдов по подземельям и персонажам",

@@ -49,10 +49,12 @@ describe("TrackerLayout add from template confirm", () => {
     const user = userEvent.setup();
     renderTrackerLayout();
 
+    const table = screen.getByRole("table");
     expect(
-      screen.getByText(
-        "Add a dungeon or use Add raids from template to get started.",
-      ),
+      within(table).getByRole("button", { name: /^add raid$/i }),
+    ).toBeInTheDocument();
+    expect(
+      within(table).getByText(/add raids from template when the list is empty/i),
     ).toBeInTheDocument();
 
     await user.click(
@@ -64,17 +66,15 @@ describe("TrackerLayout add from template confirm", () => {
       within(dialog).getByText("Add raids from template?"),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Add a dungeon or use Add raids from template to get started.",
-      ),
+      within(table).getByText(/add raids from template when the list is empty/i),
     ).toBeInTheDocument();
 
     await user.click(within(dialog).getByRole("button", { name: "Add" }));
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(
-      screen.queryByText(
-        "Add a dungeon or use Add raids from template to get started.",
+      within(screen.getByRole("table")).queryByText(
+        /add raids from template when the list is empty/i,
       ),
     ).not.toBeInTheDocument();
     expect(
@@ -95,8 +95,8 @@ describe("TrackerLayout add from template confirm", () => {
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Add a dungeon or use Add raids from template to get started.",
+      within(screen.getByRole("table")).getByText(
+        /add raids from template when the list is empty/i,
       ),
     ).toBeInTheDocument();
   });

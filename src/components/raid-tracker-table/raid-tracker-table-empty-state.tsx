@@ -24,6 +24,7 @@ export function RaidTrackerTableEmptyState({
   const columnCount = raidTrackerTableColumnCount(
     visiblePinnedColumns,
     characterCount,
+    { includeAddCharacterColumn: true },
   );
 
   return (

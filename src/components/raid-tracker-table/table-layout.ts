@@ -107,12 +107,14 @@ export const COMPACT_PINNED_LEFT = {
   name: COMPACT_PINNED_WIDTHS.actions,
 } as const;
 
-/** Actions column + pinned dungeon columns + character columns. */
+/** Actions column + pinned dungeon columns + character columns (+ optional add column). */
 export function raidTrackerTableColumnCount(
   visiblePinnedColumns: ReadonlyArray<PinnedColumnDef>,
   characterCount: number,
+  options?: { includeAddCharacterColumn?: boolean },
 ): number {
-  return 1 + visiblePinnedColumns.length + characterCount;
+  const addCharacterColumns = options?.includeAddCharacterColumn ? 1 : 0;
+  return 1 + visiblePinnedColumns.length + characterCount + addCharacterColumns;
 }
 
 function pinnedPositionForColumn(

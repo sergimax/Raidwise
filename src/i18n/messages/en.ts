@@ -83,6 +83,12 @@ export const enMessages = {
     emptyNoDungeons:
       "Add a dungeon or use Add raids from template to get started.",
     emptyNoSearchMatches: "No dungeons match your search.",
+    addCharacterColumn: "+ Add character",
+    addCharacterAria: "Add character",
+    addRaidRow: "+ Add raid",
+    addRaidAria: "Add raid",
+    addRaidHint:
+      "Or use Add raids from template when the list is empty.",
     ariaNoDungeons: "Raid cooldown tracker, no dungeons",
     ariaNoSearchMatches: "Raid cooldown tracker, no dungeons match search",
     ariaDefault: "Raid cooldown tracker by dungeon and character",

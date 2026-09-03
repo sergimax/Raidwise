@@ -8,6 +8,7 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
 import type { DungeonSortKey, SortDirection } from "../../utils/sort-dungeons.ts";
 import { CharacterHeaderCell } from "./character-header-cell.tsx";
+import { AddCharacterHeaderCell } from "./add-character-column.tsx";
 import { renderPinnedColumnHeader } from "./pinned-column-renderers.tsx";
 import { pinnedActionsColumnSx, type PinnedColumnDef } from "./table-layout.ts";
 
@@ -23,6 +24,8 @@ type RaidTrackerTableHeadProps = {
   onResetCharacterToggles: (characterId: string) => void;
   onEditCharacter: (characterId: string) => void;
   onRequestDeleteCharacter: (characterId: string) => void;
+  onAddCharacter: () => void;
+  characterFormOpen?: boolean;
 };
 
 export function RaidTrackerTableHead({
@@ -37,6 +40,8 @@ export function RaidTrackerTableHead({
   onResetCharacterToggles,
   onEditCharacter,
   onRequestDeleteCharacter,
+  onAddCharacter,
+  characterFormOpen = false,
 }: RaidTrackerTableHeadProps) {
   const { t } = useTranslation();
 
@@ -69,6 +74,10 @@ export function RaidTrackerTableHead({
             onDeleteCharacter={onRequestDeleteCharacter}
           />
         ))}
+        <AddCharacterHeaderCell
+          onAddCharacter={onAddCharacter}
+          active={characterFormOpen}
+        />
       </TableRow>
     </TableHead>
   );
