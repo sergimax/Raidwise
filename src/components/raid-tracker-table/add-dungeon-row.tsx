@@ -4,7 +4,7 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import { AddCharacterBodyCell } from "./add-character-column.tsx";
 import { addPlaceholderControlSx } from "./add-placeholder-cell-sx.ts";
 import {
-  pinnedActionsColumnSx,
+  pinnedAddDungeonSpanSx,
   type PinnedColumnDef,
 } from "./table-layout.ts";
 
@@ -30,8 +30,9 @@ function handleActivateKey(
 }
 
 /**
- * Trailing empty raid row: one dashed control spanning actions + pinned columns,
- * plus optional trailing add-character cell for column alignment.
+ * Trailing empty raid row: one dashed control spanning actions + pinned columns
+ * (sticky left, so it does not scroll away with character columns), plus optional
+ * trailing add-character cell for column alignment.
  */
 export function AddDungeonRow({
   compactTable,
@@ -51,19 +52,12 @@ export function AddDungeonRow({
       <TableCell
         colSpan={pinnedSpan}
         sx={{
-          ...pinnedActionsColumnSx(compactTable, false),
-          // Unstick so the dashed control can span pinned columns without a hard clip.
-          position: "static",
-          left: "auto",
-          width: "auto",
-          minWidth: 0,
-          maxWidth: "none",
-          boxShadow: "none",
+          ...pinnedAddDungeonSpanSx(compactTable, visiblePinnedColumns),
           py: 1,
           borderBottom: 0,
         }}
       >
-        <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+        <Stack spacing={0.5} sx={{ minWidth: 0, width: "100%" }}>
           <Box
             component="button"
             type="button"

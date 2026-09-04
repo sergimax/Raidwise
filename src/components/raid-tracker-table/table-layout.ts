@@ -153,6 +153,38 @@ export function pinnedActionsColumnSx(compact: boolean, header: boolean) {
   return pinned(left, width);
 }
 
+/**
+ * Total width of the sticky left block (actions + visible pinned dungeon columns).
+ * Used by the trailing “Add raid” rowspan so it stays pinned while character
+ * columns scroll horizontally.
+ */
+export function pinnedAddDungeonSpanWidth(
+  compact: boolean,
+  visiblePinnedColumns: ReadonlyArray<PinnedColumnDef>,
+): number {
+  if (compact) {
+    return COMPACT_PINNED_WIDTHS.actions + COMPACT_PINNED_WIDTHS.name;
+  }
+  return (
+    PINNED_WIDTHS.actions +
+    visiblePinnedColumns.reduce(
+      (sum, column) => sum + PINNED_WIDTHS[column.key],
+      0,
+    )
+  );
+}
+
+/** Sticky left cell spanning actions + pinned columns for the add-raid row. */
+export function pinnedAddDungeonSpanSx(
+  compact: boolean,
+  visiblePinnedColumns: ReadonlyArray<PinnedColumnDef>,
+) {
+  return pinnedCellSx(
+    0,
+    pinnedAddDungeonSpanWidth(compact, visiblePinnedColumns),
+  );
+}
+
 export function pinnedCellSx(left: number, width: number) {
   return {
     ...PINNED_CELL_BASE_SX,
