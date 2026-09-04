@@ -58,6 +58,17 @@ const DamageProcTrinketWithoutStatsItemIds = new Set([
   40431, // Fury of the Five Flights
 ]);
 
+/**
+ * Caster DPS damage-proc trinkets that only ship SP (or similar) in bundled stats.
+ * Healers should never see these as ilvl upgrades; casters still use them.
+ */
+const CasterDamageProcTrinketItemIds = new Set([
+  47182, // Reign of the Unliving
+  47188, // Reign of the Unliving (heroic)
+  47316, // Reign of the Dead
+  47477, // Reign of the Dead (heroic)
+]);
+
 /** Proc trinkets recommended for healers only (bundled stats can look like caster gear). */
 const HealerOnlyProcTrinketItemIds = new Set([
   47041, // Solace of the Defeated
@@ -382,6 +393,13 @@ function isRejectedProcTrinketForProfile(
   }
 
   if (MeleeOnlyProcTrinketItemIds.has(itemId) && profile.role !== "MELEE") {
+    return true;
+  }
+
+  if (
+    profile.role === "HEALER" &&
+    CasterDamageProcTrinketItemIds.has(itemId)
+  ) {
     return true;
   }
 
