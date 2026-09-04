@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0] - 2026-09-04
+
+### Added
+
+- **In-table add:** Trailing dotted **+ Add character** column and **+ Add raid** row on the main tracker table open the existing add forms (toolbar buttons unchanged). Empty raid list shows a template hint under the add-raid control.
+
+### Fixed
+
+- **Add raid sticky:** The **+ Add raid** cell stays pinned with the left dungeon columns while character columns scroll horizontally.
+- **Healer gear hints:** Reign of the Unliving / Reign of the Dead (N/H) are no longer suggested as ilvl upgrades for healer specs (resto, holy, disc).
+
+### Changed
+
+- **Docs:** README EN+RU mention the dotted in-table add affordances.
+
 ## [2.8.0] - 2026-08-17
 
 ### Added

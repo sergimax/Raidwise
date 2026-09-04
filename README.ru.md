@@ -6,7 +6,7 @@
 Данные хранятся локально в `localStorage`.
 Активная ссылка: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![Версия приложения](https://img.shields.io/badge/App_version-2.8.0-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-2.9.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Возможности
