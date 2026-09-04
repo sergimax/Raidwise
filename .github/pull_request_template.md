@@ -14,13 +14,13 @@ Author fills every applicable box before merge. Mark N/A items as checked with a
 <!-- - [ ] README Features updated in **both** `README.md` and `README.ru.md` when public behavior changed -->
 <!-- - [ ] Persistence docs updated if `localStorage` keys or `schemaVersion` changed -->
 
-## Release (required for merge to `main`)
+<!-- ## Release (required for merge to `main`)
 
 CI **Release files** fails without a full bump — see `/bump` / `scripts/release/check-release-files.mjs`.
 
 - [ ] Version bumped in `package.json` **and** `package-lock.json` (root + `packages[""]`)
 - [ ] `CHANGELOG.md` has `## [X.Y.Z] - YYYY-MM-DD` with real user-facing bullets (not “version bump”)
-- [ ] `App_version` badges in `README.md` and `README.ru.md` match the new version
+- [ ] `App_version` badges in `README.md` and `README.ru.md` match the new version -->
 
 # Changelog draft
 
