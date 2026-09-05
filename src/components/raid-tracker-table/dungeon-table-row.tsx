@@ -13,6 +13,7 @@ import type { CharacterRecord } from "../../types/characters.ts";
 import type { DungeonRecord, DungeonToggles } from "../../types/dungeons.ts";
 import { isCooldownOn } from "../../utils/dungeon-toggles.ts";
 import { CharacterToggleCell } from "./character-toggle-cell.tsx";
+import { AddCharacterBodyCell } from "./add-character-column.tsx";
 import {
   pinnedColumnBodyAlign,
   pinnedColumnBodySx,
@@ -34,6 +35,8 @@ type DungeonTableRowProps = {
   onDungeonToggle: (characterId: string, dungeonId: string) => void;
   onEditDungeon: (dungeonId: string) => void;
   onRequestDeleteDungeon: (dungeon: DungeonRecord) => void;
+  onAddCharacter: () => void;
+  characterFormOpen?: boolean;
 };
 
 function dungeonRowTogglesEqual(
@@ -81,6 +84,12 @@ function areDungeonTableRowPropsEqual(
   if (previous.onRequestDeleteDungeon !== next.onRequestDeleteDungeon) {
     return false;
   }
+  if (previous.onAddCharacter !== next.onAddCharacter) {
+    return false;
+  }
+  if (previous.characterFormOpen !== next.characterFormOpen) {
+    return false;
+  }
   if (
     previous.completionsByDungeonId[previous.dungeon.id] !==
     next.completionsByDungeonId[next.dungeon.id]
@@ -106,6 +115,8 @@ export const DungeonTableRow = memo(function DungeonTableRow({
   onDungeonToggle,
   onEditDungeon,
   onRequestDeleteDungeon,
+  onAddCharacter,
+  characterFormOpen = false,
 }: DungeonTableRowProps) {
   const { t, locale } = useTranslation();
   const { getBisSlotMapForSpec } = useBisListsContext();
@@ -171,6 +182,10 @@ export const DungeonTableRow = memo(function DungeonTableRow({
           getBisSlotMapForSpec={getBisSlotMapForSpec}
         />
       ))}
+      <AddCharacterBodyCell
+        onAddCharacter={onAddCharacter}
+        active={characterFormOpen}
+      />
     </TableRow>
   );
 }, areDungeonTableRowPropsEqual);

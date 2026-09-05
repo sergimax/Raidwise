@@ -107,12 +107,14 @@ export const COMPACT_PINNED_LEFT = {
   name: COMPACT_PINNED_WIDTHS.actions,
 } as const;
 
-/** Actions column + pinned dungeon columns + character columns. */
+/** Actions column + pinned dungeon columns + character columns (+ optional add column). */
 export function raidTrackerTableColumnCount(
   visiblePinnedColumns: ReadonlyArray<PinnedColumnDef>,
   characterCount: number,
+  options?: { includeAddCharacterColumn?: boolean },
 ): number {
-  return 1 + visiblePinnedColumns.length + characterCount;
+  const addCharacterColumns = options?.includeAddCharacterColumn ? 1 : 0;
+  return 1 + visiblePinnedColumns.length + characterCount + addCharacterColumns;
 }
 
 function pinnedPositionForColumn(
@@ -149,6 +151,38 @@ export function pinnedActionsColumnSx(compact: boolean, header: boolean) {
   const width = compact ? COMPACT_PINNED_WIDTHS.actions : PINNED_WIDTHS.actions;
   const left = compact ? COMPACT_PINNED_LEFT.actions : PINNED_LEFT.actions;
   return pinned(left, width);
+}
+
+/**
+ * Total width of the sticky left block (actions + visible pinned dungeon columns).
+ * Used by the trailing “Add raid” rowspan so it stays pinned while character
+ * columns scroll horizontally.
+ */
+export function pinnedAddDungeonSpanWidth(
+  compact: boolean,
+  visiblePinnedColumns: ReadonlyArray<PinnedColumnDef>,
+): number {
+  if (compact) {
+    return COMPACT_PINNED_WIDTHS.actions + COMPACT_PINNED_WIDTHS.name;
+  }
+  return (
+    PINNED_WIDTHS.actions +
+    visiblePinnedColumns.reduce(
+      (sum, column) => sum + PINNED_WIDTHS[column.key],
+      0,
+    )
+  );
+}
+
+/** Sticky left cell spanning actions + pinned columns for the add-raid row. */
+export function pinnedAddDungeonSpanSx(
+  compact: boolean,
+  visiblePinnedColumns: ReadonlyArray<PinnedColumnDef>,
+) {
+  return pinnedCellSx(
+    0,
+    pinnedAddDungeonSpanWidth(compact, visiblePinnedColumns),
+  );
 }
 
 export function pinnedCellSx(left: number, width: number) {

@@ -320,6 +320,35 @@ describe("isItemStatUsableForSpec", () => {
     expect(
       isItemStatUsableForSpec(40257, restorationDruid, 12),
     ).toBe(false);
+    // Reign of the Unliving / Dead — SP stick + damage proc, not a healer trinket.
+    expect(isItemStatUsableForSpec(47182, restorationDruid, 12)).toBe(false);
+    expect(isItemStatUsableForSpec(47188, restorationDruid, 13)).toBe(false);
+    expect(isItemStatUsableForSpec(47316, restorationDruid, 12)).toBe(false);
+    expect(isItemStatUsableForSpec(47477, restorationDruid, 13)).toBe(false);
+  });
+
+  it("rejects Reign of the Unliving / Dead for other healer specs", () => {
+    const healers = [
+      { className: ClassName.Priest, spec: "Holy" },
+      { className: ClassName.Priest, spec: "Discipline" },
+      { className: ClassName.Shaman, spec: "Restoration" },
+      { className: ClassName.Paladin, spec: "Holy" },
+    ] as const;
+
+    for (const healer of healers) {
+      expect(isItemStatUsableForSpec(47182, healer, 12)).toBe(false);
+      expect(isItemStatUsableForSpec(47477, healer, 13)).toBe(false);
+    }
+  });
+
+  it("still allows Reign of the Unliving for Shadow Priest", () => {
+    const shadowPriest = {
+      className: ClassName.Priest,
+      spec: "Shadow",
+    } as const;
+
+    expect(isItemStatUsableForSpec(47182, shadowPriest, 12)).toBe(true);
+    expect(isItemStatUsableForSpec(47188, shadowPriest, 13)).toBe(true);
   });
 
   it("still allows spell power healer trinkets for Restoration Druid", () => {

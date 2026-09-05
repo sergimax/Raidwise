@@ -259,7 +259,13 @@ export function RaidTrackerMain({
         <GearHintLegend onDismiss={dismissGearHintLegend} />
       ) : null}
 
-      <RaidTrackerTable tableState={tableState} />
+      <RaidTrackerTable
+        tableState={tableState}
+        onAddCharacter={forms.toggleCharacterForm}
+        onAddDungeon={forms.toggleDungeonForm}
+        characterFormOpen={forms.showCharacterForm}
+        dungeonFormOpen={forms.showDungeonForm}
+      />
     </Stack>
   );
 }
