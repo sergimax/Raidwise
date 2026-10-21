@@ -6,12 +6,18 @@ export type AdjacentRaidGroup = {
   dungeons: DungeonRecord[];
 };
 
-/** Group only neighboring template raids; custom rows stay independent. */
+const MAX_RAID_BACKGROUND_ROWS = 4;
+
+/** Group neighboring template raids in blocks of up to four rows. */
 export function groupAdjacentRaids(dungeons: DungeonRecord[]): AdjacentRaidGroup[] {
   const groups: AdjacentRaidGroup[] = [];
   for (const dungeon of dungeons) {
     const previous = groups[groups.length - 1];
-    if (dungeon.raidKey && previous?.raidKey === dungeon.raidKey) {
+    if (
+      dungeon.raidKey &&
+      previous?.raidKey === dungeon.raidKey &&
+      previous.dungeons.length < MAX_RAID_BACKGROUND_ROWS
+    ) {
       previous.dungeons.push(dungeon);
     } else {
       groups.push({ raidKey: dungeon.raidKey, dungeons: [dungeon] });

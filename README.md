@@ -25,7 +25,7 @@ Reset one character from the table header, or everyone from **Settings**.
 
 ### Table
 
-Sort and search raids (EN/RU, e.g. `ICC25H` / `ЦЛК25хм`); **Type** shows size (+ skull for Heroic), with per-row edit/delete. When sorted by name, adjacent variants of the same template raid share one continuous background image.
+Sort and search raids (EN/RU, e.g. `ICC25H` / `ЦЛК25хм`); **Type** shows size (+ skull for Heroic), with per-row edit/delete. When sorted by name, adjacent variants of the same template raid share a background image across up to four rows; extra variants start another image.
 Character columns use class-colored names and main/off GS; Complete is a progress bar; compact on small screens, with horizontal scroll inside the table when many characters are present.
 
 ### Settings

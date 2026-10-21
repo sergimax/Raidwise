@@ -33,4 +33,14 @@ describe("groupAdjacentRaids", () => {
       ["rs-10", "rs-25"],
     ]);
   });
+
+  it("starts a new background after four adjacent variants of one raid", () => {
+    const rows = Array.from({ length: 9 }, (_, index) =>
+      dungeon(`icc-${index}`, "icecrownCitadel"),
+    );
+
+    expect(groupAdjacentRaids(rows).map((group) => group.dungeons.length)).toEqual([
+      4, 4, 1,
+    ]);
+  });
 });
