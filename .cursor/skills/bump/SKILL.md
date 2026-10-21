@@ -28,8 +28,9 @@ Bump progress:
 - [ ] 2. Choose MAJOR / MINOR / PATCH
 - [ ] 3. Bump version in package.json + package-lock.json
 - [ ] 4. Write CHANGELOG.md entry
-- [ ] 5. Sync README EN+RU badges / docs for new public surface
-- [ ] 6. Summarize for the user (do not commit unless asked)
+- [ ] 5. Update the in-app What's New page
+- [ ] 6. Sync README EN+RU badges / docs for new public surface
+- [ ] 7. Summarize for the user (do not commit unless asked)
 ```
 
 ### 1. Diff since last release
@@ -98,7 +99,15 @@ Rules:
   “chore”, or empty filler.
 - One clear bullet per user-visible change.
 
-### 5. Docs check (required)
+### 5. Update the in-app What's New page
+
+- The page at `/changelog` renders the complete `CHANGELOG.md` directly. Keep
+  it as the source of truth: the new release entry must be added to that file
+  so it appears on the page in full.
+- Verify the page still reads the complete log and does not substitute a
+  hand-written summary for the release bullets.
+
+### 6. Docs check (required)
 
 Compare public surface in code vs docs:
 
@@ -113,7 +122,7 @@ Compare public surface in code vs docs:
 If code added behavior not mentioned in docs, **update the docs in the same
 bump**. If docs mention removed behavior, fix or remove those lines.
 
-### 6. Finish
+### 7. Finish
 
 - Do **not** create a git commit or tag unless the user asks.
 - Report: new version, changelog bullets written, and any doc updates made.
