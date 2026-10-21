@@ -24,7 +24,7 @@ export const TRACKER_WIDE_PANEL_MAX_WIDTH = 1280;
 export const TRACKER_UNIT_GRID_PANEL_MAX_WIDTH = 1920;
 
 /**
- * Cap for Data controls (2×2 unit blocks + panel padding).
- * Content grid is 612px; padding keeps the outlined card from clipping.
+ * Cap for Data controls (4×1 unit blocks + panel padding).
+ * Content grid is 1236px; padding keeps the outlined card from clipping.
  */
-export const TRACKER_DATA_CONTROLS_PANEL_MAX_WIDTH = 680;
+export const TRACKER_DATA_CONTROLS_PANEL_MAX_WIDTH = 1280;

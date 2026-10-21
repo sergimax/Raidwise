@@ -41,4 +41,4 @@ export function getDataControlsGridMaxWidth(
   );
 }
 
-export { FILTER_UNIT_GRID_GAP_SPACING, FILTER_UNIT_WIDTH };
+export { FILTER_UNIT_GRID_GAP_SPACING, FILTER_UNIT_HEIGHT, FILTER_UNIT_WIDTH };

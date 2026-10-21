@@ -8,9 +8,8 @@ import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog
 import { FilterSection } from "../filter-unit/filter-section.tsx";
 import {
   FILTER_UNIT_GRID_GAP_SPACING,
-  getDataControlsGridTemplateAreas,
-  getDataControlsGridTemplateColumns,
-  getDataControlsGridTemplateRows,
+  FILTER_UNIT_HEIGHT,
+  FILTER_UNIT_WIDTH,
 } from "./constants.ts";
 import { DataControlsBlock } from "./data-controls-block.tsx";
 
@@ -108,25 +107,15 @@ export function DataControlsPanel({
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: {
-            xs: "minmax(0, 1fr)",
-            sm: getDataControlsGridTemplateColumns(),
-          },
-          gridTemplateRows: {
-            xs: "auto",
-            sm: getDataControlsGridTemplateRows(),
-          },
-          gridTemplateAreas: {
-            xs: "none",
-            sm: getDataControlsGridTemplateAreas(),
-          },
+          gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${FILTER_UNIT_WIDTH}px), 1fr))`,
+          gridAutoRows: { xs: "auto", sm: FILTER_UNIT_HEIGHT },
           gap: FILTER_UNIT_GRID_GAP_SPACING,
           alignItems: "stretch",
-          width: { xs: "100%", sm: "fit-content" },
+          width: "100%",
           maxWidth: "100%",
         }}
       >
-        <DataControlsBlock gridArea="resetToggles">
+        <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.resetTogglesTitle")}
             description={t("dataControlsPanel.resetTogglesDescription")}
@@ -147,7 +136,7 @@ export function DataControlsPanel({
           </FilterSection>
         </DataControlsBlock>
 
-        <DataControlsBlock gridArea="deleteCharacters">
+        <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteCharactersTitle")}
             description={t("dataControlsPanel.deleteCharactersDescription")}
@@ -164,7 +153,7 @@ export function DataControlsPanel({
           </FilterSection>
         </DataControlsBlock>
 
-        <DataControlsBlock gridArea="deleteDungeons">
+        <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteDungeonsTitle")}
             description={
@@ -195,7 +184,7 @@ export function DataControlsPanel({
           </FilterSection>
         </DataControlsBlock>
 
-        <DataControlsBlock gridArea="deleteBisLists">
+        <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteBisTitle")}
             description={t("dataControlsPanel.deleteBisDescription")}
