@@ -241,7 +241,7 @@ export const enMessages = {
   },
   changesPage: {
     pageTitle: "What's new",
-    pageDescription: "Recent interface and feature updates in Raidwise.",
+    pageDescription: "Complete change history for Raidwise.",
     latest: "Latest",
     latestTitle: "Updated raid roster and roll helper",
     latestDetails: "The character picker is now Raid roster. Roll helper lists BiS items in selected raids and can include the selected spec.",
