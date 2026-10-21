@@ -5,6 +5,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { memo, useCallback } from "react";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
@@ -131,8 +132,28 @@ export const DungeonTableRow = memo(function DungeonTableRow({
   }, [dungeon, onRequestDeleteDungeon]);
 
   return (
-    <TableRow hover>
-      <TableCell sx={pinnedActionsColumnSx(compactTable, false)}>
+    <TableRow
+      hover
+      sx={(theme) => {
+        const rowTint = alpha(
+          theme.palette.secondary.main,
+          theme.palette.mode === "dark" ? 0.32 : 0.24,
+        );
+
+        return {
+          backgroundImage: `linear-gradient(90deg, ${rowTint} 0%, transparent 100%)`,
+          // Sticky cells need an opaque-looking fill to cover scrolling content.
+          // A slight translucency lets the single row-level gradient show through.
+          "& > .raid-tracker-table__pinned-row-cell": {
+            backgroundColor: alpha(theme.palette.background.paper, 0.88),
+          },
+        };
+      }}
+    >
+      <TableCell
+        className="raid-tracker-table__pinned-row-cell"
+        sx={pinnedActionsColumnSx(compactTable, false)}
+      >
         <Stack direction="row" spacing={0.25} sx={{ justifyContent: "center" }}>
           <Tooltip title={t("table.editDungeon", { name: dungeonDisplayName })}>
             <IconButton
@@ -159,6 +180,7 @@ export const DungeonTableRow = memo(function DungeonTableRow({
       {visiblePinnedColumns.map((column) => (
         <TableCell
           key={column.key}
+          className="raid-tracker-table__pinned-row-cell"
           align={pinnedColumnBodyAlign(column.key)}
           sx={pinnedColumnBodySx(column.key, compactTable)}
         >
