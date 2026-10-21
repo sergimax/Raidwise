@@ -68,8 +68,8 @@ export const ruMessages: Messages = {
     addCharacter: "Добавить персонажа",
     addDungeon: "Добавить рейд",
     bisLists: "BIS сборки",
-    export: "Подбор персонажа",
-    gearPick: "Помощник ролла",
+    export: "Подбор в рейд",
+    gearPick: "Ролл & софт",
     dataControls: "Настройки",
     resetAllToggles: "Сброс статистики",
   },
@@ -281,7 +281,7 @@ export const ruMessages: Messages = {
     clearSlotAria: "Очистить {{slot}}",
   },
   characterPickPanel: {
-    title: "Подбор персонажа",
+    title: "Подбор в рейд",
     closeAria: "Закрыть панель подбора персонажа",
     noCharacters: "Добавьте персонажа для работы подбора",
     exportLinesTitle: "Кто подходит для рейда",
@@ -345,7 +345,7 @@ export const ruMessages: Messages = {
     allHaveCd: "У всех выбранных персонажей есть КД на подходящих подземельях для подбора",
   },
   gearPickPanel: {
-    title: "Помощник ролла",
+    title: "Ролл и софт",
     closeAria: "Закрыть панель подбора софтов",
     rulesTitle: "Правила софт-резерва",
     rulesHelper: "Сколько софт-резервов разрешено в рейде и как они работают: +100 или переролл",
