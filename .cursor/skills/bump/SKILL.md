@@ -28,7 +28,7 @@ Bump progress:
 - [ ] 2. Choose MAJOR / MINOR / PATCH
 - [ ] 3. Bump version in package.json + package-lock.json
 - [ ] 4. Write CHANGELOG.md entry
-- [ ] 5. Update the in-app What's New page
+- [ ] 5. Update the in-app What's New section in Application Settings
 - [ ] 6. Sync README EN+RU badges / docs for new public surface
 - [ ] 7. Summarize for the user (do not commit unless asked)
 ```
@@ -99,13 +99,15 @@ Rules:
   “chore”, or empty filler.
 - One clear bullet per user-visible change.
 
-### 5. Update the in-app What's New page
+### 5. Update the in-app What's New section
 
-- The page at `/changelog` renders the complete `CHANGELOG.md` directly. Keep
-  it as the source of truth: the new release entry must be added to that file
-  so it appears on the page in full.
-- Verify the page still reads the complete log and does not substitute a
-  hand-written summary for the release bullets.
+- Application Settings contains the What's New section. It shows the 10 most
+  recent change bullets directly from the root `CHANGELOG.md` and links to the
+  full changelog on GitHub.
+- Keep `CHANGELOG.md` as the source of truth. Add release bullets there; do
+  not write a separate summary or duplicate change text in the UI.
+- Verify the 10-entry preview updates from the changelog and the GitHub link
+  opens the repository's `CHANGELOG.md`.
 
 ### 6. Docs check (required)
 
