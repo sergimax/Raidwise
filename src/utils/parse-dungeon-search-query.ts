@@ -11,7 +11,7 @@ export type ParsedDungeonSearchQuery = {
 };
 
 /** Size then mode; longer sizes first so `10` wins over `0`/`1` edge cases. */
-const SIZE_WITH_MODE_PATTERN = /(40|25|20|10|5)(хм|х|h|об|n)$/u;
+const SIZE_WITH_MODE_PATTERN = /(40|25|20|10|5)(гер|хм|х|h|об|n)$/u;
 
 function parseTrailingSize(value: string): { size?: DungeonSize; rest: string } {
   for (const size of [...DungeonSizes].sort((first, second) => second - first)) {
@@ -35,8 +35,9 @@ function difficultyFromModeSuffix(suffix: string): DungeonDifficulty {
 
 /**
  * Parse mixed dungeon search: raid name/short name, optional size, optional mode suffix.
- * Mode suffixes (`n`/`об` normal, `h`/`хм`/`х` heroic) apply only after a size, e.g.
- * `ICC25N`, `ЦЛК25об`, `ToC25H` — not on bare names like `icecrown`.
+ * Mode suffixes (`n`/`об` normal, `h`/`хм`/`гер`/`х` heroic) apply only after a
+ * size, e.g.
+ * `ICC25N`, `ЦЛК25об`, `ToC25H`, `ИК25гер` — not on bare names like `icecrown`.
  * Size without mode (`ICC25`) matches both Normal and Heroic.
  */
 export function parseDungeonSearchQuery(rawQuery: string): ParsedDungeonSearchQuery {

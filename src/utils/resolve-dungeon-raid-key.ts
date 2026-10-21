@@ -1,14 +1,17 @@
 import { RaidNames, type RaidKey } from "../data/raid-names.ts";
 import { isRaidKey } from "../data/raid-zones.ts";
-import type { DungeonRecord } from "../types/dungeons.ts";
+import { DungeonDifficulty, type DungeonRecord } from "../types/dungeons.ts";
 
 function normalizeDungeonName(value: string): string {
   return value.trim().toLowerCase();
 }
 
-function raidNameCandidates(raid: (typeof RaidNames)[RaidKey]): string[] {
+function raidNameCandidates(
+  raid: (typeof RaidNames)[RaidKey],
+  includeHeroicName = true,
+): string[] {
   const candidates: string[] = [raid.ru, raid.en, raid.shortRu];
-  if ("heroic" in raid) {
+  if (includeHeroicName && "heroic" in raid) {
     candidates.push(
       raid.heroic.ru,
       raid.heroic.en,
@@ -24,7 +27,10 @@ function raidNameCandidates(raid: (typeof RaidNames)[RaidKey]): string[] {
 
 /** All name variants used for dungeon table search (stored + template raid labels). */
 export function getDungeonSearchNameCandidates(
-  dungeon: Pick<DungeonRecord, "name" | "shortName" | "raidKey">,
+  dungeon: Pick<
+    DungeonRecord,
+    "name" | "shortName" | "raidKey" | "difficulty"
+  >,
 ): string[] {
   const candidates = new Set<string>([dungeon.name]);
   if (dungeon.shortName) {
@@ -32,7 +38,10 @@ export function getDungeonSearchNameCandidates(
   }
   const raidKey = resolveDungeonRaidKey(dungeon);
   if (raidKey) {
-    for (const candidate of raidNameCandidates(RaidNames[raidKey])) {
+    for (const candidate of raidNameCandidates(
+      RaidNames[raidKey],
+      dungeon.difficulty === DungeonDifficulty.HEROIC,
+    )) {
       candidates.add(candidate);
     }
   }
