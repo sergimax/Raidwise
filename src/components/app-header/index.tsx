@@ -27,9 +27,9 @@ export function AppHeader({
 
   const navItems = [
     { to: APP_ROUTES.raids, label: t("appNavigation.myRaids") },
-    { to: APP_ROUTES.reputation, label: t("appNavigation.reputation") },
-    { to: APP_ROUTES.raidComposition, label: t("appNavigation.raidComposition") },
-    { to: APP_ROUTES.profile, label: t("appNavigation.profile") },
+    { to: APP_ROUTES.reputation, label: t("appNavigation.reputation"), disabled: true },
+    { to: APP_ROUTES.raidComposition, label: t("appNavigation.raidComposition"), disabled: true },
+    { to: APP_ROUTES.profile, label: t("appNavigation.profile"), disabled: true },
     { to: APP_ROUTES.settings, label: t("appNavigation.settings") },
     { to: APP_ROUTES.changelog, label: t("appNavigation.changelog") },
   ];
@@ -121,18 +121,24 @@ export function AppHeader({
               onClose={() => setMenuAnchor(null)}
               slotProps={{ list: { "aria-label": t("appNavigation.menu") } }}
             >
-              {navItems.map(({ to, label }) => (
-                <MenuItem
-                  key={to}
-                  component={RouterLink}
-                  to={to}
-                  selected={route === to || (to === APP_ROUTES.raids && route.startsWith("/raids/"))}
-                  aria-current={route === to ? "page" : undefined}
-                  onClick={() => setMenuAnchor(null)}
-                >
-                  {label}
-                </MenuItem>
-              ))}
+              {navItems.map(({ to, label, disabled }) =>
+                disabled ? (
+                  <MenuItem key={to} disabled>
+                    {label}
+                  </MenuItem>
+                ) : (
+                  <MenuItem
+                    key={to}
+                    component={RouterLink}
+                    to={to}
+                    selected={route === to || (to === APP_ROUTES.raids && route.startsWith("/raids/"))}
+                    aria-current={route === to ? "page" : undefined}
+                    onClick={() => setMenuAnchor(null)}
+                  >
+                    {label}
+                  </MenuItem>
+                ),
+              )}
             </Menu>
           </Box>
 
