@@ -98,6 +98,7 @@ export const ruMessages: Messages = {
     deleteDungeon: "Удалить подземелье: {{name}}",
     editCharacter: "Изменить: {{name}}",
     resetCharacterToggles: "Сбросить переключатели для {{name}}",
+    resetAllToggles: "Сбросить все отметки КД",
     removeCharacter: "Удалить персонажа {{name}}",
     sortByCharacter: "Сортировать рейды по КД {{name}}",
     toggleAria: "{{character}} — {{dungeon}}",

@@ -8,6 +8,7 @@ import type { DungeonRecord } from "../../types/dungeons.ts";
 import { AddDungeonRow } from "./add-dungeon-row.tsx";
 import { DungeonTableRow } from "./dungeon-table-row.tsx";
 import { RaidTrackerDeleteDialog } from "./raid-tracker-delete-dialog.tsx";
+import { DeleteConfirmDialog } from "./delete-confirm-dialog.tsx";
 import { raidTrackerTableAriaLabel } from "./raid-tracker-table-empty-state.ts";
 import { RaidTrackerTableEmptyState } from "./raid-tracker-table-empty-state.tsx";
 import { RaidTrackerTableHead } from "./raid-tracker-table-head.tsx";
@@ -37,6 +38,8 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     dungeonToggles,
     handleDungeonToggle: onDungeonToggle,
     handleResetCharacterToggles: onResetCharacterToggles,
+    handleResetAllToggles,
+    canResetAllToggles,
     updateCharacter,
     moveCharacter,
     updateDungeon,
@@ -46,6 +49,7 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     null,
   );
   const [editingDungeonId, setEditingDungeonId] = useState<string | null>(null);
+  const [resetTogglesPending, setResetTogglesPending] = useState(false);
   const editingCharacter = useMemo(
     () => characters.find((character) => character.id === editingCharacterId) ?? null,
     [characters, editingCharacterId],
@@ -127,6 +131,8 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
             sortDirection={sortDirection}
             dungeonNameSearch={dungeonNameSearch}
             onDungeonNameSearchChange={setDungeonNameSearch}
+            canResetToggles={canResetAllToggles}
+            onRequestResetToggles={() => setResetTogglesPending(true)}
             onSort={handleSort}
             onResetCharacterToggles={onResetCharacterToggles}
             onEditCharacter={handleEditCharacter}
@@ -177,6 +183,18 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
         pendingDelete={pendingDelete}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+      />
+      <DeleteConfirmDialog
+        open={resetTogglesPending}
+        title={t("dataControlsPanel.resetTogglesConfirmTitle")}
+        message={t("dataControlsPanel.resetTogglesConfirmMessage")}
+        confirmLabel={t("dataControlsPanel.resetConfirm")}
+        confirmColor="warning"
+        onConfirm={() => {
+          handleResetAllToggles();
+          setResetTogglesPending(false);
+        }}
+        onCancel={() => setResetTogglesPending(false)}
       />
       <CharacterEditDialog
         character={editingCharacter}

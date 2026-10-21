@@ -96,6 +96,7 @@ export const enMessages = {
     deleteDungeon: "Delete dungeon: {{name}}",
     editCharacter: "Edit details for {{name}}",
     resetCharacterToggles: "Reset toggles for {{name}}",
+    resetAllToggles: "Reset all cooldown toggles",
     removeCharacter: "Remove character {{name}}",
     sortByCharacter: "Sort raids by {{name}} cooldown",
     toggleAria: "{{character}} — {{dungeon}}",

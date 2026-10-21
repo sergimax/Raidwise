@@ -1,3 +1,4 @@
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Box, Button } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
@@ -137,6 +138,10 @@ export function DataControlsPanel({
               disabled={!domain.canResetAllToggles}
               onClick={() => setPendingAction("resetToggles")}
             >
+              <RestartAltIcon
+                fontSize="small"
+                sx={{ mr: 0.75, verticalAlign: "middle" }}
+              />
               {t("toolbar.resetAllToggles")}
             </Button>
           </FilterSection>
