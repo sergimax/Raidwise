@@ -203,16 +203,16 @@ describe("gear-pick-soft-roll", () => {
     });
   });
 
-  it("formats copy text for called softs only", () => {
+  it("formats copy text for each provided item", () => {
     const text = formatGearPickCopyText({
       items: [
-        { itemName: "Belt", bossName: "Putricide", mySofts: 3 },
-        { itemName: "Ring", bossName: "", mySofts: 0 },
-        { itemName: "Trinket", bossName: "Halion", mySofts: 1 },
+        { itemName: "Belt", bossName: "Putricide" },
+        { itemName: "Ring", bossName: "" },
+        { itemName: "Trinket", bossName: "Halion" },
       ],
     });
     expect(text).toBe(
-      ["- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"),
+      ["- Belt (Putricide)", "- Ring", "- Trinket (Halion)"].join("\n"),
     );
   });
 
@@ -220,20 +220,20 @@ describe("gear-pick-soft-roll", () => {
     const text = formatGearPickCopyText({
       characterName: "Elst",
       items: [
-        { itemName: "Belt", bossName: "Putricide", mySofts: 3 },
-        { itemName: "Ring", bossName: "", mySofts: 0 },
-        { itemName: "Trinket", bossName: "Halion", mySofts: 1 },
+        { itemName: "Belt", bossName: "Putricide" },
+        { itemName: "Ring", bossName: "" },
+        { itemName: "Trinket", bossName: "Halion" },
       ],
     });
     expect(text).toBe(
-      ["Elst:", "- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"),
+      ["Elst:", "- Belt (Putricide)", "- Ring", "- Trinket (Halion)"].join("\n"),
     );
   });
 
   it("can hide the character name and compact item lines", () => {
     const items = [
-      { itemName: "Belt", bossName: "Putricide", mySofts: 3 },
-      { itemName: "Trinket", bossName: "Halion", mySofts: 1 },
+      { itemName: "Belt", bossName: "Putricide" },
+      { itemName: "Trinket", bossName: "Halion" },
     ];
     expect(
       formatGearPickCopyText({
@@ -241,14 +241,14 @@ describe("gear-pick-soft-roll", () => {
         items,
         includeCharacterName: false,
       }),
-    ).toBe(["- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"));
+    ).toBe(["- Belt (Putricide)", "- Trinket (Halion)"].join("\n"));
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
         items,
         compactLines: true,
       }),
-    ).toBe(["Elst:", "- Belt x3", "- Trinket x1"].join("\n"));
+    ).toBe(["Elst:", "- Belt", "- Trinket"].join("\n"));
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
@@ -256,14 +256,14 @@ describe("gear-pick-soft-roll", () => {
         includeCharacterName: false,
         compactLines: true,
       }),
-    ).toBe(["- Belt x3", "- Trinket x1"].join("\n"));
+    ).toBe(["- Belt", "- Trinket"].join("\n"));
   });
 
-  it("returns empty when no softs even if a character name is set", () => {
+  it("returns empty when no items are provided even if a character name is set", () => {
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
-        items: [{ itemName: "Ring", bossName: "", mySofts: 0 }],
+        items: [],
       }),
     ).toBe("");
   });

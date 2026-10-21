@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@mui/material/styles";
 import type { ReactNode } from "react";
+import { MemoryRouter } from "react-router-dom";
 import { BisListsProvider } from "../contexts/bis-lists-provider.tsx";
 import { ItemTooltipLocaleProvider } from "../contexts/item-tooltip-locale-provider.tsx";
 import { WowDataProvider } from "../contexts/wow-data-provider.tsx";
@@ -10,7 +11,7 @@ export function TestProviders({ children }: { children: ReactNode }) {
     <ThemeProvider theme={createAppTheme("light")}>
       <ItemTooltipLocaleProvider initialLocale="en">
         <WowDataProvider>
-          <BisListsProvider>{children}</BisListsProvider>
+          <MemoryRouter><BisListsProvider>{children}</BisListsProvider></MemoryRouter>
         </WowDataProvider>
       </ItemTooltipLocaleProvider>
     </ThemeProvider>

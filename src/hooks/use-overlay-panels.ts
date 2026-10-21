@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import type { CharacterRecord } from "../types/characters.ts";
 import type { DungeonRecord } from "../types/dungeons.ts";
 import type { OverlayPanelId } from "./overlay-panel-id.ts";
-import { APP_ROUTES, navigateTo, useAppRoute } from "../routing/app-route.ts";
+import { APP_ROUTES, useAppRoute } from "../routing/app-route.ts";
 import { useCharacterFormState } from "./use-character-form-state.ts";
 import { useDungeonFormState } from "./use-dungeon-form-state.ts";
 
@@ -34,9 +35,10 @@ export function useOverlayPanels({
   onDungeonAdded,
 }: UseOverlayPanelsOptions) {
   const route = useAppRoute();
+  const navigate = useNavigate();
   const activePanel = getPanelForRoute(route);
 
-  const clearActivePanel = useCallback(() => navigateTo(APP_ROUTES.raids), []);
+  const clearActivePanel = useCallback(() => navigate(APP_ROUTES.raids), [navigate]);
   const characterForm = useCharacterFormState({
     characters,
     onCharacterAdded,
@@ -48,10 +50,10 @@ export function useOverlayPanels({
   });
 
   const closeAllOverlayPanels = useCallback(() => {
-    navigateTo(APP_ROUTES.raids);
+    navigate(APP_ROUTES.raids);
     characterForm.close();
     dungeonForm.close();
-  }, [characterForm.close, dungeonForm.close]);
+  }, [characterForm.close, dungeonForm.close, navigate]);
 
   const togglePanel = useCallback(
     (panelId: OverlayPanelId) => {
@@ -61,18 +63,18 @@ export function useOverlayPanels({
       if (activePanel === "dungeon" || panelId === "dungeon") {
         dungeonForm.close();
       }
-      navigateTo(activePanel === panelId ? APP_ROUTES.raids : routeByPanel[panelId]);
+      navigate(activePanel === panelId ? APP_ROUTES.raids : routeByPanel[panelId]);
     },
-    [activePanel, characterForm.close, dungeonForm.close],
+    [activePanel, characterForm.close, dungeonForm.close, navigate],
   );
 
   const closePanel = useCallback(
     (panelId: OverlayPanelId) => {
-      if (activePanel === panelId) navigateTo(APP_ROUTES.raids);
+      if (activePanel === panelId) navigate(APP_ROUTES.raids);
       if (panelId === "character") characterForm.close();
       if (panelId === "dungeon") dungeonForm.close();
     },
-    [activePanel, characterForm.close, dungeonForm.close],
+    [activePanel, characterForm.close, dungeonForm.close, navigate],
   );
 
   const showCharacterPickPanel = activePanel === "characterPick";
