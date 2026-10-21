@@ -7,6 +7,8 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import type { DungeonRecord } from "../../types/dungeons.ts";
 import { AddDungeonRow } from "./add-dungeon-row.tsx";
 import { DungeonTableRow } from "./dungeon-table-row.tsx";
+import { groupAdjacentRaids } from "./group-adjacent-raids.ts";
+import { raidRowBackgroundFile, raidRowBackgroundSx } from "./raid-row-background.ts";
 import { RaidTrackerDeleteDialog } from "./raid-tracker-delete-dialog.tsx";
 import { DeleteConfirmDialog } from "./delete-confirm-dialog.tsx";
 import { raidTrackerTableAriaLabel } from "./raid-tracker-table-empty-state.ts";
@@ -92,6 +94,15 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     handleCancelDelete,
     handleConfirmDelete,
   } = tableState;
+  const dungeonGroups = useMemo(
+    () =>
+      sortKey === "name"
+        ? groupAdjacentRaids(sortedDungeons)
+        : sortedDungeons.length > 0
+          ? [{ dungeons: sortedDungeons }]
+          : [],
+    [sortKey, sortedDungeons],
+  );
 
   return (
     <Stack spacing={2}>
@@ -140,32 +151,47 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
             onAddCharacter={onAddCharacter}
             characterFormOpen={characterFormOpen}
           />
+          {dungeonGroups.map((group) => {
+            const backgroundFile = raidRowBackgroundFile(group.raidKey);
+            const groupedBackground = Boolean(backgroundFile && group.dungeons.length > 1);
+            return (
+              <TableBody
+                key={group.dungeons[0]?.id ?? "empty-dungeons"}
+                sx={
+                  groupedBackground && backgroundFile
+                    ? (theme) => raidRowBackgroundSx(theme, backgroundFile)
+                    : undefined
+                }
+              >
+                {group.dungeons.map((dungeon: DungeonRecord) => (
+                  <DungeonTableRow
+                    key={dungeon.id}
+                    dungeon={dungeon}
+                    characters={characters}
+                    compactTable={compactTable}
+                    visiblePinnedColumns={visiblePinnedColumns}
+                    completionsByDungeonId={completionsByDungeonId}
+                    characterCount={characterCount}
+                    dungeonToggles={dungeonToggles}
+                    onDungeonToggle={onDungeonToggle}
+                    onEditDungeon={handleEditDungeon}
+                    onRequestDeleteDungeon={handleRequestDeleteDungeon}
+                    onAddCharacter={onAddCharacter}
+                    characterFormOpen={characterFormOpen}
+                    groupedBackground={groupedBackground}
+                  />
+                ))}
+              </TableBody>
+            );
+          })}
           <TableBody>
-            {dungeons.length === 0 ? null : sortedDungeons.length === 0 ? (
+            {dungeons.length > 0 && sortedDungeons.length === 0 ? (
               <RaidTrackerTableEmptyState
                 variant="no-search-matches"
                 visiblePinnedColumns={visiblePinnedColumns}
                 characterCount={characterCount}
               />
-            ) : (
-              sortedDungeons.map((dungeon: DungeonRecord) => (
-                <DungeonTableRow
-                  key={dungeon.id}
-                  dungeon={dungeon}
-                  characters={characters}
-                  compactTable={compactTable}
-                  visiblePinnedColumns={visiblePinnedColumns}
-                  completionsByDungeonId={completionsByDungeonId}
-                  characterCount={characterCount}
-                  dungeonToggles={dungeonToggles}
-                  onDungeonToggle={onDungeonToggle}
-                  onEditDungeon={handleEditDungeon}
-                  onRequestDeleteDungeon={handleRequestDeleteDungeon}
-                  onAddCharacter={onAddCharacter}
-                  characterFormOpen={characterFormOpen}
-                />
-              ))
-            )}
+            ) : null}
             <AddDungeonRow
               compactTable={compactTable}
               visiblePinnedColumns={visiblePinnedColumns}
