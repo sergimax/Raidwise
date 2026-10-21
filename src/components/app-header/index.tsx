@@ -4,8 +4,6 @@ import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
 import { AppIntroToggle } from "../app-intro-toggle/index.tsx";
-import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
-import { ThemeModeToggle } from "../theme-mode-toggle/index.tsx";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   appThemeTokens,
@@ -31,12 +29,9 @@ export function AppHeader({
     { to: APP_ROUTES.raidComposition, label: t("appNavigation.raidComposition"), disabled: true },
     { to: APP_ROUTES.profile, label: t("appNavigation.profile"), disabled: true },
     { to: APP_ROUTES.settings, label: t("appNavigation.settings") },
-    { to: APP_ROUTES.changelog, label: t("appNavigation.changelog") },
   ];
-  const currentItem = route === APP_ROUTES.settings
-    ? navItems[4]
-    : navItems.find(({ to }) => to === route)
-      ?? (route.startsWith("/raids/") ? navItems[0] : undefined);
+  const currentItem = navItems.find(({ to }) => to === route)
+    ?? (route.startsWith("/raids/") ? navItems[0] : undefined);
 
   return (
     <AppBar
@@ -173,8 +168,6 @@ export function AppHeader({
                 onToggle={onToggleIntro}
               />
             ) : null}
-            <ThemeModeToggle />
-            <ItemTooltipLocaleToggle />
             <AppMetaInfo />
             <AppVersionLabel />
           </Box>

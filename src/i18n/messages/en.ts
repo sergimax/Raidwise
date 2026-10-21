@@ -68,7 +68,7 @@ export const enMessages = {
     bisLists: "BiS builds",
     export: "Raid roster",
     gearPick: "Roll & soft",
-    dataControls: "Settings",
+    dataControls: "Raid settings",
     resetAllToggles: "Reset all toggles",
   },
   table: {
@@ -192,7 +192,7 @@ export const enMessages = {
       'Delete "{{name}}" and all cooldown toggles for this dungeon? This cannot be undone.',
   },
   dataControlsPanel: {
-    title: "Data controls",
+    title: "Raid settings",
     description:
       "Reset cooldown marks or clear characters, dungeons, and custom BiS lists. Destructive actions ask for confirmation.",
     closeAria: "Close data controls panel",
@@ -235,7 +235,6 @@ export const enMessages = {
     aria: "Main navigation",
     menu: "Sections",
     myRaids: "My Raids",
-    changelog: "What's new",
     reputation: "Player reviews",
     raidComposition: "Raid composition",
     profile: "Profile",
@@ -243,20 +242,13 @@ export const enMessages = {
     comingSoon: "This section is planned for a future update.",
     notFound: "Page not found",
   },
-  changesPage: {
-    pageTitle: "What's new",
-    pageDescription: "Complete change history for Raidwise.",
-    latest: "Latest",
-    latestTitle: "Updated raid roster and roll helper",
-    latestDetails: "The character picker is now Raid roster. Roll helper lists BiS items in selected raids and can include the selected spec.",
-    v290Title: "Faster raid roster management",
-    v290Details: "Add characters and raids directly from the tracker table. Healer gear hints were also refined.",
-    v280Title: "More control over character and gear picks",
-    v280Details: "Filter characters by available upgrades, reset pick parameters, and use clearer aligned result layouts.",
-    v270Title: "Raidwise refresh",
-    v270Details: "The app was renamed Raidwise, with updated branding and automatic migration of saved data.",
-    v260Title: "Improved roll planning and pick lists",
-    v260Details: "See competition and odds for soft reserves, customize copied lists, and account for gear shared across specs.",
+  appSettings: {
+    title: "Application settings",
+    theme: "Theme",
+    language: "Language",
+    whatsNew: "What's new",
+    latestChanges: "Latest 10 changes",
+    githubChangelog: "View the full changelog on GitHub",
   },
   bisPanel: {
     title: "BiS lists",

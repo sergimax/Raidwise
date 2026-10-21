@@ -19,7 +19,7 @@ const routeByPanel: Record<OverlayPanelId, (typeof APP_ROUTES)[keyof typeof APP_
   characterPick: APP_ROUTES.characterPick,
   gear: APP_ROUTES.gearPick,
   bis: APP_ROUTES.bisLists,
-  data: APP_ROUTES.settings,
+  data: APP_ROUTES.raidSettings,
 };
 
 function getPanelForRoute(route: string): OverlayPanelId | null {
