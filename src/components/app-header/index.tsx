@@ -86,6 +86,7 @@ export function AppHeader({
                 fontWeight: 700,
                 color: appThemeTokens[theme.palette.mode].brand,
                 fontSize: { xs: "1rem", sm: "1.2rem" },
+                display: { xs: "none", sm: "block" },
               })}
             >
               {t("header.appTitle")}
