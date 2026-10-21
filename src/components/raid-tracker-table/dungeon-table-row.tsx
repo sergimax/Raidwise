@@ -151,8 +151,8 @@ export const DungeonTableRow = memo(function DungeonTableRow({
             : raidRowBackgroundSx(theme, raidBackgroundFile)),
           // Translucent sticky cells reveal the image on the row or row group.
           "& > .raid-tracker-table__pinned-row-cell": {
-            backgroundColor: alpha(paper, 0.76),
-            backdropFilter: "blur(2px)",
+            backgroundColor: alpha(paper, 0.75),
+            backdropFilter: "blur(1px)",
           },
         };
       }}
