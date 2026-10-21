@@ -11,6 +11,8 @@ const row = createTemplateDungeon;
 export const DungeonList: Array<Dungeon> = [
   row({ raidKey: "vaultOfArchavon", size: 10, difficulty: N, itemLevel: [232, 251] }),
   row({ raidKey: "vaultOfArchavon", size: 25, difficulty: N, itemLevel: [245, 264] }),
+  row({ raidKey: "trialOfTheCrusader", size: 10, difficulty: N, itemLevel: [232] }),
+  row({ raidKey: "trialOfTheCrusader", size: 10, difficulty: H, itemLevel: [245] }),
   row({ raidKey: "trialOfTheCrusader", size: 25, difficulty: N, itemLevel: [245] }),
   row({ raidKey: "trialOfTheCrusader", size: 25, difficulty: H, itemLevel: [258] }),
   row({
@@ -39,6 +41,20 @@ export const DungeonList: Array<Dungeon> = [
     size: 25,
     difficulty: H,
     itemLevel: [277, 284],
+    withEmblem: true,
+  }),
+  row({
+    raidKey: "rubySanctum",
+    size: 10,
+    difficulty: N,
+    itemLevel: [258],
+    withEmblem: true,
+  }),
+  row({
+    raidKey: "rubySanctum",
+    size: 10,
+    difficulty: H,
+    itemLevel: [271],
     withEmblem: true,
   }),
   row({

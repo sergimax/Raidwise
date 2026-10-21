@@ -11,7 +11,7 @@ describe("getLocalizedRaidNameSuggestions", () => {
     const suggestions = getLocalizedRaidNameSuggestions("en");
     expect(suggestions).toContain(RaidNames.icecrownCitadel.en);
     expect(suggestions).toContain(RaidNames.naxxramas.en);
-    expect(suggestions.length).toBe(Object.keys(RaidNames).length);
+    expect(suggestions.length).toBe(Object.keys(RaidNames).length + 1);
     expect([...suggestions]).toEqual(
       [...suggestions].sort((left, right) => left.localeCompare(right, "en")),
     );
@@ -21,7 +21,7 @@ describe("getLocalizedRaidNameSuggestions", () => {
     const suggestions = getLocalizedRaidNameSuggestions("ru");
     expect(suggestions).toContain(RaidNames.icecrownCitadel.ru);
     expect(suggestions).toContain(RaidNames.naxxramas.ru);
-    expect(suggestions.length).toBe(Object.keys(RaidNames).length);
+    expect(suggestions.length).toBe(Object.keys(RaidNames).length + 1);
     expect([...suggestions]).toEqual(
       [...suggestions].sort((left, right) => left.localeCompare(right, "ru")),
     );

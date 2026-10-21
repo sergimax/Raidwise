@@ -3,6 +3,7 @@ import type {
   DungeonDifficulty,
   DungeonSize,
 } from "../types/dungeons.ts";
+import { DungeonDifficulty as DungeonDifficultyValues } from "../types/dungeons.ts";
 import { RaidNames, type RaidKey } from "./raid-names.ts";
 
 export type CreateTemplateDungeonOptions = {
@@ -22,9 +23,13 @@ export function createTemplateDungeon({
   withEmblem = false,
 }: CreateTemplateDungeonOptions): Dungeon {
   const raid = RaidNames[raidKey];
+  const nameVariant =
+    difficulty === DungeonDifficultyValues.HEROIC && "heroic" in raid
+      ? raid.heroic
+      : raid;
   return {
-    name: raid.ru,
-    ...(raid.shortRu ? { shortName: raid.shortRu } : {}),
+    name: nameVariant.ru,
+    ...(nameVariant.shortRu ? { shortName: nameVariant.shortRu } : {}),
     size,
     itemLevel,
     difficulty,

@@ -8,6 +8,14 @@ function normalizeDungeonName(value: string): string {
 
 function raidNameCandidates(raid: (typeof RaidNames)[RaidKey]): string[] {
   const candidates: string[] = [raid.ru, raid.en, raid.shortRu];
+  if ("heroic" in raid) {
+    candidates.push(
+      raid.heroic.ru,
+      raid.heroic.en,
+      raid.heroic.shortRu,
+      raid.heroic.shortEn,
+    );
+  }
   if ("shortEn" in raid && typeof raid.shortEn === "string") {
     candidates.push(raid.shortEn);
   }

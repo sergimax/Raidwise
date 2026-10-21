@@ -52,7 +52,7 @@ export function DungeonNameCell({
     ? getLocalizedDungeonCompactLabel(dungeon, locale, t("table.heroicSkullIcon"))
     : getLocalizedDungeonDisplayName(dungeon, locale, false);
   const fullName = getLocalizedDungeonDisplayName(
-    { name, shortName, raidKey },
+    { name, shortName, raidKey, difficulty },
     locale,
     false,
   );
@@ -228,4 +228,3 @@ export function CompletionCountChip({
     </Tooltip>
   );
 }
-

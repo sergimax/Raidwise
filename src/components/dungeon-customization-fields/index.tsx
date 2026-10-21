@@ -16,6 +16,11 @@ import { MAX_DUNGEON_SHORT_NAME_LENGTH } from "../../constants/dungeon-form-defa
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { getLocalizedDifficulty, getLocalizedEmblemLabel } from "../../i18n/localized-domain.ts";
 import {
+  defaultShortNameForDungeonName,
+  difficultyForRaidName,
+  raidNameForDifficulty,
+} from "../../utils/dungeon-short-name.ts";
+import {
   DungeonDifficulty,
   DungeonSizes,
   type DungeonDifficulty as DungeonDifficultyValue,
@@ -56,7 +61,16 @@ export function DungeonCustomizationFields({
         name="dungeonName"
         value={name}
         onChange={(event) => {
-          onNameChange(event.target.value);
+          const nextName = event.target.value;
+          onNameChange(nextName);
+          const matchingDifficulty = difficultyForRaidName(nextName);
+          if (matchingDifficulty) {
+            onDifficultyChange(matchingDifficulty);
+          }
+          const shortName = defaultShortNameForDungeonName(nextName);
+          if (shortName) {
+            onShortNameChange(shortName);
+          }
         }}
         required
         autoComplete="off"
@@ -98,7 +112,13 @@ export function DungeonCustomizationFields({
           name="dungeonDifficulty"
           value={difficulty}
           onChange={(event) => {
-            onDifficultyChange(event.target.value as DungeonDifficultyValue);
+            const nextDifficulty = event.target.value as DungeonDifficultyValue;
+            const matchingName = raidNameForDifficulty(name, nextDifficulty, locale);
+            if (matchingName && matchingName !== name) {
+              onNameChange(matchingName);
+              onShortNameChange(defaultShortNameForDungeonName(matchingName) ?? "");
+            }
+            onDifficultyChange(nextDifficulty);
           }}
         >
           <MenuItem value={DungeonDifficulty.NORMAL}>
