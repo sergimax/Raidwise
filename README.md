@@ -81,7 +81,7 @@ On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in p
 **Performance:**
 WoW item JSON is code-split and loaded after the app shell (`WowDataProvider` / `ensure-wow-data`); fonts are self-hosted under `public/fonts/`; class/spec icons are 32×32 WebP; item tooltip scripts load on first item-link interaction for the active locale only.
 
-Contributor/agent conventions: [`.cursor/rules/project-rules.mdc`](.cursor/rules/project-rules.mdc).
+Contributor and agent conventions: [`AGENTS.md`](AGENTS.md).
 
 **Planned features:**
 [docs/roadmap.md](docs/roadmap.md).

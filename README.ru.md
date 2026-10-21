@@ -82,7 +82,7 @@ React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 **Производительность:**
 JSON предметов WoW грузится отдельными чанками после оболочки (`WowDataProvider` / `ensure-wow-data`); шрифты локальные в `public/fonts/`; иконки классов/спеков — WebP 32×32; скрипты тултипов предметов — при первом наведении/фокусе на ссылку, только для активной локали.
 
-Соглашения для контрибьюторов/агентов: [`.cursor/rules/project-rules.mdc`](.cursor/rules/project-rules.mdc).
+Соглашения для контрибьюторов и агентов: [`AGENTS.md`](AGENTS.md).
 
 **Запланированные фичи:**
 [docs/roadmap.md](docs/roadmap.md).
