@@ -145,6 +145,7 @@ Vite кладёт файлы с хэшем в имени в `assets/` (напр.
 | `/raidwise/fonts/*` | `public, max-age=31536000, immutable` | Локальные woff2 |
 
 Также включите **HTTP/2** (или HTTP/3) и **brotli**/**gzip** для JS/CSS/JSON/SVG/woff2.
+Для прямых ссылок и обновления страниц сервер должен перенаправлять неизвестные пути приложения под `/raidwise/` на `index.html`.
 
 Пример для Nginx:
 
@@ -154,6 +155,9 @@ location /raidwise/assets/ {
 }
 location = /raidwise/index.html {
   add_header Cache-Control "no-cache";
+}
+location /raidwise/ {
+  try_files $uri $uri/ /raidwise/index.html;
 }
 location /raidwise/fonts/ {
   add_header Cache-Control "public, max-age=31536000, immutable";

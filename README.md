@@ -144,6 +144,7 @@ Vite emits content-hashed files under `assets/` (e.g. `/raidwise/assets/index-â€
 | `/raidwise/fonts/*` | `public, max-age=31536000, immutable` | Self-hosted woff2 |
 
 Also enable **HTTP/2** (or HTTP/3) and **brotli** or **gzip** for JS/CSS/JSON/SVG/woff2.
+Client-side routes under `/raidwise/` must fall back to `index.html` so direct links and refreshes work.
 
 Example Nginx location snippets:
 
@@ -153,6 +154,9 @@ location /raidwise/assets/ {
 }
 location = /raidwise/index.html {
   add_header Cache-Control "no-cache";
+}
+location /raidwise/ {
+  try_files $uri $uri/ /raidwise/index.html;
 }
 location /raidwise/fonts/ {
   add_header Cache-Control "public, max-age=31536000, immutable";

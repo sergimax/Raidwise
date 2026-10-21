@@ -7,13 +7,18 @@ import {
 } from "../../hooks/use-overlay-panels.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
+import {
+  RaidWorkspaceSessionProvider,
+} from "../../contexts/raid-workspace-session-provider.tsx";
+import { useOptionalRaidWorkspaceSessions } from "../../hooks/use-raid-workspace-sessions.ts";
 import { AppHeader } from "../app-header/index.tsx";
+import { AppNavigation } from "../app-navigation/index.tsx";
 import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog.tsx";
 import { RaidTrackerMain } from "../raid-tracker-main/index.tsx";
 import { TrackerControls } from "../tracker-controls/index.tsx";
 import type { TrackerControlsSource } from "../tracker-controls/types.ts";
 
-export function TrackerLayout() {
+function TrackerLayoutContents() {
   const { t } = useTranslation();
   const domain = useRaidTrackerContext();
   const overlayPanels = useOverlayPanels({
@@ -87,6 +92,7 @@ export function TrackerLayout() {
         introVisible={appIntro.visible}
         onToggleIntro={appIntro.toggle}
       />
+      <AppNavigation />
       <Container
         className="app-main"
         component="main"
@@ -120,5 +126,16 @@ export function TrackerLayout() {
         />
       ) : null}
     </div>
+  );
+}
+
+/** Keep standalone tracker renders self-contained; App provides a persistent workspace provider above routes. */
+export function TrackerLayout() {
+  const sessions = useOptionalRaidWorkspaceSessions();
+  if (sessions) return <TrackerLayoutContents />;
+  return (
+    <RaidWorkspaceSessionProvider>
+      <TrackerLayoutContents />
+    </RaidWorkspaceSessionProvider>
   );
 }
