@@ -12,6 +12,7 @@ import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
 import { getLocalizedDungeonDisplayName } from "../../i18n/localized-domain.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
 import type { DungeonRecord, DungeonToggles } from "../../types/dungeons.ts";
+import type { RaidKey } from "../../data/raid-names.ts";
 import { isCooldownOn } from "../../utils/dungeon-toggles.ts";
 import { CharacterToggleCell } from "./character-toggle-cell.tsx";
 import { AddCharacterBodyCell } from "./add-character-column.tsx";
@@ -24,6 +25,16 @@ import {
   pinnedActionsColumnSx,
   type PinnedColumnDef,
 } from "./table-layout.ts";
+
+const RAID_ROW_BACKGROUND_FILES: Partial<Record<RaidKey, string>> = {
+  naxxramas: "Naxx-loading.png",
+  obsidianSanctum: "OS-loading.png",
+  vaultOfArchavon: "VoA-loading.png",
+  trialOfTheCrusader: "TotC-loading.png",
+  ulduar: "Ulduar-loading.png",
+  icecrownCitadel: "ICC-loading.png",
+  rubySanctum: "RS-loading.png",
+};
 
 type DungeonTableRowProps = {
   dungeon: DungeonRecord;
@@ -122,6 +133,9 @@ export const DungeonTableRow = memo(function DungeonTableRow({
   const { t, locale } = useTranslation();
   const { getBisSlotMapForSpec } = useBisListsContext();
   const dungeonDisplayName = getLocalizedDungeonDisplayName(dungeon, locale, false);
+  const raidBackgroundFile = dungeon.raidKey
+    ? RAID_ROW_BACKGROUND_FILES[dungeon.raidKey]
+    : undefined;
 
   const handleEdit = useCallback(() => {
     onEditDungeon(dungeon.id);
@@ -135,17 +149,23 @@ export const DungeonTableRow = memo(function DungeonTableRow({
     <TableRow
       hover
       sx={(theme) => {
-        const rowTint = alpha(
-          theme.palette.secondary.main,
-          theme.palette.mode === "dark" ? 0.32 : 0.24,
-        );
+        if (!raidBackgroundFile) return {};
+        const paper = theme.palette.background.paper;
+        const overlay =
+          theme.palette.mode === "dark"
+            ? `linear-gradient(90deg, ${alpha(paper, 0.25)} 0%, ${alpha(paper, 0.7)} 72%, ${paper} 100%)`
+            : `linear-gradient(90deg, ${alpha(paper, 0.35)} 0%, ${alpha(paper, 0.78)} 72%, ${paper} 100%)`;
 
         return {
-          backgroundImage: `linear-gradient(90deg, ${rowTint} 0%, transparent 100%)`,
-          // Sticky cells need an opaque-looking fill to cover scrolling content.
-          // A slight translucency lets the single row-level gradient show through.
+          backgroundImage: `${overlay}, url("${import.meta.env.BASE_URL}images/raids/${raidBackgroundFile}")`,
+          backgroundSize: "100% 100%, cover",
+          backgroundPosition: "center, center",
+          backgroundRepeat: "no-repeat",
+          // Keep the image on the row; translucent sticky cells reveal that same
+          // continuous image while still softening content that scrolls beneath.
           "& > .raid-tracker-table__pinned-row-cell": {
-            backgroundColor: alpha(theme.palette.background.paper, 0.88),
+            backgroundColor: alpha(paper, 0.76),
+            backdropFilter: "blur(2px)",
           },
         };
       }}
