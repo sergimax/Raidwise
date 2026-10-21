@@ -4,6 +4,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
 import { AppIntroToggle } from "../app-intro-toggle/index.tsx";
+import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
+import { ThemeModeToggle } from "../theme-mode-toggle/index.tsx";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   appThemeTokens,
@@ -155,7 +157,7 @@ export function AppHeader({
 
           <Box
             sx={{
-              flexGrow: 0,
+              ml: "auto",
               display: "flex",
               alignItems: "center",
               flexShrink: 0,
@@ -168,6 +170,8 @@ export function AppHeader({
                 onToggle={onToggleIntro}
               />
             ) : null}
+            <ThemeModeToggle />
+            <ItemTooltipLocaleToggle />
             <AppMetaInfo />
             <AppVersionLabel />
           </Box>

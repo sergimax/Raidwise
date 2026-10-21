@@ -2,8 +2,6 @@ import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material"
 import changelog from "../../../CHANGELOG.md?raw";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { AppHeader } from "../app-header/index.tsx";
-import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
-import { ThemeModeToggle } from "../theme-mode-toggle/index.tsx";
 
 type ChangeEntry = {
   version: string;
@@ -76,17 +74,6 @@ export function AppSettingsPage() {
           <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
             {t("appSettings.title")}
           </Typography>
-
-          <Stack spacing={1}>
-            <Paper variant="outlined" sx={{ p: 1.5, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>{t("appSettings.theme")}</Typography>
-              <ThemeModeToggle />
-            </Paper>
-            <Paper variant="outlined" sx={{ p: 1.5, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>{t("appSettings.language")}</Typography>
-              <ItemTooltipLocaleToggle />
-            </Paper>
-          </Stack>
 
           <Box component="section" aria-labelledby="app-whats-new-title">
             <Stack spacing={1.5}>

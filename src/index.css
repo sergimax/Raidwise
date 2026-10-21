@@ -20,7 +20,7 @@
   --surface: #ffffff;
   --chip-bg: #f3f2ef;
   --header-bg: rgba(252, 251, 249, 0.96);
-  --border: #8a8a8a;
+  --border: #d6d4cf;
   --text: #141414;
   --text-strong: #0a0a0a;
   --text-muted: #555555;
@@ -39,8 +39,8 @@
   --primary-bg: #0a0a0a;
   --primary-fg: #ffffff;
   --shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-  --radius: 10px;
-  --control-radius: 8px;
+  --radius: 6px;
+  --control-radius: 4px;
   --gap: 0.55rem;
   --pad: 0.65rem;
   --font-body: "Noto Sans", system-ui, sans-serif;
@@ -70,7 +70,7 @@
   --surface: #242424;
   --chip-bg: #1f1f1f;
   --header-bg: rgba(26, 26, 26, 0.96);
-  --border: #8a8a8a;
+  --border: #454545;
   --text: #f2f2f2;
   --text-strong: #fafafa;
   --text-muted: #a3a3a3;
