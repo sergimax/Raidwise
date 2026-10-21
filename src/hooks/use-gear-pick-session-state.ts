@@ -29,6 +29,7 @@ export function useGearPickSessionState() {
   const [includeCopyCharacterName, setIncludeCopyCharacterName] =
     useState(true);
   const [compactCopyLines, setCompactCopyLines] = useState(false);
+  const [includeCopySpec, setIncludeCopySpec] = useState(false);
   const [onlyCharactersWithUpgrades, setOnlyCharactersWithUpgrades] =
     useState(false);
 
@@ -120,6 +121,7 @@ export function useGearPickSessionState() {
     excludedDungeonIds,
     includeCopyCharacterName,
     compactCopyLines,
+    includeCopySpec,
     onlyCharactersWithUpgrades,
     handleSelectionChange,
     handleRulesChange,
@@ -133,6 +135,7 @@ export function useGearPickSessionState() {
     resetAllFilters,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
+    setIncludeCopySpec,
     setOnlyCharactersWithUpgrades,
   };
 }

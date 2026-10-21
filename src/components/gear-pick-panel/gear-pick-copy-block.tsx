@@ -9,8 +9,10 @@ type GearPickCopyBlockProps = {
   copyText: string;
   hasSoftCalls: boolean;
   includeCharacterName: boolean;
+  includeSpec: boolean;
   compactLines: boolean;
   onIncludeCharacterNameChange: (includeCharacterName: boolean) => void;
+  onIncludeSpecChange: (includeSpec: boolean) => void;
   onCompactLinesChange: (compactLines: boolean) => void;
   t: TranslateFn;
 };
@@ -28,8 +30,10 @@ export function GearPickCopyBlock({
   copyText,
   hasSoftCalls,
   includeCharacterName,
+  includeSpec,
   compactLines,
   onIncludeCharacterNameChange,
+  onIncludeSpecChange,
   onCompactLinesChange,
   t,
 }: GearPickCopyBlockProps) {
@@ -71,8 +75,10 @@ export function GearPickCopyBlock({
       descriptionActions={
         <GearPickCopyFormatActions
           includeCharacterName={includeCharacterName}
+          includeSpec={includeSpec}
           compactLines={compactLines}
           onIncludeCharacterNameChange={onIncludeCharacterNameChange}
+          onIncludeSpecChange={onIncludeSpecChange}
           onCompactLinesChange={onCompactLinesChange}
         />
       }

@@ -81,9 +81,11 @@ export function GearPickPanel({
     clearAssignments,
     includeCopyCharacterName,
     compactCopyLines,
+    includeCopySpec,
     onlyCharactersWithUpgrades,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
+    setIncludeCopySpec,
     setOnlyCharactersWithUpgrades,
   } = session;
 
@@ -220,35 +222,34 @@ export function GearPickPanel({
   ]);
 
   const copyItems = useMemo(() => {
-    return gearPickItems
-      .map((item) => {
-        const mySofts = assignmentsByItemId[item.itemId]?.mySofts ?? 0;
-        if (mySofts <= 0) {
-          return null;
-        }
-        return {
-          itemName:
-            getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`,
-          bossName: item.bossName,
-          mySofts,
-        };
-      })
-      .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
-  }, [assignmentsByItemId, gearPickItems, itemLocale]);
+    const seenItemNames = new Set<string>();
+    return gearPickItems.flatMap((item) => {
+      const itemName = getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`;
+      if (seenItemNames.has(itemName)) {
+        return [];
+      }
+      seenItemNames.add(itemName);
+      return [{ itemName, bossName: item.bossName }];
+    });
+  }, [gearPickItems, itemLocale]);
 
   const copyText = useMemo(
     () =>
       formatGearPickCopyText({
         characterName: selectedCharacter?.name,
+        specName: selectedSpecGear?.spec,
         items: copyItems,
         includeCharacterName: includeCopyCharacterName,
+        includeSpec: includeCopySpec,
         compactLines: compactCopyLines,
       }),
     [
       compactCopyLines,
       copyItems,
       includeCopyCharacterName,
+      includeCopySpec,
       selectedCharacter?.name,
+      selectedSpecGear?.spec,
     ],
   );
 
@@ -432,8 +433,10 @@ export function GearPickPanel({
           copyText={copyText}
           hasSoftCalls={copyItems.length > 0}
           includeCharacterName={includeCopyCharacterName}
+          includeSpec={includeCopySpec}
           compactLines={compactCopyLines}
           onIncludeCharacterNameChange={setIncludeCopyCharacterName}
+          onIncludeSpecChange={setIncludeCopySpec}
           onCompactLinesChange={setCompactCopyLines}
           t={t}
         />

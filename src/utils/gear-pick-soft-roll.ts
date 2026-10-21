@@ -366,38 +366,38 @@ export function buildPlus100OddsAdvice(
 export type GearPickCopyItem = {
   itemName: string;
   bossName: string;
-  mySofts: number;
 };
 
 export type FormatGearPickCopyOptions = {
-  /** Character nickname prepended as `{name}:` when included and softs exist. */
+  /** Character nickname prepended as `{name}:` when included. */
   characterName?: string;
+  /** Selected specialization name, included in the header when enabled. */
+  specName?: string;
   items: readonly GearPickCopyItem[];
   /** When false, omit the character name line. Default true. */
   includeCharacterName?: boolean;
+  includeSpec?: boolean;
   /**
-   * When true, each line is only `- Item xN` (no boss).
-   * Default false → `- Item (Boss) xN `.
+   * When true, each line is only `- Item` (no boss).
+   * Default false → `- Item (Boss)`.
    */
   compactLines?: boolean;
 };
 
-/** Pasteable soft-call list: optional name, then item soft lines. */
+/** Item list with an optional character/spec header. */
 export function formatGearPickCopyText(options: FormatGearPickCopyOptions): string {
   const includeCharacterName = options.includeCharacterName !== false;
+  const includeSpec = options.includeSpec === true;
   const compactLines = options.compactLines === true;
   const lines: string[] = [];
 
   for (const item of options.items) {
-    if (item.mySofts <= 0) {
-      continue;
-    }
     if (compactLines) {
-      lines.push(`- ${item.itemName} x${item.mySofts}`);
+      lines.push(`- ${item.itemName}`);
       continue;
     }
     const bossSuffix = item.bossName ? ` (${item.bossName})` : "";
-    lines.push(`- ${item.itemName}${bossSuffix} x${item.mySofts} `);
+    lines.push(`- ${item.itemName}${bossSuffix}`);
   }
 
   if (lines.length === 0) {
@@ -405,8 +405,14 @@ export function formatGearPickCopyText(options: FormatGearPickCopyOptions): stri
   }
 
   const characterName = options.characterName?.trim();
-  if (includeCharacterName && characterName) {
-    return [`${formatCharacterDisplayName(characterName)}:`, ...lines].join("\n");
+  const headerParts = [
+    includeCharacterName && characterName
+      ? formatCharacterDisplayName(characterName)
+      : "",
+    includeSpec ? options.specName?.trim() ?? "" : "",
+  ].filter(Boolean);
+  if (headerParts.length > 0) {
+    return [`${headerParts.join(" ")}:`, ...lines].join("\n");
   }
 
   return lines.join("\n");
