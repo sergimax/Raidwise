@@ -10,6 +10,8 @@ export const APP_ROUTES = {
   settings: "/raids/settings",
   changelog: "/changelog",
   reputation: "/reputation",
+  raidComposition: "/raid-composition",
+  profile: "/profile",
 } as const;
 
 export type AppRoute = (typeof APP_ROUTES)[keyof typeof APP_ROUTES] | "/not-found";

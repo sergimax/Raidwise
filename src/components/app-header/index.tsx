@@ -1,4 +1,7 @@
-import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Container, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
 import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
 import { AppIntroToggle } from "../app-intro-toggle/index.tsx";
 import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
@@ -9,6 +12,7 @@ import {
   fontFamilyDisplay,
 } from "../../theme/create-app-theme.ts";
 import type { AppHeaderProps } from "./types.ts";
+import { APP_ROUTES, useAppRoute } from "../../routing/app-route.ts";
 
 export type { AppHeaderProps } from "./types.ts";
 
@@ -18,6 +22,21 @@ export function AppHeader({
   onToggleIntro,
 }: AppHeaderProps) {
   const { t } = useTranslation();
+  const route = useAppRoute();
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+
+  const navItems = [
+    { to: APP_ROUTES.raids, label: t("appNavigation.myRaids") },
+    { to: APP_ROUTES.reputation, label: t("appNavigation.reputation") },
+    { to: APP_ROUTES.raidComposition, label: t("appNavigation.raidComposition") },
+    { to: APP_ROUTES.profile, label: t("appNavigation.profile") },
+    { to: APP_ROUTES.settings, label: t("appNavigation.settings") },
+    { to: APP_ROUTES.changelog, label: t("appNavigation.changelog") },
+  ];
+  const currentItem = route === APP_ROUTES.settings
+    ? navItems[4]
+    : navItems.find(({ to }) => to === route)
+      ?? (route.startsWith("/raids/") ? navItems[0] : undefined);
 
   return (
     <AppBar
@@ -74,6 +93,47 @@ export function AppHeader({
             >
               {t("header.appTitle")}
             </Typography>
+            <Button
+              size="small"
+              color="inherit"
+              aria-label={t("appNavigation.menu")}
+              aria-haspopup="menu"
+              aria-expanded={Boolean(menuAnchor)}
+              onClick={(event) => setMenuAnchor(event.currentTarget)}
+              endIcon={<ExpandMoreIcon />}
+              sx={{
+                minWidth: 0,
+                maxWidth: { xs: 132, sm: 180 },
+                px: 0.75,
+                fontSize: { xs: "0.72rem", sm: "0.8rem" },
+                fontWeight: 600,
+                textTransform: "none",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {currentItem?.label ?? t("appNavigation.menu")}
+            </Button>
+            <Menu
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={() => setMenuAnchor(null)}
+              slotProps={{ list: { "aria-label": t("appNavigation.menu") } }}
+            >
+              {navItems.map(({ to, label }) => (
+                <MenuItem
+                  key={to}
+                  component={RouterLink}
+                  to={to}
+                  selected={route === to || (to === APP_ROUTES.raids && route.startsWith("/raids/"))}
+                  aria-current={route === to ? "page" : undefined}
+                  onClick={() => setMenuAnchor(null)}
+                >
+                  {label}
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
 
           {center ? (

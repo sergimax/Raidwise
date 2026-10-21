@@ -2,7 +2,6 @@ import { Box, Container, Stack, Typography } from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import changelog from "../../../CHANGELOG.md?raw";
 import { AppHeader } from "../app-header/index.tsx";
-import { AppNavigation } from "../app-navigation/index.tsx";
 
 function renderInlineMarkdown(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g);
@@ -101,7 +100,6 @@ export function ChangelogPage() {
   return (
     <div className="app-shell">
       <AppHeader />
-      <AppNavigation />
       <Container component="main" maxWidth="md" sx={{ py: 2 }}>
         <Stack spacing={2}>
           <Box>
