@@ -53,7 +53,7 @@ export function AppHeader({
           disableGutters
           sx={{
             gap: { xs: 1, sm: 2 },
-            minHeight: "var(--app-toolbar-min-height)",
+            minHeight: center ? "52px !important" : "var(--app-toolbar-min-height)",
             flexWrap: "nowrap",
           }}
         >

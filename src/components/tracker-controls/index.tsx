@@ -59,7 +59,7 @@ export const TrackerControls = memo(function TrackerControls({
   }
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", minWidth: 0 }}>
+    <Box sx={{ display: "flex", alignItems: "stretch", minWidth: 0, alignSelf: "stretch" }}>
       {actions.some((action) => action.id === "addFromTemplate" && action.visible !== false) ? (
         <Button
           size="small"
@@ -78,7 +78,8 @@ export const TrackerControls = memo(function TrackerControls({
         variant="scrollable"
         scrollButtons={false}
         sx={{
-          minHeight: 40,
+          minHeight: 52,
+          height: 52,
           "& .MuiTabs-flexContainer": { gap: { xs: 0, sm: 0.5 } },
           "& .MuiTabs-indicator": { height: 2, bgcolor: "secondary.main" },
         }}
@@ -94,7 +95,7 @@ export const TrackerControls = memo(function TrackerControls({
               aria-expanded={action.ariaExpanded}
               sx={{
                 minWidth: 0,
-                minHeight: 40,
+                minHeight: 52,
                 px: { xs: 1, sm: 1.25 },
                 py: 0.75,
                 fontSize: { xs: "0.72rem", sm: "0.8rem" },
