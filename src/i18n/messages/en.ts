@@ -244,6 +244,7 @@ export const enMessages = {
   },
   appSettings: {
     title: "Application settings",
+    appInfo: "About Raidwise",
     theme: "Theme",
     language: "Language",
     whatsNew: "What's new",

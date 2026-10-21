@@ -246,6 +246,7 @@ export const ruMessages: Messages = {
   },
   appSettings: {
     title: "Настройки приложения",
+    appInfo: "О Raidwise",
     theme: "Тема оформления",
     language: "Язык",
     whatsNew: "Что нового",

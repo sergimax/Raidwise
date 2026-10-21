@@ -2,6 +2,7 @@ import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material"
 import changelog from "../../../CHANGELOG.md?raw";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { AppHeader } from "../app-header/index.tsx";
+import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
 
 type ChangeEntry = {
   version: string;
@@ -74,6 +75,18 @@ export function AppSettingsPage() {
           <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
             {t("appSettings.title")}
           </Typography>
+
+          <Box component="section" aria-labelledby="app-info-title">
+            <Stack spacing={1.5}>
+              <Typography id="app-info-title" variant="h6" component="h2" sx={{ fontWeight: 700 }}>
+                {t("appSettings.appInfo")}
+              </Typography>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <AppMetaInfo />
+                <AppVersionLabel />
+              </Stack>
+            </Stack>
+          </Box>
 
           <Box component="section" aria-labelledby="app-whats-new-title">
             <Stack spacing={1.5}>

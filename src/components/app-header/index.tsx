@@ -173,8 +173,10 @@ export function AppHeader({
             ) : null}
             <ThemeModeToggle />
             <ItemTooltipLocaleToggle />
-            <AppMetaInfo />
-            <AppVersionLabel />
+            <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center", gap: 0.25 }}>
+              <AppMetaInfo />
+              <AppVersionLabel />
+            </Box>
           </Box>
         </Toolbar>
       </Container>
