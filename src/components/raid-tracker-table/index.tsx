@@ -111,7 +111,9 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
         sx={{
           // Contain wide character columns so the page does not scroll horizontally.
           overflowX: "auto",
-          maxWidth: "100%",
+          // Let the table sit closer to the main area's edges than other panels.
+          ml: { xs: "-12px !important", sm: "-16px !important" },
+          width: { xs: "calc(100% + 24px)", sm: "calc(100% + 32px)" },
         }}
       >
         <Table
