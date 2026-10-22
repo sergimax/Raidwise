@@ -1,47 +1,10 @@
 import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
 import changelog from "../../../CHANGELOG.md?raw";
 import { useTranslation } from "../../i18n/use-translation.ts";
+import { getLatestRelease } from "../../utils/changelog.ts";
 import { AppHeader } from "../app-header/index.tsx";
 import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { AppAboutLinks } from "../app-meta-info/index.tsx";
-
-type ChangeEntry = {
-  category: string;
-  text: string;
-};
-
-type ChangeRelease = {
-  version: string;
-  changes: ChangeEntry[];
-};
-
-function getLatestRelease(markdown: string): ChangeRelease | null {
-  let currentRelease: ChangeRelease | null = null;
-  let category = "";
-
-  for (const line of markdown.split(/\r?\n/)) {
-    const release = line.match(/^## \[([^\]]+)\]/);
-    if (release) {
-      if (currentRelease?.changes.length) return currentRelease;
-      currentRelease = release[1] === "Unreleased" ? null : { version: release[1], changes: [] };
-      category = "";
-      continue;
-    }
-
-    const section = line.match(/^###\s+(.+)$/);
-    if (section) {
-      category = section[1];
-      continue;
-    }
-
-    const change = line.match(/^\s*[-*+]\s+(.+)$/);
-    if (change && currentRelease && category) {
-      currentRelease.changes.push({ category, text: change[1] });
-    }
-  }
-
-  return currentRelease?.changes.length ? currentRelease : null;
-}
 
 function renderInlineMarkdown(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g);
@@ -100,7 +63,7 @@ export function AppSettingsPage() {
                   {t("appSettings.whatsNew")}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t("appSettings.latestChanges")}
+                  {t("appSettings.latestVersion")}
                 </Typography>
               </Box>
               {latestRelease && (
@@ -108,9 +71,9 @@ export function AppSettingsPage() {
                   <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 700 }}>
                     {latestRelease.version}
                   </Typography>
-                  <Stack spacing={1} sx={{ mt: 1 }}>
+                  <Stack component="ul" spacing={1} sx={{ mt: 1, mb: 0, pl: 0, listStyle: "none" }}>
                     {latestRelease.changes.map((entry, index) => (
-                      <Box key={`${entry.category}-${index}`}>
+                      <Box component="li" key={`${entry.category}-${index}`}>
                         <Typography variant="caption" color="text.secondary">
                           {entry.category}
                         </Typography>

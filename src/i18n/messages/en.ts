@@ -252,7 +252,7 @@ export const enMessages = {
     theme: "Theme",
     language: "Language",
     whatsNew: "What's new",
-    latestChanges: "Latest version",
+    latestVersion: "Latest version",
     githubChangelog: "View the full changelog on GitHub",
   },
   bisPanel: {

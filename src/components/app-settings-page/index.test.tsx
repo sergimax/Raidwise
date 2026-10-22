@@ -62,7 +62,7 @@ describe("AppSettingsPage", () => {
     const release = within(whatsNew).getByRole("article");
     expect(within(whatsNew).getByText("Последняя версия")).toBeInTheDocument();
     expect(within(release).getByRole("heading", { name: versions[0] })).toBeInTheDocument();
-    expect(release.querySelectorAll("p")).toHaveLength(firstReleaseChanges.length);
+    expect(within(release).getAllByRole("listitem")).toHaveLength(firstReleaseChanges.length);
     expect(within(whatsNew).queryByRole("heading", { name: versions[1] })).not.toBeInTheDocument();
   });
 });
