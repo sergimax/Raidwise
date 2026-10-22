@@ -24,7 +24,7 @@ html {
 .app-main {
   flex: 1;
   /* Header is a sibling in normal flow; this is gap below the bar, not bar height. */
-  padding-top: 1.5rem;
+  padding-top: 0.5rem;
   padding-bottom: 2rem;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
@@ -33,7 +33,7 @@ html {
 
 @media (min-width: 600px) {
   .app-main {
-    padding-top: 2rem;
+    padding-top: 0.75rem;
     padding-left: 1.75rem;
     padding-right: 1.75rem;
   }
