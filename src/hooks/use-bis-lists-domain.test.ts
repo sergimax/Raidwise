@@ -215,6 +215,11 @@ describe("useBisListsDomain", () => {
               name: "First",
               slots: [{ slot: 0, itemIds: [51312] }],
             },
+            {
+              id: "local-obsolete",
+              name: "Obsolete",
+              slots: [{ slot: 2, itemIds: [54581] }],
+            },
           ],
         },
       },
@@ -225,25 +230,44 @@ describe("useBisListsDomain", () => {
       result.current.savePresetByName(ClassName.DeathKnight, "Unholy", "Second", [
         { slot: 1, itemIds: [54581] },
       ]);
-      result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId);
-      result.current.deleteLocalPreset(ClassName.DeathKnight, "Unholy", "local-first");
+      result.current.selectPreset(ClassName.DeathKnight, "Unholy", "local-first");
+      result.current.updateSelectedLocalPresetSlots(ClassName.DeathKnight, "Unholy", [
+        { slot: 0, itemIds: [51312] },
+        { slot: 1, itemIds: [54581] },
+      ]);
+      result.current.deleteLocalPreset(ClassName.DeathKnight, "Unholy", "local-obsolete");
     });
 
     expect(result.current.getSelectedPreset(ClassName.DeathKnight, "Unholy")?.id).toBe(
-      builtInPresetId,
+      "local-first",
     );
+    expect(result.current.getBisSlotMapForSpec(ClassName.DeathKnight, "Unholy").get(1)).toEqual([
+      54581,
+    ]);
     expect(
       result.current
         .getPresetsForSpec(ClassName.DeathKnight, "Unholy")
         .filter((preset) => preset.id.startsWith("local-"))
         .map((preset) => preset.name),
-    ).toEqual(["Second"]);
+    ).toEqual(["First", "Second"]);
 
     flushBisListsSave();
     expect(readPersistedBisLists().entries[storageKey].selectedPresetId).toBe(
-      builtInPresetId,
+      "local-first",
     );
-    expect(readPersistedBisLists().entries[storageKey].presets).toHaveLength(1);
+    expect(readPersistedBisLists().entries[storageKey].presets).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "local-first",
+          slots: [
+            { slot: 0, itemIds: [51312] },
+            { slot: 1, itemIds: [54581] },
+          ],
+        }),
+        expect.objectContaining({ name: "Second" }),
+      ]),
+    );
+    expect(readPersistedBisLists().entries[storageKey].presets).toHaveLength(2);
   });
 
   it("flushes the latest local preset when the domain unmounts", () => {

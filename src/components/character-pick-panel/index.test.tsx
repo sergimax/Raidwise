@@ -14,6 +14,7 @@ const characters = [
     id: "alpha",
     name: "Alpha",
     mainSpec: { spec: "Blood", gearScore: 5800 },
+    offSpec: { spec: "Frost", gearScore: 5600 },
   }),
 ];
 const dungeons = [
@@ -117,5 +118,37 @@ describe("CharacterPickPanel", () => {
       name: "Dim and disable characters without BiS upgrades in the selected raids",
     }));
     expect(copyButtons()).toHaveLength(0);
+  });
+
+  it("copies the currently selected specializations", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    renderWithTheme(<CharacterPickHarness />);
+
+    const copyLine = async () => {
+      await user.click(screen.getAllByRole("button", { name: /Copy signup line for/i })[0]!);
+      return writeText.mock.lastCall?.[0] as string;
+    };
+
+    const bothSpecs = await copyLine();
+    expect(bothSpecs).toContain("Alpha Blood");
+    expect(bothSpecs).toContain("FrostDK");
+
+    await user.click(screen.getByRole("checkbox", { name: "Include Frost for Alpha" }));
+    const mainOnly = await copyLine();
+    expect(mainOnly).toContain("Alpha Blood");
+    expect(mainOnly).not.toContain("FrostDK");
+    expect(mainOnly).not.toBe(bothSpecs);
+
+    await user.click(screen.getByRole("checkbox", { name: "Include Frost for Alpha" }));
+    await user.click(screen.getByRole("checkbox", { name: "Include Blood for Alpha" }));
+    const offOnly = await copyLine();
+    expect(offOnly).toContain("Alpha FrostDK");
+    expect(offOnly).not.toContain("Blood");
+    expect(offOnly).not.toBe(mainOnly);
   });
 });
