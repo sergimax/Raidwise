@@ -32,6 +32,7 @@ Character columns use class-colored names and main/off GS; Complete is a progres
 ### Settings
 
 Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm); when empty, **Add raids from template**.
+The About section shows the app version and labeled links to the source code and author's website.
 
 ### Character pick for a raid
 
