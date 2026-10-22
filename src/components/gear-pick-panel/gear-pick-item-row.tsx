@@ -124,7 +124,11 @@ function competitionCaption(
         otherRolls: competition.othersRollCount,
         callers: competition.competingCallers,
       }),
-      hint: t("gearPickPanel.competitionRerollHint", {
+      hint: t(competition.competingCallers === 0 && competition.mySofts === 0
+        ? "gearPickPanel.competitionRerollHintEmpty"
+        : competition.ordinaryRollsCounted
+          ? "gearPickPanel.competitionRerollHintSingle"
+          : "gearPickPanel.competitionRerollHintMultiple", {
         myRolls: competition.myRollCount,
         mySofts: competition.mySofts,
         callers: competition.competingCallers,
@@ -196,7 +200,7 @@ function SoftOddsCaption({
       return null;
     }
 
-    const options = buildRerollOddsOptions(othersRollCount, maxSofts);
+    const options = buildRerollOddsOptions(othersByWeight, maxSofts);
     return (
       <Tooltip title={t("gearPickPanel.oddsRerollHint")}>
         <Typography

@@ -415,12 +415,16 @@ export const enMessages = {
     competitionPlus100Hint:
       "Soft weight = Σ(softs × callers). Higher soft beats lower; anyone at ×{{max}} beats ×1…×{{belowMax}}.",
     competitionReroll:
-      "You {{myRolls}} rolls · others {{otherRolls}} ({{callers}} callers)",
-    competitionRerollHint:
-      "Each soft caller: 1 default /roll + 1 /roll per soft. You: {{myRolls}} ({{mySofts}} softs). Others: {{callers}} defaults + {{weight}} soft rolls = {{otherRolls}}.",
+      "Your rolls: {{myRolls}} · others: {{otherRolls}} ({{callers}} callers)",
+    competitionRerollHintEmpty:
+      "No soft reserves have been called on this item yet.",
+    competitionRerollHintSingle:
+      "Only one player called softs: 1 ordinary /roll plus their soft rolls. Your rolls: {{myRolls}} ({{mySofts}} softs). Others: {{otherRolls}} ({{callers}} callers).",
+    competitionRerollHintMultiple:
+      "Multiple players called softs: ordinary rolls do not count. Your soft rolls: {{myRolls}}; others: {{otherRolls}} ({{callers}} callers).",
     oddsRerollOption: "×{{softs}}→{{chance}}%",
     oddsRerollHint:
-      "Approximate win chance if every /roll is equally likely: your rolls ÷ (yours + others). More softs = more rolls.",
+      "Approximate win chance: your rolls ÷ (yours + others). With multiple soft callers, only soft rolls count.",
     oddsPlus100TieAndBeat: "×{{tie}} ties · ×{{beat}}+ wins",
     oddsPlus100TieOnly: "×{{softs}} ties (can't beat)",
     oddsPlus100Hint:

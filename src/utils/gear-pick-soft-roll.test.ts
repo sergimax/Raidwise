@@ -105,8 +105,9 @@ describe("gear-pick-soft-roll", () => {
       system: "plus100",
       maxSoftCallerCount: 1,
       mySoftsDominated: false,
-      myRollCount: 4,
-      othersRollCount: 7,
+      myRollCount: 3,
+      othersRollCount: 5,
+      ordinaryRollsCounted: false,
     });
     expect(
       summarizeSoftCompetition(
@@ -117,7 +118,7 @@ describe("gear-pick-soft-roll", () => {
     ).toBe(true);
   });
 
-  it("summarizes re-roll rolls as default + soft extras", () => {
+  it("counts only soft rolls when multiple players call an item", () => {
     expect(
       summarizeSoftCompetition(
         { mySofts: 2, othersByWeight: { 1: 2, 3: 1 } },
@@ -131,9 +132,22 @@ describe("gear-pick-soft-roll", () => {
       system: "reroll",
       maxSoftCallerCount: 1,
       mySoftsDominated: false,
-      myRollCount: 3,
-      othersRollCount: 8,
+      myRollCount: 2,
+      othersRollCount: 5,
+      ordinaryRollsCounted: false,
     });
+    expect(summarizeSoftCompetition(
+      { mySofts: 0, othersByWeight: { 2: 3 } }, "reroll", 3,
+    )).toMatchObject({ myRollCount: 0, othersRollCount: 6, ordinaryRollsCounted: false });
+  });
+
+  it("keeps one ordinary roll when only one player calls softs", () => {
+    expect(summarizeSoftCompetition(
+      { mySofts: 2, othersByWeight: {} }, "reroll", 3,
+    )).toMatchObject({ myRollCount: 3, othersRollCount: 0, ordinaryRollsCounted: true });
+    expect(summarizeSoftCompetition(
+      { mySofts: 0, othersByWeight: { 2: 1 } }, "reroll", 3,
+    )).toMatchObject({ myRollCount: 0, othersRollCount: 3, ordinaryRollsCounted: true });
   });
 
   it("maps competition demand to UI color tones", () => {
@@ -186,12 +200,17 @@ describe("gear-pick-soft-roll", () => {
     expect(softCompetitionDemandColor("high")).toBe("error");
   });
 
-  it("builds re-roll win-share options against others' rolls", () => {
-    // Others: 10 rolls → ×1=2/12≈17%, ×2=3/13≈23%, ×3=4/14≈29%.
-    expect(buildRerollOddsOptions(10, 3)).toEqual([
-      { softs: 1, myRolls: 2, chancePercent: 17 },
-      { softs: 2, myRolls: 3, chancePercent: 23 },
-      { softs: 3, myRolls: 4, chancePercent: 29 },
+  it("builds re-roll odds using soft rolls when my call adds a second player", () => {
+    expect(buildRerollOddsOptions({ 2: 1 }, 3)).toEqual([
+      { softs: 1, myRolls: 1, chancePercent: 33 },
+      { softs: 2, myRolls: 2, chancePercent: 50 },
+      { softs: 3, myRolls: 3, chancePercent: 60 },
+    ]);
+    expect(buildRerollOddsOptions({ 2: 3 }, 1)).toEqual([
+      { softs: 1, myRolls: 1, chancePercent: 14 },
+    ]);
+    expect(buildRerollOddsOptions({}, 1)).toEqual([
+      { softs: 1, myRolls: 2, chancePercent: 100 },
     ]);
   });
 

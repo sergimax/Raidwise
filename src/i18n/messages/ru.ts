@@ -417,12 +417,16 @@ export const ruMessages: Messages = {
     competitionPlus100Hint:
       "Вес софт-резервов = Σ(софт-резервы × игроки). Больший софт-резерв бьёт меньший; ×{{max}} бьёт ×1…×{{belowMax}}.",
     competitionReroll:
-      "Вы {{myRolls}} роллов · чужие {{otherRolls}} ({{callers}} чел.)",
-    competitionRerollHint:
-      "Каждый: 1 обычный /roll + 1 /roll за софт-резерв. Вы: {{myRolls}} ({{mySofts}} софт-резервов). Чужие: {{callers}} обычных + {{weight}} софт-роллов = {{otherRolls}}.",
+      "Ваши роллы: {{myRolls}} · чужие: {{otherRolls}} ({{callers}} чел.)",
+    competitionRerollHintEmpty:
+      "На этот предмет пока никто не заявил софты.",
+    competitionRerollHintSingle:
+      "Софт заявил один игрок: 1 обычный /roll плюс его софт-роллы. Ваши роллы: {{myRolls}} (софтов: {{mySofts}}). Чужие: {{otherRolls}} ({{callers}} чел.).",
+    competitionRerollHintMultiple:
+      "Софты заявили несколько игроков: обычные роллы не учитываются. Ваши софт-роллы: {{myRolls}}; чужие: {{otherRolls}} ({{callers}} чел.).",
     oddsRerollOption: "×{{softs}}→{{chance}}%",
     oddsRerollHint:
-      "Примерный шанс победы, если каждый /roll равновероятен: ваши роллы ÷ (ваши + чужие). Больше софтов — больше роллов.",
+      "Примерный шанс победы: ваши роллы ÷ (ваши + чужие). При нескольких заявках учитываются только софт-роллы.",
     oddsPlus100TieAndBeat: "×{{tie}} ничья · ×{{beat}}+ победа",
     oddsPlus100TieOnly: "×{{softs}} ничья (не обогнать)",
     oddsPlus100Hint:

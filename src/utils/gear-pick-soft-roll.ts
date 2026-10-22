@@ -203,20 +203,22 @@ export type SoftCompetitionSummary = {
    */
   mySoftsDominated: boolean;
   /**
-   * Re-roll: rolls you bring (1 default + soft extras when you call softs).
+   * Re-roll: rolls you bring. Ordinary rolls count only with one caller.
    * 0 when you have not assigned softs on this item.
    */
   myRollCount: number;
   /**
-   * Re-roll: opposing rolls = one default per caller + each soft roll they called.
+   * Re-roll: opposing soft rolls, plus one ordinary roll when there is one caller.
    */
   othersRollCount: number;
+  /** Whether an ordinary roll is included for the sole soft caller. */
+  ordinaryRollsCounted: boolean;
 };
 
 /**
  * Competition snapshot for UI.
  * - +100: higher soft weight wins; a full-budget caller dominates lower softs.
- * - re-roll: each soft caller rolls once by default plus once per soft spent.
+ * - re-roll: with multiple callers only soft rolls count; a sole caller also gets one ordinary roll.
  */
 export function summarizeSoftCompetition(
   assignment: ItemSoftAssignment,
@@ -226,6 +228,7 @@ export function summarizeSoftCompetition(
   const competingWeight = competingSoftWeight(assignment.othersByWeight);
   const competingCallers = competingCallerCount(assignment.othersByWeight);
   const maxSoftCallerCount = assignment.othersByWeight[maxSofts] ?? 0;
+  const ordinaryRollsCounted = competingCallers + (assignment.mySofts > 0 ? 1 : 0) === 1;
   const mySoftsDominated =
     system === "plus100" &&
     maxSoftCallerCount > 0 &&
@@ -239,8 +242,11 @@ export function summarizeSoftCompetition(
     system,
     maxSoftCallerCount,
     mySoftsDominated,
-    myRollCount: assignment.mySofts > 0 ? 1 + assignment.mySofts : 0,
-    othersRollCount: competingCallers + competingWeight,
+    myRollCount: assignment.mySofts > 0
+      ? assignment.mySofts + (ordinaryRollsCounted ? 1 : 0)
+      : 0,
+    othersRollCount: competingWeight + (ordinaryRollsCounted ? competingCallers : 0),
+    ordinaryRollsCounted,
   };
 }
 
@@ -319,16 +325,20 @@ export type RerollOddsOption = {
 
 /**
  * Re-roll odds for spending 1…maxSofts on this item against current others.
+ * Each option adds a second caller whenever anyone else already called softs,
+ * so ordinary rolls are then excluded.
  * Chance ≈ myRolls / (myRolls + othersRollCount).
  */
 export function buildRerollOddsOptions(
-  othersRollCount: number,
+  othersByWeight: OthersSoftHistogram,
   maxSofts: SoftRollMax,
 ): RerollOddsOption[] {
   const options: RerollOddsOption[] = [];
+  const competingCallers = competingCallerCount(othersByWeight);
+  const othersRollCount = competingSoftWeight(othersByWeight);
   for (let softs = 1; softs <= maxSofts; softs += 1) {
-    const myRolls = 1 + softs;
-    const totalRolls = myRolls + Math.max(0, othersRollCount);
+    const myRolls = softs + (competingCallers === 0 ? 1 : 0);
+    const totalRolls = myRolls + othersRollCount;
     options.push({
       softs,
       myRolls,
