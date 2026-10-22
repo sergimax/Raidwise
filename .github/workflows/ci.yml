@@ -22,12 +22,19 @@ jobs:
       - run: npm run lint
 
   test:
-    name: Test
+    name: Test and coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-project
-      - run: npm run test:run
+      - run: npm run test:coverage
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: warn
 
   build:
     name: Build

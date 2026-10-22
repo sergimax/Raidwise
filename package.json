@@ -20,7 +20,9 @@
     "lighthouse:mobile": "node scripts/lighthouse/run-lighthouse.mjs --mobile",
     "test:browser": "npm run build && node --test --test-concurrency=1 scripts/browser/theme.browser.mjs scripts/browser/tracker-persistence.browser.mjs",
     "test:run": "vitest run",
-    "ci": "npm run lint && npm run test:run && npm run build",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:changed": "vitest run --coverage --coverage.changed",
+    "ci": "npm run lint && npm run test:coverage && npm run build",
     "check:release-files": "node scripts/release/check-release-files.mjs"
   },
   "dependencies": {
@@ -41,6 +43,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/coverage-v8": "^4.1.12",
     "axe-core": "4.13.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
