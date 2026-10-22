@@ -20,6 +20,12 @@ export default defineConfig({
       // Generator helpers live under scripts/ (.mjs); keep their tests out of src/tsc.
       "scripts/**/*.test.mjs",
     ],
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: ["src/**/*.{test,spec}.{ts,tsx}", "src/test/**", "src/**/*.d.ts"],
+      reporter: ["text-summary", "html", "lcov", "json-summary"],
+    },
   },
   build: {
     rollupOptions: {

@@ -1,7 +1,7 @@
 {
   "name": "raidwise",
   "private": true,
-  "version": "2.10.0",
+  "version": "2.10.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,8 +18,11 @@
     "compress:class-icons": "node scripts/assets/compress-class-icons.mjs",
     "lighthouse": "node scripts/lighthouse/run-lighthouse.mjs",
     "lighthouse:mobile": "node scripts/lighthouse/run-lighthouse.mjs --mobile",
+    "test:browser": "npm run build && node --test --test-concurrency=1 scripts/browser/theme.browser.mjs scripts/browser/tracker-persistence.browser.mjs",
     "test:run": "vitest run",
-    "ci": "npm run lint && npm run test:run && npm run build",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:changed": "vitest run --coverage --coverage.changed",
+    "ci": "npm run lint && npm run test:coverage && npm run build",
     "check:release-files": "node scripts/release/check-release-files.mjs"
   },
   "dependencies": {
@@ -40,12 +43,15 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/coverage-v8": "^4.1.12",
+    "axe-core": "4.13.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^29.1.1",
     "lighthouse": "^13.4.1",
+    "puppeteer-core": "25.5.0",
     "sharp": "^0.35.3",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",

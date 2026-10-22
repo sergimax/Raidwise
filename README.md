@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.10.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.10.1-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -68,7 +68,7 @@ Full UI and item tooltips; first visit defaults to Russian.
 
 ### Theme
 
-Light/dark mode saved locally; quiet MUJI chrome with a subtle page/panel dot grid; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
+Light/dark mode saved locally, with a system preference fallback when browser storage is unavailable; quiet MUJI chrome with a subtle page/panel dot grid; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Development
 
@@ -81,8 +81,8 @@ Light/dark mode saved locally; quiet MUJI chrome with a subtle page/panel dot gr
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
-Locally, `npm run ci` runs lint + tests + build.
-On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in parallel, then **Release files** (validates that `package.json` was bumped and CHANGELOG / README badges / lockfile match — does not bump versions itself) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
+Locally, `npm run ci` runs lint + tests with coverage + build; `npm run test:browser` runs the browser smoke checks separately.
+On push/PR to `main`, GitHub Actions runs **Lint**, **Test and coverage**, **Build**, and **Browser smoke** in parallel, then **Release files** (checks CHANGELOG / README badges / lockfile when `package.json` was bumped; skips this check when the version is unchanged) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
 
 **Layout:**
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
@@ -111,7 +111,10 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run preview` | Preview production build |
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / single run) |
-| `npm run ci` | Lint + test:run + build (pre-push checks) |
+| `npm run test:coverage` | Run Vitest with source coverage; see `coverage/index.html` for uncovered lines and branches |
+| `npm run test:coverage:changed` | Run all Vitest tests and report coverage for locally changed source files; use `npm run test:coverage -- --coverage.changed=<base>` to compare with a commit or branch |
+| `npm run test:browser` | Build and check theme first paint, appearance, accessibility, and raid data persistence in Chrome (set `CHROME_PATH` if Chrome is not in a standard location) |
+| `npm run ci` | Lint + test:coverage + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
 | `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Add slot comments to BiS preset files |
@@ -121,6 +124,8 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run compress:class-icons` | Resize class/spec icons to 32×32 WebP in `src/assets/class-icons/` |
 | `npm run lighthouse` | Desktop Lighthouse vs preview/production URL → `docs/lighthouse/` (run `preview` first for local) |
 | `npm run lighthouse:mobile` | Same with the mobile preset |
+
+The CI test job uploads the `coverage-report` artifact. Coverage includes all runtime TypeScript files under `src/`, including files not imported by tests; it excludes tests and test helpers. There is no minimum coverage threshold yet. Browser smoke checks run separately.
 
 Built-in BiS lists are authored in `scripts/bis/bis-list-sources.md` (Titans + community) and `scripts/bis/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
 Regenerate TypeScript presets after editing the markdown.
