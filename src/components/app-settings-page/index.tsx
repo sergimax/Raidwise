@@ -2,6 +2,7 @@ import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material"
 import changelog from "../../../CHANGELOG.md?raw";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { AppHeader } from "../app-header/index.tsx";
+import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
 
 type ChangeEntry = {
@@ -71,6 +72,7 @@ export function AppSettingsPage() {
     <div className="app-shell">
       <AppHeader />
       <Container component="main" maxWidth="md" sx={{ py: 3 }}>
+        <AppBreadcrumbs />
         <Stack spacing={3}>
           <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
             {t("appSettings.title")}

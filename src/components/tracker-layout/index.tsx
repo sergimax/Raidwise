@@ -12,6 +12,7 @@ import {
 } from "../../contexts/raid-workspace-session-provider.tsx";
 import { useOptionalRaidWorkspaceSessions } from "../../hooks/use-raid-workspace-sessions.ts";
 import { AppHeader } from "../app-header/index.tsx";
+import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog.tsx";
 import { RaidTrackerMain } from "../raid-tracker-main/index.tsx";
 import { TrackerControls } from "../tracker-controls/index.tsx";
@@ -97,6 +98,7 @@ function TrackerLayoutContents() {
         maxWidth={false}
         disableGutters
       >
+        <AppBreadcrumbs />
         <RaidTrackerMain
           forms={forms}
           onAddFromTemplate={requestAddFromTemplate}

@@ -12,6 +12,7 @@ Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 ## Features
 
 Toolbar panels are mutually exclusive (only one open at a time).
+Breadcrumbs at the top of each page show the current section or raid tool and link back to My Raids.
 
 ### Characters & dungeons
 

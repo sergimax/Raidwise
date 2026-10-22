@@ -236,6 +236,7 @@ export const ruMessages: Messages = {
   },
   appNavigation: {
     aria: "Основная навигация",
+    breadcrumbsAria: "Навигационная цепочка",
     menu: "Разделы",
     myRaids: "Мои рейды",
     reputation: "Отзывы об игроках",

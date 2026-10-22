@@ -234,6 +234,7 @@ export const enMessages = {
   },
   appNavigation: {
     aria: "Main navigation",
+    breadcrumbsAria: "Breadcrumb navigation",
     menu: "Sections",
     myRaids: "My Raids",
     reputation: "Player reviews",

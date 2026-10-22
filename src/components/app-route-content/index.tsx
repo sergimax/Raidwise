@@ -4,6 +4,7 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import { APP_ROUTES } from "../../routing/app-route.ts";
 import type { MessageKey } from "../../i18n/use-translation.ts";
 import { AppHeader } from "../app-header/index.tsx";
+import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { AppSettingsPage } from "../app-settings-page/index.tsx";
 import { TrackerLayout } from "../tracker-layout/index.tsx";
 
@@ -13,6 +14,7 @@ function ComingSoonPage({ title }: { title: MessageKey }) {
     <div className="app-shell">
       <AppHeader />
       <Container component="main" maxWidth="md" sx={{ py: 3 }}>
+        <AppBreadcrumbs />
         <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
           {t(title)}
         </Typography>
@@ -30,6 +32,7 @@ function NotFoundPage() {
     <div className="app-shell">
       <AppHeader />
       <Container component="main" maxWidth="sm" sx={{ py: 6 }}>
+        <AppBreadcrumbs />
         <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
           {t("appNavigation.notFound")}
         </Typography>
