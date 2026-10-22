@@ -5,6 +5,7 @@ import {
   BIS_LISTS_SCHEMA_VERSION,
   BIS_LISTS_STORAGE_KEY,
 } from "../storage/bis-lists/constants.ts";
+import { saveLocalBisListsState } from "../storage/bis-lists/index.ts";
 import { ClassName } from "../types/characters.ts";
 import { specBisStorageKey } from "../utils/bis-lists.ts";
 import {
@@ -33,6 +34,7 @@ describe("useBisListsDomain", () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.useRealTimers();
   });
 
@@ -199,5 +201,91 @@ describe("useBisListsDomain", () => {
     });
 
     expect(readPersistedBisLists()).toBeNull();
+  });
+
+  it("keeps the latest selection and presets across rapid mutations", () => {
+    saveLocalBisListsState({
+      schemaVersion: BIS_LISTS_SCHEMA_VERSION,
+      entries: {
+        [storageKey]: {
+          selectedPresetId: "local-first",
+          presets: [
+            {
+              id: "local-first",
+              name: "First",
+              slots: [{ slot: 0, itemIds: [51312] }],
+            },
+          ],
+        },
+      },
+    });
+    const { result } = renderHook(() => useBisListsDomain());
+
+    act(() => {
+      result.current.savePresetByName(ClassName.DeathKnight, "Unholy", "Second", [
+        { slot: 1, itemIds: [54581] },
+      ]);
+      result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId);
+      result.current.deleteLocalPreset(ClassName.DeathKnight, "Unholy", "local-first");
+    });
+
+    expect(result.current.getSelectedPreset(ClassName.DeathKnight, "Unholy")?.id).toBe(
+      builtInPresetId,
+    );
+    expect(
+      result.current
+        .getPresetsForSpec(ClassName.DeathKnight, "Unholy")
+        .filter((preset) => preset.id.startsWith("local-"))
+        .map((preset) => preset.name),
+    ).toEqual(["Second"]);
+
+    flushBisListsSave();
+    expect(readPersistedBisLists().entries[storageKey].selectedPresetId).toBe(
+      builtInPresetId,
+    );
+    expect(readPersistedBisLists().entries[storageKey].presets).toHaveLength(1);
+  });
+
+  it("flushes the latest local preset when the domain unmounts", () => {
+    const { result, unmount } = renderHook(() => useBisListsDomain());
+
+    act(() => {
+      result.current.savePresetByName(ClassName.DeathKnight, "Unholy", "Before close", [
+        { slot: 0, itemIds: [51312] },
+      ]);
+    });
+    expect(readPersistedBisLists()).toBeNull();
+
+    unmount();
+    expect(readPersistedBisLists().entries[storageKey].presets[0].name).toBe(
+      "Before close",
+    );
+  });
+
+  it("reports a failed save and clears the error on the next successful write", () => {
+    const { result } = renderHook(() => useBisListsDomain());
+    const write = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Quota exceeded", "QuotaExceededError");
+    });
+
+    act(() => {
+      result.current.savePresetByName(ClassName.DeathKnight, "Unholy", "Retry", [
+        { slot: 0, itemIds: [51312] },
+      ]);
+    });
+    flushBisListsSave();
+    expect(result.current.storageError).toBe(
+      "Storage quota exceeded. Please free up space.",
+    );
+
+    write.mockRestore();
+    act(() => {
+      result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId);
+    });
+    flushBisListsSave();
+    expect(result.current.storageError).toBeNull();
+    expect(readPersistedBisLists().entries[storageKey].presets[0].name).toBe(
+      "Retry",
+    );
   });
 });
