@@ -8,6 +8,7 @@
 
 ![Версия приложения](https://img.shields.io/badge/App_version-2.10.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
+[![CI](https://github.com/sergimax/Raidwise/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sergimax/Raidwise/actions/workflows/ci.yml)
 
 ## Возможности
 
@@ -81,8 +82,8 @@
 React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
-Локально `npm run ci` запускает lint + тесты + сборку.
-На push/PR в `main` GitHub Actions параллельно запускает **Lint**, **Test** и **Build**, затем **Release files** (проверяет, что версия в `package.json` уже поднята и совпадает с CHANGELOG / бейджами README / lockfile — сам версию не повышает) (`.github/workflows/ci.yml`); push в `main` также загружает артефакт `dist` (`.github/workflows/build-artifacts.yml`).
+Локально `npm run ci` запускает lint + тесты с покрытием + сборку; `npm run test:browser` отдельно проверяет приложение в браузере.
+На push/PR в `main` GitHub Actions параллельно запускает **Lint**, **Test and coverage**, **Build** и **Browser smoke**, затем **Release files** (проверяет, что версия в `package.json` уже поднята и совпадает с CHANGELOG / бейджами README / lockfile — сам версию не повышает) (`.github/workflows/ci.yml`); push в `main` также загружает артефакт `dist` (`.github/workflows/build-artifacts.yml`).
 
 **Структура:**
 `src/components/` (UI), `src/hooks/` (домен + оверлей-панели), `src/utils/`, `src/data/` (бандлы WoW + BiS-пресеты), `src/storage/`.
@@ -112,7 +113,10 @@ npm run dev
 | `npm run preview` | Превью production-сборки |
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / один прогон) |
-| `npm run ci` | Lint + test:run + build (проверки перед push) |
+| `npm run test:coverage` | Тесты Vitest с покрытием исходного кода; непроверенные строки и ветви — в `coverage/index.html` |
+| `npm run test:coverage:changed` | Все тесты Vitest и покрытие локально изменённых файлов; для сравнения с базой: `npm run test:coverage -- --coverage.changed=<base>` |
+| `npm run test:browser` | Сборка и проверки темы, доступности и сохранения данных в Chrome (при необходимости задайте `CHROME_PATH`) |
+| `npm run ci` | Lint + test:coverage + build (проверки перед push) |
 | `npm run build:wow-data` | Пересборка бандлов WoW JSON из `scripts/wow-data/wowsims-db.json` (в т.ч. лут тира VoA из метаданных сетов, если WowSims не отдаёт зону 4603) |
 | `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
 | `npm run comment:bis-presets` | Комментарии слотов в файлах BiS-пресетов |
@@ -122,6 +126,8 @@ npm run dev
 | `npm run compress:class-icons` | Иконки классов/спеков 32×32 WebP в `src/assets/class-icons/` |
 | `npm run lighthouse` | Lighthouse desktop для preview/production → `docs/lighthouse/` (для локали сначала `preview`) |
 | `npm run lighthouse:mobile` | То же с mobile-пресетом |
+
+Задание CI загружает артефакт `coverage-report`. Покрытие учитывает все рабочие файлы TypeScript в `src/`, включая не загруженные тестами; тесты и тестовые утилиты исключены. Минимального порога пока нет. Браузерные проверки запускаются отдельно.
 
 Встроенные BiS пишутся в `scripts/bis/bis-list-sources.md` (Titans + community) и `scripts/bis/bis-list-mix.md` (Kingdom. With variants: нумерованное оружие и альтернативы `N-M`).
 После правок markdown перегенерируйте TypeScript-пресеты.

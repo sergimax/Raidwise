@@ -1,6 +1,6 @@
 ---
 name: bump
-description: Bump the Raidwise app version and prepare its changelog and release documentation when explicitly asked to bump or release.
+description: Prepare a requested Raidwise version bump, changelog, and release documentation, then run local CI and browser checks before push.
 ---
 
 # Version bump and changelog
@@ -22,7 +22,9 @@ edits. Paths below are relative to the repository root.
 
 Use the requested version when supplied. Otherwise choose PATCH for fixes and
 small improvements, MINOR for non-breaking features, or MAJOR for breaking
-changes, following `AGENTS.md`. Update only `package.json`'s version field.
+changes, following `AGENTS.md`. Update `package.json`'s version field and the
+root `version` and `packages[""].version` in `package-lock.json`. Avoid unrelated
+lockfile changes.
 
 ## 3. Write the changelog
 
@@ -35,9 +37,17 @@ diff. Do not add filler about release hygiene.
 
 Review `README.md` and `README.ru.md` for descriptions affected by the release.
 Update both when the change affects documented behavior or usage.
+Synchronize their `App_version` badges with the package version.
 
-## 5. Verify and report
+## 5. Verify locally before push and report
 
-Verify the package version and changelog heading, and review the diff for
-accuracy and documentation coverage. Do not create a commit or tag unless the
-user requested it.
+Verify the package and lockfile versions, both README badges, and the changelog
+heading against the working tree. Review the diff for accuracy and documentation
+coverage. After all release edits, run `npm run ci` and `npm run test:browser`
+locally so the user can see whether the current changes pass before pushing
+them for pull request review. Fix failures and rerun both commands against the
+final working tree. Report any check that cannot run and do not describe the
+release as verified in that case. The CI release-files script reads committed
+Git refs, so it does not validate uncommitted release edits. Report the
+commands and results. Do not create a commit or tag unless the user requested
+it.

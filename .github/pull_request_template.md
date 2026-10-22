@@ -5,7 +5,8 @@ Author fills every applicable box before merge. Mark N/A items as checked with a
 ## Quality
 
 - [ ] `npm i` - found 0 vulnerabilities
-- [ ] `npm run ci` passes locally (lint + `test:run` + build)
+- [ ] `npm run ci` passes locally (lint + tests with coverage + build)
+- [ ] `npm run test:browser` passes locally (browser smoke checks)
 - [ ] No secrets, credentials, or local-only paths committed
 
 <!-- ### User-facing (skip if pure internal) -->
