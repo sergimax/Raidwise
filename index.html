@@ -12,9 +12,10 @@
         var storageKey = "raidwise-color-mode";
         var legacyStorageKey = "my-raid-cds-color-mode";
         var mode = "light";
+        var stored = null;
 
         try {
-          var stored = localStorage.getItem(storageKey);
+          stored = localStorage.getItem(storageKey);
           if (stored !== "light" && stored !== "dark") {
             stored = localStorage.getItem(legacyStorageKey);
             if (stored === "light" || stored === "dark") {
@@ -22,13 +23,21 @@
               localStorage.removeItem(legacyStorageKey);
             }
           }
-          if (stored === "light" || stored === "dark") {
-            mode = stored;
-          } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            mode = "dark";
-          }
         } catch (error) {
           void error;
+          stored = null;
+        }
+
+        if (stored === "light" || stored === "dark") {
+          mode = stored;
+        } else {
+          try {
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+              mode = "dark";
+            }
+          } catch (error) {
+            void error;
+          }
         }
 
         // Drives :root[data-color-mode] CSS vars in index.css.

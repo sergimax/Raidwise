@@ -18,6 +18,7 @@
     "compress:class-icons": "node scripts/assets/compress-class-icons.mjs",
     "lighthouse": "node scripts/lighthouse/run-lighthouse.mjs",
     "lighthouse:mobile": "node scripts/lighthouse/run-lighthouse.mjs --mobile",
+    "test:browser": "npm run build && node --test scripts/browser/theme-first-paint.browser.mjs",
     "test:run": "vitest run",
     "ci": "npm run lint && npm run test:run && npm run build",
     "check:release-files": "node scripts/release/check-release-files.mjs"
@@ -46,6 +47,7 @@
     "globals": "^16.5.0",
     "jsdom": "^29.1.1",
     "lighthouse": "^13.4.1",
+    "puppeteer-core": "25.5.0",
     "sharp": "^0.35.3",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",

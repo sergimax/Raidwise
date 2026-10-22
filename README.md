@@ -68,7 +68,7 @@ Full UI and item tooltips; first visit defaults to Russian.
 
 ### Theme
 
-Light/dark mode saved locally; quiet MUJI chrome with a subtle page/panel dot grid; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
+Light/dark mode saved locally, with a system preference fallback when browser storage is unavailable; quiet MUJI chrome with a subtle page/panel dot grid; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Development
 
@@ -82,7 +82,7 @@ React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
 Locally, `npm run ci` runs lint + tests + build.
-On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in parallel, then **Release files** (validates that `package.json` was bumped and CHANGELOG / README badges / lockfile match — does not bump versions itself) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
+On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, **Build**, and **Browser smoke** in parallel, then **Release files** (validates that `package.json` was bumped and CHANGELOG / README badges / lockfile match — does not bump versions itself) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
 
 **Layout:**
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
@@ -111,6 +111,7 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run preview` | Preview production build |
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / single run) |
+| `npm run test:browser` | Build and check initial theme in Chrome (set `CHROME_PATH` if Chrome is not in a standard location) |
 | `npm run ci` | Lint + test:run + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
 | `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |

@@ -10,8 +10,8 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Job order: (Lint ∥ Test ∥ Build) → Release files.
-# Quality jobs run in parallel for faster feedback; docs/release check waits on all three.
+# Job order: (Lint ∥ Test ∥ Build ∥ Browser) → Release files.
+# Quality jobs run in parallel for faster feedback; docs/release check waits on all four.
 jobs:
   lint:
     name: Lint
@@ -37,11 +37,24 @@ jobs:
       - uses: ./.github/actions/setup-project
       - run: npm run build
 
+  browser:
+    name: Browser smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-project
+      - uses: browser-actions/setup-chrome@v2
+        id: chrome
+      - name: Check theme before first paint
+        run: npm run test:browser
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+
   # Requires a package.json version bump + matching release-file content.
   # See scripts/release/check-release-files.mjs.
   release-files:
     name: Release files
-    needs: [lint, test, build]
+    needs: [lint, test, build, browser]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
