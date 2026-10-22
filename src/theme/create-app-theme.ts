@@ -375,10 +375,10 @@ export function createAppTheme(mode: PaletteMode) {
       },
       MuiDialog: {
         styleOverrides: {
-          paper: ({ theme }) => ({
+          paper: {
             borderRadius: 8,
             border: "none",
-          }),
+          },
         },
       },
       MuiTooltip: {

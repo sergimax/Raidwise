@@ -48,33 +48,35 @@ export function useOverlayPanels({
     onDungeonAdded,
     onSubmitted: clearActivePanel,
   });
+  const { close: closeCharacterFormState } = characterForm;
+  const { close: closeDungeonFormState } = dungeonForm;
 
   const closeAllOverlayPanels = useCallback(() => {
     navigate(APP_ROUTES.raids);
-    characterForm.close();
-    dungeonForm.close();
-  }, [characterForm.close, dungeonForm.close, navigate]);
+    closeCharacterFormState();
+    closeDungeonFormState();
+  }, [closeCharacterFormState, closeDungeonFormState, navigate]);
 
   const togglePanel = useCallback(
     (panelId: OverlayPanelId) => {
       if (activePanel === "character" || panelId === "character") {
-        characterForm.close();
+        closeCharacterFormState();
       }
       if (activePanel === "dungeon" || panelId === "dungeon") {
-        dungeonForm.close();
+        closeDungeonFormState();
       }
       navigate(activePanel === panelId ? APP_ROUTES.raids : routeByPanel[panelId]);
     },
-    [activePanel, characterForm.close, dungeonForm.close, navigate],
+    [activePanel, closeCharacterFormState, closeDungeonFormState, navigate],
   );
 
   const closePanel = useCallback(
     (panelId: OverlayPanelId) => {
       if (activePanel === panelId) navigate(APP_ROUTES.raids);
-      if (panelId === "character") characterForm.close();
-      if (panelId === "dungeon") dungeonForm.close();
+      if (panelId === "character") closeCharacterFormState();
+      if (panelId === "dungeon") closeDungeonFormState();
     },
-    [activePanel, characterForm.close, dungeonForm.close, navigate],
+    [activePanel, closeCharacterFormState, closeDungeonFormState, navigate],
   );
 
   const showCharacterPickPanel = activePanel === "characterPick";
