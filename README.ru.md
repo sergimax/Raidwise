@@ -8,7 +8,6 @@
 
 ![Версия приложения](https://img.shields.io/badge/App_version-2.10.0-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
-[![CI](https://github.com/sergimax/Raidwise/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sergimax/Raidwise/actions/workflows/ci.yml)
 
 ## Возможности
 
@@ -83,7 +82,7 @@ React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
 Локально `npm run ci` запускает lint + тесты с покрытием + сборку; `npm run test:browser` отдельно проверяет приложение в браузере.
-На push/PR в `main` GitHub Actions параллельно запускает **Lint**, **Test and coverage**, **Build** и **Browser smoke**, затем **Release files** (проверяет, что версия в `package.json` уже поднята и совпадает с CHANGELOG / бейджами README / lockfile — сам версию не повышает) (`.github/workflows/ci.yml`); push в `main` также загружает артефакт `dist` (`.github/workflows/build-artifacts.yml`).
+На push/PR в `main` GitHub Actions параллельно запускает **Lint**, **Test and coverage**, **Build** и **Browser smoke**, затем **Release files** (при повышении версии в `package.json` проверяет CHANGELOG / бейджи README / lockfile; без повышения версии пропускает эту проверку) (`.github/workflows/ci.yml`); push в `main` также загружает артефакт `dist` (`.github/workflows/build-artifacts.yml`).
 
 **Структура:**
 `src/components/` (UI), `src/hooks/` (домен + оверлей-панели), `src/utils/`, `src/data/` (бандлы WoW + BiS-пресеты), `src/storage/`.

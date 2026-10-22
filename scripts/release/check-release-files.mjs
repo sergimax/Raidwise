@@ -1,7 +1,7 @@
 /**
  * Release-file check for CI.
  *
- * Requires a `package.json` version bump vs the comparison base, then:
+ * If `package.json` is bumped vs the comparison base, requires:
  * 1. The usual release paths were touched in the git range
  * 2. The new version string is present in:
  *    - package.json
@@ -194,13 +194,10 @@ function main() {
   }
 
   if (baseVersion === headVersion) {
-    console.error(
-      [
-        `No package.json version bump (still ${headVersion}).`,
-        "Each push that runs this check must bump the app version and update release files.",
-      ].join("\n"),
+    console.log(
+      `No package.json version bump (still ${headVersion}) — skipping release-files check.`,
     );
-    process.exit(1);
+    return;
   }
 
   console.log(

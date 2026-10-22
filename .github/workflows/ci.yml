@@ -57,7 +57,7 @@ jobs:
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
 
-  # Requires a package.json version bump + matching release-file content.
+  # Validates release-file content when package.json has a version bump.
   # See scripts/release/check-release-files.mjs.
   release-files:
     name: Release files

@@ -8,7 +8,6 @@ Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
 ![App version](https://img.shields.io/badge/App_version-2.10.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
-[![CI](https://github.com/sergimax/Raidwise/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sergimax/Raidwise/actions/workflows/ci.yml)
 
 ## Features
 
@@ -83,7 +82,7 @@ React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
 Locally, `npm run ci` runs lint + tests with coverage + build; `npm run test:browser` runs the browser smoke checks separately.
-On push/PR to `main`, GitHub Actions runs **Lint**, **Test and coverage**, **Build**, and **Browser smoke** in parallel, then **Release files** (validates that `package.json` was bumped and CHANGELOG / README badges / lockfile match — does not bump versions itself) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
+On push/PR to `main`, GitHub Actions runs **Lint**, **Test and coverage**, **Build**, and **Browser smoke** in parallel, then **Release files** (checks CHANGELOG / README badges / lockfile when `package.json` was bumped; skips this check when the version is unchanged) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
 
 **Layout:**
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
