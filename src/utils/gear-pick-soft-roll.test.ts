@@ -7,6 +7,7 @@ import {
   formatGearPickCopyText,
   pruneSoftAssignmentsToItemIds,
   remainingSoftBudget,
+  selectGearPickCopyItems,
   setMySoftsForItem,
   setOthersCountForWeight,
   softWeightKeys,
@@ -203,16 +204,62 @@ describe("gear-pick-soft-roll", () => {
     });
   });
 
-  it("formats copy text for each provided item", () => {
+  it("selects only my softs for copy and keeps the assigned count", () => {
+    const items = [
+      { itemId: 1, itemName: "Belt", bossName: "Putricide" },
+      { itemId: 2, itemName: "Ring", bossName: "" },
+      { itemId: 1, itemName: "Belt", bossName: "Putricide" },
+    ];
+    expect(selectGearPickCopyItems(items, {})).toEqual([]);
+    expect(selectGearPickCopyItems(items, {
+      1: { mySofts: 2, othersByWeight: {} },
+      2: { mySofts: 0, othersByWeight: { 1: 3 } },
+    })).toEqual([{ itemName: "Belt", bossName: "Putricide", softs: 2 }]);
+  });
+
+  it("puts reserved items first when the full useful-item list is enabled", () => {
+    const items = [
+      { itemId: 1, itemName: "Belt", bossName: "Putricide" },
+      { itemId: 2, itemName: "Ring", bossName: "Halion" },
+      { itemId: 3, itemName: "Trinket", bossName: "Saurfang" },
+      { itemId: 2, itemName: "Ring", bossName: "Halion" },
+    ];
+    const assignments = { 2: { mySofts: 2, othersByWeight: {} } };
+    expect(selectGearPickCopyItems(items, assignments, true)).toEqual([
+      { itemName: "Ring", bossName: "Halion", softs: 2 },
+      { itemName: "Belt", bossName: "Putricide", softs: 0 },
+      { itemName: "Trinket", bossName: "Saurfang", softs: 0 },
+    ]);
+    expect(selectGearPickCopyItems(items, {}, true)).toHaveLength(3);
+    expect(formatGearPickCopyText({
+      items: selectGearPickCopyItems(items, assignments, true),
+    })).toBe([
+      "- Ring ×2 (Halion)",
+      "- Belt (Putricide)",
+      "- Trinket (Saurfang)",
+    ].join("\n"));
+  });
+
+  it("formats copy text for each selected item and shows assigned soft counts", () => {
     const text = formatGearPickCopyText({
       items: [
-        { itemName: "Belt", bossName: "Putricide" },
-        { itemName: "Ring", bossName: "" },
-        { itemName: "Trinket", bossName: "Halion" },
+        { itemName: "Belt", bossName: "Putricide", softs: 2 },
+        { itemName: "Ring", bossName: "", softs: 1 },
+        { itemName: "Trinket", bossName: "Halion", softs: 1 },
       ],
     });
     expect(text).toBe(
-      ["- Belt (Putricide)", "- Ring", "- Trinket (Halion)"].join("\n"),
+      ["- Belt ×2 (Putricide)", "- Ring ×1", "- Trinket ×1 (Halion)"].join("\n"),
+    );
+  });
+
+  it("can hide the assigned soft count without changing selected items", () => {
+    const items = [{ itemName: "Belt", bossName: "Putricide", softs: 2 }];
+    expect(formatGearPickCopyText({ items, includeSoftCount: false })).toBe(
+      "- Belt (Putricide)",
+    );
+    expect(formatGearPickCopyText({ items, includeSoftCount: false, compactLines: true })).toBe(
+      "- Belt",
     );
   });
 
@@ -220,20 +267,20 @@ describe("gear-pick-soft-roll", () => {
     const text = formatGearPickCopyText({
       characterName: "Elst",
       items: [
-        { itemName: "Belt", bossName: "Putricide" },
-        { itemName: "Ring", bossName: "" },
-        { itemName: "Trinket", bossName: "Halion" },
+        { itemName: "Belt", bossName: "Putricide", softs: 1 },
+        { itemName: "Ring", bossName: "", softs: 1 },
+        { itemName: "Trinket", bossName: "Halion", softs: 1 },
       ],
     });
     expect(text).toBe(
-      ["Elst:", "- Belt (Putricide)", "- Ring", "- Trinket (Halion)"].join("\n"),
+      ["Elst:", "- Belt ×1 (Putricide)", "- Ring ×1", "- Trinket ×1 (Halion)"].join("\n"),
     );
   });
 
   it("can hide the character name and compact item lines", () => {
     const items = [
-      { itemName: "Belt", bossName: "Putricide" },
-      { itemName: "Trinket", bossName: "Halion" },
+      { itemName: "Belt", bossName: "Putricide", softs: 2 },
+      { itemName: "Trinket", bossName: "Halion", softs: 1 },
     ];
     expect(
       formatGearPickCopyText({
@@ -241,14 +288,14 @@ describe("gear-pick-soft-roll", () => {
         items,
         includeCharacterName: false,
       }),
-    ).toBe(["- Belt (Putricide)", "- Trinket (Halion)"].join("\n"));
+    ).toBe(["- Belt ×2 (Putricide)", "- Trinket ×1 (Halion)"].join("\n"));
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
         items,
         compactLines: true,
       }),
-    ).toBe(["Elst:", "- Belt", "- Trinket"].join("\n"));
+    ).toBe(["Elst:", "- Belt ×2", "- Trinket ×1"].join("\n"));
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
@@ -256,7 +303,7 @@ describe("gear-pick-soft-roll", () => {
         includeCharacterName: false,
         compactLines: true,
       }),
-    ).toBe(["- Belt", "- Trinket"].join("\n"));
+    ).toBe(["- Belt ×2", "- Trinket ×1"].join("\n"));
   });
 
   it("returns empty when no items are provided even if a character name is set", () => {

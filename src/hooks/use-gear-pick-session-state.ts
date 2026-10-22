@@ -30,6 +30,8 @@ export function useGearPickSessionState() {
     useState(true);
   const [compactCopyLines, setCompactCopyLines] = useState(false);
   const [includeCopySpec, setIncludeCopySpec] = useState(false);
+  const [includeCopySoftCount, setIncludeCopySoftCount] = useState(true);
+  const [includeAllCopyItems, setIncludeAllCopyItems] = useState(false);
   const [onlyCharactersWithUpgrades, setOnlyCharactersWithUpgrades] =
     useState(false);
 
@@ -122,6 +124,8 @@ export function useGearPickSessionState() {
     includeCopyCharacterName,
     compactCopyLines,
     includeCopySpec,
+    includeCopySoftCount,
+    includeAllCopyItems,
     onlyCharactersWithUpgrades,
     handleSelectionChange,
     handleRulesChange,
@@ -136,6 +140,8 @@ export function useGearPickSessionState() {
     setIncludeCopyCharacterName,
     setCompactCopyLines,
     setIncludeCopySpec,
+    setIncludeCopySoftCount,
+    setIncludeAllCopyItems,
     setOnlyCharactersWithUpgrades,
   };
 }

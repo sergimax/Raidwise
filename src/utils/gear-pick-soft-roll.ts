@@ -366,7 +366,26 @@ export function buildPlus100OddsAdvice(
 export type GearPickCopyItem = {
   itemName: string;
   bossName: string;
+  softs: number;
 };
+
+export function selectGearPickCopyItems(
+  items: readonly (Omit<GearPickCopyItem, "softs"> & { itemId: number })[],
+  assignmentsByItemId: SoftAssignmentByItemId,
+  includeAllItems = false,
+): GearPickCopyItem[] {
+  const seenItemIds = new Set<number>();
+  const selected: GearPickCopyItem[] = [];
+  const remaining: GearPickCopyItem[] = [];
+  for (const { itemId, itemName, bossName } of items) {
+    if (seenItemIds.has(itemId)) continue;
+    seenItemIds.add(itemId);
+    const softs = assignmentsByItemId[itemId]?.mySofts ?? 0;
+    if (softs > 0) selected.push({ itemName, bossName, softs });
+    else if (includeAllItems) remaining.push({ itemName, bossName, softs: 0 });
+  }
+  return [...selected, ...remaining];
+}
 
 export type FormatGearPickCopyOptions = {
   /** Character nickname prepended as `{name}:` when included. */
@@ -377,6 +396,8 @@ export type FormatGearPickCopyOptions = {
   /** When false, omit the character name line. Default true. */
   includeCharacterName?: boolean;
   includeSpec?: boolean;
+  /** When false, omit the number of soft reserves assigned to an item. */
+  includeSoftCount?: boolean;
   /**
    * When true, each line is only `- Item` (no boss).
    * Default false → `- Item (Boss)`.
@@ -392,12 +413,13 @@ export function formatGearPickCopyText(options: FormatGearPickCopyOptions): stri
   const lines: string[] = [];
 
   for (const item of options.items) {
+    const softCount = options.includeSoftCount !== false && item.softs > 0 ? ` ×${item.softs}` : "";
     if (compactLines) {
-      lines.push(`- ${item.itemName}`);
+      lines.push(`- ${item.itemName}${softCount}`);
       continue;
     }
     const bossSuffix = item.bossName ? ` (${item.bossName})` : "";
-    lines.push(`- ${item.itemName}${bossSuffix}`);
+    lines.push(`- ${item.itemName}${softCount}${bossSuffix}`);
   }
 
   if (lines.length === 0) {

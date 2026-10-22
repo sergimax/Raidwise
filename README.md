@@ -42,6 +42,8 @@ Session-kept filters; **Reset parameters** clears them; click Selected raid chip
 ### Soft pick for a raid
 
 Plan soft reserves for one character + spec on BiS upgrades from filtered raids (**re-roll** or **+100**, max softs 1–4), with competition colors, win-odds hints, and a pasteable call list.
+The call list contains only your selected soft reserves. A toggle controls whether to show the number assigned to each item.
+The **All useful items** toggle (off by default) appends the remaining items from the useful-item list after your selected reserves.
 Optional **With upgrades** dims characters with no BiS targets; **Reset parameters** clears the panel filters.
 Uses the active **BiS builds** list; other-spec gear counts as owned; session state survives closing the panel.
 

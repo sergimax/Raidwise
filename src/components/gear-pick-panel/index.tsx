@@ -16,6 +16,7 @@ import {
   emptySoftAssignment,
   formatGearPickCopyText,
   remainingSoftBudget,
+  selectGearPickCopyItems,
   sumMySofts,
 } from "../../utils/gear-pick-soft-roll.ts";
 import { filterDungeonsExcludingIds } from "../../utils/filter-dungeons-excluding-ids.ts";
@@ -82,10 +83,14 @@ export function GearPickPanel({
     includeCopyCharacterName,
     compactCopyLines,
     includeCopySpec,
+    includeCopySoftCount,
+    includeAllCopyItems,
     onlyCharactersWithUpgrades,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
     setIncludeCopySpec,
+    setIncludeCopySoftCount,
+    setIncludeAllCopyItems,
     setOnlyCharactersWithUpgrades,
   } = session;
 
@@ -221,17 +226,19 @@ export function GearPickPanel({
     selectedSpecGear,
   ]);
 
-  const copyItems = useMemo(() => {
-    const seenItemNames = new Set<string>();
-    return gearPickItems.flatMap((item) => {
-      const itemName = getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`;
-      if (seenItemNames.has(itemName)) {
-        return [];
-      }
-      seenItemNames.add(itemName);
-      return [{ itemName, bossName: item.bossName }];
-    });
-  }, [gearPickItems, itemLocale]);
+  const copyItems = useMemo(
+    () =>
+      selectGearPickCopyItems(
+        gearPickItems.map((item) => ({
+          itemId: item.itemId,
+          itemName: getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`,
+          bossName: item.bossName,
+        })),
+        assignmentsByItemId,
+        includeAllCopyItems,
+      ),
+    [assignmentsByItemId, gearPickItems, includeAllCopyItems, itemLocale],
+  );
 
   const copyText = useMemo(
     () =>
@@ -241,6 +248,7 @@ export function GearPickPanel({
         items: copyItems,
         includeCharacterName: includeCopyCharacterName,
         includeSpec: includeCopySpec,
+        includeSoftCount: includeCopySoftCount,
         compactLines: compactCopyLines,
       }),
     [
@@ -248,6 +256,7 @@ export function GearPickPanel({
       copyItems,
       includeCopyCharacterName,
       includeCopySpec,
+      includeCopySoftCount,
       selectedCharacter?.name,
       selectedSpecGear?.spec,
     ],
@@ -431,12 +440,16 @@ export function GearPickPanel({
       <GearPickFilterBlock gridArea="copy" copyBlockSized>
         <GearPickCopyBlock
           copyText={copyText}
-          hasSoftCalls={copyItems.length > 0}
+          hasCopyItems={copyItems.length > 0}
           includeCharacterName={includeCopyCharacterName}
           includeSpec={includeCopySpec}
+          includeSoftCount={includeCopySoftCount}
+          includeAllItems={includeAllCopyItems}
           compactLines={compactCopyLines}
           onIncludeCharacterNameChange={setIncludeCopyCharacterName}
           onIncludeSpecChange={setIncludeCopySpec}
+          onIncludeSoftCountChange={setIncludeCopySoftCount}
+          onIncludeAllItemsChange={setIncludeAllCopyItems}
           onCompactLinesChange={setCompactCopyLines}
           t={t}
         />

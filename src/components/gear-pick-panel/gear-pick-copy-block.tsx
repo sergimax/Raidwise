@@ -7,12 +7,16 @@ import { GearPickCopyFormatActions } from "./gear-pick-copy-format-actions.tsx";
 
 type GearPickCopyBlockProps = {
   copyText: string;
-  hasSoftCalls: boolean;
+  hasCopyItems: boolean;
   includeCharacterName: boolean;
   includeSpec: boolean;
+  includeSoftCount: boolean;
+  includeAllItems: boolean;
   compactLines: boolean;
   onIncludeCharacterNameChange: (includeCharacterName: boolean) => void;
   onIncludeSpecChange: (includeSpec: boolean) => void;
+  onIncludeSoftCountChange: (includeSoftCount: boolean) => void;
+  onIncludeAllItemsChange: (includeAllItems: boolean) => void;
   onCompactLinesChange: (compactLines: boolean) => void;
   t: TranslateFn;
 };
@@ -28,19 +32,23 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
 
 export function GearPickCopyBlock({
   copyText,
-  hasSoftCalls,
+  hasCopyItems,
   includeCharacterName,
   includeSpec,
+  includeSoftCount,
+  includeAllItems,
   compactLines,
   onIncludeCharacterNameChange,
   onIncludeSpecChange,
+  onIncludeSoftCountChange,
+  onIncludeAllItemsChange,
   onCompactLinesChange,
   t,
 }: GearPickCopyBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(async () => {
-    if (!hasSoftCalls) {
+    if (!hasCopyItems) {
       return;
     }
     const didCopy = await copyTextToClipboard(copyText);
@@ -51,7 +59,7 @@ export function GearPickCopyBlock({
     window.setTimeout(() => {
       setCopied(false);
     }, 1500);
-  }, [copyText, hasSoftCalls]);
+  }, [copyText, hasCopyItems]);
 
   return (
     <FilterSection
@@ -63,7 +71,7 @@ export function GearPickCopyBlock({
           size="small"
           variant="outlined"
           startIcon={<ContentCopyIcon fontSize="small" />}
-          disabled={!hasSoftCalls}
+          disabled={!hasCopyItems}
           aria-label={t("gearPickPanel.copyLineAria")}
           onClick={() => {
             void handleCopy();
@@ -76,14 +84,18 @@ export function GearPickCopyBlock({
         <GearPickCopyFormatActions
           includeCharacterName={includeCharacterName}
           includeSpec={includeSpec}
+          includeSoftCount={includeSoftCount}
+          includeAllItems={includeAllItems}
           compactLines={compactLines}
           onIncludeCharacterNameChange={onIncludeCharacterNameChange}
           onIncludeSpecChange={onIncludeSpecChange}
+          onIncludeSoftCountChange={onIncludeSoftCountChange}
+          onIncludeAllItemsChange={onIncludeAllItemsChange}
           onCompactLinesChange={onCompactLinesChange}
         />
       }
     >
-      {hasSoftCalls ? (
+      {hasCopyItems ? (
         <Box
           component="pre"
           sx={{
@@ -104,7 +116,7 @@ export function GearPickCopyBlock({
         </Box>
       ) : (
         <Typography variant="body2" color="text.secondary">
-          {t("gearPickPanel.copyEmpty")}
+          {t(includeAllItems ? "gearPickPanel.copyEmptyAll" : "gearPickPanel.copyEmpty")}
         </Typography>
       )}
     </FilterSection>
