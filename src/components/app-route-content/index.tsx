@@ -13,7 +13,7 @@ function ComingSoonPage({ title }: { title: MessageKey }) {
   return (
     <div className="app-shell">
       <AppHeader />
-      <Container component="main" maxWidth="md" sx={{ py: 3 }}>
+      <Container className="app-page-main" component="main" maxWidth="md" sx={{ pb: 3 }}>
         <AppBreadcrumbs />
         <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
           {t(title)}
@@ -31,7 +31,7 @@ function NotFoundPage() {
   return (
     <div className="app-shell">
       <AppHeader />
-      <Container component="main" maxWidth="sm" sx={{ py: 6 }}>
+      <Container className="app-page-main" component="main" maxWidth="sm" sx={{ pb: 6 }}>
         <AppBreadcrumbs />
         <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
           {t("appNavigation.notFound")}

@@ -71,7 +71,7 @@ export function AppSettingsPage() {
   return (
     <div className="app-shell">
       <AppHeader />
-      <Container component="main" maxWidth="md" sx={{ py: 3 }}>
+      <Container className="app-page-main" component="main" maxWidth="md" sx={{ pb: 3 }}>
         <AppBreadcrumbs />
         <Stack spacing={3}>
           <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
@@ -83,7 +83,7 @@ export function AppSettingsPage() {
               <Typography id="app-info-title" variant="h6" component="h2" sx={{ fontWeight: 700 }}>
                 {t("appSettings.appInfo")}
               </Typography>
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                 <AppMetaInfo />
                 <AppVersionLabel />
               </Stack>

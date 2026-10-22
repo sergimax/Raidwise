@@ -53,7 +53,7 @@ export function AppHeader({
           disableGutters
           sx={{
             gap: { xs: 1, sm: 2 },
-            minHeight: center ? "52px !important" : "var(--app-toolbar-min-height)",
+            minHeight: "var(--app-toolbar-min-height) !important",
             flexWrap: "nowrap",
           }}
         >
@@ -140,21 +140,19 @@ export function AppHeader({
             </Menu>
           </Box>
 
-          {center ? (
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: { xs: "flex-end", md: "center" },
-                flexWrap: "nowrap",
-                gap: 1,
-                minWidth: 0,
-              }}
-            >
-              {center}
-            </Box>
-          ) : null}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: { xs: "flex-end", md: "center" },
+              flexWrap: "nowrap",
+              gap: 1,
+              minWidth: 0,
+            }}
+          >
+            {center}
+          </Box>
 
           <Box
             sx={{
