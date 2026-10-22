@@ -3,7 +3,7 @@ import changelog from "../../../CHANGELOG.md?raw";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { AppHeader } from "../app-header/index.tsx";
 import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
-import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
+import { AppAboutLinks } from "../app-meta-info/index.tsx";
 
 type ChangeEntry = {
   version: string;
@@ -83,10 +83,10 @@ export function AppSettingsPage() {
               <Typography id="app-info-title" variant="h6" component="h2" sx={{ fontWeight: 700 }}>
                 {t("appSettings.appInfo")}
               </Typography>
-              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                <AppMetaInfo />
-                <AppVersionLabel />
-              </Stack>
+              <Typography variant="body2" color="text.secondary">
+                {t("header.versionAria", { version: __APP_VERSION__ })}
+              </Typography>
+              <AppAboutLinks />
             </Stack>
           </Box>
 

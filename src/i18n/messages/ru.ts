@@ -249,6 +249,8 @@ export const ruMessages: Messages = {
   appSettings: {
     title: "Настройки приложения",
     appInfo: "О Raidwise",
+    sourceCode: "Исходный код на GitHub",
+    authorSite: "Сайт автора",
     theme: "Тема оформления",
     language: "Язык",
     whatsNew: "Что нового",
