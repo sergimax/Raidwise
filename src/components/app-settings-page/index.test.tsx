@@ -43,7 +43,7 @@ describe("AppSettingsPage", () => {
       .toHaveAttribute("href", "https://sergimax.ru");
   });
 
-  it("shows all changes grouped under the latest 10 versions", () => {
+  it("shows all changes for the latest published version only", () => {
     const versions = [...changelog.matchAll(/^## \[(\d+\.\d+\.\d+)\]/gm)].map((match) => match[1]);
     const firstRelease = changelog.split(`## [${versions[0]}]`)[1].split(`## [${versions[1]}]`)[0];
     const firstReleaseChanges = firstRelease.split(/\r?\n/).filter((line) => /^[-*+] /.test(line));
@@ -59,13 +59,10 @@ describe("AppSettingsPage", () => {
     );
 
     const whatsNew = screen.getByRole("region", { name: "Что нового" });
-    const releases = within(whatsNew).getAllByRole("article");
-    expect(within(whatsNew).getByText("Последние 10 версий")).toBeInTheDocument();
-    expect(releases).toHaveLength(10);
-    releases.forEach((release, index) => {
-      expect(within(release).getByRole("heading", { name: versions[index] })).toBeInTheDocument();
-    });
-    expect(releases[0].querySelectorAll("p")).toHaveLength(firstReleaseChanges.length);
-    expect(within(whatsNew).queryByRole("heading", { name: versions[10] })).not.toBeInTheDocument();
+    const release = within(whatsNew).getByRole("article");
+    expect(within(whatsNew).getByText("Последняя версия")).toBeInTheDocument();
+    expect(within(release).getByRole("heading", { name: versions[0] })).toBeInTheDocument();
+    expect(release.querySelectorAll("p")).toHaveLength(firstReleaseChanges.length);
+    expect(within(whatsNew).queryByRole("heading", { name: versions[1] })).not.toBeInTheDocument();
   });
 });

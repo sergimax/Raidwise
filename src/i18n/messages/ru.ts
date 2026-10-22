@@ -254,7 +254,7 @@ export const ruMessages: Messages = {
     theme: "Тема оформления",
     language: "Язык",
     whatsNew: "Что нового",
-    latestChanges: "Последние 10 версий",
+    latestChanges: "Последняя версия",
     githubChangelog: "Полный журнал изменений на GitHub",
   },
   bisPanel: {

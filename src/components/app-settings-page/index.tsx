@@ -15,18 +15,14 @@ type ChangeRelease = {
   changes: ChangeEntry[];
 };
 
-function getRecentReleases(markdown: string, limit: number): ChangeRelease[] {
-  const releases: ChangeRelease[] = [];
+function getLatestRelease(markdown: string): ChangeRelease | null {
   let currentRelease: ChangeRelease | null = null;
   let category = "";
 
   for (const line of markdown.split(/\r?\n/)) {
     const release = line.match(/^## \[([^\]]+)\]/);
     if (release) {
-      if (currentRelease?.changes.length) {
-        releases.push(currentRelease);
-        if (releases.length === limit) break;
-      }
+      if (currentRelease?.changes.length) return currentRelease;
       currentRelease = release[1] === "Unreleased" ? null : { version: release[1], changes: [] };
       category = "";
       continue;
@@ -44,8 +40,7 @@ function getRecentReleases(markdown: string, limit: number): ChangeRelease[] {
     }
   }
 
-  if (currentRelease?.changes.length && releases.length < limit) releases.push(currentRelease);
-  return releases;
+  return currentRelease?.changes.length ? currentRelease : null;
 }
 
 function renderInlineMarkdown(text: string) {
@@ -70,7 +65,7 @@ function renderInlineMarkdown(text: string) {
   });
 }
 
-const recentReleases = getRecentReleases(changelog, 10);
+const latestRelease = getLatestRelease(changelog);
 const GITHUB_CHANGELOG_URL = "https://github.com/sergimax/Raidwise/blob/main/CHANGELOG.md";
 
 export function AppSettingsPage() {
@@ -108,13 +103,13 @@ export function AppSettingsPage() {
                   {t("appSettings.latestChanges")}
                 </Typography>
               </Box>
-              {recentReleases.map((release) => (
-                <Paper component="article" variant="outlined" key={release.version} sx={{ p: 1.5 }}>
+              {latestRelease && (
+                <Paper component="article" variant="outlined" sx={{ p: 1.5 }}>
                   <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 700 }}>
-                    {release.version}
+                    {latestRelease.version}
                   </Typography>
                   <Stack spacing={1} sx={{ mt: 1 }}>
-                    {release.changes.map((entry, index) => (
+                    {latestRelease.changes.map((entry, index) => (
                       <Box key={`${entry.category}-${index}`}>
                         <Typography variant="caption" color="text.secondary">
                           {entry.category}
@@ -126,7 +121,7 @@ export function AppSettingsPage() {
                     ))}
                   </Stack>
                 </Paper>
-              ))}
+              )}
               <Button
                 component="a"
                 href={GITHUB_CHANGELOG_URL}
