@@ -6,7 +6,7 @@
 Данные хранятся локально в `localStorage`.
 Активная ссылка: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![Версия приложения](https://img.shields.io/badge/App_version-2.10.0-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-2.10.1-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Возможности
@@ -68,7 +68,7 @@
 
 ### Тема
 
-Светлая/тёмная тема сохраняется локально; спокойный MUJI-хром с лёгкой точечной сеткой на странице и панелях; дизайн-токены в [docs/design/design-system.md](docs/design/design-system.md).
+Светлая/тёмная тема сохраняется локально; если хранилище браузера недоступно, применяется системная настройка. Спокойный MUJI-хром с лёгкой точечной сеткой на странице и панелях; дизайн-токены в [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Разработка
 
