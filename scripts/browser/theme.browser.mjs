@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { platform } from "node:os";
 import { test } from "node:test";
+import axe from "axe-core";
 import puppeteer from "puppeteer-core";
+import sharp from "sharp";
 import { preview } from "vite";
 
 function findChrome() {
@@ -38,6 +40,9 @@ async function openThemePage(browser, url, { storedMode, systemMode, blockedStor
       });
     } else if (savedMode) {
       localStorage.setItem("raidwise-color-mode", savedMode);
+    } else {
+      localStorage.removeItem("raidwise-color-mode");
+      localStorage.removeItem("my-raid-cds-color-mode");
     }
 
     new MutationObserver((mutations, observer) => {
@@ -68,7 +73,52 @@ async function openThemePage(browser, url, { storedMode, systemMode, blockedStor
   }
 }
 
-test("theme is correct before and after React mounts", async (t) => {
+async function checkSettingsTheme(browser, url, mode, expected) {
+  const { cardPixel, ...expectedStyles } = expected;
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
+  await page.evaluateOnNewDocument((savedMode) => {
+    localStorage.setItem("raidwise-color-mode", savedMode);
+  }, mode);
+
+  try {
+    await page.goto(`${url}settings`, { waitUntil: "domcontentloaded" });
+    const article = await page.waitForSelector("main article");
+    const styles = await page.evaluate(() => ({
+      mode: document.documentElement.dataset.colorMode,
+      colorScheme: getComputedStyle(document.documentElement).colorScheme,
+      pageBackground: getComputedStyle(document.documentElement).backgroundColor,
+      cardBackground: getComputedStyle(document.querySelector("main article")).backgroundColor,
+      headingColor: getComputedStyle(document.querySelector("main h1")).color,
+    }));
+    assert.deepEqual(styles, { mode, ...expectedStyles });
+
+    // Check a rendered pixel inside the latest-version card, away from its border and text.
+    const screenshot = await article.screenshot({ type: "png" });
+    const pixel = await sharp(screenshot)
+      .extract({ left: 8, top: 8, width: 1, height: 1 })
+      .removeAlpha()
+      .raw()
+      .toBuffer();
+    assert.deepEqual([...pixel], cardPixel);
+
+    await page.addScriptTag({ content: axe.source });
+    const violations = await page.evaluate(async () => {
+      const results = await window.axe.run(document, {
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+      });
+      return results.violations.map(({ id, nodes }) => ({
+        id,
+        elements: nodes.map(({ target }) => target.join(" ")),
+      }));
+    });
+    assert.deepEqual(violations, [], `Accessibility violations in ${mode} mode`);
+  } finally {
+    await page.close();
+  }
+}
+
+test("theme browser smoke checks", async (t) => {
   const server = await preview({ preview: { host: "127.0.0.1", port: 0 } });
   let browser;
 
@@ -101,6 +151,27 @@ test("theme is correct before and after React mounts", async (t) => {
         assert.deepEqual(result.beforeReact, { mode: "dark", meta: "#1a1a1a" });
         assert.deepEqual(result.afterReact, result.beforeReact);
       });
+    }
+
+    for (const [mode, expected] of Object.entries({
+      light: {
+        colorScheme: "light",
+        pageBackground: "rgb(252, 251, 249)",
+        cardBackground: "rgb(255, 255, 255)",
+        headingColor: "rgb(20, 20, 20)",
+        cardPixel: [255, 255, 255],
+      },
+      dark: {
+        colorScheme: "dark",
+        pageBackground: "rgb(26, 26, 26)",
+        cardBackground: "rgb(36, 36, 36)",
+        headingColor: "rgb(242, 242, 242)",
+        cardPixel: [36, 36, 36],
+      },
+    })) {
+      await t.test(`${mode} settings appearance and accessibility`, () =>
+        checkSettingsTheme(browser, url, mode, expected)
+      );
     }
   } finally {
     await browser?.close();

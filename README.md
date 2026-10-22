@@ -111,7 +111,7 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run preview` | Preview production build |
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / single run) |
-| `npm run test:browser` | Build and check initial theme in Chrome (set `CHROME_PATH` if Chrome is not in a standard location) |
+| `npm run test:browser` | Build and check theme first paint, appearance, and accessibility in Chrome (set `CHROME_PATH` if Chrome is not in a standard location) |
 | `npm run ci` | Lint + test:run + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
 | `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |

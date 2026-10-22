@@ -45,7 +45,7 @@ jobs:
       - uses: ./.github/actions/setup-project
       - uses: browser-actions/setup-chrome@v2
         id: chrome
-      - name: Check theme before first paint
+      - name: Check theme appearance and accessibility
         run: npm run test:browser
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
