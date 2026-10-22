@@ -6,20 +6,28 @@ import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { AppAboutLinks } from "../app-meta-info/index.tsx";
 
 type ChangeEntry = {
-  version: string;
   category: string;
   text: string;
 };
 
-function getRecentChanges(markdown: string, limit: number): ChangeEntry[] {
-  const entries: ChangeEntry[] = [];
-  let version = "";
+type ChangeRelease = {
+  version: string;
+  changes: ChangeEntry[];
+};
+
+function getRecentReleases(markdown: string, limit: number): ChangeRelease[] {
+  const releases: ChangeRelease[] = [];
+  let currentRelease: ChangeRelease | null = null;
   let category = "";
 
   for (const line of markdown.split(/\r?\n/)) {
     const release = line.match(/^## \[([^\]]+)\]/);
     if (release) {
-      version = release[1];
+      if (currentRelease?.changes.length) {
+        releases.push(currentRelease);
+        if (releases.length === limit) break;
+      }
+      currentRelease = release[1] === "Unreleased" ? null : { version: release[1], changes: [] };
       category = "";
       continue;
     }
@@ -31,13 +39,13 @@ function getRecentChanges(markdown: string, limit: number): ChangeEntry[] {
     }
 
     const change = line.match(/^\s*[-*+]\s+(.+)$/);
-    if (change && version && category) {
-      entries.push({ version, category, text: change[1] });
-      if (entries.length === limit) break;
+    if (change && currentRelease && category) {
+      currentRelease.changes.push({ category, text: change[1] });
     }
   }
 
-  return entries;
+  if (currentRelease?.changes.length && releases.length < limit) releases.push(currentRelease);
+  return releases;
 }
 
 function renderInlineMarkdown(text: string) {
@@ -62,7 +70,7 @@ function renderInlineMarkdown(text: string) {
   });
 }
 
-const recentChanges = getRecentChanges(changelog, 10);
+const recentReleases = getRecentReleases(changelog, 10);
 const GITHUB_CHANGELOG_URL = "https://github.com/sergimax/Raidwise/blob/main/CHANGELOG.md";
 
 export function AppSettingsPage() {
@@ -100,14 +108,23 @@ export function AppSettingsPage() {
                   {t("appSettings.latestChanges")}
                 </Typography>
               </Box>
-              {recentChanges.map((entry, index) => (
-                <Paper component="article" variant="outlined" key={`${entry.version}-${index}`} sx={{ p: 1.5 }}>
-                  <Typography variant="caption" color="text.secondary">
-                    {entry.version} · {entry.category}
+              {recentReleases.map((release) => (
+                <Paper component="article" variant="outlined" key={release.version} sx={{ p: 1.5 }}>
+                  <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 700 }}>
+                    {release.version}
                   </Typography>
-                  <Typography variant="body2" sx={{ mt: 0.5 }}>
-                    {renderInlineMarkdown(entry.text)}
-                  </Typography>
+                  <Stack spacing={1} sx={{ mt: 1 }}>
+                    {release.changes.map((entry, index) => (
+                      <Box key={`${entry.category}-${index}`}>
+                        <Typography variant="caption" color="text.secondary">
+                          {entry.category}
+                        </Typography>
+                        <Typography variant="body2">
+                          {renderInlineMarkdown(entry.text)}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Stack>
                 </Paper>
               ))}
               <Button
