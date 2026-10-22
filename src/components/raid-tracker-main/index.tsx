@@ -1,10 +1,8 @@
 import { Alert, Stack } from "@mui/material";
 import { useCallback, useMemo } from "react";
-import { useBisListsSessionState } from "../../hooks/use-bis-lists-session-state.ts";
-import { useCharacterPickSessionState } from "../../hooks/use-character-pick-session-state.ts";
 import { useGearHintLegendDismissed } from "../../hooks/use-gear-hint-legend-dismissed.ts";
-import { useGearPickSessionState } from "../../hooks/use-gear-pick-session-state.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
+import { useRaidWorkspaceSessions } from "../../hooks/use-raid-workspace-sessions.ts";
 import type { TrackerFormsState } from "../../hooks/use-overlay-panels.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { TranslateFn } from "../../i18n/translate.ts";
@@ -20,7 +18,6 @@ import { ResetParametersActions } from "../filter-unit/reset-parameters-actions.
 import { GearHintLegend } from "../gear-hint-legend/index.tsx";
 import { GearPickPanel } from "../gear-pick-panel/index.tsx";
 import { RaidTrackerTable } from "../raid-tracker-table/index.tsx";
-import { useRaidTrackerTableState } from "../raid-tracker-table/use-raid-tracker-table-state.ts";
 import { TrackerToolbarPanel } from "../tracker-toolbar-panel/index.tsx";
 import { resolveToolbarPanelId } from "../tracker-toolbar-panel/resolve-toolbar-panel-id.ts";
 import { getToolbarPanelMeta } from "../tracker-toolbar-panel/toolbar-panel-meta.ts";
@@ -79,17 +76,12 @@ export function RaidTrackerMain({
     domain.characters.length > 0 &&
     domain.dungeons.length > 0;
 
-  const tableState = useRaidTrackerTableState({
-    characters: domain.characters,
-    dungeons: domain.dungeons,
-    dungeonToggles: domain.dungeonToggles,
-    onDeleteCharacter: domain.handleDeleteCharacter,
-    onDeleteDungeon: domain.handleDeleteDungeon,
-  });
-
-  const gearPickSession = useGearPickSessionState();
-  const exportSession = useCharacterPickSessionState();
-  const bisListsSession = useBisListsSessionState();
+  const {
+    gearPick: gearPickSession,
+    characterPick: exportSession,
+    bisLists: bisListsSession,
+    table: tableState,
+  } = useRaidWorkspaceSessions();
   const { resetAllFilters: resetExportSessionFilters } = exportSession;
   const { resetAllFilters: resetGearPickSessionFilters } = gearPickSession;
   const { setDungeonNameSearch } = tableState;

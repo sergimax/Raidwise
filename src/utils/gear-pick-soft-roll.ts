@@ -3,7 +3,7 @@ import { formatCharacterDisplayName } from "./character-display.ts";
 /** Soft-roll system: +100 per soft, or extra /rolls (best wins). */
 export type SoftRollSystem = "plus100" | "reroll";
 
-export type SoftRollMax = 1 | 2 | 3 | 4;
+export type SoftRollMax = number;
 
 export type SoftRollRules = {
   maxSofts: SoftRollMax;
@@ -203,20 +203,22 @@ export type SoftCompetitionSummary = {
    */
   mySoftsDominated: boolean;
   /**
-   * Re-roll: rolls you bring (1 default + soft extras when you call softs).
+   * Re-roll: rolls you bring. Ordinary rolls count only with one caller.
    * 0 when you have not assigned softs on this item.
    */
   myRollCount: number;
   /**
-   * Re-roll: opposing rolls = one default per caller + each soft roll they called.
+   * Re-roll: opposing soft rolls, plus one ordinary roll when there is one caller.
    */
   othersRollCount: number;
+  /** Whether an ordinary roll is included for the sole soft caller. */
+  ordinaryRollsCounted: boolean;
 };
 
 /**
  * Competition snapshot for UI.
  * - +100: higher soft weight wins; a full-budget caller dominates lower softs.
- * - re-roll: each soft caller rolls once by default plus once per soft spent.
+ * - re-roll: with multiple callers only soft rolls count; a sole caller also gets one ordinary roll.
  */
 export function summarizeSoftCompetition(
   assignment: ItemSoftAssignment,
@@ -226,6 +228,7 @@ export function summarizeSoftCompetition(
   const competingWeight = competingSoftWeight(assignment.othersByWeight);
   const competingCallers = competingCallerCount(assignment.othersByWeight);
   const maxSoftCallerCount = assignment.othersByWeight[maxSofts] ?? 0;
+  const ordinaryRollsCounted = competingCallers + (assignment.mySofts > 0 ? 1 : 0) === 1;
   const mySoftsDominated =
     system === "plus100" &&
     maxSoftCallerCount > 0 &&
@@ -239,8 +242,11 @@ export function summarizeSoftCompetition(
     system,
     maxSoftCallerCount,
     mySoftsDominated,
-    myRollCount: assignment.mySofts > 0 ? 1 + assignment.mySofts : 0,
-    othersRollCount: competingCallers + competingWeight,
+    myRollCount: assignment.mySofts > 0
+      ? assignment.mySofts + (ordinaryRollsCounted ? 1 : 0)
+      : 0,
+    othersRollCount: competingWeight + (ordinaryRollsCounted ? competingCallers : 0),
+    ordinaryRollsCounted,
   };
 }
 
@@ -319,16 +325,20 @@ export type RerollOddsOption = {
 
 /**
  * Re-roll odds for spending 1…maxSofts on this item against current others.
+ * Each option adds a second caller whenever anyone else already called softs,
+ * so ordinary rolls are then excluded.
  * Chance ≈ myRolls / (myRolls + othersRollCount).
  */
 export function buildRerollOddsOptions(
-  othersRollCount: number,
+  othersByWeight: OthersSoftHistogram,
   maxSofts: SoftRollMax,
 ): RerollOddsOption[] {
   const options: RerollOddsOption[] = [];
+  const competingCallers = competingCallerCount(othersByWeight);
+  const othersRollCount = competingSoftWeight(othersByWeight);
   for (let softs = 1; softs <= maxSofts; softs += 1) {
-    const myRolls = 1 + softs;
-    const totalRolls = myRolls + Math.max(0, othersRollCount);
+    const myRolls = softs + (competingCallers === 0 ? 1 : 0);
+    const totalRolls = myRolls + othersRollCount;
     options.push({
       softs,
       myRolls,
@@ -366,38 +376,60 @@ export function buildPlus100OddsAdvice(
 export type GearPickCopyItem = {
   itemName: string;
   bossName: string;
-  mySofts: number;
+  softs: number;
 };
 
+export function selectGearPickCopyItems(
+  items: readonly (Omit<GearPickCopyItem, "softs"> & { itemId: number })[],
+  assignmentsByItemId: SoftAssignmentByItemId,
+  includeAllItems = false,
+): GearPickCopyItem[] {
+  const seenItemIds = new Set<number>();
+  const selected: GearPickCopyItem[] = [];
+  const remaining: GearPickCopyItem[] = [];
+  for (const { itemId, itemName, bossName } of items) {
+    if (seenItemIds.has(itemId)) continue;
+    seenItemIds.add(itemId);
+    const softs = assignmentsByItemId[itemId]?.mySofts ?? 0;
+    if (softs > 0) selected.push({ itemName, bossName, softs });
+    else if (includeAllItems) remaining.push({ itemName, bossName, softs: 0 });
+  }
+  return [...selected, ...remaining];
+}
+
 export type FormatGearPickCopyOptions = {
-  /** Character nickname prepended as `{name}:` when included and softs exist. */
+  /** Character nickname prepended as `{name}:` when included. */
   characterName?: string;
+  /** Selected specialization name, included in the header when enabled. */
+  specName?: string;
   items: readonly GearPickCopyItem[];
   /** When false, omit the character name line. Default true. */
   includeCharacterName?: boolean;
+  includeSpec?: boolean;
+  /** When false, omit the number of soft reserves assigned to an item. */
+  includeSoftCount?: boolean;
   /**
-   * When true, each line is only `- Item xN` (no boss).
-   * Default false → `- Item (Boss) xN `.
+   * When true, each line is only `- Item` (no boss).
+   * Default false → `- Item (Boss)`.
    */
   compactLines?: boolean;
 };
 
-/** Pasteable soft-call list: optional name, then item soft lines. */
+/** Item list with an optional character/spec header. */
 export function formatGearPickCopyText(options: FormatGearPickCopyOptions): string {
   const includeCharacterName = options.includeCharacterName !== false;
+  const includeSpec = options.includeSpec === true;
   const compactLines = options.compactLines === true;
   const lines: string[] = [];
 
   for (const item of options.items) {
-    if (item.mySofts <= 0) {
-      continue;
-    }
+    const softCount = options.includeSoftCount !== false && item.softs > 0 ? ` ×${item.softs}` : "";
     if (compactLines) {
-      lines.push(`- ${item.itemName} x${item.mySofts}`);
+      lines.push(`- ${item.itemName}${softCount}`);
       continue;
     }
     const bossSuffix = item.bossName ? ` (${item.bossName})` : "";
-    lines.push(`- ${item.itemName}${bossSuffix} x${item.mySofts} `);
+    lines.push(`- ${item.itemName}${softCount}${bossSuffix}`);
   }
 
   if (lines.length === 0) {
@@ -405,8 +437,14 @@ export function formatGearPickCopyText(options: FormatGearPickCopyOptions): stri
   }
 
   const characterName = options.characterName?.trim();
-  if (includeCharacterName && characterName) {
-    return [`${formatCharacterDisplayName(characterName)}:`, ...lines].join("\n");
+  const headerParts = [
+    includeCharacterName && characterName
+      ? formatCharacterDisplayName(characterName)
+      : "",
+    includeSpec ? options.specName?.trim() ?? "" : "",
+  ].filter(Boolean);
+  if (headerParts.length > 0) {
+    return [`${headerParts.join(" ")}:`, ...lines].join("\n");
   }
 
   return lines.join("\n");

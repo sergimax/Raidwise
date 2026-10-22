@@ -1,20 +1,14 @@
 import { Box } from "@mui/material";
 import type { ReactNode } from "react";
-import type { DataControlsGridAreaId } from "./constants.ts";
 
 type DataControlsBlockProps = {
-  gridArea: DataControlsGridAreaId;
   children: ReactNode;
 };
 
-export function DataControlsBlock({
-  gridArea,
-  children,
-}: DataControlsBlockProps) {
+export function DataControlsBlock({ children }: DataControlsBlockProps) {
   return (
     <Box
       sx={{
-        gridArea: { xs: "auto", sm: gridArea },
         minWidth: 0,
         minHeight: 0,
         display: "flex",

@@ -1,0 +1,104 @@
+import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
+import changelog from "../../../CHANGELOG.md?raw";
+import { useTranslation } from "../../i18n/use-translation.ts";
+import { getLatestRelease } from "../../utils/changelog.ts";
+import { AppHeader } from "../app-header/index.tsx";
+import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
+import { AppAboutLinks } from "../app-meta-info/index.tsx";
+
+function renderInlineMarkdown(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g);
+  return parts.map((part, index) => {
+    const bold = part.match(/^\*\*(.+)\*\*$/);
+    if (bold) return <strong key={index}>{bold[1]}</strong>;
+
+    const code = part.match(/^`(.+)`$/);
+    if (code) return <code key={index}>{code[1]}</code>;
+
+    const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (link) {
+      return (
+        <a key={index} href={link[2]} target="_blank" rel="noreferrer">
+          {link[1]}
+        </a>
+      );
+    }
+
+    return part;
+  });
+}
+
+const latestRelease = getLatestRelease(changelog);
+const GITHUB_CHANGELOG_URL = "https://github.com/sergimax/Raidwise/blob/main/CHANGELOG.md";
+
+export function AppSettingsPage() {
+  const { t } = useTranslation();
+
+  return (
+    <div className="app-shell">
+      <AppHeader />
+      <Container className="app-page-main" component="main" maxWidth="md" sx={{ pb: 3 }}>
+        <AppBreadcrumbs />
+        <Stack spacing={3}>
+          <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
+            {t("appSettings.title")}
+          </Typography>
+
+          <Box component="section" aria-labelledby="app-info-title">
+            <Stack spacing={1.5}>
+              <Typography id="app-info-title" variant="h6" component="h2" sx={{ fontWeight: 700 }}>
+                {t("appSettings.appInfo")}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t("header.versionAria", { version: __APP_VERSION__ })}
+              </Typography>
+              <AppAboutLinks />
+            </Stack>
+          </Box>
+
+          <Box component="section" aria-labelledby="app-whats-new-title">
+            <Stack spacing={1.5}>
+              <Box>
+                <Typography id="app-whats-new-title" variant="h6" component="h2" sx={{ fontWeight: 700 }}>
+                  {t("appSettings.whatsNew")}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {t("appSettings.latestVersion")}
+                </Typography>
+              </Box>
+              {latestRelease && (
+                <Paper component="article" variant="outlined" sx={{ p: 1.5 }}>
+                  <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 700 }}>
+                    {latestRelease.version}
+                  </Typography>
+                  <Stack component="ul" spacing={1} sx={{ mt: 1, mb: 0, pl: 0, listStyle: "none" }}>
+                    {latestRelease.changes.map((entry, index) => (
+                      <Box component="li" key={`${entry.category}-${index}`}>
+                        <Typography variant="caption" color="text.secondary">
+                          {entry.category}
+                        </Typography>
+                        <Typography variant="body2">
+                          {renderInlineMarkdown(entry.text)}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Stack>
+                </Paper>
+              )}
+              <Button
+                component="a"
+                href={GITHUB_CHANGELOG_URL}
+                target="_blank"
+                rel="noreferrer"
+                size="small"
+                sx={{ alignSelf: "flex-start" }}
+              >
+                {t("appSettings.githubChangelog")}
+              </Button>
+            </Stack>
+          </Box>
+        </Stack>
+      </Container>
+    </div>
+  );
+}

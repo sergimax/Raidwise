@@ -26,7 +26,7 @@ export const appThemeTokens = {
     surface: "#ffffff",
     chipBg: "#f3f2ef",
     headerBg: "rgba(252, 251, 249, 0.96)",
-    border: "#8a8a8a",
+    border: "#d6d4cf",
     text: "#141414",
     textStrong: "#0a0a0a",
     textMuted: "#555555",
@@ -50,7 +50,7 @@ export const appThemeTokens = {
     surface: "#242424",
     chipBg: "#1f1f1f",
     headerBg: "rgba(26, 26, 26, 0.96)",
-    border: "#8a8a8a",
+    border: "#454545",
     text: "#f2f2f2",
     textStrong: "#fafafa",
     textMuted: "#a3a3a3",
@@ -200,7 +200,7 @@ export function createAppTheme(mode: PaletteMode) {
         letterSpacing: "-0.01em",
       },
     },
-    shape: { borderRadius: 10 },
+    shape: { borderRadius: 6 },
     components: {
       MuiCssBaseline: {
         styleOverrides: {
@@ -241,7 +241,7 @@ export function createAppTheme(mode: PaletteMode) {
         },
         styleOverrides: {
           root: {
-            borderRadius: 8,
+              borderRadius: 4,
             paddingInline: 12,
           },
           sizeSmall: {
@@ -296,7 +296,7 @@ export function createAppTheme(mode: PaletteMode) {
       MuiIconButton: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: 8,
+            borderRadius: 4,
             "&:hover": {
               backgroundColor: theme.palette.action.hover,
             },
@@ -320,15 +320,15 @@ export function createAppTheme(mode: PaletteMode) {
             backgroundImage: "none",
           },
           outlined: ({ theme }) => ({
-            borderColor: theme.palette.divider,
-            boxShadow: tokens.shadow,
+            borderColor: alpha(theme.palette.divider, isLight ? 0.65 : 0.55),
+            boxShadow: "none",
           }),
         },
       },
       MuiAlert: {
         styleOverrides: {
           root: {
-            borderRadius: 10,
+            borderRadius: 6,
           },
           outlined: ({ theme }) => ({
             backgroundColor: alpha(theme.palette.background.paper, isLight ? 0.85 : 0.55),
@@ -338,10 +338,10 @@ export function createAppTheme(mode: PaletteMode) {
       MuiTableContainer: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: theme.shape.borderRadius,
-            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: 4,
+            border: "none",
             backgroundColor: theme.palette.background.paper,
-            boxShadow: tokens.shadow,
+            boxShadow: "none",
           }),
         },
       },
@@ -375,10 +375,10 @@ export function createAppTheme(mode: PaletteMode) {
       },
       MuiDialog: {
         styleOverrides: {
-          paper: ({ theme }) => ({
-            borderRadius: 12,
-            border: `1px solid ${theme.palette.divider}`,
-          }),
+          paper: {
+            borderRadius: 8,
+            border: "none",
+          },
         },
       },
       MuiTooltip: {
@@ -390,7 +390,7 @@ export function createAppTheme(mode: PaletteMode) {
               color: surface.color,
               border: `1px solid ${surface.borderColor}`,
               boxShadow: theme.shadows[theme.palette.mode === "light" ? 8 : 12],
-              borderRadius: 8,
+              borderRadius: 4,
             };
           },
         },
@@ -446,8 +446,8 @@ export function createAppTheme(mode: PaletteMode) {
       MuiMenu: {
         styleOverrides: {
           paper: ({ theme }) => ({
-            borderRadius: 10,
-            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: 6,
+            border: `1px solid ${alpha(theme.palette.divider, isLight ? 0.65 : 0.55)}`,
             boxShadow: isLight
               ? "0 8px 24px rgba(0, 0, 0, 0.12)"
               : "0 8px 24px rgba(0, 0, 0, 0.45)",

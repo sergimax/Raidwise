@@ -1,4 +1,7 @@
-import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Container, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
 import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
 import { AppIntroToggle } from "../app-intro-toggle/index.tsx";
 import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
@@ -9,6 +12,7 @@ import {
   fontFamilyDisplay,
 } from "../../theme/create-app-theme.ts";
 import type { AppHeaderProps } from "./types.ts";
+import { APP_ROUTES, useAppRoute } from "../../routing/app-route.ts";
 
 export type { AppHeaderProps } from "./types.ts";
 
@@ -18,6 +22,18 @@ export function AppHeader({
   onToggleIntro,
 }: AppHeaderProps) {
   const { t } = useTranslation();
+  const route = useAppRoute();
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+
+  const navItems = [
+    { to: APP_ROUTES.raids, label: t("appNavigation.myRaids") },
+    { to: APP_ROUTES.reputation, label: t("appNavigation.reputation"), disabled: true },
+    { to: APP_ROUTES.raidComposition, label: t("appNavigation.raidComposition"), disabled: true },
+    { to: APP_ROUTES.profile, label: t("appNavigation.profile"), disabled: true },
+    { to: APP_ROUTES.settings, label: t("appNavigation.settings") },
+  ];
+  const currentItem = navItems.find(({ to }) => to === route)
+    ?? (route.startsWith("/raids/") ? navItems[0] : undefined);
 
   return (
     <AppBar
@@ -37,7 +53,7 @@ export function AppHeader({
           disableGutters
           sx={{
             gap: { xs: 1, sm: 2 },
-            minHeight: "var(--app-toolbar-min-height)",
+            minHeight: "var(--app-toolbar-min-height) !important",
             flexWrap: "nowrap",
           }}
         >
@@ -70,31 +86,77 @@ export function AppHeader({
                 fontWeight: 700,
                 color: appThemeTokens[theme.palette.mode].brand,
                 fontSize: { xs: "1rem", sm: "1.2rem" },
+                display: { xs: "none", sm: "block" },
               })}
             >
               {t("header.appTitle")}
             </Typography>
-          </Box>
-
-          {center ? (
-            <Box
+            <Button
+              size="small"
+              color="inherit"
+              aria-label={t("appNavigation.menu")}
+              aria-haspopup="menu"
+              aria-expanded={Boolean(menuAnchor)}
+              onClick={(event) => setMenuAnchor(event.currentTarget)}
+              endIcon={<ExpandMoreIcon />}
               sx={{
-                flexGrow: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: { xs: "flex-end", md: "center" },
-                flexWrap: "nowrap",
-                gap: 1,
                 minWidth: 0,
+                maxWidth: { xs: 132, sm: 180 },
+                px: 0.75,
+                fontSize: { xs: "0.72rem", sm: "0.8rem" },
+                fontWeight: 600,
+                textTransform: "none",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
-              {center}
-            </Box>
-          ) : null}
+              {currentItem?.label ?? t("appNavigation.menu")}
+            </Button>
+            <Menu
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={() => setMenuAnchor(null)}
+              slotProps={{ list: { "aria-label": t("appNavigation.menu") } }}
+            >
+              {navItems.map(({ to, label, disabled }) =>
+                disabled ? (
+                  <MenuItem key={to} disabled>
+                    {label}
+                  </MenuItem>
+                ) : (
+                  <MenuItem
+                    key={to}
+                    component={RouterLink}
+                    to={to}
+                    selected={route === to || (to === APP_ROUTES.raids && route.startsWith("/raids/"))}
+                    aria-current={route === to ? "page" : undefined}
+                    onClick={() => setMenuAnchor(null)}
+                  >
+                    {label}
+                  </MenuItem>
+                ),
+              )}
+            </Menu>
+          </Box>
 
           <Box
             sx={{
-              flexGrow: 0,
+              flexGrow: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: { xs: "flex-end", md: "center" },
+              flexWrap: "nowrap",
+              gap: 1,
+              minWidth: 0,
+            }}
+          >
+            {center}
+          </Box>
+
+          <Box
+            sx={{
+              ml: "auto",
               display: "flex",
               alignItems: "center",
               flexShrink: 0,
@@ -109,8 +171,10 @@ export function AppHeader({
             ) : null}
             <ThemeModeToggle />
             <ItemTooltipLocaleToggle />
-            <AppMetaInfo />
-            <AppVersionLabel />
+            <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center", gap: 0.25 }}>
+              <AppMetaInfo />
+              <AppVersionLabel />
+            </Box>
           </Box>
         </Toolbar>
       </Container>

@@ -1,5 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BisListsProvider } from "../../contexts/bis-lists-provider.tsx";
 import { ItemTooltipLocaleProvider } from "../../contexts/item-tooltip-locale-provider.tsx";
@@ -29,11 +30,13 @@ function renderTrackerLayout() {
   return render(
     <AppThemeProvider>
       <ItemTooltipLocaleProvider initialLocale="en">
-        <RaidTrackerProvider>
-          <BisListsProvider>
-            <TrackerLayout />
-          </BisListsProvider>
-        </RaidTrackerProvider>
+        <MemoryRouter>
+          <RaidTrackerProvider>
+            <BisListsProvider>
+              <TrackerLayout />
+            </BisListsProvider>
+          </RaidTrackerProvider>
+        </MemoryRouter>
       </ItemTooltipLocaleProvider>
     </AppThemeProvider>,
   );

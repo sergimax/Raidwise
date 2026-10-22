@@ -5,6 +5,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { memo, useCallback } from "react";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
@@ -23,6 +24,7 @@ import {
   pinnedActionsColumnSx,
   type PinnedColumnDef,
 } from "./table-layout.ts";
+import { raidRowBackgroundFile, raidRowBackgroundSx } from "./raid-row-background.ts";
 
 type DungeonTableRowProps = {
   dungeon: DungeonRecord;
@@ -37,6 +39,7 @@ type DungeonTableRowProps = {
   onRequestDeleteDungeon: (dungeon: DungeonRecord) => void;
   onAddCharacter: () => void;
   characterFormOpen?: boolean;
+  groupedBackground?: boolean;
 };
 
 function dungeonRowTogglesEqual(
@@ -90,6 +93,9 @@ function areDungeonTableRowPropsEqual(
   if (previous.characterFormOpen !== next.characterFormOpen) {
     return false;
   }
+  if (previous.groupedBackground !== next.groupedBackground) {
+    return false;
+  }
   if (
     previous.completionsByDungeonId[previous.dungeon.id] !==
     next.completionsByDungeonId[next.dungeon.id]
@@ -117,10 +123,12 @@ export const DungeonTableRow = memo(function DungeonTableRow({
   onRequestDeleteDungeon,
   onAddCharacter,
   characterFormOpen = false,
+  groupedBackground = false,
 }: DungeonTableRowProps) {
   const { t, locale } = useTranslation();
   const { getBisSlotMapForSpec } = useBisListsContext();
   const dungeonDisplayName = getLocalizedDungeonDisplayName(dungeon, locale, false);
+  const raidBackgroundFile = raidRowBackgroundFile(dungeon.raidKey);
 
   const handleEdit = useCallback(() => {
     onEditDungeon(dungeon.id);
@@ -131,8 +139,32 @@ export const DungeonTableRow = memo(function DungeonTableRow({
   }, [dungeon, onRequestDeleteDungeon]);
 
   return (
-    <TableRow hover>
-      <TableCell sx={pinnedActionsColumnSx(compactTable, false)}>
+    <TableRow
+      hover
+      sx={(theme) => {
+        if (!raidBackgroundFile) return {};
+        const paper = theme.palette.background.paper;
+
+        return {
+          ...(groupedBackground
+            ? {}
+            : raidRowBackgroundSx(theme, raidBackgroundFile)),
+          // Translucent sticky cells reveal the image on the row or row group.
+          "& > .raid-tracker-table__pinned-row-cell": {
+            backgroundColor: alpha(paper, 0.75),
+            backdropFilter: "blur(1px)",
+          },
+          "& > .raid-tracker-table__toggle-cell": {
+            backgroundColor: alpha(paper, 0.85),
+            backdropFilter: "brightness(0.7)",
+          },
+        };
+      }}
+    >
+      <TableCell
+        className="raid-tracker-table__pinned-row-cell"
+        sx={pinnedActionsColumnSx(compactTable, false)}
+      >
         <Stack direction="row" spacing={0.25} sx={{ justifyContent: "center" }}>
           <Tooltip title={t("table.editDungeon", { name: dungeonDisplayName })}>
             <IconButton
@@ -159,6 +191,7 @@ export const DungeonTableRow = memo(function DungeonTableRow({
       {visiblePinnedColumns.map((column) => (
         <TableCell
           key={column.key}
+          className="raid-tracker-table__pinned-row-cell"
           align={pinnedColumnBodyAlign(column.key)}
           sx={pinnedColumnBodySx(column.key, compactTable)}
         >

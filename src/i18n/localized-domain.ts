@@ -6,6 +6,7 @@ import { DungeonDifficulty, type Dungeon } from "../types/dungeons.ts";
 import { EmblemKey, emblemLabels } from "../assets/emblems/emblem-icons.ts";
 import type { AppLocale } from "./types.ts";
 import { resolveDungeonRaidKey } from "../utils/resolve-dungeon-raid-key.ts";
+import { difficultyForRaidName } from "../utils/dungeon-short-name.ts";
 import { formatDungeonTypeLabel } from "../utils/dungeon-type.ts";
 
 const classNamesRu: Record<ClassNameType, string> = {
@@ -49,20 +50,29 @@ const emblemLabelsRu: Record<EmblemKey, string> = {
   [EmblemKey.VALOR]: "Доблести",
 };
 
-function raidDisplayName(raidKey: RaidKey, locale: AppLocale, compact: boolean): string {
+function raidDisplayName(
+  raidKey: RaidKey,
+  locale: AppLocale,
+  compact: boolean,
+  difficulty?: Dungeon["difficulty"],
+): string {
   const raid = RaidNames[raidKey];
+  const variant =
+    difficulty === DungeonDifficulty.HEROIC && "heroic" in raid
+      ? raid.heroic
+      : raid;
   if (compact) {
     const short =
       locale === "ru"
-        ? raid.shortRu
-        : "shortEn" in raid
-          ? raid.shortEn
+        ? variant.shortRu
+        : "shortEn" in variant
+          ? variant.shortEn
           : undefined;
     if (short) {
       return short;
     }
   }
-  return locale === "ru" ? raid.ru : raid.en;
+  return locale === "ru" ? variant.ru : variant.en;
 }
 
 export function getLocalizedClassName(
@@ -144,13 +154,19 @@ export function getLocalizedEmblemLabel(
 }
 
 export function getLocalizedDungeonDisplayName(
-  dungeon: Pick<Dungeon, "name" | "shortName" | "raidKey">,
+  dungeon: Pick<Dungeon, "name" | "shortName" | "raidKey"> &
+    Partial<Pick<Dungeon, "difficulty">>,
   locale: AppLocale,
   compact: boolean,
 ): string {
   const raidKey = resolveDungeonRaidKey(dungeon);
   if (raidKey) {
-    return raidDisplayName(raidKey, locale, compact);
+    return raidDisplayName(
+      raidKey,
+      locale,
+      compact,
+      dungeon.difficulty ?? difficultyForRaidName(dungeon.name),
+    );
   }
   if (compact && dungeon.shortName) {
     return dungeon.shortName;

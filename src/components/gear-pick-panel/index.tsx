@@ -16,6 +16,7 @@ import {
   emptySoftAssignment,
   formatGearPickCopyText,
   remainingSoftBudget,
+  selectGearPickCopyItems,
   sumMySofts,
 } from "../../utils/gear-pick-soft-roll.ts";
 import { filterDungeonsExcludingIds } from "../../utils/filter-dungeons-excluding-ids.ts";
@@ -81,9 +82,15 @@ export function GearPickPanel({
     clearAssignments,
     includeCopyCharacterName,
     compactCopyLines,
+    includeCopySpec,
+    includeCopySoftCount,
+    includeAllCopyItems,
     onlyCharactersWithUpgrades,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
+    setIncludeCopySpec,
+    setIncludeCopySoftCount,
+    setIncludeAllCopyItems,
     setOnlyCharactersWithUpgrades,
   } = session;
 
@@ -219,36 +226,39 @@ export function GearPickPanel({
     selectedSpecGear,
   ]);
 
-  const copyItems = useMemo(() => {
-    return gearPickItems
-      .map((item) => {
-        const mySofts = assignmentsByItemId[item.itemId]?.mySofts ?? 0;
-        if (mySofts <= 0) {
-          return null;
-        }
-        return {
-          itemName:
-            getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`,
+  const copyItems = useMemo(
+    () =>
+      selectGearPickCopyItems(
+        gearPickItems.map((item) => ({
+          itemId: item.itemId,
+          itemName: getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`,
           bossName: item.bossName,
-          mySofts,
-        };
-      })
-      .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
-  }, [assignmentsByItemId, gearPickItems, itemLocale]);
+        })),
+        assignmentsByItemId,
+        includeAllCopyItems,
+      ),
+    [assignmentsByItemId, gearPickItems, includeAllCopyItems, itemLocale],
+  );
 
   const copyText = useMemo(
     () =>
       formatGearPickCopyText({
         characterName: selectedCharacter?.name,
+        specName: selectedSpecGear?.spec,
         items: copyItems,
         includeCharacterName: includeCopyCharacterName,
+        includeSpec: includeCopySpec,
+        includeSoftCount: includeCopySoftCount,
         compactLines: compactCopyLines,
       }),
     [
       compactCopyLines,
       copyItems,
       includeCopyCharacterName,
+      includeCopySpec,
+      includeCopySoftCount,
       selectedCharacter?.name,
+      selectedSpecGear?.spec,
     ],
   );
 
@@ -430,10 +440,16 @@ export function GearPickPanel({
       <GearPickFilterBlock gridArea="copy" copyBlockSized>
         <GearPickCopyBlock
           copyText={copyText}
-          hasSoftCalls={copyItems.length > 0}
+          hasCopyItems={copyItems.length > 0}
           includeCharacterName={includeCopyCharacterName}
+          includeSpec={includeCopySpec}
+          includeSoftCount={includeCopySoftCount}
+          includeAllItems={includeAllCopyItems}
           compactLines={compactCopyLines}
           onIncludeCharacterNameChange={setIncludeCopyCharacterName}
+          onIncludeSpecChange={setIncludeCopySpec}
+          onIncludeSoftCountChange={setIncludeCopySoftCount}
+          onIncludeAllItemsChange={setIncludeAllCopyItems}
           onCompactLinesChange={setCompactCopyLines}
           t={t}
         />

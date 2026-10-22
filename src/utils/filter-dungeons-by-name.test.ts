@@ -47,6 +47,41 @@ describe("filterDungeonsByName", () => {
     }),
   ];
 
+  const tocRaids = [
+    createTestDungeon({
+      id: "toc-10",
+      name: RaidNames.trialOfTheCrusader.ru,
+      shortName: RaidNames.trialOfTheCrusader.shortRu,
+      raidKey: "trialOfTheCrusader",
+      size: 10,
+      difficulty: DungeonDifficulty.NORMAL,
+    }),
+    createTestDungeon({
+      id: "togc-10",
+      name: RaidNames.trialOfTheCrusader.heroic.ru,
+      shortName: RaidNames.trialOfTheCrusader.heroic.shortRu,
+      raidKey: "trialOfTheCrusader",
+      size: 10,
+      difficulty: DungeonDifficulty.HEROIC,
+    }),
+    createTestDungeon({
+      id: "toc-25",
+      name: RaidNames.trialOfTheCrusader.ru,
+      shortName: RaidNames.trialOfTheCrusader.shortRu,
+      raidKey: "trialOfTheCrusader",
+      size: 25,
+      difficulty: DungeonDifficulty.NORMAL,
+    }),
+    createTestDungeon({
+      id: "togc-25",
+      name: RaidNames.trialOfTheCrusader.heroic.ru,
+      shortName: RaidNames.trialOfTheCrusader.heroic.shortRu,
+      raidKey: "trialOfTheCrusader",
+      size: 25,
+      difficulty: DungeonDifficulty.HEROIC,
+    }),
+  ];
+
   it("returns full list when query is empty", () => {
     expect(filterDungeonsByName(dungeons, "")).toEqual(dungeons);
     expect(filterDungeonsByName(dungeons, "   ")).toEqual(dungeons);
@@ -122,5 +157,14 @@ describe("filterDungeonsByName", () => {
     expect(filterDungeonsByName(russianIccRaids, "цлк25об")).toEqual([
       russianIccRaids[2],
     ]);
+  });
+
+  it("keeps both Crusader modes for ИК and only heroic for ИВК", () => {
+    expect(filterDungeonsByName(tocRaids, "ИК")).toEqual(tocRaids);
+    expect(filterDungeonsByName(tocRaids, "ИВК")).toEqual([
+      tocRaids[1],
+      tocRaids[3],
+    ]);
+    expect(filterDungeonsByName(tocRaids, "ИВК10")).toEqual([tocRaids[1]]);
   });
 });

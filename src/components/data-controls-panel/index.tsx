@@ -1,3 +1,8 @@
+import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
+import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Box, Button } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
@@ -7,11 +12,17 @@ import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog
 import { FilterSection } from "../filter-unit/filter-section.tsx";
 import {
   FILTER_UNIT_GRID_GAP_SPACING,
-  getDataControlsGridTemplateAreas,
-  getDataControlsGridTemplateColumns,
-  getDataControlsGridTemplateRows,
+  FILTER_UNIT_HEIGHT,
+  FILTER_UNIT_WIDTH,
 } from "./constants.ts";
 import { DataControlsBlock } from "./data-controls-block.tsx";
+
+const DATA_CONTROLS_SECTION_SX = { p: 0.75 } as const;
+const DATA_CONTROLS_ACTIONS_SX = {
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "flex-end",
+} as const;
 
 type PendingDataAction =
   | "resetToggles"
@@ -107,33 +118,26 @@ export function DataControlsPanel({
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: {
-            xs: "minmax(0, 1fr)",
-            sm: getDataControlsGridTemplateColumns(),
-          },
-          gridTemplateRows: {
-            xs: "auto",
-            sm: getDataControlsGridTemplateRows(),
-          },
-          gridTemplateAreas: {
-            xs: "none",
-            sm: getDataControlsGridTemplateAreas(),
-          },
+          gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${FILTER_UNIT_WIDTH}px), 1fr))`,
+          gridAutoRows: { xs: "auto", sm: FILTER_UNIT_HEIGHT / 2 },
           gap: FILTER_UNIT_GRID_GAP_SPACING,
           alignItems: "stretch",
-          width: { xs: "100%", sm: "fit-content" },
+          width: "100%",
           maxWidth: "100%",
         }}
       >
-        <DataControlsBlock gridArea="resetToggles">
+        <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.resetTogglesTitle")}
             description={t("dataControlsPanel.resetTogglesDescription")}
+            contentSx={DATA_CONTROLS_ACTIONS_SX}
+            sx={DATA_CONTROLS_SECTION_SX}
           >
             <Button
               size="small"
               variant="outlined"
               color="warning"
+              startIcon={<RestartAltIcon fontSize="small" />}
               disabled={!domain.canResetAllToggles}
               onClick={() => setPendingAction("resetToggles")}
             >
@@ -142,15 +146,18 @@ export function DataControlsPanel({
           </FilterSection>
         </DataControlsBlock>
 
-        <DataControlsBlock gridArea="deleteCharacters">
+        <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteCharactersTitle")}
             description={t("dataControlsPanel.deleteCharactersDescription")}
+            contentSx={DATA_CONTROLS_ACTIONS_SX}
+            sx={DATA_CONTROLS_SECTION_SX}
           >
             <Button
               size="small"
               variant="outlined"
               color="error"
+              startIcon={<PersonRemoveIcon fontSize="small" />}
               disabled={domain.characters.length === 0}
               onClick={() => setPendingAction("deleteCharacters")}
             >
@@ -159,7 +166,7 @@ export function DataControlsPanel({
           </FilterSection>
         </DataControlsBlock>
 
-        <DataControlsBlock gridArea="deleteDungeons">
+        <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteDungeonsTitle")}
             description={
@@ -167,12 +174,15 @@ export function DataControlsPanel({
                 ? t("dataControlsPanel.deleteDungeonsDescription")
                 : t("dataControlsPanel.addFromTemplateDescription")
             }
+            contentSx={DATA_CONTROLS_ACTIONS_SX}
+            sx={DATA_CONTROLS_SECTION_SX}
           >
             {hasDungeons ? (
               <Button
                 size="small"
                 variant="outlined"
                 color="error"
+                startIcon={<DeleteSweepIcon fontSize="small" />}
                 onClick={() => setPendingAction("deleteDungeons")}
               >
                 {t("dataControlsPanel.deleteDungeonsAction")}
@@ -182,6 +192,7 @@ export function DataControlsPanel({
                 size="small"
                 variant="contained"
                 color="secondary"
+                startIcon={<LibraryAddIcon fontSize="small" />}
                 onClick={onAddFromTemplate}
               >
                 {t("toolbar.addFromTemplate")}
@@ -190,15 +201,18 @@ export function DataControlsPanel({
           </FilterSection>
         </DataControlsBlock>
 
-        <DataControlsBlock gridArea="deleteBisLists">
+        <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteBisTitle")}
             description={t("dataControlsPanel.deleteBisDescription")}
+            contentSx={DATA_CONTROLS_ACTIONS_SX}
+            sx={DATA_CONTROLS_SECTION_SX}
           >
             <Button
               size="small"
               variant="outlined"
               color="error"
+              startIcon={<PlaylistRemoveIcon fontSize="small" />}
               disabled={!bisLists.hasAnyLocalBisPresets}
               onClick={() => setPendingAction("deleteBisLists")}
             >

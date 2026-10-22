@@ -7,7 +7,10 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import type { DungeonRecord } from "../../types/dungeons.ts";
 import { AddDungeonRow } from "./add-dungeon-row.tsx";
 import { DungeonTableRow } from "./dungeon-table-row.tsx";
+import { groupAdjacentRaids } from "./group-adjacent-raids.ts";
+import { raidRowBackgroundFile, raidRowBackgroundSx } from "./raid-row-background.ts";
 import { RaidTrackerDeleteDialog } from "./raid-tracker-delete-dialog.tsx";
+import { DeleteConfirmDialog } from "./delete-confirm-dialog.tsx";
 import { raidTrackerTableAriaLabel } from "./raid-tracker-table-empty-state.ts";
 import { RaidTrackerTableEmptyState } from "./raid-tracker-table-empty-state.tsx";
 import { RaidTrackerTableHead } from "./raid-tracker-table-head.tsx";
@@ -37,6 +40,8 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     dungeonToggles,
     handleDungeonToggle: onDungeonToggle,
     handleResetCharacterToggles: onResetCharacterToggles,
+    handleResetAllToggles,
+    canResetAllToggles,
     updateCharacter,
     moveCharacter,
     updateDungeon,
@@ -46,6 +51,7 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     null,
   );
   const [editingDungeonId, setEditingDungeonId] = useState<string | null>(null);
+  const [resetTogglesPending, setResetTogglesPending] = useState(false);
   const editingCharacter = useMemo(
     () => characters.find((character) => character.id === editingCharacterId) ?? null,
     [characters, editingCharacterId],
@@ -88,6 +94,15 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
     handleCancelDelete,
     handleConfirmDelete,
   } = tableState;
+  const dungeonGroups = useMemo(
+    () =>
+      sortKey === "name"
+        ? groupAdjacentRaids(sortedDungeons)
+        : sortedDungeons.length > 0
+          ? [{ dungeons: sortedDungeons }]
+          : [],
+    [sortKey, sortedDungeons],
+  );
 
   return (
     <Stack spacing={2}>
@@ -96,7 +111,9 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
         sx={{
           // Contain wide character columns so the page does not scroll horizontally.
           overflowX: "auto",
-          maxWidth: "100%",
+          // Let the table sit closer to the main area's edges than other panels.
+          ml: { xs: "-12px !important", sm: "-16px !important" },
+          width: { xs: "calc(100% + 24px)", sm: "calc(100% + 32px)" },
         }}
       >
         <Table
@@ -127,6 +144,8 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
             sortDirection={sortDirection}
             dungeonNameSearch={dungeonNameSearch}
             onDungeonNameSearchChange={setDungeonNameSearch}
+            canResetToggles={canResetAllToggles}
+            onRequestResetToggles={() => setResetTogglesPending(true)}
             onSort={handleSort}
             onResetCharacterToggles={onResetCharacterToggles}
             onEditCharacter={handleEditCharacter}
@@ -134,32 +153,47 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
             onAddCharacter={onAddCharacter}
             characterFormOpen={characterFormOpen}
           />
+          {dungeonGroups.map((group) => {
+            const backgroundFile = raidRowBackgroundFile(group.raidKey);
+            const groupedBackground = Boolean(backgroundFile && group.dungeons.length > 1);
+            return (
+              <TableBody
+                key={group.dungeons[0]?.id ?? "empty-dungeons"}
+                sx={
+                  groupedBackground && backgroundFile
+                    ? (theme) => raidRowBackgroundSx(theme, backgroundFile)
+                    : undefined
+                }
+              >
+                {group.dungeons.map((dungeon: DungeonRecord) => (
+                  <DungeonTableRow
+                    key={dungeon.id}
+                    dungeon={dungeon}
+                    characters={characters}
+                    compactTable={compactTable}
+                    visiblePinnedColumns={visiblePinnedColumns}
+                    completionsByDungeonId={completionsByDungeonId}
+                    characterCount={characterCount}
+                    dungeonToggles={dungeonToggles}
+                    onDungeonToggle={onDungeonToggle}
+                    onEditDungeon={handleEditDungeon}
+                    onRequestDeleteDungeon={handleRequestDeleteDungeon}
+                    onAddCharacter={onAddCharacter}
+                    characterFormOpen={characterFormOpen}
+                    groupedBackground={groupedBackground}
+                  />
+                ))}
+              </TableBody>
+            );
+          })}
           <TableBody>
-            {dungeons.length === 0 ? null : sortedDungeons.length === 0 ? (
+            {dungeons.length > 0 && sortedDungeons.length === 0 ? (
               <RaidTrackerTableEmptyState
                 variant="no-search-matches"
                 visiblePinnedColumns={visiblePinnedColumns}
                 characterCount={characterCount}
               />
-            ) : (
-              sortedDungeons.map((dungeon: DungeonRecord) => (
-                <DungeonTableRow
-                  key={dungeon.id}
-                  dungeon={dungeon}
-                  characters={characters}
-                  compactTable={compactTable}
-                  visiblePinnedColumns={visiblePinnedColumns}
-                  completionsByDungeonId={completionsByDungeonId}
-                  characterCount={characterCount}
-                  dungeonToggles={dungeonToggles}
-                  onDungeonToggle={onDungeonToggle}
-                  onEditDungeon={handleEditDungeon}
-                  onRequestDeleteDungeon={handleRequestDeleteDungeon}
-                  onAddCharacter={onAddCharacter}
-                  characterFormOpen={characterFormOpen}
-                />
-              ))
-            )}
+            ) : null}
             <AddDungeonRow
               compactTable={compactTable}
               visiblePinnedColumns={visiblePinnedColumns}
@@ -177,6 +211,18 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
         pendingDelete={pendingDelete}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+      />
+      <DeleteConfirmDialog
+        open={resetTogglesPending}
+        title={t("dataControlsPanel.resetTogglesConfirmTitle")}
+        message={t("dataControlsPanel.resetTogglesConfirmMessage")}
+        confirmLabel={t("dataControlsPanel.resetConfirm")}
+        confirmColor="warning"
+        onConfirm={() => {
+          handleResetAllToggles();
+          setResetTogglesPending(false);
+        }}
+        onCancel={() => setResetTogglesPending(false)}
       />
       <CharacterEditDialog
         character={editingCharacter}

@@ -66,9 +66,9 @@ export const enMessages = {
     addCharacter: "Add character",
     addDungeon: "Add raid",
     bisLists: "BiS builds",
-    export: "Character pick",
-    gearPick: "Soft pick",
-    dataControls: "Settings",
+    export: "Raid roster",
+    gearPick: "Roll & soft",
+    dataControls: "Raid settings",
     resetAllToggles: "Reset all toggles",
   },
   table: {
@@ -96,6 +96,7 @@ export const enMessages = {
     deleteDungeon: "Delete dungeon: {{name}}",
     editCharacter: "Edit details for {{name}}",
     resetCharacterToggles: "Reset toggles for {{name}}",
+    resetAllToggles: "Reset all cooldown toggles",
     removeCharacter: "Remove character {{name}}",
     sortByCharacter: "Sort raids by {{name}} cooldown",
     toggleAria: "{{character}} — {{dungeon}}",
@@ -192,7 +193,7 @@ export const enMessages = {
       'Delete "{{name}}" and all cooldown toggles for this dungeon? This cannot be undone.',
   },
   dataControlsPanel: {
-    title: "Data controls",
+    title: "Raid settings",
     description:
       "Reset cooldown marks or clear characters, dungeons, and custom BiS lists. Destructive actions ask for confirmation.",
     closeAria: "Close data controls panel",
@@ -230,6 +231,29 @@ export const enMessages = {
     deleteBisConfirmMessage:
       "Remove every saved local BiS list? Built-in presets stay. This cannot be undone.",
     resetConfirm: "Reset",
+  },
+  appNavigation: {
+    aria: "Main navigation",
+    breadcrumbsAria: "Breadcrumb navigation",
+    menu: "Sections",
+    myRaids: "My Raids",
+    reputation: "Player reviews",
+    raidComposition: "Raid composition",
+    profile: "Profile",
+    settings: "Settings",
+    comingSoon: "This section is planned for a future update.",
+    notFound: "Page not found",
+  },
+  appSettings: {
+    title: "Application settings",
+    appInfo: "About Raidwise",
+    sourceCode: "Source code on GitHub",
+    authorSite: "Author's website",
+    theme: "Theme",
+    language: "Language",
+    whatsNew: "What's new",
+    latestVersion: "Latest version",
+    githubChangelog: "View the full changelog on GitHub",
   },
   bisPanel: {
     title: "BiS lists",
@@ -279,7 +303,7 @@ export const enMessages = {
     clearSlotAria: "Clear {{slot}} item",
   },
   characterPickPanel: {
-    title: "Character pick",
+    title: "Raid roster",
     closeAria: "Close character pick panel",
     noCharacters: "Add a character to build a character pick",
     exportLinesTitle: "Who fits for the raid",
@@ -343,7 +367,7 @@ export const enMessages = {
     allHaveCd: "All selected characters have CD on matching dungeons for character pick",
   },
   gearPickPanel: {
-    title: "Soft reserve pick",
+    title: "Roll helper",
     closeAria: "Close soft reserve pick panel",
     rulesTitle: "Soft reserve rules",
     rulesHelper: "How many softs the raid allows, and whether softs add +100 or grant extra /rolls",
@@ -391,12 +415,16 @@ export const enMessages = {
     competitionPlus100Hint:
       "Soft weight = Σ(softs × callers). Higher soft beats lower; anyone at ×{{max}} beats ×1…×{{belowMax}}.",
     competitionReroll:
-      "You {{myRolls}} rolls · others {{otherRolls}} ({{callers}} callers)",
-    competitionRerollHint:
-      "Each soft caller: 1 default /roll + 1 /roll per soft. You: {{myRolls}} ({{mySofts}} softs). Others: {{callers}} defaults + {{weight}} soft rolls = {{otherRolls}}.",
+      "Your rolls: {{myRolls}} · others: {{otherRolls}} ({{callers}} callers)",
+    competitionRerollHintEmpty:
+      "No soft reserves have been called on this item yet.",
+    competitionRerollHintSingle:
+      "Only one player called softs: 1 ordinary /roll plus their soft rolls. Your rolls: {{myRolls}} ({{mySofts}} softs). Others: {{otherRolls}} ({{callers}} callers).",
+    competitionRerollHintMultiple:
+      "Multiple players called softs: ordinary rolls do not count. Your soft rolls: {{myRolls}}; others: {{otherRolls}} ({{callers}} callers).",
     oddsRerollOption: "×{{softs}}→{{chance}}%",
     oddsRerollHint:
-      "Approximate win chance if every /roll is equally likely: your rolls ÷ (yours + others). More softs = more rolls.",
+      "Approximate win chance: your rolls ÷ (yours + others). With multiple soft callers, only soft rolls count.",
     oddsPlus100TieAndBeat: "×{{tie}} ties · ×{{beat}}+ wins",
     oddsPlus100TieOnly: "×{{softs}} ties (can't beat)",
     oddsPlus100Hint:
@@ -411,11 +439,18 @@ export const enMessages = {
     kindBis: "BiS",
     kindVariant: "Variant",
     copyTitle: "Soft reserve list",
-    copyHelper: "Items you assigned softs to. Copy and send to the raid",
-    copyEmpty: "Assign soft reserves to at least one item to build a soft reserve call",
+    copyHelper: "Useful raid items for your soft reserve list",
+    copyEmpty: "Choose soft reserves from the items above",
+    copyEmptyAll: "No useful items in the selected raids",
     copyIncludeName: "Name",
     copyIncludeNameAria: "Include character name in the soft reserve list",
-    copyIncludeDetails: "Details",
+    copyIncludeSpec: "Spec",
+    copyIncludeSpecAria: "Include selected spec in the soft reserve list",
+    copyIncludeSoftCount: "Soft count",
+    copyIncludeSoftCountAria: "Show the number of soft reserves assigned to each item",
+    copyIncludeAllItems: "All useful items",
+    copyIncludeAllItemsAria: "Include all useful items after your selected soft reserves",
+    copyIncludeDetails: "Boss",
     copyIncludeDetailsAria:
       "Include boss names in soft reserve lines",
     copyLine: "Copy",

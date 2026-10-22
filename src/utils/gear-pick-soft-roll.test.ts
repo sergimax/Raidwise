@@ -7,6 +7,7 @@ import {
   formatGearPickCopyText,
   pruneSoftAssignmentsToItemIds,
   remainingSoftBudget,
+  selectGearPickCopyItems,
   setMySoftsForItem,
   setOthersCountForWeight,
   softWeightKeys,
@@ -23,6 +24,7 @@ describe("gear-pick-soft-roll", () => {
   it("lists soft weight keys up to max", () => {
     expect(softWeightKeys(3)).toEqual([1, 2, 3]);
     expect(softWeightKeys(1)).toEqual([1]);
+    expect(softWeightKeys(10)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 
   it("enforces soft budget across items", () => {
@@ -32,6 +34,15 @@ describe("gear-pick-soft-roll", () => {
     expect(getSofts(byItemId, 2)).toBe(1);
     expect(remainingSoftBudget(byItemId, 3, 1)).toBe(2);
     expect(clampMySofts(5, byItemId, 3, 1)).toBe(2);
+  });
+
+  it("supports a configurable soft budget above four", () => {
+    let byItemId = setMySoftsForItem({}, 1, 6, 10);
+    byItemId = setMySoftsForItem(byItemId, 2, 4, 10);
+    expect(sumMySofts(byItemId)).toBe(10);
+    expect(remainingSoftBudget(byItemId, 10, 2)).toBe(4);
+    expect(clampMySofts(8, byItemId, 10, 2)).toBe(4);
+    expect(setOthersCountForWeight({}, 1, 10, 2, 10)[1]?.othersByWeight[10]).toBe(2);
   });
 
   it("tracks others histogram by soft weight", () => {
@@ -94,8 +105,9 @@ describe("gear-pick-soft-roll", () => {
       system: "plus100",
       maxSoftCallerCount: 1,
       mySoftsDominated: false,
-      myRollCount: 4,
-      othersRollCount: 7,
+      myRollCount: 3,
+      othersRollCount: 5,
+      ordinaryRollsCounted: false,
     });
     expect(
       summarizeSoftCompetition(
@@ -106,7 +118,7 @@ describe("gear-pick-soft-roll", () => {
     ).toBe(true);
   });
 
-  it("summarizes re-roll rolls as default + soft extras", () => {
+  it("counts only soft rolls when multiple players call an item", () => {
     expect(
       summarizeSoftCompetition(
         { mySofts: 2, othersByWeight: { 1: 2, 3: 1 } },
@@ -120,9 +132,22 @@ describe("gear-pick-soft-roll", () => {
       system: "reroll",
       maxSoftCallerCount: 1,
       mySoftsDominated: false,
-      myRollCount: 3,
-      othersRollCount: 8,
+      myRollCount: 2,
+      othersRollCount: 5,
+      ordinaryRollsCounted: false,
     });
+    expect(summarizeSoftCompetition(
+      { mySofts: 0, othersByWeight: { 2: 3 } }, "reroll", 3,
+    )).toMatchObject({ myRollCount: 0, othersRollCount: 6, ordinaryRollsCounted: false });
+  });
+
+  it("keeps one ordinary roll when only one player calls softs", () => {
+    expect(summarizeSoftCompetition(
+      { mySofts: 2, othersByWeight: {} }, "reroll", 3,
+    )).toMatchObject({ myRollCount: 3, othersRollCount: 0, ordinaryRollsCounted: true });
+    expect(summarizeSoftCompetition(
+      { mySofts: 0, othersByWeight: { 2: 1 } }, "reroll", 3,
+    )).toMatchObject({ myRollCount: 0, othersRollCount: 3, ordinaryRollsCounted: true });
   });
 
   it("maps competition demand to UI color tones", () => {
@@ -175,12 +200,17 @@ describe("gear-pick-soft-roll", () => {
     expect(softCompetitionDemandColor("high")).toBe("error");
   });
 
-  it("builds re-roll win-share options against others' rolls", () => {
-    // Others: 10 rolls → ×1=2/12≈17%, ×2=3/13≈23%, ×3=4/14≈29%.
-    expect(buildRerollOddsOptions(10, 3)).toEqual([
-      { softs: 1, myRolls: 2, chancePercent: 17 },
-      { softs: 2, myRolls: 3, chancePercent: 23 },
-      { softs: 3, myRolls: 4, chancePercent: 29 },
+  it("builds re-roll odds using soft rolls when my call adds a second player", () => {
+    expect(buildRerollOddsOptions({ 2: 1 }, 3)).toEqual([
+      { softs: 1, myRolls: 1, chancePercent: 33 },
+      { softs: 2, myRolls: 2, chancePercent: 50 },
+      { softs: 3, myRolls: 3, chancePercent: 60 },
+    ]);
+    expect(buildRerollOddsOptions({ 2: 3 }, 1)).toEqual([
+      { softs: 1, myRolls: 1, chancePercent: 14 },
+    ]);
+    expect(buildRerollOddsOptions({}, 1)).toEqual([
+      { softs: 1, myRolls: 2, chancePercent: 100 },
     ]);
   });
 
@@ -203,16 +233,62 @@ describe("gear-pick-soft-roll", () => {
     });
   });
 
-  it("formats copy text for called softs only", () => {
+  it("selects only my softs for copy and keeps the assigned count", () => {
+    const items = [
+      { itemId: 1, itemName: "Belt", bossName: "Putricide" },
+      { itemId: 2, itemName: "Ring", bossName: "" },
+      { itemId: 1, itemName: "Belt", bossName: "Putricide" },
+    ];
+    expect(selectGearPickCopyItems(items, {})).toEqual([]);
+    expect(selectGearPickCopyItems(items, {
+      1: { mySofts: 2, othersByWeight: {} },
+      2: { mySofts: 0, othersByWeight: { 1: 3 } },
+    })).toEqual([{ itemName: "Belt", bossName: "Putricide", softs: 2 }]);
+  });
+
+  it("puts reserved items first when the full useful-item list is enabled", () => {
+    const items = [
+      { itemId: 1, itemName: "Belt", bossName: "Putricide" },
+      { itemId: 2, itemName: "Ring", bossName: "Halion" },
+      { itemId: 3, itemName: "Trinket", bossName: "Saurfang" },
+      { itemId: 2, itemName: "Ring", bossName: "Halion" },
+    ];
+    const assignments = { 2: { mySofts: 2, othersByWeight: {} } };
+    expect(selectGearPickCopyItems(items, assignments, true)).toEqual([
+      { itemName: "Ring", bossName: "Halion", softs: 2 },
+      { itemName: "Belt", bossName: "Putricide", softs: 0 },
+      { itemName: "Trinket", bossName: "Saurfang", softs: 0 },
+    ]);
+    expect(selectGearPickCopyItems(items, {}, true)).toHaveLength(3);
+    expect(formatGearPickCopyText({
+      items: selectGearPickCopyItems(items, assignments, true),
+    })).toBe([
+      "- Ring ×2 (Halion)",
+      "- Belt (Putricide)",
+      "- Trinket (Saurfang)",
+    ].join("\n"));
+  });
+
+  it("formats copy text for each selected item and shows assigned soft counts", () => {
     const text = formatGearPickCopyText({
       items: [
-        { itemName: "Belt", bossName: "Putricide", mySofts: 3 },
-        { itemName: "Ring", bossName: "", mySofts: 0 },
-        { itemName: "Trinket", bossName: "Halion", mySofts: 1 },
+        { itemName: "Belt", bossName: "Putricide", softs: 2 },
+        { itemName: "Ring", bossName: "", softs: 1 },
+        { itemName: "Trinket", bossName: "Halion", softs: 1 },
       ],
     });
     expect(text).toBe(
-      ["- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"),
+      ["- Belt ×2 (Putricide)", "- Ring ×1", "- Trinket ×1 (Halion)"].join("\n"),
+    );
+  });
+
+  it("can hide the assigned soft count without changing selected items", () => {
+    const items = [{ itemName: "Belt", bossName: "Putricide", softs: 2 }];
+    expect(formatGearPickCopyText({ items, includeSoftCount: false })).toBe(
+      "- Belt (Putricide)",
+    );
+    expect(formatGearPickCopyText({ items, includeSoftCount: false, compactLines: true })).toBe(
+      "- Belt",
     );
   });
 
@@ -220,20 +296,20 @@ describe("gear-pick-soft-roll", () => {
     const text = formatGearPickCopyText({
       characterName: "Elst",
       items: [
-        { itemName: "Belt", bossName: "Putricide", mySofts: 3 },
-        { itemName: "Ring", bossName: "", mySofts: 0 },
-        { itemName: "Trinket", bossName: "Halion", mySofts: 1 },
+        { itemName: "Belt", bossName: "Putricide", softs: 1 },
+        { itemName: "Ring", bossName: "", softs: 1 },
+        { itemName: "Trinket", bossName: "Halion", softs: 1 },
       ],
     });
     expect(text).toBe(
-      ["Elst:", "- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"),
+      ["Elst:", "- Belt ×1 (Putricide)", "- Ring ×1", "- Trinket ×1 (Halion)"].join("\n"),
     );
   });
 
   it("can hide the character name and compact item lines", () => {
     const items = [
-      { itemName: "Belt", bossName: "Putricide", mySofts: 3 },
-      { itemName: "Trinket", bossName: "Halion", mySofts: 1 },
+      { itemName: "Belt", bossName: "Putricide", softs: 2 },
+      { itemName: "Trinket", bossName: "Halion", softs: 1 },
     ];
     expect(
       formatGearPickCopyText({
@@ -241,14 +317,14 @@ describe("gear-pick-soft-roll", () => {
         items,
         includeCharacterName: false,
       }),
-    ).toBe(["- Belt (Putricide) x3 ", "- Trinket (Halion) x1 "].join("\n"));
+    ).toBe(["- Belt ×2 (Putricide)", "- Trinket ×1 (Halion)"].join("\n"));
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
         items,
         compactLines: true,
       }),
-    ).toBe(["Elst:", "- Belt x3", "- Trinket x1"].join("\n"));
+    ).toBe(["Elst:", "- Belt ×2", "- Trinket ×1"].join("\n"));
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
@@ -256,14 +332,14 @@ describe("gear-pick-soft-roll", () => {
         includeCharacterName: false,
         compactLines: true,
       }),
-    ).toBe(["- Belt x3", "- Trinket x1"].join("\n"));
+    ).toBe(["- Belt ×2", "- Trinket ×1"].join("\n"));
   });
 
-  it("returns empty when no softs even if a character name is set", () => {
+  it("returns empty when no items are provided even if a character name is set", () => {
     expect(
       formatGearPickCopyText({
         characterName: "Elst",
-        items: [{ itemName: "Ring", bossName: "", mySofts: 0 }],
+        items: [],
       }),
     ).toBe("");
   });

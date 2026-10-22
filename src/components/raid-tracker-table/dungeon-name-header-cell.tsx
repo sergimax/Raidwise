@@ -43,6 +43,7 @@ export function DungeonNameHeaderCell({
         <DungeonNameSearchField
           value={searchQuery}
           onChange={onSearchQueryChange}
+          className="raid-tracker-table__dungeon-search"
         />
       </Stack>
     </TableCell>

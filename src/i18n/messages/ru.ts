@@ -68,9 +68,9 @@ export const ruMessages: Messages = {
     addCharacter: "Добавить персонажа",
     addDungeon: "Добавить рейд",
     bisLists: "BIS сборки",
-    export: "Подбор персонажа",
-    gearPick: "Подбор софтов",
-    dataControls: "Настройки",
+    export: "Подбор в рейд",
+    gearPick: "Ролл & софт",
+    dataControls: "Настройки рейдов",
     resetAllToggles: "Сброс статистики",
   },
   table: {
@@ -80,8 +80,8 @@ export const ruMessages: Messages = {
     complete: "Готово",
     rowActions: "Действия строки",
     filterByDungeonName:
-      "Фильтр: название, название+размер или название+размер+режим — напр. ЦЛК, Ульда10, ЦЛК25об или ИК25хм",
-    dungeonSearchPlaceholder: "ЦЛК, Ульда10, ЦЛК25об, ИК25хм ...",
+      "Фильтр: название, название+размер или название+размер+режим — напр. ЦЛК, Ульда10, ЦЛК25об, ИК25хм или ИК25гер",
+    dungeonSearchPlaceholder: "ЦЛК, Ульда10, ЦЛК25об, ИК25хм, ИК25гер ...",
     emptyNoDungeons:
       "Добавьте подземелье или используйте «Добавить рейды из шаблона».",
     emptyNoSearchMatches: "Нет подземелий по вашему запросу.",
@@ -98,6 +98,7 @@ export const ruMessages: Messages = {
     deleteDungeon: "Удалить подземелье: {{name}}",
     editCharacter: "Изменить: {{name}}",
     resetCharacterToggles: "Сбросить переключатели для {{name}}",
+    resetAllToggles: "Сбросить все отметки КД",
     removeCharacter: "Удалить персонажа {{name}}",
     sortByCharacter: "Сортировать рейды по КД {{name}}",
     toggleAria: "{{character}} — {{dungeon}}",
@@ -194,7 +195,7 @@ export const ruMessages: Messages = {
       'Удалить «{{name}}» и все переключатели КД? Это нельзя отменить.',
   },
   dataControlsPanel: {
-    title: "Управление данными",
+    title: "Настройки рейдов",
     description:
       "Сброс отметок КД или очистка персонажей, рейдов и своих BIS списков. Опасные действия требуют подтверждения.",
     closeAria: "Закрыть панель управления данными",
@@ -232,6 +233,29 @@ export const ruMessages: Messages = {
     deleteBisConfirmMessage:
       "Удалить все сохранённые локальные BIS списки? Встроенные пресеты остаются. Это нельзя отменить.",
     resetConfirm: "Сбросить",
+  },
+  appNavigation: {
+    aria: "Основная навигация",
+    breadcrumbsAria: "Навигационная цепочка",
+    menu: "Разделы",
+    myRaids: "Мои рейды",
+    reputation: "Отзывы об игроках",
+    raidComposition: "Состав рейда",
+    profile: "Профиль",
+    settings: "Настройки",
+    comingSoon: "Этот раздел планируется добавить в будущем.",
+    notFound: "Страница не найдена",
+  },
+  appSettings: {
+    title: "Настройки приложения",
+    appInfo: "О Raidwise",
+    sourceCode: "Исходный код на GitHub",
+    authorSite: "Сайт автора",
+    theme: "Тема оформления",
+    language: "Язык",
+    whatsNew: "Что нового",
+    latestVersion: "Последняя версия",
+    githubChangelog: "Полный журнал изменений на GitHub",
   },
   bisPanel: {
     title: "BIS листы",
@@ -281,7 +305,7 @@ export const ruMessages: Messages = {
     clearSlotAria: "Очистить {{slot}}",
   },
   characterPickPanel: {
-    title: "Подбор персонажа",
+    title: "Подбор в рейд",
     closeAria: "Закрыть панель подбора персонажа",
     noCharacters: "Добавьте персонажа для работы подбора",
     exportLinesTitle: "Кто подходит для рейда",
@@ -345,7 +369,7 @@ export const ruMessages: Messages = {
     allHaveCd: "У всех выбранных персонажей есть КД на подходящих подземельях для подбора",
   },
   gearPickPanel: {
-    title: "Подбор софтов по BIS листу",
+    title: "Ролл и софт",
     closeAria: "Закрыть панель подбора софтов",
     rulesTitle: "Правила софт-резерва",
     rulesHelper: "Сколько софт-резервов разрешено в рейде и как они работают: +100 или переролл",
@@ -393,12 +417,16 @@ export const ruMessages: Messages = {
     competitionPlus100Hint:
       "Вес софт-резервов = Σ(софт-резервы × игроки). Больший софт-резерв бьёт меньший; ×{{max}} бьёт ×1…×{{belowMax}}.",
     competitionReroll:
-      "Вы {{myRolls}} роллов · чужие {{otherRolls}} ({{callers}} чел.)",
-    competitionRerollHint:
-      "Каждый: 1 обычный /roll + 1 /roll за софт-резерв. Вы: {{myRolls}} ({{mySofts}} софт-резервов). Чужие: {{callers}} обычных + {{weight}} софт-роллов = {{otherRolls}}.",
+      "Ваши роллы: {{myRolls}} · чужие: {{otherRolls}} ({{callers}} чел.)",
+    competitionRerollHintEmpty:
+      "На этот предмет пока никто не заявил софты.",
+    competitionRerollHintSingle:
+      "Софт заявил один игрок: 1 обычный /roll плюс его софт-роллы. Ваши роллы: {{myRolls}} (софтов: {{mySofts}}). Чужие: {{otherRolls}} ({{callers}} чел.).",
+    competitionRerollHintMultiple:
+      "Софты заявили несколько игроков: обычные роллы не учитываются. Ваши софт-роллы: {{myRolls}}; чужие: {{otherRolls}} ({{callers}} чел.).",
     oddsRerollOption: "×{{softs}}→{{chance}}%",
     oddsRerollHint:
-      "Примерный шанс победы, если каждый /roll равновероятен: ваши роллы ÷ (ваши + чужие). Больше софтов — больше роллов.",
+      "Примерный шанс победы: ваши роллы ÷ (ваши + чужие). При нескольких заявках учитываются только софт-роллы.",
     oddsPlus100TieAndBeat: "×{{tie}} ничья · ×{{beat}}+ победа",
     oddsPlus100TieOnly: "×{{softs}} ничья (не обогнать)",
     oddsPlus100Hint:
@@ -413,11 +441,18 @@ export const ruMessages: Messages = {
     kindBis: "BiS",
     kindVariant: "Вариант",
     copyTitle: "Список софт-резервов",
-    copyHelper: "Предметы, на которые вы назначили софт-резервы. Скопируйте и отправьте в рейд",
-    copyEmpty: "Назначьте софт-резервы хотя бы на один предмет, чтобы скопировать список",
+    copyHelper: "Полезные предметы из рейдов для списка софт-резервов",
+    copyEmpty: "Выберите софты на предметы из списка выше",
+    copyEmptyAll: "В выбранных рейдах нет полезных предметов",
     copyIncludeName: "Имя",
     copyIncludeNameAria: "Включать имя персонажа в список софт-резервов",
-    copyIncludeDetails: "Подробности",
+    copyIncludeSpec: "Спек",
+    copyIncludeSpecAria: "Включать выбранный спек в список софт-резервов",
+    copyIncludeSoftCount: "Кол-во софтов",
+    copyIncludeSoftCountAria: "Показывать количество софтов, отданных на каждый предмет",
+    copyIncludeAllItems: "Все полезные предметы",
+    copyIncludeAllItemsAria: "Добавить все полезные предметы после выбранных софтов",
+    copyIncludeDetails: "Босс",
     copyIncludeDetailsAria:
       "Включать имена боссов в строки софт-резервов",
     copyLine: "Скопировать",

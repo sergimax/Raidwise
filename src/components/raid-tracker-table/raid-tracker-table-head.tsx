@@ -3,7 +3,14 @@
  * columns (edit/reset/delete actions).
  */
 import { Fragment } from "react";
-import { TableCell, TableHead, TableRow } from "@mui/material";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import {
+  IconButton,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tooltip,
+} from "@mui/material";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
 import type { DungeonSortKey, SortDirection } from "../../utils/sort-dungeons.ts";
@@ -20,6 +27,8 @@ type RaidTrackerTableHeadProps = {
   sortDirection: SortDirection;
   dungeonNameSearch: string;
   onDungeonNameSearchChange: (query: string) => void;
+  canResetToggles: boolean;
+  onRequestResetToggles: () => void;
   onSort: (sortKey: DungeonSortKey) => void;
   onResetCharacterToggles: (characterId: string) => void;
   onEditCharacter: (characterId: string) => void;
@@ -36,6 +45,8 @@ export function RaidTrackerTableHead({
   sortDirection,
   dungeonNameSearch,
   onDungeonNameSearchChange,
+  canResetToggles,
+  onRequestResetToggles,
   onSort,
   onResetCharacterToggles,
   onEditCharacter,
@@ -49,9 +60,23 @@ export function RaidTrackerTableHead({
     <TableHead>
       <TableRow>
         <TableCell
+          align="center"
           sx={pinnedActionsColumnSx(compactTable, true)}
           aria-label={t("table.rowActions")}
-        />
+        >
+          <Tooltip title={t("table.resetAllToggles")}>
+            <span>
+              <IconButton
+                size="small"
+                aria-label={t("table.resetAllToggles")}
+                disabled={!canResetToggles}
+                onClick={onRequestResetToggles}
+              >
+                <RestartAltIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </TableCell>
         {visiblePinnedColumns.map((column) => (
           <Fragment key={column.key}>
             {renderPinnedColumnHeader({

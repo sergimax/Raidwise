@@ -6,12 +6,13 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.9.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.10.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
 
 Toolbar panels are mutually exclusive (only one open at a time).
+Breadcrumbs at the top of each page show the current section or raid tool and link back to My Raids.
 
 ### Characters & dungeons
 
@@ -21,16 +22,21 @@ Header **info** opens a short intro (CDs, gear planning, or BiS-only).
 ### Cooldown toggles
 
 Mark which character has CD on which raid.
-Reset one character from the table header, or everyone from **Settings**.
+Reset one character from the table header, or everyone from **Raid settings**.
 
 ### Table
 
-Sort and search raids (EN/RU, e.g. `ICC25H` / `ЦЛК25хм`); **Type** shows size (+ skull for Heroic), with per-row edit/delete.
+Sort and search raids (EN/RU, e.g. `ICC25H` / `ЦЛК25хм`); **Type** shows size (+ skull for Heroic), with per-row edit/delete. When sorted by name, adjacent variants of the same template raid share a background image across up to four rows; extra variants start another image.
 Character columns use class-colored names and main/off GS; Complete is a progress bar; compact on small screens, with horizontal scroll inside the table when many characters are present.
+
+### Raid settings
+
+Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm); when empty, **Add raids from template**.
 
 ### Settings
 
-Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm); when empty, **Add raids from template**.
+The About section shows the app version and labeled links to the source code and author's website.
+What's new shows all changes for the latest published version, with a link to the full changelog.
 
 ### Character pick for a raid
 
@@ -39,7 +45,10 @@ Session-kept filters; **Reset parameters** clears them; click Selected raid chip
 
 ### Soft pick for a raid
 
-Plan soft reserves for one character + spec on BiS upgrades from filtered raids (**re-roll** or **+100**, max softs 1–4), with competition colors, win-odds hints, and a pasteable call list.
+Plan soft reserves for one character + spec on BiS upgrades from filtered raids (**re-roll** or **+100**, configurable soft reserve maximum with no fixed upper bound), with competition colors, win-odds hints, and a pasteable call list.
+For re-rolls, ordinary rolls count only when one player calls softs on an item; with multiple callers, only soft rolls count.
+The call list contains only your selected soft reserves. A toggle controls whether to show the number assigned to each item.
+The **All useful items** toggle (off by default) appends the remaining items from the useful-item list after your selected reserves.
 Optional **With upgrades** dims characters with no BiS targets; **Reset parameters** clears the panel filters.
 Uses the active **BiS builds** list; other-spec gear counts as owned; session state survives closing the panel.
 
@@ -81,7 +90,7 @@ On push/PR to `main`, GitHub Actions runs **Lint**, **Test**, and **Build** in p
 **Performance:**
 WoW item JSON is code-split and loaded after the app shell (`WowDataProvider` / `ensure-wow-data`); fonts are self-hosted under `public/fonts/`; class/spec icons are 32×32 WebP; item tooltip scripts load on first item-link interaction for the active locale only.
 
-Contributor/agent conventions: [`.cursor/rules/project-rules.mdc`](.cursor/rules/project-rules.mdc).
+Contributor and agent conventions: [`AGENTS.md`](AGENTS.md).
 
 **Planned features:**
 [docs/roadmap.md](docs/roadmap.md).
@@ -144,6 +153,7 @@ Vite emits content-hashed files under `assets/` (e.g. `/raidwise/assets/index-�
 | `/raidwise/fonts/*` | `public, max-age=31536000, immutable` | Self-hosted woff2 |
 
 Also enable **HTTP/2** (or HTTP/3) and **brotli** or **gzip** for JS/CSS/JSON/SVG/woff2.
+Client-side routes under `/raidwise/` must fall back to `index.html` so direct links and refreshes work.
 
 Example Nginx location snippets:
 
@@ -153,6 +163,9 @@ location /raidwise/assets/ {
 }
 location = /raidwise/index.html {
   add_header Cache-Control "no-cache";
+}
+location /raidwise/ {
+  try_files $uri $uri/ /raidwise/index.html;
 }
 location /raidwise/fonts/ {
   add_header Cache-Control "public, max-age=31536000, immutable";

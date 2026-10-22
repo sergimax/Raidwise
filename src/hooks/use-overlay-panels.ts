@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import type { CharacterRecord } from "../types/characters.ts";
 import type { DungeonRecord } from "../types/dungeons.ts";
 import type { OverlayPanelId } from "./overlay-panel-id.ts";
+import { APP_ROUTES, useAppRoute } from "../routing/app-route.ts";
 import { useCharacterFormState } from "./use-character-form-state.ts";
 import { useDungeonFormState } from "./use-dungeon-form-state.ts";
 
@@ -11,29 +13,32 @@ type UseOverlayPanelsOptions = {
   onDungeonAdded: (dungeon: DungeonRecord) => void;
 };
 
-/**
- * Toolbar overlays share one `activePanel` id (character | dungeon | characterPick | gear | bis | data).
- * Derived `show*` flags keep the existing TrackerControls / RaidTrackerMain API.
- * Form field state still lives in the form hooks; `onSubmitted` clears the panel
- * after a successful add so submit does not leave a stale active id.
- */
+const routeByPanel: Record<OverlayPanelId, (typeof APP_ROUTES)[keyof typeof APP_ROUTES]> = {
+  character: APP_ROUTES.addCharacter,
+  dungeon: APP_ROUTES.addRaid,
+  characterPick: APP_ROUTES.characterPick,
+  gear: APP_ROUTES.gearPick,
+  bis: APP_ROUTES.bisLists,
+  data: APP_ROUTES.raidSettings,
+};
+
+function getPanelForRoute(route: string): OverlayPanelId | null {
+  return (
+    (Object.entries(routeByPanel).find(([, panelRoute]) => panelRoute === route)?.[0] as OverlayPanelId | undefined) ?? null
+  );
+}
+
+/** Toolbar tools are addressable routes; their selected panel follows browser history. */
 export function useOverlayPanels({
   characters,
   onCharacterAdded,
   onDungeonAdded,
 }: UseOverlayPanelsOptions) {
-  const [activePanel, setActivePanel] = useState<OverlayPanelId | null>(null);
-  /** Latest panel id for toggles without re-creating callbacks every open/close. */
-  const activePanelRef = useRef<OverlayPanelId | null>(null);
+  const route = useAppRoute();
+  const navigate = useNavigate();
+  const activePanel = getPanelForRoute(route);
 
-  useEffect(() => {
-    activePanelRef.current = activePanel;
-  }, [activePanel]);
-
-  const clearActivePanel = useCallback(() => {
-    setActivePanel(null);
-  }, []);
-
+  const clearActivePanel = useCallback(() => navigate(APP_ROUTES.raids), [navigate]);
   const characterForm = useCharacterFormState({
     characters,
     onCharacterAdded,
@@ -43,40 +48,35 @@ export function useOverlayPanels({
     onDungeonAdded,
     onSubmitted: clearActivePanel,
   });
+  const { close: closeCharacterFormState } = characterForm;
+  const { close: closeDungeonFormState } = dungeonForm;
 
   const closeAllOverlayPanels = useCallback(() => {
-    setActivePanel(null);
-    characterForm.close();
-    dungeonForm.close();
-  }, [characterForm, dungeonForm]);
+    navigate(APP_ROUTES.raids);
+    closeCharacterFormState();
+    closeDungeonFormState();
+  }, [closeCharacterFormState, closeDungeonFormState, navigate]);
 
-  /** Open `panelId`, or close it if already active. Always closes the other form. */
   const togglePanel = useCallback(
     (panelId: OverlayPanelId) => {
-      const current = activePanelRef.current;
-      if (current === panelId) {
-        setActivePanel(null);
-        if (panelId === "character") {
-          characterForm.close();
-        } else if (panelId === "dungeon") {
-          dungeonForm.close();
-        }
-        return;
+      if (activePanel === "character" || panelId === "character") {
+        closeCharacterFormState();
       }
-
-      if (panelId === "character") {
-        dungeonForm.close();
-        characterForm.open();
-      } else if (panelId === "dungeon") {
-        characterForm.close();
-        dungeonForm.open();
-      } else {
-        characterForm.close();
-        dungeonForm.close();
+      if (activePanel === "dungeon" || panelId === "dungeon") {
+        closeDungeonFormState();
       }
-      setActivePanel(panelId);
+      navigate(activePanel === panelId ? APP_ROUTES.raids : routeByPanel[panelId]);
     },
-    [characterForm, dungeonForm],
+    [activePanel, closeCharacterFormState, closeDungeonFormState, navigate],
+  );
+
+  const closePanel = useCallback(
+    (panelId: OverlayPanelId) => {
+      if (activePanel === panelId) navigate(APP_ROUTES.raids);
+      if (panelId === "character") closeCharacterFormState();
+      if (panelId === "dungeon") closeDungeonFormState();
+    },
+    [activePanel, closeCharacterFormState, closeDungeonFormState, navigate],
   );
 
   const showCharacterPickPanel = activePanel === "characterPick";
@@ -86,67 +86,18 @@ export function useOverlayPanels({
   const showCharacterForm = activePanel === "character";
   const showDungeonForm = activePanel === "dungeon";
 
-  const toggleCharacterPickPanel = useCallback(() => {
-    togglePanel("characterPick");
-  }, [togglePanel]);
-
-  const toggleGearPickPanel = useCallback(() => {
-    togglePanel("gear");
-  }, [togglePanel]);
-
-  const toggleBisListsPanel = useCallback(() => {
-    togglePanel("bis");
-  }, [togglePanel]);
-
-  const toggleDataControlsPanel = useCallback(() => {
-    togglePanel("data");
-  }, [togglePanel]);
-
-  const toggleCharacterForm = useCallback(() => {
-    togglePanel("character");
-  }, [togglePanel]);
-
-  const toggleDungeonForm = useCallback(() => {
-    togglePanel("dungeon");
-  }, [togglePanel]);
-
-  const closeCharacterPickPanel = useCallback(() => {
-    if (activePanelRef.current === "characterPick") {
-      setActivePanel(null);
-    }
-  }, []);
-
-  const closeGearPickPanel = useCallback(() => {
-    if (activePanelRef.current === "gear") {
-      setActivePanel(null);
-    }
-  }, []);
-
-  const closeBisListsPanel = useCallback(() => {
-    if (activePanelRef.current === "bis") {
-      setActivePanel(null);
-    }
-  }, []);
-
-  const closeDataControlsPanel = useCallback(() => {
-    if (activePanelRef.current === "data") {
-      setActivePanel(null);
-    }
-  }, []);
-
-  const closeCharacterForm = useCallback(() => {
-    if (activePanelRef.current === "character") {
-      setActivePanel(null);
-    }
-    characterForm.close();
-  }, [characterForm]);
-
-  const closeDungeonForm = useCallback(() => {
-    if (activePanelRef.current === "dungeon") {
-      setActivePanel(null);
-    }
-    dungeonForm.close();
-  }, [dungeonForm]);
+  const toggleCharacterPickPanel = useCallback(() => togglePanel("characterPick"), [togglePanel]);
+  const toggleGearPickPanel = useCallback(() => togglePanel("gear"), [togglePanel]);
+  const toggleBisListsPanel = useCallback(() => togglePanel("bis"), [togglePanel]);
+  const toggleDataControlsPanel = useCallback(() => togglePanel("data"), [togglePanel]);
+  const toggleCharacterForm = useCallback(() => togglePanel("character"), [togglePanel]);
+  const toggleDungeonForm = useCallback(() => togglePanel("dungeon"), [togglePanel]);
+  const closeCharacterPickPanel = useCallback(() => closePanel("characterPick"), [closePanel]);
+  const closeGearPickPanel = useCallback(() => closePanel("gear"), [closePanel]);
+  const closeBisListsPanel = useCallback(() => closePanel("bis"), [closePanel]);
+  const closeDataControlsPanel = useCallback(() => closePanel("data"), [closePanel]);
+  const closeCharacterForm = useCallback(() => closePanel("character"), [closePanel]);
+  const closeDungeonForm = useCallback(() => closePanel("dungeon"), [closePanel]);
 
   return useMemo(
     () => ({
@@ -177,22 +128,22 @@ export function useOverlayPanels({
       closeAllOverlayPanels,
       closeBisListsPanel,
       closeCharacterForm,
+      closeCharacterPickPanel,
       closeDataControlsPanel,
       closeDungeonForm,
-      closeCharacterPickPanel,
       closeGearPickPanel,
       dungeonForm,
       showBisListsPanel,
       showCharacterForm,
+      showCharacterPickPanel,
       showDataControlsPanel,
       showDungeonForm,
-      showCharacterPickPanel,
       showGearPickPanel,
       toggleBisListsPanel,
       toggleCharacterForm,
+      toggleCharacterPickPanel,
       toggleDataControlsPanel,
       toggleDungeonForm,
-      toggleCharacterPickPanel,
       toggleGearPickPanel,
     ],
   );
@@ -200,7 +151,6 @@ export function useOverlayPanels({
 
 export type OverlayPanelsState = ReturnType<typeof useOverlayPanels>;
 
-/** Form fields and toggles exposed to RaidTrackerMain (subset of overlay panel state). */
 export type TrackerFormsState = Pick<
   OverlayPanelsState,
   | "showCharacterForm"
@@ -213,9 +163,7 @@ export type TrackerFormsState = Pick<
   | "dungeonForm"
 >;
 
-export function pickTrackerFormsState(
-  overlayPanels: OverlayPanelsState,
-): TrackerFormsState {
+export function pickTrackerFormsState(overlayPanels: OverlayPanelsState): TrackerFormsState {
   return {
     showCharacterForm: overlayPanels.showCharacterForm,
     showDungeonForm: overlayPanels.showDungeonForm,

@@ -14,8 +14,10 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import { getLocalizedDifficulty } from "../../i18n/localized-domain.ts";
 import {
   defaultShortNameForDungeonName,
+  difficultyForRaidName,
   getLocalizedRaidNameSuggestions,
   isKnownRaidName,
+  raidNameForDifficulty,
 } from "../../utils/dungeon-short-name.ts";
 import {
   DungeonDifficulty,
@@ -61,6 +63,10 @@ export function DungeonForm({
     nextName: string,
   ) => {
     onNameChange(nextName);
+    const matchingDifficulty = difficultyForRaidName(nextName);
+    if (matchingDifficulty) {
+      onDifficultyChange(matchingDifficulty);
+    }
   };
 
   const handleNameChange = (
@@ -74,6 +80,19 @@ export function DungeonForm({
     if (isKnownRaidName(nextName)) {
       onShortNameChange(defaultShortNameForDungeonName(nextName) ?? "");
     }
+    const matchingDifficulty = difficultyForRaidName(nextName);
+    if (matchingDifficulty) {
+      onDifficultyChange(matchingDifficulty);
+    }
+  };
+
+  const handleDifficultyChange = (nextDifficulty: DungeonDifficultyValue) => {
+    const matchingName = raidNameForDifficulty(name, nextDifficulty, locale);
+    if (matchingName && matchingName !== name) {
+      onNameChange(matchingName);
+      onShortNameChange(defaultShortNameForDungeonName(matchingName) ?? "");
+    }
+    onDifficultyChange(nextDifficulty);
   };
 
   return (
@@ -191,7 +210,7 @@ export function DungeonForm({
                     name="dungeonDifficulty"
                     value={difficulty}
                     onChange={(event) => {
-                      onDifficultyChange(
+                      handleDifficultyChange(
                         event.target.value as DungeonDifficultyValue,
                       );
                     }}

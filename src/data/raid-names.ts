@@ -35,6 +35,12 @@ export const RaidNames = {
     en: "Trial of the Crusader",
     shortRu: "ИК",
     shortEn: "ToC",
+    heroic: {
+      ru: "Испытание Великого крестоносца",
+      en: "Trial of the Grand Crusader",
+      shortRu: "ИВК",
+      shortEn: "ToGC",
+    },
     emblem: EmblemKey.TRIUMPH,
   },
   ulduar: {
