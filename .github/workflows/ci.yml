@@ -45,7 +45,7 @@ jobs:
       - uses: ./.github/actions/setup-project
       - uses: browser-actions/setup-chrome@v2
         id: chrome
-      - name: Check theme appearance and accessibility
+      - name: Check theme, accessibility, and raid data persistence
         run: npm run test:browser
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}

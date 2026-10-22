@@ -184,4 +184,37 @@ describe("RaidTrackerTable with saved data", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(screen.queryByRole("button", { name: "Remove character Alpha" })).not.toBeInTheDocument();
   });
+
+  it("validates raid edits and applies changes only after save", async () => {
+    saveRaidTrackerState({
+      characters: [],
+      dungeons: [createTestDungeon({ id: "citadel", name: "Citadel" })],
+      dungeonToggles: {},
+    });
+    renderPopulatedTable();
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit details for Citadel" }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.change(within(dialog).getByRole("textbox", { name: "Name" }), {
+      target: { value: "" },
+    });
+    fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
+    expect(within(dialog).getByText("Enter a dungeon name.")).toBeInTheDocument();
+
+    fireEvent.change(within(dialog).getByRole("textbox", { name: "Name" }), {
+      target: { value: "Updated Raid" },
+    });
+    fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(screen.getByRole("button", { name: "Edit details for Citadel" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit details for Citadel" }));
+    fireEvent.change(within(screen.getByRole("dialog")).getByRole("textbox", { name: "Name" }), {
+      target: { value: "Updated Raid" },
+    });
+    fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(screen.getByRole("button", { name: "Edit details for Updated Raid" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Edit details for Citadel" })).not.toBeInTheDocument();
+  });
 });
