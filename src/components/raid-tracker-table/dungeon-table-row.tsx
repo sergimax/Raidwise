@@ -154,6 +154,10 @@ export const DungeonTableRow = memo(function DungeonTableRow({
             backgroundColor: alpha(paper, 0.75),
             backdropFilter: "blur(1px)",
           },
+          "& > .raid-tracker-table__toggle-cell": {
+            backgroundColor: alpha(paper, 0.85),
+            backdropFilter: "brightness(0.7)",
+          },
         };
       }}
     >

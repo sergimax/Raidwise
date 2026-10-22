@@ -193,6 +193,7 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
 
   return (
     <TableCell
+      className="raid-tracker-table__toggle-cell"
       align="center"
       sx={[
         CHARACTER_BODY_CELL_SX,
