@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.0] - 2026-10-22
+
+### Added
+
+- **Page navigation:** Dedicated routes for raid tools and settings, breadcrumbs back to My Raids, and a Settings page with app information and recent changes.
+- **Raid table artwork:** Template raid images span adjacent variants when sorted by name, in groups of up to four rows.
+- **Raid controls:** A confirmation-backed reset for all cooldown toggles and more precise raid search by size and difficulty.
+- **Soft reserve output:** Optional soft count per item and an off-by-default option to append all other useful items after selected reserves.
+
+### Changed
+
+- **Soft reserve rules:** The configurable maximum no longer stops at four. In re-roll mode, ordinary rolls count for a sole soft caller; competition between multiple callers counts only their soft rolls.
+- **Tracker layout:** Refined table spacing and artwork contrast, plus a consistent header and page spacing across routes.
+
+### Fixed
+
+- **Soft reserve list:** Selected reserves now lead the copied list instead of being displaced by all BiS items.
+
 ## [2.9.0] - 2026-09-04
 
 ### Added

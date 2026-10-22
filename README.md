@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.9.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.10.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -22,17 +22,21 @@ Header **info** opens a short intro (CDs, gear planning, or BiS-only).
 ### Cooldown toggles
 
 Mark which character has CD on which raid.
-Reset one character from the table header, or everyone from **Settings**.
+Reset one character from the table header, or everyone from **Raid settings**.
 
 ### Table
 
 Sort and search raids (EN/RU, e.g. `ICC25H` / `ЦЛК25хм`); **Type** shows size (+ skull for Heroic), with per-row edit/delete. When sorted by name, adjacent variants of the same template raid share a background image across up to four rows; extra variants start another image.
 Character columns use class-colored names and main/off GS; Complete is a progress bar; compact on small screens, with horizontal scroll inside the table when many characters are present.
 
-### Settings
+### Raid settings
 
 Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm); when empty, **Add raids from template**.
+
+### Settings
+
 The About section shows the app version and labeled links to the source code and author's website.
+What's new shows all changes for the latest published version, with a link to the full changelog.
 
 ### Character pick for a raid
 
