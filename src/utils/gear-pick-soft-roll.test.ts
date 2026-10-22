@@ -24,6 +24,7 @@ describe("gear-pick-soft-roll", () => {
   it("lists soft weight keys up to max", () => {
     expect(softWeightKeys(3)).toEqual([1, 2, 3]);
     expect(softWeightKeys(1)).toEqual([1]);
+    expect(softWeightKeys(10)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 
   it("enforces soft budget across items", () => {
@@ -33,6 +34,15 @@ describe("gear-pick-soft-roll", () => {
     expect(getSofts(byItemId, 2)).toBe(1);
     expect(remainingSoftBudget(byItemId, 3, 1)).toBe(2);
     expect(clampMySofts(5, byItemId, 3, 1)).toBe(2);
+  });
+
+  it("supports a configurable soft budget above four", () => {
+    let byItemId = setMySoftsForItem({}, 1, 6, 10);
+    byItemId = setMySoftsForItem(byItemId, 2, 4, 10);
+    expect(sumMySofts(byItemId)).toBe(10);
+    expect(remainingSoftBudget(byItemId, 10, 2)).toBe(4);
+    expect(clampMySofts(8, byItemId, 10, 2)).toBe(4);
+    expect(setOthersCountForWeight({}, 1, 10, 2, 10)[1]?.othersByWeight[10]).toBe(2);
   });
 
   it("tracks others histogram by soft weight", () => {

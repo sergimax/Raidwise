@@ -13,7 +13,6 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import type { TranslateFn } from "../../i18n/translate.ts";
 import {
-  type SoftRollMax,
   type SoftRollRules,
   type SoftRollSystem,
 } from "../../utils/gear-pick-soft-roll.ts";
@@ -32,7 +31,7 @@ export function GearPickRules({
   t,
 }: GearPickRulesProps) {
   const setMaxSofts = (delta: number) => {
-    const next = Math.min(4, Math.max(1, rules.maxSofts + delta)) as SoftRollMax;
+    const next = Math.max(1, rules.maxSofts + delta);
     if (next === rules.maxSofts) {
       return;
     }
@@ -62,7 +61,6 @@ export function GearPickRules({
           <IconButton
             size="small"
             aria-label={t("gearPickPanel.maxSoftsAria")}
-            disabled={rules.maxSofts >= 4}
             onClick={() => {
               setMaxSofts(1);
             }}

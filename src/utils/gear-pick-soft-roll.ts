@@ -3,7 +3,7 @@ import { formatCharacterDisplayName } from "./character-display.ts";
 /** Soft-roll system: +100 per soft, or extra /rolls (best wins). */
 export type SoftRollSystem = "plus100" | "reroll";
 
-export type SoftRollMax = 1 | 2 | 3 | 4;
+export type SoftRollMax = number;
 
 export type SoftRollRules = {
   maxSofts: SoftRollMax;
