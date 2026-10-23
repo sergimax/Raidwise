@@ -4,6 +4,7 @@ import type { RaidKey } from "../../data/raid-names.ts";
 const RAID_ROW_BACKGROUND_FILES: Partial<Record<RaidKey, string>> = {
   naxxramas: "Naxx-loading.png",
   obsidianSanctum: "OS-loading.png",
+  onyxiasLair: "OL-loading.png",
   vaultOfArchavon: "VoA-loading.png",
   trialOfTheCrusader: "TotC-loading.png",
   ulduar: "Ulduar-loading.png",
