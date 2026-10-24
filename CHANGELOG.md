@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.2] - 2026-10-24
+
+### Fixed
+
+- **Raid table artwork:** Onyxia's Lair rows now display their raid background image.
+
 ## [2.10.1] - 2026-10-23
 
 ### Fixed
