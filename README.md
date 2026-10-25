@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.10.1-purple)
+![App version](https://img.shields.io/badge/App_version-2.10.3-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -160,19 +160,34 @@ Vite emits content-hashed files under `assets/` (e.g. `/raidwise/assets/index-â€
 Also enable **HTTP/2** (or HTTP/3) and **brotli** or **gzip** for JS/CSS/JSON/SVG/woff2.
 Client-side routes under `/raidwise/` must fall back to `index.html` so direct links and refreshes work.
 
-Example Nginx location snippets:
+Example Nginx locations inside a `server` block. `root` maps `/raidwise/...`
+to files under `/usr/share/nginx/raidwise/...`; unknown client-side routes
+fall back to `index.html`, while missing files under `assets` and `fonts` stay 404.
 
 ```nginx
-location /raidwise/assets/ {
-  add_header Cache-Control "public, max-age=31536000, immutable";
+location = /raidwise {
+  return 301 /raidwise/;
 }
+
 location = /raidwise/index.html {
+  root /usr/share/nginx;
   add_header Cache-Control "no-cache";
 }
-location /raidwise/ {
-  try_files $uri $uri/ /raidwise/index.html;
-}
-location /raidwise/fonts/ {
+
+location ^~ /raidwise/assets/ {
+  root /usr/share/nginx;
+  try_files $uri =404;
   add_header Cache-Control "public, max-age=31536000, immutable";
+}
+
+location ^~ /raidwise/fonts/ {
+  root /usr/share/nginx;
+  try_files $uri =404;
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+
+location ^~ /raidwise/ {
+  root /usr/share/nginx;
+  try_files $uri $uri/ /raidwise/index.html;
 }
 ```

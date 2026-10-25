@@ -35,7 +35,7 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 **Avoid:** Facebook/SaaS blue as brand; pink/magenta identity; brand≈danger or brand≈ok pairs; Latin-only display fonts (Syne, Space Grotesk) as sole UI fonts.
 
-**Logo concepts (Raidwise rename):** [logo-variants/](./logo-variants/) — SVG templates + PNG previews; not production `public/` assets yet.
+**Logo concepts (Raidwise rename):** [logo-variants/](./logo-variants/) — SVG templates + PNG previews. The `g12.svg` letterforms are used in `public/logo.svg`; the other concepts are explorations.
 
 **Toolbar panel backgrounds:** [panel-backgrounds/](./panel-backgrounds/) — hatch / grid / wash variants for `TrackerToolbarPanel` (step blocks stay solid).
 
@@ -63,7 +63,7 @@ CSS variables mirror the MUI palette so non-MUI markup stays in sync.
 | Surface / paper | `#ffffff` | `--surface` | `background.paper` |
 | Chip / inset | `#f3f2ef` | `--chip-bg` | — |
 | Sticky header | `rgba(252, 251, 249, 0.96)` | `--header-bg` | AppBar |
-| Border | `#8a8a8a` | `--border` | `divider` |
+| Border | `#d6d4cf` | `--border` | `divider` |
 | Text | `#141414` | `--text` | `text.primary` |
 | Text strong | `#0a0a0a` | `--text-strong` | — |
 | Text muted | `#555555` | `--text-muted` | `text.secondary` |
@@ -92,7 +92,7 @@ Action:
 | Surface / paper | `#242424` | `--surface` | `background.paper` |
 | Chip / inset | `#1f1f1f` | `--chip-bg` | — |
 | Sticky header | `rgba(26, 26, 26, 0.96)` | `--header-bg` | AppBar |
-| Border | `#8a8a8a` | `--border` | `divider` |
+| Border | `#454545` | `--border` | `divider` |
 | Text | `#f2f2f2` | `--text` | `text.primary` |
 | Text strong | `#fafafa` | `--text-strong` | — |
 | Text muted | `#a3a3a3` | `--text-muted` | `text.secondary` |
@@ -126,22 +126,22 @@ Warm brand-soft radials (not SaaS blue/teal):
 
 | Token | Value | Usage |
 | --- | --- | --- |
-| `--radius` / `shape.borderRadius` | `10px` | Global MUI shape; tables, menus, alerts |
-| `--control-radius` / control | `8px` | Buttons, icon buttons, tooltips |
-| Dialog | `12px` | Dialog paper |
+| `--radius` / `shape.borderRadius` | `6px` | Global MUI shape |
+| Control | `4px` | Buttons, icon buttons, table containers, tooltips |
+| Dialog | `8px` | Dialog paper |
 | Filter / step card | `8px` (`borderRadius: 1`) | `FilterSection` |
 | Inline mention chip | `8px` | Intro feature chips |
 | Game / slot icon thumb | `4px` | Class, spec, raid, gear-slot thumbs |
 | Scrollbar thumb | `999` (pill) | WebKit thumb only |
 | `--gap` / `--pad` | `0.55rem` / `0.65rem` | Density reference |
 
-MUI `borderRadius: 1` in `sx` = **8px** when theme spacing is 8.
+MUI `borderRadius: 1` in `sx` = **6px** because the theme shape radius is 6px.
 
 ---
 
 ## Borders
 
-Interactive chrome uses border `#8a8a8a` (≥ ~3:1 vs page bg):
+Interactive chrome uses the mode-specific `divider` token (`#d6d4cf` light, `#454545` dark):
 
 ```text
 border: 1px solid <divider>
@@ -152,8 +152,8 @@ border: 1px solid <divider>
 | Outlined `Paper` | `divider` | Toolbar panels (`TrackerToolbarPanel`) |
 | Step / filter card | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | `FilterSection` |
 | Table container | `1px solid divider` | + paper fill + soft shadow |
-| Dialog paper | `1px solid divider` | radius 12 |
-| Menu paper | `1px solid divider` | radius 10 |
+| Dialog paper | `1px solid divider` | radius 8 |
+| Menu paper | `1px solid divider` | radius 6 |
 | Outlined button | `divider`; hover `#6b6b6b` / `#a3a3a3` | translucent paper fill |
 | Outlined input hover outline | same hover border colors | soft paper fill behind field |
 | Intro / panel cards | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | matches filter cards |
@@ -183,7 +183,7 @@ Do **not** invent a second border color for generic chrome — use `divider` / `
 | Display | `'Onest', 'Noto Sans', system-ui, sans-serif` |
 | Mono | `'JetBrains Mono', 'IBM Plex Mono', monospace` |
 
-Fonts loaded from Google Fonts in `index.html` (Cyrillic + Latin).
+Fonts are self-hosted as WOFF2 files under `public/fonts/` and declared in `src/fonts.css` (Cyrillic + Latin). `index.html` preloads the regular Latin and Cyrillic Onest files.
 
 | Style | Rules |
 | --- | --- |
@@ -227,7 +227,7 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 ### Buttons (theme)
 
 - `disableElevation: true`
-- Root radius `8`, padding inline `12`; small: block `4`, inline `10`
+- Root radius `4px`, padding inline `12`; small: block `4`, inline `10`
 - **Contained primary** — inverse ink fill/border (never brand)
 - **Contained secondary** — brand fill (identity / template spotlight only)
 - Outlined: divider border + translucent paper; hover uses stronger ink/white alpha fill (not tiny `action.hover`)
@@ -272,16 +272,17 @@ Hide external WoW tooltips on scroll/mouseleave where item links live inside scr
 
 | Token | Value |
 | --- | --- |
-| Toolbar height | `56px` xs / `64px` sm+ (`--app-toolbar-min-height`) |
-| Main padding | top `1.5rem`→`2rem`, x `1.25rem`→`1.75rem`, bottom `2rem` |
+| Toolbar min-height | `52px` at all breakpoints (`--app-toolbar-min-height`) |
+| Main padding | top `0.5rem` xs / `0.75rem` sm+, x `1.25rem` xs / `1.75rem` sm+, bottom `2rem` |
 | `html` scroll-padding-top | toolbar height |
 
 Panel max widths (app layout, not core brand):
 
 | Panel | Max width |
 | --- | --- |
-| Narrow (add character / raid) | `480` |
-| Data controls | `680` |
+| Character form | `1600` |
+| Raid form | `680` |
+| Data controls | `1280` |
 | BiS | `1280` |
 | Character / Soft pick | `1920` |
 
@@ -333,7 +334,7 @@ UI: MUI determinate `LinearProgress` only (`CompletionCountChip` in `dungeon-cel
 3. Wire `data-color-mode` + matching CSS vars before paint
 4. Load Noto Sans + Onest + JetBrains Mono (Cyrillic + Latin)
 5. Implement quiet vs `.link-spot` links (`links.css`)
-6. Keep border `#8a8a8a`, radii 8/10/12
+6. Use the mode-specific `divider` border and the implemented radii (4/6/8px)
 7. Prefer stepped `FilterSection`-style cards for multi-field workflows (brand title, step badge, 3px brand left edge)
 8. Contrast-check text / muted / brand / ok / danger / link / link-spot / border
 9. Port class-color chips (`character-display.ts`) and completion chip fills (`completion-chip-color.ts`) when the product needs them

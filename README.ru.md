@@ -6,7 +6,7 @@
 Данные хранятся локально в `localStorage`.
 Активная ссылка: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![Версия приложения](https://img.shields.io/badge/App_version-2.10.1-purple)
+![Версия приложения](https://img.shields.io/badge/App_version-2.10.3-purple)
 ![Версия игры](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Возможности
@@ -161,19 +161,34 @@ Vite кладёт файлы с хэшем в имени в `assets/` (напр.
 Также включите **HTTP/2** (или HTTP/3) и **brotli**/**gzip** для JS/CSS/JSON/SVG/woff2.
 Для прямых ссылок и обновления страниц сервер должен перенаправлять неизвестные пути приложения под `/raidwise/` на `index.html`.
 
-Пример для Nginx:
+Пример для Nginx внутри `server`. Здесь `root` сопоставляет URL `/raidwise/...`
+с файлами в `/usr/share/nginx/raidwise/...`; неизвестные клиентские маршруты
+возвращают `index.html`, а отсутствующие файлы в `assets` и `fonts` остаются 404.
 
 ```nginx
-location /raidwise/assets/ {
-  add_header Cache-Control "public, max-age=31536000, immutable";
+location = /raidwise {
+  return 301 /raidwise/;
 }
+
 location = /raidwise/index.html {
+  root /usr/share/nginx;
   add_header Cache-Control "no-cache";
 }
-location /raidwise/ {
-  try_files $uri $uri/ /raidwise/index.html;
-}
-location /raidwise/fonts/ {
+
+location ^~ /raidwise/assets/ {
+  root /usr/share/nginx;
+  try_files $uri =404;
   add_header Cache-Control "public, max-age=31536000, immutable";
+}
+
+location ^~ /raidwise/fonts/ {
+  root /usr/share/nginx;
+  try_files $uri =404;
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+
+location ^~ /raidwise/ {
+  root /usr/share/nginx;
+  try_files $uri $uri/ /raidwise/index.html;
 }
 ```
