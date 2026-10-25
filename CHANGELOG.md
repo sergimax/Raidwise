@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.3] - 2026-10-25
+
+### Fixed
+
+- **Deployment documentation:** Corrected the Nginx example for routing, asset and font caching, and missing-file handling.
+
 ## [2.10.2] - 2026-10-24
 
 ### Fixed
