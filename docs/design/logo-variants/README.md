@@ -1,7 +1,7 @@
 # Raidwise logo concepts
 
 Exploration set for renaming the old **MRCD** medallion marks to **Raidwise**.
-Not production assets — explore here, then ship the chosen mark as `public/logo.svg` (header + favicon share one file).
+The chosen letterform mark is already shipped as `public/logo.svg` (shared by the header and favicon); the other concepts remain explorations.
 
 **In use now:** letterforms from [`g12.svg`](./g12.svg) → `public/logo.svg`. Full-seal experiments such as [`g9-1 opt.svg`](./g9-1%20opt.svg) stay here for reference.
 
@@ -30,7 +30,7 @@ Not production assets — explore here, then ship the chosen mark as `public/log
 | **I** | Stencil / cream disk **R** | [PNG](./raidwise-logo-variant-i-stencil-r.png) |
 | **J** | Wordmark banner (no seal) | [PNG](./raidwise-logo-variant-j-wordmark-banner.png) |
 
-## Suggested production pair
+## Production asset
 
 | File | Notes |
 |------|-------|

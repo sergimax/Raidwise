@@ -28,7 +28,7 @@
     "okIsGreen": true,
     "dangerIsRed": true,
     "brandDistinctFromDangerAndOk": true,
-    "interactiveBorder": "#8a8a8a",
+    "interactiveBorder": "divider",
     "domain": {
       "bisReady": "ok",
       "defect": "danger",
@@ -53,9 +53,9 @@
     "subtitle1": { "fontFamily": "display", "fontWeight": 600, "letterSpacing": "-0.01em" }
   },
   "shape": {
-    "borderRadius": 10,
-    "controlBorderRadius": 8,
-    "dialogBorderRadius": 12,
+    "borderRadius": 6,
+    "controlBorderRadius": 4,
+    "dialogBorderRadius": 8,
     "filterCardBorderRadius": 8,
     "inlineMentionBorderRadius": 8,
     "iconThumbBorderRadius": 4,
@@ -67,7 +67,7 @@
     "width": "1px",
     "style": "solid",
     "defaultColorToken": "divider",
-    "interactive": "#8a8a8a"
+    "interactive": "divider"
   },
   "spacingRecipes": {
     "panelPadding": { "xs": 12, "sm": 16 },
@@ -97,9 +97,9 @@
     "thumbHover": { "light": "#8a8a8a", "dark": "#8a8a8a" }
   },
   "shell": {
-    "toolbarMinHeightPx": { "xs": 56, "sm": 64 },
+    "toolbarMinHeightPx": { "xs": 52, "sm": 52 },
     "mainPadding": {
-      "top": { "xs": "1.5rem", "sm": "2rem" },
+      "top": { "xs": "0.5rem", "sm": "0.75rem" },
       "x": { "xs": "1.25rem", "sm": "1.75rem" },
       "bottom": "2rem"
     }
@@ -119,7 +119,7 @@
       "--surface": "#ffffff",
       "--chip-bg": "#f3f2ef",
       "--header-bg": "rgba(252, 251, 249, 0.96)",
-      "--border": "#8a8a8a",
+      "--border": "#d6d4cf",
       "--text": "#141414",
       "--text-strong": "#0a0a0a",
       "--text-muted": "#555555",
@@ -148,7 +148,7 @@
       "--surface": "#242424",
       "--chip-bg": "#1f1f1f",
       "--header-bg": "rgba(26, 26, 26, 0.96)",
-      "--border": "#8a8a8a",
+      "--border": "#454545",
       "--text": "#f2f2f2",
       "--text-strong": "#fafafa",
       "--text-muted": "#a3a3a3",
@@ -179,7 +179,7 @@
       "info": { "main": "#0284c7", "light": "#38bdf8", "dark": "#0369a1" },
       "warning": { "main": "#d97706", "light": "#fbbf24", "dark": "#b45309" },
       "background": { "default": "#fcfbf9", "paper": "#ffffff" },
-      "divider": "#8a8a8a",
+      "divider": "#d6d4cf",
       "text": { "primary": "#141414", "secondary": "#555555" },
       "action": {
         "hover": "rgba(20, 20, 20, 0.04)",
@@ -195,7 +195,7 @@
       "info": { "main": "#38bdf8", "light": "#7dd3fc", "dark": "#0284c7" },
       "warning": { "main": "#f59e0b", "light": "#fbbf24", "dark": "#d97706" },
       "background": { "default": "#1a1a1a", "paper": "#242424" },
-      "divider": "#8a8a8a",
+      "divider": "#454545",
       "text": { "primary": "#f2f2f2", "secondary": "#a3a3a3" },
       "action": {
         "hover": "rgba(242, 242, 242, 0.06)",
