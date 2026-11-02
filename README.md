@@ -59,7 +59,7 @@ Paper-doll slot layout with alternatives; **Copy** exports `Slot: Item` lines.
 
 ### Gear hints
 
-CD cells use subtle tint with a 4px edge accent (left for main spec, right for off spec); saturation follows upgrade strength. They tint <span style="color:#d97706">amber</span> for missing BiS and <span style="color:#0284c7">blue</span> for stat-filtered ilvl upgrades (hidden when that CD is marked; main/off split when both specs are set).
+CD cells use color gradients fading from the center toward the edges: main spec on the left, off spec on the right; BiS (amber, including variants) on top and ordinary ilvl upgrades (blue) below. Each band has independent strength based on upgrade slots; empty bands stay untinted and marked CDs hide the hints.
 Cells show unique BiS counts (including variants) and ordinary upgrade counts beside the toggle: main spec on the left, off spec on the right. Counts hide when CD is marked.
 Boss-grouped tooltips show unique item counts for each BiS, BiS variant, and ordinary upgrade category and include tier tokens; also-owned items count without being on the WowSims export.
 

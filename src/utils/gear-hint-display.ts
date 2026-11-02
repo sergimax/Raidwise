@@ -1,7 +1,7 @@
 import type { SystemStyleObject } from "@mui/system";
 import type { Theme } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
-import type { GearHintCellDisplay, GearUpgradeHintLevel } from "./gear-upgrade-hint.ts";
+import type { GearHintCellDisplay, GearUpgradeHintLevel, GearUpgradeHint } from "./gear-upgrade-hint.ts";
 
 type HintAlphaScale = Record<GearUpgradeHintLevel, number>;
 
@@ -187,5 +187,40 @@ export function gearUpgradeHintDualCellSx(
       );
     }
     return {};
+  };
+}
+
+/** Independent spec/category bands fade out from the cell center. */
+export function gearUpgradeHintBandsCellSx(
+  main: GearUpgradeHint | undefined,
+  off: GearUpgradeHint | undefined,
+  dungeonItemLevels: readonly number[],
+  dualSpec: boolean,
+): SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>) {
+  if (dungeonItemLevels.length === 0 || (!main && !off)) return {};
+
+  return (theme) => {
+    const layers: string[] = [];
+    for (const [hint, side] of [[main, "left"], [off, "right"]] as const) {
+      if (!hint) continue;
+      const tracks = [
+        { kind: "bis" as const, level: hint.bisListActive ? Math.max(hint.bis.level, hint.bisVariant.level) as GearUpgradeHintLevel : 0 as const },
+        { kind: "ilvl" as const, level: hint.ilvl.level },
+      ];
+      for (const display of tracks) {
+        const tint = hintDisplayBackgroundColor(display, dungeonItemLevels, theme);
+        if (!tint) continue;
+        const color = getGearHintKindColor(display.kind, theme);
+        const strength = theme.palette.mode === "dark"
+          ? [0, 0.2, 0.28, 0.36]
+          : [0, 0.16, 0.23, 0.3];
+        const centerColor = alpha(color, strength[display.level]);
+        const originX = dualSpec ? (side === "left" ? "right" : "left") : "center";
+        const band = display.kind === "bis" ? "top" : "bottom";
+        const originY = band === "top" ? "bottom" : "top";
+        layers.push(`radial-gradient(ellipse at ${originX} ${originY}, ${centerColor} 0%, ${tint} 45%, ${alpha(color, 0)} 100%) ${side} ${band} / ${dualSpec ? "50%" : "100%"} 50% no-repeat`);
+      }
+    }
+    return gearHintOverlaySx(layers.length > 0 ? layers.join(", ") : undefined);
   };
 }

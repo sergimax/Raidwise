@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { alpha } from "@mui/material/styles";
 import { createAppTheme } from "../theme/create-app-theme.ts";
 import {
+  gearUpgradeHintBandsCellSx,
   gearUpgradeHintCellSx,
   gearUpgradeHintDualCellSx,
   getGearHintCellBackgroundColor,
@@ -158,5 +159,43 @@ describe("getGearHintKindColor", () => {
     expect(getGearHintKindColor("ilvl", theme)).toBe(
       theme.palette.info.main,
     );
+  });
+});
+
+describe("gearUpgradeHintBandsCellSx", () => {
+  const emptyTrack = { level: 0 as const, upgradeSlotCount: 0, upgradeSlots: [] };
+  const hint = {
+    bis: { ...emptyTrack, level: 1 as const },
+    bisVariant: emptyTrack,
+    ilvl: { ...emptyTrack, level: 2 as const },
+    equippedCount: 16,
+    peakDungeonItemLevel: 284,
+    slotAware: true,
+    bisListActive: true,
+  };
+
+  it("shows both categories on both spec sides independently", () => {
+    const sx = gearUpgradeHintBandsCellSx(hint, hint, dungeonItemLevels, true);
+    const resolved = (typeof sx === "function" ? sx(createAppTheme("light")) : sx) as Record<string, unknown>;
+    const background = (resolved["&::after"] as { background: string }).background;
+    for (const position of ["left top", "left bottom", "right top", "right bottom"]) {
+      expect(background).toContain(`${position} / 50% 50% no-repeat`);
+    }
+    for (const origin of ["right bottom", "right top", "left bottom", "left top"]) {
+      expect(background).toContain(`radial-gradient(ellipse at ${origin},`);
+    }
+    expect(background).toContain("rgba(217, 119, 6, 0) 100%");
+    expect(background).toContain("rgba(217, 119, 6, 0.08)");
+    expect(background).toContain("rgba(2, 132, 199, 0.11)");
+  });
+
+  it("leaves missing categories untinted and uses full width for a single spec", () => {
+    const sx = gearUpgradeHintBandsCellSx({ ...hint, bis: emptyTrack }, undefined, dungeonItemLevels, false);
+    const resolved = (typeof sx === "function" ? sx(createAppTheme("light")) : sx) as Record<string, unknown>;
+    const background = (resolved["&::after"] as { background: string }).background;
+    expect(background).toContain("left bottom / 100% 50% no-repeat");
+    expect(background).not.toContain("left top /");
+    expect(background).toContain("radial-gradient(ellipse at center top,");
+    expect(gearUpgradeHintBandsCellSx(hint, hint, [], true)).toEqual({});
   });
 });

@@ -15,14 +15,12 @@ import {
   hasAnyGearHint,
 } from "../../utils/character-gear-hints.ts";
 import {
-  getGearHintCellDisplay,
   collectMissingBisLootItemIds,
   collectMissingIlvlLootItemIds,
   type GearUpgradeHint,
 } from "../../utils/gear-upgrade-hint.ts";
 import {
-  gearUpgradeHintDualCellSx,
-  gearUpgradeHintCellSx,
+  gearUpgradeHintBandsCellSx,
 } from "../../utils/gear-hint-display.ts";
 import { GearHintTooltipContent } from "../gear-hint-tooltip/index.tsx";
 import { CHARACTER_BODY_CELL_SX } from "./table-layout.ts";
@@ -41,13 +39,14 @@ function GearItemCounts({ hint, side }: {
   ].filter(({ count }) => count > 0);
 
   return (
-    <Box component="span" sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}>
+    <Box component="span" sx={{ display: "grid", gridTemplateRows: "repeat(2, 1fr)", gap: 0.25 }}>
       {counts.map(({ kind, count }) => (
         <Box
           component="span"
           key={kind}
           aria-label={`${t(kind === "bis" ? "gearHint.kindLabelBis" : "gearHint.kindLabelUpgrades")}: ${count}`}
           sx={{
+            gridRow: kind === "bis" ? 1 : 2,
             display: "flex",
             alignItems: "center",
             justifyContent: side === "left" ? "flex-start" : "flex-end",
@@ -134,48 +133,16 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
   const hasGearHints = hasAnyGearHint(gearHintTints);
   const dungeonDisplayName = getLocalizedDungeonDisplayName(dungeon, locale, false);
 
-  const mainDisplay = gearHintTints.main
-    ? getGearHintCellDisplay(gearHintTints.main.gearHint)
-    : null;
-  const offDisplay = gearHintTints.off
-    ? getGearHintCellDisplay(gearHintTints.off.gearHint)
-    : null;
   const hasDualSpecGear = Boolean(character.mainSpec && character.offSpec);
-
-  const mainKind = mainDisplay?.kind;
-  const mainLevel = mainDisplay?.level;
-  const offKind = offDisplay?.kind;
-  const offLevel = offDisplay?.level;
-
-  const cellHintSx = useMemo(() => {
-    if (isDungeonMarkedComplete) {
-      return {};
-    }
-    const main =
-      mainKind !== undefined && mainLevel !== undefined
-        ? { kind: mainKind, level: mainLevel }
-        : null;
-    const off =
-      offKind !== undefined && offLevel !== undefined
-        ? { kind: offKind, level: offLevel }
-        : null;
-    if (hasDualSpecGear) {
-      return gearUpgradeHintDualCellSx(main, off, dungeon.itemLevel);
-    }
-    return gearUpgradeHintCellSx(
-      main ?? off,
+  const cellHintSx = useMemo(
+    () => isDungeonMarkedComplete ? {} : gearUpgradeHintBandsCellSx(
+      gearHintTints.main?.gearHint,
+      gearHintTints.off?.gearHint,
       dungeon.itemLevel,
-      main ? "left" : "right",
-    );
-  }, [
-    dungeon.itemLevel,
-    hasDualSpecGear,
-    isDungeonMarkedComplete,
-    mainKind,
-    mainLevel,
-    offKind,
-    offLevel,
-  ]);
+      hasDualSpecGear,
+    ),
+    [gearHintTints, dungeon.itemLevel, hasDualSpecGear, isDungeonMarkedComplete],
+  );
 
   const [gearHintTooltipOpen, setGearHintTooltipOpen] = useState(false);
 
