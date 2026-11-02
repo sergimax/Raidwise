@@ -5,7 +5,7 @@ import type { GearHintCellDisplay, GearUpgradeHintLevel, GearUpgradeHint } from 
 
 type HintAlphaScale = Record<GearUpgradeHintLevel, number>;
 
-/** BiS (teal) cell tint opacity by hint level — slightly stronger in dark mode. */
+/** BiS (coral) cell tint opacity by hint level — slightly stronger in dark mode. */
 const BIS_HINT_ALPHAS_LIGHT: HintAlphaScale = {
   0: 0,
   1: 0.08,
@@ -20,7 +20,7 @@ const BIS_HINT_ALPHAS_DARK: HintAlphaScale = {
   3: 0.23,
 };
 
-/** Ilvl (lilac) cell tint opacity by hint level — slightly stronger in dark mode. */
+/** Ilvl (teal) cell tint opacity by hint level — slightly stronger in dark mode. */
 const ILVL_HINT_ALPHAS_LIGHT: HintAlphaScale = {
   0: 0,
   1: 0.06,
@@ -60,18 +60,18 @@ function hintDisplayBackgroundColor(
   return alpha(getGearHintKindColor(display.kind, theme), opacity);
 }
 
-/** Solid BiS (teal) or ilvl (lilac) accent — tooltip dots, legends. */
+/** Solid BiS (coral) or ilvl (teal) accent — tooltip dots, legends. */
 export function getGearHintKindColor(
   kind: GearHintCellDisplay["kind"],
   theme: Theme,
 ): string {
   const dark = theme.palette.mode === "dark";
   return kind === "bis"
-    ? (dark ? "#2dd4bf" : "#0d9488")
-    : (dark ? "#c4b5fd" : "#8b5cf6");
+    ? (dark ? "#fb7185" : "#e11d48")
+    : (dark ? "#2dd4bf" : "#0d9488");
 }
 
-/** Toggle cell tint (teal BiS or lilac ilvl by hint level). */
+/** Toggle cell tint (coral BiS or teal ilvl by hint level). */
 export function getGearHintCellBackgroundColor(
   display: GearHintCellDisplay,
   theme: Theme,

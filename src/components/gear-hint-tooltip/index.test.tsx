@@ -35,7 +35,7 @@ function createSpecHint(
 }
 
 describe("GearHintTooltipContent", () => {
-  it("shows teal BiS and lilac Upgrades labels on boss loot section headers", () => {
+  it("shows coral BiS and teal Upgrades labels on boss loot section headers", () => {
     const theme = createAppTheme("light");
     const { container } = renderWithTheme(
       <GearHintTooltipContent

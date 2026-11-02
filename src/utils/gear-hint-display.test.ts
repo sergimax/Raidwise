@@ -108,7 +108,7 @@ describe("gearUpgradeHintDualCellSx", () => {
 });
 
 describe("getGearHintCellBackgroundColor", () => {
-  it("uses teal and lilac colors for BiS and ilvl tints", () => {
+  it("uses coral and teal colors for BiS and ilvl tints", () => {
     const theme = createAppTheme("light");
     const bisLevel1 = getGearHintCellBackgroundColor(
       { kind: "bis", level: 1 },
@@ -121,7 +121,7 @@ describe("getGearHintCellBackgroundColor", () => {
 
     expect(bisLevel1).toBe(alpha(getGearHintKindColor("bis", theme), 0.08));
     expect(ilvlLevel1).toBe(alpha(getGearHintKindColor("ilvl", theme), 0.06));
-    expect(getGearHintKindColor("bis", theme)).toBe("#0d9488");
+    expect(getGearHintKindColor("bis", theme)).toBe("#e11d48");
   });
 
   it("uses higher alphas in dark mode than light for the same hint level", () => {
@@ -144,20 +144,20 @@ describe("getGearHintCellBackgroundColor", () => {
     }
   });
 
-  it("uses lighter teal in dark mode for zinc backgrounds", () => {
-    expect(getGearHintKindColor("bis", createAppTheme("dark"))).toBe("#2dd4bf");
+  it("uses lighter coral in dark mode for zinc backgrounds", () => {
+    expect(getGearHintKindColor("bis", createAppTheme("dark"))).toBe("#fb7185");
   });
 });
 
 describe("getGearHintKindColor", () => {
-  it("returns teal and lilac for BiS and ilvl dots", () => {
+  it("returns coral and teal for BiS and ilvl dots", () => {
     const theme = createAppTheme("light");
 
     expect(getGearHintKindColor("bis", theme)).toBe(
-      "#0d9488",
+      "#e11d48",
     );
     expect(getGearHintKindColor("ilvl", theme)).toBe(
-      "#8b5cf6",
+      "#0d9488",
     );
   });
 });
@@ -184,9 +184,9 @@ describe("gearUpgradeHintBandsCellSx", () => {
     for (const origin of ["right bottom", "right top", "left bottom", "left top"]) {
       expect(background).toContain(`radial-gradient(ellipse at ${origin},`);
     }
-    expect(background).toContain("rgba(13, 148, 136, 0) 100%");
-    expect(background).toContain("rgba(13, 148, 136, 0.08)");
-    expect(background).toContain("rgba(139, 92, 246, 0.11)");
+    expect(background).toContain("rgba(225, 29, 72, 0) 100%");
+    expect(background).toContain("rgba(225, 29, 72, 0.08)");
+    expect(background).toContain("rgba(13, 148, 136, 0.11)");
   });
 
   it("leaves missing categories untinted and uses full width for a single spec", () => {

@@ -5,7 +5,7 @@ import { renderWithTheme, screen } from "../../test/render-with-theme.tsx";
 import { GearHintLegend } from "./index.tsx";
 
 describe("GearHintLegend", () => {
-  it("shows teal BiS and lilac Upgrades meanings on one line", () => {
+  it("shows coral BiS and teal Upgrades meanings on one line", () => {
     renderWithTheme(<GearHintLegend onDismiss={vi.fn()} />);
 
     expect(screen.getByText("BiS")).toBeInTheDocument();
