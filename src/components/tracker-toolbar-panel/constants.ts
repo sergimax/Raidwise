@@ -11,7 +11,7 @@ export const TRACKER_DUNGEON_FORM_PANEL_MAX_WIDTH = 680;
 export const TRACKER_CHARACTER_FORM_PANEL_MAX_WIDTH = 1600;
 
 /**
- * Cap for BiS lists (1-unit side columns + flexible Items + panel padding).
+ * Cap for BiS lists (1 + 2 + 1 unit columns + gaps + panel padding).
  * Side blocks match the shared 300px unit used by other toolbar panels.
  */
 export const TRACKER_WIDE_PANEL_MAX_WIDTH = 1280;

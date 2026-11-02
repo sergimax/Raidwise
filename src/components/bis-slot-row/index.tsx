@@ -139,7 +139,7 @@ export const BisSlotRow = memo(function BisSlotRow({
     >
       <Box
         sx={{
-          pt: isEditing ? 0.75 : 0,
+          pt: 0,
           alignSelf: pinSlotBlockToTop ? "start" : "center",
           minWidth: 0,
           maxWidth: "100%",
@@ -173,10 +173,13 @@ export const BisSlotRow = memo(function BisSlotRow({
           }}
           placeholder={t("bisPanel.itemSearchPlaceholder")}
           error={Boolean(validationError)}
-          helperText={validationError ?? t("bisPanel.confirmHelper")}
+          helperText={validationError}
           slotProps={{
             input: {
-              sx: { py: 0.75, fontSize: "0.8125rem" },
+              sx: { py: 0, fontSize: "0.8125rem", minHeight: 32 },
+            },
+            htmlInput: {
+              sx: { py: "6px", px: 1 },
             },
             formHelperText: {
               sx: { mx: 0, mt: 0.25, lineHeight: 1.3 },

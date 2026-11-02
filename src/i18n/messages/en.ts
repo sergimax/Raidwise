@@ -256,6 +256,7 @@ export const enMessages = {
     githubChangelog: "View the full changelog on GitHub",
   },
   bisPanel: {
+    emblemsOfFrost: "Emblems of Frost",
     title: "BiS lists",
     classAndSpec: "Class & spec",
     classAndSpecHelper:

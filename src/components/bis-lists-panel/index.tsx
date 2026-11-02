@@ -11,20 +11,11 @@ import {
   MenuItem,
   Select,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { specsForClass } from "../../data/class-specs.ts";
-import {
-  BIS_PAPER_DOLL_BOTTOM_SLOTS,
-  getBisPaperDollArmorPairs,
-  type BisPaperDollRow,
-} from "../../data/bis-paper-doll-slots.ts";
 import type { TranslateFn } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
@@ -52,7 +43,6 @@ import { ClassOptionLabel } from "../class-option-label/index.tsx";
 import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import { SpecOptionLabel } from "../spec-option-label/index.tsx";
-import { BisCosmeticSlotRow } from "./bis-cosmetic-slot-row.tsx";
 import {
   BIS_ITEMS_CONTENT_MAX_HEIGHT_XS_PX,
   FILTER_UNIT_GRID_GAP_SPACING,
@@ -284,18 +274,6 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
     ],
   );
 
-  const renderPaperDollCell = useCallback(
-    (row: BisPaperDollRow) =>
-      row.kind === "cosmetic" ? (
-        <BisCosmeticSlotRow cosmeticId={row.id} />
-      ) : (
-        renderGearSlotRow(row.slot)
-      ),
-    [renderGearSlotRow],
-  );
-
-  const armorPairs = useMemo(() => getBisPaperDollArmorPairs(), []);
-
   const listsDescription = isCustomListCreation
     ? t("bisPanel.listsHelperCustom", {
         class: getLocalizedClassName(className, locale),
@@ -375,56 +353,9 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
       onScroll={hideExternalWowTooltips}
       onMouseLeave={hideExternalWowTooltips}
     >
-      <Table
-        size="small"
-        sx={{
-          width: "100%",
-          tableLayout: "fixed",
-          borderCollapse: "separate",
-          borderSpacing: 0,
-          "& .MuiTableCell-root": {
-            borderBottom: "none",
-            verticalAlign: "top",
-            px: { xs: 0.5, sm: 1 },
-            py: 0,
-            width: "50%",
-          },
-        }}
-      >
-        <TableBody>
-          {armorPairs.map((pair) => (
-            <TableRow
-              key={
-                pair.left.kind === "cosmetic"
-                  ? `cosmetic-${pair.left.id}`
-                  : `gear-${pair.left.slot}`
-              }
-            >
-              <TableCell>{renderPaperDollCell(pair.left)}</TableCell>
-              <TableCell>{renderPaperDollCell(pair.right)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            sm: "repeat(3, minmax(0, 1fr))",
-          },
-          columnGap: 2,
-          rowGap: 0,
-          mt: 1,
-          pt: 0.5,
-          borderTop: 1,
-          borderColor: "divider",
-          minWidth: 0,
-        }}
-      >
-        {BIS_PAPER_DOLL_BOTTOM_SLOTS.map((slot) => renderGearSlotRow(slot))}
-      </Box>
+      <Stack spacing={0}>
+        {slotDrafts.map(({ slot }) => renderGearSlotRow(slot))}
+      </Stack>
     </Box>
   );
 

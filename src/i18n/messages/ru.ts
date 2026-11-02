@@ -258,6 +258,7 @@ export const ruMessages: Messages = {
     githubChangelog: "Полный журнал изменений на GitHub",
   },
   bisPanel: {
+    emblemsOfFrost: "Эмблемы льда",
     title: "BIS листы",
     classAndSpec: "Класс и спек",
     classAndSpecHelper:
