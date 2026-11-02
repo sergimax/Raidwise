@@ -13,7 +13,7 @@ const emptyTrack = {
 };
 
 function createSpecHint(
-  overrides: Partial<Pick<SpecGearHint, "bisBossLootGroups" | "ilvlBossLootGroups">>,
+  overrides: Partial<Pick<SpecGearHint, "bisBossLootGroups" | "bisVariantBossLootGroups" | "ilvlBossLootGroups">>,
 ): SpecGearHint {
   return {
     specGear: { spec: "Fury" },
@@ -52,8 +52,8 @@ describe("GearHintTooltipContent", () => {
 
     expect(screen.getByText("BiS")).toBeInTheDocument();
     expect(screen.getByText("Upgrades")).toBeInTheDocument();
-    expect(screen.getByText("BiS loot in this raid")).toBeInTheDocument();
-    expect(screen.getByText("Other possible upgrades in this raid")).toBeInTheDocument();
+    expect(screen.getByText("BiS loot in this raid (1)")).toBeInTheDocument();
+    expect(screen.getByText("Other possible upgrades in this raid (1)")).toBeInTheDocument();
 
     const dots = container.querySelectorAll('[aria-hidden="true"]');
     const coloredDots = [...dots].filter((element) => {
@@ -69,4 +69,29 @@ describe("GearHintTooltipContent", () => {
       backgroundColor: getGearHintKindColor("ilvl", theme),
     });
   });
+  it("counts unique items separately in each loot category", () => {
+    renderWithTheme(
+      <GearHintTooltipContent
+        gearHints={{
+          main: createSpecHint({
+            bisBossLootGroups: [
+              { bossName: "Boss A", itemIds: [50606, 50615] },
+              { bossName: "Boss B", itemIds: [50606] },
+            ],
+            bisVariantBossLootGroups: [{ bossName: "Boss A", itemIds: [49950] }],
+            ilvlBossLootGroups: [
+              { bossName: "Boss A", itemIds: [50616, 50617, 50618] },
+            ],
+          }),
+        }}
+        locale="en"
+        t={testTranslator}
+      />,
+    );
+
+    expect(screen.getByText("BiS loot in this raid (2)")).toBeInTheDocument();
+    expect(screen.getByText("BiS normal variants in this raid (1)")).toBeInTheDocument();
+    expect(screen.getByText("Other possible upgrades in this raid (3)")).toBeInTheDocument();
+  });
+
 });

@@ -36,6 +36,7 @@ type GearHintTooltipContentProps = {
 function GearHintSectionTitle({
   hintKind,
   titleKey,
+  count,
   t,
 }: {
   hintKind: GearHintCellDisplay["kind"];
@@ -43,6 +44,7 @@ function GearHintSectionTitle({
     | "gearHint.bisBossLoot"
     | "gearHint.bisVariantBossLoot"
     | "gearHint.ilvlBossLoot";
+  count: number;
   t: TranslateFn;
 }) {
   const kindLabelKey =
@@ -86,7 +88,7 @@ function GearHintSectionTitle({
         component="span"
         sx={(theme) => ({ color: getTooltipSurface(theme.palette.mode).mutedColor })}
       >
-        {t(titleKey)}
+        {t(titleKey)} ({count})
       </Box>
     </Typography>
   );
@@ -114,7 +116,12 @@ function BisBossLootSection({
 
   return (
     <Box sx={{ mb: marginBottom }}>
-      <GearHintSectionTitle hintKind={hintKind} titleKey={titleKey} t={t} />
+      <GearHintSectionTitle
+        hintKind={hintKind}
+        titleKey={titleKey}
+        count={new Set(groups.flatMap((group) => group.itemIds)).size}
+        t={t}
+      />
       <Box
         sx={{
           maxHeight: BIS_LOOT_LIST_MAX_HEIGHT,

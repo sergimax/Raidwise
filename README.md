@@ -60,7 +60,7 @@ Paper-doll slot layout with alternatives; **Copy** exports `Slot: Item` lines.
 ### Gear hints
 
 CD cells tint <span style="color:#d97706">amber</span> for missing BiS and <span style="color:#0284c7">blue</span> for stat-filtered ilvl upgrades (hidden when that CD is marked; main/off split when both specs are set).
-Boss-grouped tooltips include tier tokens; also-owned items count without being on the WowSims export.
+Boss-grouped tooltips show unique item counts for each BiS, BiS variant, and ordinary upgrade category and include tier tokens; also-owned items count without being on the WowSims export.
 
 ### EN / RU
 
