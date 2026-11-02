@@ -53,7 +53,7 @@ describe("gearUpgradeHintCellSx", () => {
       background: getGearHintCellBackgroundColor({ kind: "bis", level: 1 }, theme),
       pointerEvents: "none",
       inset: "0 1px",
-      boxShadow: `inset 4px 0 0 ${alpha(theme.palette.warning.main, 0.35)}`,
+      boxShadow: `inset 4px 0 0 ${alpha(getGearHintKindColor("bis", theme), 0.35)}`,
     });
   });
 });
@@ -68,7 +68,7 @@ describe("gearUpgradeHintDualCellSx", () => {
     expect(resolved.position).toBe("relative");
     expect(resolved.background).toBeUndefined();
     expect(resolved["&::after"]).toMatchObject({
-      boxShadow: `inset 4px 0 0 ${alpha(createAppTheme("light").palette.info.main, 0.55)}`,
+      boxShadow: `inset 4px 0 0 ${alpha(getGearHintKindColor("ilvl", createAppTheme("light")), 0.55)}`,
     });
 
     expect(background).toMatch(/^linear-gradient\(to right,/);
@@ -108,7 +108,7 @@ describe("gearUpgradeHintDualCellSx", () => {
 });
 
 describe("getGearHintCellBackgroundColor", () => {
-  it("uses theme warning and info colors for BiS and ilvl tints", () => {
+  it("uses teal and lilac colors for BiS and ilvl tints", () => {
     const theme = createAppTheme("light");
     const bisLevel1 = getGearHintCellBackgroundColor(
       { kind: "bis", level: 1 },
@@ -119,9 +119,9 @@ describe("getGearHintCellBackgroundColor", () => {
       theme,
     );
 
-    expect(bisLevel1).toBe(alpha(theme.palette.warning.main, 0.08));
-    expect(ilvlLevel1).toBe(alpha(theme.palette.info.main, 0.06));
-    expect(theme.palette.warning.main).toBe("#d97706");
+    expect(bisLevel1).toBe(alpha(getGearHintKindColor("bis", theme), 0.08));
+    expect(ilvlLevel1).toBe(alpha(getGearHintKindColor("ilvl", theme), 0.06));
+    expect(getGearHintKindColor("bis", theme)).toBe("#0d9488");
   });
 
   it("uses higher alphas in dark mode than light for the same hint level", () => {
@@ -144,20 +144,20 @@ describe("getGearHintCellBackgroundColor", () => {
     }
   });
 
-  it("uses a lighter warning main in dark mode for zinc backgrounds", () => {
-    expect(createAppTheme("dark").palette.warning.main).toBe("#f59e0b");
+  it("uses lighter teal in dark mode for zinc backgrounds", () => {
+    expect(getGearHintKindColor("bis", createAppTheme("dark"))).toBe("#2dd4bf");
   });
 });
 
 describe("getGearHintKindColor", () => {
-  it("returns warning and info mains for BiS and ilvl dots", () => {
+  it("returns teal and lilac for BiS and ilvl dots", () => {
     const theme = createAppTheme("light");
 
     expect(getGearHintKindColor("bis", theme)).toBe(
-      theme.palette.warning.main,
+      "#0d9488",
     );
     expect(getGearHintKindColor("ilvl", theme)).toBe(
-      theme.palette.info.main,
+      "#8b5cf6",
     );
   });
 });
@@ -184,9 +184,9 @@ describe("gearUpgradeHintBandsCellSx", () => {
     for (const origin of ["right bottom", "right top", "left bottom", "left top"]) {
       expect(background).toContain(`radial-gradient(ellipse at ${origin},`);
     }
-    expect(background).toContain("rgba(217, 119, 6, 0) 100%");
-    expect(background).toContain("rgba(217, 119, 6, 0.08)");
-    expect(background).toContain("rgba(2, 132, 199, 0.11)");
+    expect(background).toContain("rgba(13, 148, 136, 0) 100%");
+    expect(background).toContain("rgba(13, 148, 136, 0.08)");
+    expect(background).toContain("rgba(139, 92, 246, 0.11)");
   });
 
   it("leaves missing categories untinted and uses full width for a single spec", () => {
