@@ -9,6 +9,7 @@ import {
 } from "./character-gear-hints.ts";
 import { formatDungeonExportLabel } from "./format-dungeon-label.ts";
 import type { GetBisSlotMapForSpec } from "./bis-lists.ts";
+import { groupBisItemIdsByBossForDungeon } from "./item-drop-sources.ts";
 import { resolveDungeonRaidKey } from "./resolve-dungeon-raid-key.ts";
 
 export type GearPickItemKind = "bis" | "variant";
@@ -29,6 +30,7 @@ type BuildGearPickItemsOptions = {
   dungeons: readonly DungeonRecord[];
   getBisSlotMapForSpec: GetBisSlotMapForSpec;
   locale: AppLocale;
+  includeOwnedBis?: boolean;
 };
 
 function mergeGearPickItem(
@@ -70,6 +72,7 @@ export function buildGearPickItems({
   dungeons,
   getBisSlotMapForSpec,
   locale,
+  includeOwnedBis = false,
 }: BuildGearPickItemsOptions): GearPickItem[] {
   const className = character.class?.name;
   if (!className) {
@@ -85,7 +88,13 @@ export function buildGearPickItems({
   const byItemId = new Map<number, GearPickItem>();
 
   for (const dungeon of dungeons) {
-    const specHint = evaluateSpecGearHint(
+    const specHint = includeOwnedBis ? {
+      bisBossLootGroups: groupBisItemIdsByBossForDungeon(
+        [...new Set([...getBisSlotMapForSpec(className, specGear.spec).values()].flat())],
+        dungeon, locale,
+      ),
+      bisVariantBossLootGroups: [],
+    } : evaluateSpecGearHint(
       specGear,
       className,
       dungeon,

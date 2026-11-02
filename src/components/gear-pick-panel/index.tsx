@@ -85,12 +85,14 @@ export function GearPickPanel({
     includeCopySpec,
     includeCopySoftCount,
     includeAllCopyItems,
+    includeAllBisCopyItems,
     onlyCharactersWithUpgrades,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
     setIncludeCopySpec,
     setIncludeCopySoftCount,
     setIncludeAllCopyItems,
+    setIncludeAllBisCopyItems,
     setOnlyCharactersWithUpgrades,
   } = session;
 
@@ -226,18 +228,29 @@ export function GearPickPanel({
     selectedSpecGear,
   ]);
 
+  const allBisCopyItems = useMemo(() => {
+    if (!includeAllBisCopyItems || !selectedCharacter || !activeSelection) return [];
+    return buildGearPickItems({
+      character: selectedCharacter, specSide: activeSelection.side,
+      dungeons: activeDungeons, getBisSlotMapForSpec, locale, includeOwnedBis: true,
+    });
+  }, [includeAllBisCopyItems, selectedCharacter, activeSelection, activeDungeons, getBisSlotMapForSpec, locale]);
+
   const copyItems = useMemo(
     () =>
       selectGearPickCopyItems(
-        gearPickItems.map((item) => ({
+        (includeAllBisCopyItems ? [
+          ...gearPickItems.filter((item) => (assignmentsByItemId[item.itemId]?.mySofts ?? 0) > 0),
+          ...allBisCopyItems,
+        ] : gearPickItems).map((item) => ({
           itemId: item.itemId,
           itemName: getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`,
           bossName: item.bossName,
         })),
         assignmentsByItemId,
-        includeAllCopyItems,
+        includeAllCopyItems || includeAllBisCopyItems,
       ),
-    [assignmentsByItemId, gearPickItems, includeAllCopyItems, itemLocale],
+    [assignmentsByItemId, gearPickItems, includeAllCopyItems, includeAllBisCopyItems, allBisCopyItems, itemLocale],
   );
 
   const copyText = useMemo(
@@ -445,11 +458,13 @@ export function GearPickPanel({
           includeSpec={includeCopySpec}
           includeSoftCount={includeCopySoftCount}
           includeAllItems={includeAllCopyItems}
+          includeAllBisItems={includeAllBisCopyItems}
           compactLines={compactCopyLines}
           onIncludeCharacterNameChange={setIncludeCopyCharacterName}
           onIncludeSpecChange={setIncludeCopySpec}
           onIncludeSoftCountChange={setIncludeCopySoftCount}
           onIncludeAllItemsChange={setIncludeAllCopyItems}
+          onIncludeAllBisItemsChange={setIncludeAllBisCopyItems}
           onCompactLinesChange={setCompactCopyLines}
           t={t}
         />

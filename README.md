@@ -49,6 +49,7 @@ Plan soft reserves for one character + spec on BiS upgrades from filtered raids 
 For re-rolls, ordinary rolls count only when one player calls softs on an item; with multiple callers, only soft rolls count.
 The call list contains only your selected soft reserves. A toggle controls whether to show the number assigned to each item.
 The **All useful items** toggle (off by default) appends the remaining items from the useful-item list after your selected reserves.
+**All items from the BiS list** includes exact active-list items from selected raids, including owned gear; it is mutually exclusive with **All useful items**.
 Optional **With upgrades** dims characters with no BiS targets; **Reset parameters** clears the panel filters.
 Uses the active **BiS builds** list; other-spec gear counts as owned; session state survives closing the panel.
 

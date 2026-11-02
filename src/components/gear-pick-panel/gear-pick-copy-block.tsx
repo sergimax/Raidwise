@@ -12,11 +12,13 @@ type GearPickCopyBlockProps = {
   includeSpec: boolean;
   includeSoftCount: boolean;
   includeAllItems: boolean;
+  includeAllBisItems: boolean;
   compactLines: boolean;
   onIncludeCharacterNameChange: (includeCharacterName: boolean) => void;
   onIncludeSpecChange: (includeSpec: boolean) => void;
   onIncludeSoftCountChange: (includeSoftCount: boolean) => void;
   onIncludeAllItemsChange: (includeAllItems: boolean) => void;
+  onIncludeAllBisItemsChange: (value: boolean) => void;
   onCompactLinesChange: (compactLines: boolean) => void;
   t: TranslateFn;
 };
@@ -37,11 +39,13 @@ export function GearPickCopyBlock({
   includeSpec,
   includeSoftCount,
   includeAllItems,
+  includeAllBisItems,
   compactLines,
   onIncludeCharacterNameChange,
   onIncludeSpecChange,
   onIncludeSoftCountChange,
   onIncludeAllItemsChange,
+  onIncludeAllBisItemsChange,
   onCompactLinesChange,
   t,
 }: GearPickCopyBlockProps) {
@@ -86,11 +90,13 @@ export function GearPickCopyBlock({
           includeSpec={includeSpec}
           includeSoftCount={includeSoftCount}
           includeAllItems={includeAllItems}
+          includeAllBisItems={includeAllBisItems}
           compactLines={compactLines}
           onIncludeCharacterNameChange={onIncludeCharacterNameChange}
           onIncludeSpecChange={onIncludeSpecChange}
           onIncludeSoftCountChange={onIncludeSoftCountChange}
           onIncludeAllItemsChange={onIncludeAllItemsChange}
+          onIncludeAllBisItemsChange={onIncludeAllBisItemsChange}
           onCompactLinesChange={onCompactLinesChange}
         />
       }
@@ -116,7 +122,7 @@ export function GearPickCopyBlock({
         </Box>
       ) : (
         <Typography variant="body2" color="text.secondary">
-          {t(includeAllItems ? "gearPickPanel.copyEmptyAll" : "gearPickPanel.copyEmpty")}
+          {t(includeAllBisItems ? "gearPickPanel.copyEmptyBis" : includeAllItems ? "gearPickPanel.copyEmptyAll" : "gearPickPanel.copyEmpty")}
         </Typography>
       )}
     </FilterSection>

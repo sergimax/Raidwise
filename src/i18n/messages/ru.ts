@@ -451,6 +451,8 @@ export const ruMessages: Messages = {
     copyIncludeSpecAria: "Включать выбранный спек в список софт-резервов",
     copyIncludeSoftCount: "Кол-во софтов",
     copyIncludeSoftCountAria: "Показывать количество софтов, отданных на каждый предмет",
+    copyIncludeAllBisItems: "Все предметы из BIS-листа",
+    copyEmptyBis: "В выбранных рейдах нет предметов из BIS-листа",
     copyIncludeAllItems: "Все полезные предметы",
     copyIncludeAllItemsAria: "Добавить все полезные предметы после выбранных софтов",
     copyIncludeDetails: "Босс",

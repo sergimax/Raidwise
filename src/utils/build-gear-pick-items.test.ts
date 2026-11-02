@@ -47,6 +47,24 @@ const rubySanctum25Heroic = createTestDungeon({
 });
 
 describe("buildGearPickItems", () => {
+  it("includes owned exact BiS items only from selected raid modes", () => {
+    const options = {
+      character: createTestCharacter({
+        class: paladinClass,
+        mainSpec: { spec: "Retribution", gearItems: [{ slot: 1, id: 54581 }] },
+        alsoOwnedItemIds: [54581],
+      }),
+      specSide: "main" as const,
+      dungeons: [rubySanctum25Heroic, rubySanctum25Heroic],
+      getBisSlotMapForSpec: () => new Map([[1, [54581, 50606]]]),
+      locale: "en" as const,
+      includeOwnedBis: true,
+    };
+    expect(buildGearPickItems(options).map((item) => item.itemId)).toEqual([54581]);
+    expect(buildGearPickItems({ ...options, dungeons: [] })).toEqual([]);
+    expect(buildGearPickItems({ ...options, includeOwnedBis: false })).toEqual([]);
+  });
+
   it("returns empty when the character has no class", () => {
     expect(
       buildGearPickItems({

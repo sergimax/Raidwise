@@ -6,11 +6,13 @@ type GearPickCopyFormatActionsProps = {
   includeSpec: boolean;
   includeSoftCount: boolean;
   includeAllItems: boolean;
+  includeAllBisItems: boolean;
   compactLines: boolean;
   onIncludeCharacterNameChange: (includeCharacterName: boolean) => void;
   onIncludeSpecChange: (includeSpec: boolean) => void;
   onIncludeSoftCountChange: (includeSoftCount: boolean) => void;
   onIncludeAllItemsChange: (includeAllItems: boolean) => void;
+  onIncludeAllBisItemsChange: (value: boolean) => void;
   onCompactLinesChange: (compactLines: boolean) => void;
 };
 
@@ -19,11 +21,13 @@ export function GearPickCopyFormatActions({
   includeSpec,
   includeSoftCount,
   includeAllItems,
+  includeAllBisItems,
   compactLines,
   onIncludeCharacterNameChange,
   onIncludeSpecChange,
   onIncludeSoftCountChange,
   onIncludeAllItemsChange,
+  onIncludeAllBisItemsChange,
   onCompactLinesChange,
 }: GearPickCopyFormatActionsProps) {
   const { t } = useTranslation();
@@ -90,6 +94,13 @@ export function GearPickCopyFormatActions({
           />
         }
         label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeAllItems")}</Typography>}
+        sx={{ mr: 0, ml: 0 }}
+      />
+      <FormControlLabel
+        control={<Switch size="small" checked={includeAllBisItems}
+          onChange={(event) => onIncludeAllBisItemsChange(event.target.checked)}
+          slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeAllBisItems") } }} />}
+        label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeAllBisItems")}</Typography>}
         sx={{ mr: 0, ml: 0 }}
       />
       <FormControlLabel
