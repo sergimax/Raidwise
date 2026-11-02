@@ -51,6 +51,8 @@ describe("gearUpgradeHintCellSx", () => {
     expect(resolved["&::after"]).toMatchObject({
       background: getGearHintCellBackgroundColor({ kind: "bis", level: 1 }, theme),
       pointerEvents: "none",
+      inset: "0 1px",
+      boxShadow: `inset 4px 0 0 ${alpha(theme.palette.warning.main, 0.35)}`,
     });
   });
 });
@@ -64,6 +66,9 @@ describe("gearUpgradeHintDualCellSx", () => {
 
     expect(resolved.position).toBe("relative");
     expect(resolved.background).toBeUndefined();
+    expect(resolved["&::after"]).toMatchObject({
+      boxShadow: `inset 4px 0 0 ${alpha(createAppTheme("light").palette.info.main, 0.55)}`,
+    });
 
     expect(background).toMatch(/^linear-gradient\(to right,/);
     expect(background).toContain("50%, transparent 50%");
@@ -113,8 +118,8 @@ describe("getGearHintCellBackgroundColor", () => {
       theme,
     );
 
-    expect(bisLevel1).toBe(alpha(theme.palette.warning.main, 0.22));
-    expect(ilvlLevel1).toBe(alpha(theme.palette.info.main, 0.18));
+    expect(bisLevel1).toBe(alpha(theme.palette.warning.main, 0.08));
+    expect(ilvlLevel1).toBe(alpha(theme.palette.info.main, 0.06));
     expect(theme.palette.warning.main).toBe("#d97706");
   });
 

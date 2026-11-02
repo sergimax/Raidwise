@@ -38,7 +38,7 @@ function GearItemCounts({ hint, side }: {
   const counts = [
     { kind: "bis" as const, count: new Set([...bis.exact, ...bis.variant]).size },
     { kind: "ilvl" as const, count: collectMissingIlvlLootItemIds(hint).length },
-  ];
+  ].filter(({ count }) => count > 0);
 
   return (
     <Box component="span" sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}>
@@ -162,7 +162,11 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
     if (hasDualSpecGear) {
       return gearUpgradeHintDualCellSx(main, off, dungeon.itemLevel);
     }
-    return gearUpgradeHintCellSx(main ?? off, dungeon.itemLevel);
+    return gearUpgradeHintCellSx(
+      main ?? off,
+      dungeon.itemLevel,
+      main ? "left" : "right",
+    );
   }, [
     dungeon.itemLevel,
     hasDualSpecGear,
