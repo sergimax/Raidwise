@@ -39,7 +39,15 @@ function GearItemCounts({ hint, side }: {
   ].filter(({ count }) => count > 0);
 
   return (
-    <Box component="span" sx={{ display: "grid", gridTemplateRows: "repeat(2, 1fr)", gap: 0.25 }}>
+    <Box component="span" sx={{
+      position: "absolute",
+      insetBlock: 0,
+      left: side === "left" ? 0 : "50%",
+      width: "50%",
+      display: "grid",
+      gridTemplateRows: "repeat(2, 1fr)",
+      pointerEvents: "none",
+    }}>
       {counts.map(({ kind, count }) => (
         <Box
           component="span"
@@ -49,7 +57,7 @@ function GearItemCounts({ hint, side }: {
             gridRow: kind === "bis" ? 1 : 2,
             display: "flex",
             alignItems: "center",
-            justifyContent: side === "left" ? "flex-start" : "flex-end",
+            justifyContent: "center",
             color: "text.secondary",
             opacity: 0.4,
             fontSize: 13,
@@ -208,8 +216,10 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
 
   const toggleWithCounts = (
     <Box component="span" sx={{
-      display: "grid",
-      gridTemplateColumns: "1fr auto 1fr",
+      position: "relative",
+      minHeight: 36,
+      display: "flex",
+      justifyContent: "center",
       alignItems: "center",
       width: "100%",
     }}>
