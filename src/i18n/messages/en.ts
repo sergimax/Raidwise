@@ -15,11 +15,11 @@ export const enMessages = {
     optional: "optional",
   },
   header: {
+    introShowAria: "Show how this app can help",
+    introHideAria: "Hide how this app can help",
     appTitle: "Raidwise",
     themeLight: "Switch to light mode",
     themeDark: "Switch to dark mode",
-    introShowAria: "Show how this app can help",
-    introHideAria: "Hide how this app can help",
     localeTooltipEn:
       "Interface language: English. Click for Russian. Item tooltips use Cavern of Time.",
     localeTooltipRu:
@@ -244,6 +244,9 @@ export const enMessages = {
     notFound: "Page not found",
   },
   appSettings: {
+    interface: "Interface",
+    darkTheme: "Dark theme",
+
     title: "Application settings",
     appInfo: "About Raidwise",
     sourceCode: "Source code on GitHub",

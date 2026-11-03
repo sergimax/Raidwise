@@ -2,10 +2,9 @@ import { AppBar, Box, Button, Container, Menu, MenuItem, Toolbar, Typography } f
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
-import { AppVersionLabel } from "../app-meta-info/index.tsx";
 import { AppIntroToggle } from "../app-intro-toggle/index.tsx";
+import { AppVersionLabel } from "../app-meta-info/index.tsx";
 import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
-import { ThemeModeToggle } from "../theme-mode-toggle/index.tsx";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   appThemeTokens,
@@ -16,11 +15,7 @@ import { APP_ROUTES, useAppRoute } from "../../routing/app-route.ts";
 
 export type { AppHeaderProps } from "./types.ts";
 
-export function AppHeader({
-  center,
-  introVisible = false,
-  onToggleIntro,
-}: AppHeaderProps) {
+export function AppHeader({ center, introVisible = false, onToggleIntro }: AppHeaderProps) {
   const { t } = useTranslation();
   const route = useAppRoute();
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
@@ -161,13 +156,7 @@ export function AppHeader({
               gap: 0.25,
             }}
           >
-            {onToggleIntro ? (
-              <AppIntroToggle
-                introVisible={introVisible}
-                onToggle={onToggleIntro}
-              />
-            ) : null}
-            <ThemeModeToggle />
+            {onToggleIntro ? <AppIntroToggle introVisible={introVisible} onToggle={onToggleIntro} /> : null}
             <ItemTooltipLocaleToggle />
             <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center", gap: 0.25 }}>
               <AppVersionLabel />

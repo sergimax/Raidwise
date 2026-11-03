@@ -17,7 +17,7 @@ Breadcrumbs at the top of each page show the current section or raid tool and li
 ### Characters & dungeons
 
 Add characters and raids manually (toolbar buttons or the dotted empty column/row on the table), or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
-Header **info** opens a short intro (CDs, gear planning, or BiS-only).
+The header **info** button shows or hides the usage intro (CDs, gear planning, or BiS-only). **Settings → Interface** controls the color theme. Both choices are saved locally.
 
 ### Cooldown toggles
 

@@ -17,11 +17,11 @@ export const ruMessages: Messages = {
     optional: "необязательно",
   },
   header: {
+    introShowAria: "Показать, чем поможет приложение",
+    introHideAria: "Скрыть подсказку «чем поможет приложение»",
     appTitle: "Raidwise",
     themeLight: "Переключить на светлую тему",
     themeDark: "Переключить на тёмную тему",
-    introShowAria: "Показать, чем поможет приложение",
-    introHideAria: "Скрыть подсказку «чем поможет приложение»",
     localeTooltipEn:
       "Язык интерфейса: английский. Нажмите для русского. Подсказки предметов — Cavern of Time.",
     localeTooltipRu:
@@ -246,6 +246,9 @@ export const ruMessages: Messages = {
     notFound: "Страница не найдена",
   },
   appSettings: {
+    interface: "Интерфейс",
+    darkTheme: "Тёмная тема",
+
     title: "Настройки приложения",
     appInfo: "О Raidwise",
     sourceCode: "Исходный код на GitHub",
