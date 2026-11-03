@@ -31,7 +31,7 @@ const stepBadgeSx = {
   height: 22,
   px: 0.5,
   position: "absolute",
-  top: 0,
+  top: 8,
   left: "-0.5px",
   transform: "translateX(-50%)",
   borderRadius: "3px",
@@ -64,15 +64,21 @@ export function FilterSection({
     <Box
       sx={{
         position: "relative",
+        borderTop: "1px solid",
         borderLeft: "1px solid",
+        borderRight: "1px solid",
+        borderBottom: 0,
         borderColor: "divider",
+        borderImage: "linear-gradient(to bottom, var(--border), transparent min(200px, 100%)) 1",
         ml: step != null ? 1.5 : 0.5,
+        pt: 1,
         pl: 2,
+        pr: 1.25,
         "&::before": {
           content: step == null ? '""' : "none",
           position: "absolute",
           left: -4,
-          top: 8,
+          top: 16,
           width: 7,
           height: 7,
           borderRadius: "50%",
@@ -86,6 +92,7 @@ export function FilterSection({
         flexDirection: "column",
         boxSizing: "border-box",
         bgcolor: "transparent",
+        backgroundImage: "none",
         ...sx,
       }}
     >
@@ -110,7 +117,7 @@ export function FilterSection({
           sx={{
             fontFamily: "var(--font-display)",
             fontWeight: 700,
-            lineHeight: 1.3,
+            lineHeight: "22px",
             minHeight: 22,
             minWidth: 0,
             color: "text.primary",

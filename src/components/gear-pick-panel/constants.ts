@@ -26,9 +26,9 @@ export type GearPickGridAreaId =
 
 export type GearPickGridLayout = "filters" | "md" | "wide";
 
-/** Soft-reserve call (copy) block span — 1 row × 2 column units. */
+/** Soft-reserve call (copy) block span — 2 rows × 2 column units. */
 export const GEAR_PICK_COPY_BLOCK_SPAN = {
-  heightUnits: 1,
+  heightUnits: 2,
   widthUnits: 2,
 } as const;
 
@@ -39,8 +39,8 @@ export const GEAR_PICK_SOFTS_BLOCK_WIDTH_UNITS = 2;
 export const GEAR_PICK_SOFTS_BLOCK_HEIGHT_UNITS = 2;
 
 /**
- * Width of a 1×2 copy span: `widthUnits × unit + (widthUnits − 1) × gap`.
- * For the default 1×2 this is 600 + 12 = 612 (not 600).
+ * Width of a 2×2 copy span: `widthUnits × unit + (widthUnits − 1) × gap`.
+ * For the default 2×2 this is 600 + 12 = 612 (not 600).
  */
 export function getGearPickCopyBlockMaxWidth(
   gridColumnGapPx = GEAR_PICK_GRID_GAP_PX,
@@ -130,7 +130,7 @@ export function getGearPickGridTemplateAreas(layout: GearPickGridLayout): string
   if (layout === "wide") {
     return [
       '"dungeon characterSpecs softs copy"',
-      '"rules characterSpecs softs ."',
+      '"rules characterSpecs softs copy"',
     ].join(" ");
   }
 

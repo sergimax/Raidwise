@@ -14,7 +14,7 @@ import {
 } from "../../utils/build-gear-pick-items.ts";
 import {
   emptySoftAssignment,
-  formatGearPickCopyText,
+  formatGearPickCopyParts,
   remainingSoftBudget,
   selectGearPickCopyItems,
   sumMySofts,
@@ -253,9 +253,9 @@ export function GearPickPanel({
     [assignmentsByItemId, gearPickItems, includeAllCopyItems, includeAllBisCopyItems, allBisCopyItems, itemLocale],
   );
 
-  const copyText = useMemo(
+  const copyParts = useMemo(
     () =>
-      formatGearPickCopyText({
+      formatGearPickCopyParts({
         characterName: selectedCharacter?.name,
         specName: selectedSpecGear?.spec,
         items: copyItems,
@@ -452,7 +452,7 @@ export function GearPickPanel({
 
       <GearPickFilterBlock gridArea="copy" copyBlockSized>
         <GearPickCopyBlock
-          copyText={copyText}
+          copyParts={copyParts}
           hasCopyItems={copyItems.length > 0}
           includeCharacterName={includeCopyCharacterName}
           includeSpec={includeCopySpec}

@@ -1,12 +1,15 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Box, Button, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
+import { useWowDataReady } from "../../hooks/use-wow-data-ready.ts";
+import type { GearPickCopyPart } from "../../utils/gear-pick-soft-roll.ts";
+import { wowItemLinkColor } from "../wow-item-link/item-link-styles.ts";
 import type { TranslateFn } from "../../i18n/translate.ts";
 import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { GearPickCopyFormatActions } from "./gear-pick-copy-format-actions.tsx";
 
 type GearPickCopyBlockProps = {
-  copyText: string;
+  copyParts: readonly GearPickCopyPart[];
   hasCopyItems: boolean;
   includeCharacterName: boolean;
   includeSpec: boolean;
@@ -33,7 +36,7 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
 }
 
 export function GearPickCopyBlock({
-  copyText,
+  copyParts,
   hasCopyItems,
   includeCharacterName,
   includeSpec,
@@ -49,7 +52,9 @@ export function GearPickCopyBlock({
   onCompactLinesChange,
   t,
 }: GearPickCopyBlockProps) {
+  useWowDataReady();
   const [copied, setCopied] = useState(false);
+  const copyText = copyParts.map(({ text }) => text).join("");
 
   const handleCopy = useCallback(async () => {
     if (!hasCopyItems) {
@@ -118,7 +123,17 @@ export function GearPickCopyBlock({
             overflow: "auto",
           }}
         >
-          {copyText}
+          {copyParts.map(({ text, itemId }, index) => (
+            <Box
+              component="span"
+              key={index}
+              sx={itemId != null ? (theme) => ({
+                color: wowItemLinkColor(itemId, theme.palette.mode),
+              }) : undefined}
+            >
+              {text}
+            </Box>
+          ))}
         </Box>
       ) : (
         <Typography variant="body2" color="text.secondary">

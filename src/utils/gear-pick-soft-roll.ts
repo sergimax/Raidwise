@@ -374,6 +374,7 @@ export function buildPlus100OddsAdvice(
 }
 
 export type GearPickCopyItem = {
+  itemId?: number;
   itemName: string;
   bossName: string;
   softs: number;
@@ -391,8 +392,8 @@ export function selectGearPickCopyItems(
     if (seenItemIds.has(itemId)) continue;
     seenItemIds.add(itemId);
     const softs = assignmentsByItemId[itemId]?.mySofts ?? 0;
-    if (softs > 0) selected.push({ itemName, bossName, softs });
-    else if (includeAllItems) remaining.push({ itemName, bossName, softs: 0 });
+    if (softs > 0) selected.push({ itemId, itemName, bossName, softs });
+    else if (includeAllItems) remaining.push({ itemId, itemName, bossName, softs: 0 });
   }
   return [...selected, ...remaining];
 }
@@ -415,37 +416,33 @@ export type FormatGearPickCopyOptions = {
   compactLines?: boolean;
 };
 
-/** Item list with an optional character/spec header. */
-export function formatGearPickCopyText(options: FormatGearPickCopyOptions): string {
-  const includeCharacterName = options.includeCharacterName !== false;
-  const includeSpec = options.includeSpec === true;
-  const compactLines = options.compactLines === true;
-  const lines: string[] = [];
+export type GearPickCopyPart = { text: string; itemId?: number };
 
-  for (const item of options.items) {
-    const softCount = options.includeSoftCount !== false && item.softs > 0 ? ` ×${item.softs}` : "";
-    if (compactLines) {
-      lines.push(`- ${item.itemName}${softCount}`);
-      continue;
-    }
-    const bossSuffix = item.bossName ? ` (${item.bossName})` : "";
-    lines.push(`- ${item.itemName}${softCount}${bossSuffix}`);
-  }
-
-  if (lines.length === 0) {
-    return "";
-  }
-
+/** Structured preview: only item names carry an ID for their display colour. */
+export function formatGearPickCopyParts(options: FormatGearPickCopyOptions): GearPickCopyPart[] {
+  if (options.items.length === 0) return [];
+  const parts: GearPickCopyPart[] = [];
   const characterName = options.characterName?.trim();
   const headerParts = [
-    includeCharacterName && characterName
+    options.includeCharacterName !== false && characterName
       ? formatCharacterDisplayName(characterName)
       : "",
-    includeSpec ? options.specName?.trim() ?? "" : "",
+    options.includeSpec === true ? options.specName?.trim() ?? "" : "",
   ].filter(Boolean);
-  if (headerParts.length > 0) {
-    return [`${headerParts.join(" ")}:`, ...lines].join("\n");
-  }
+  if (headerParts.length > 0) parts.push({ text: `${headerParts.join(" ")}:\n` });
+  options.items.forEach((item, index) => {
+    const softCount = options.includeSoftCount !== false && item.softs > 0 ? ` ×${item.softs}` : "";
+    const bossSuffix = !options.compactLines && item.bossName ? ` (${item.bossName})` : "";
+    parts.push(
+      { text: "- " },
+      { text: item.itemName, itemId: item.itemId },
+      { text: `${softCount}${bossSuffix}${index < options.items.length - 1 ? "\n" : ""}` },
+    );
+  });
+  return parts;
+}
 
-  return lines.join("\n");
+/** Plain clipboard text shares its formatting with the coloured preview. */
+export function formatGearPickCopyText(options: FormatGearPickCopyOptions): string {
+  return formatGearPickCopyParts(options).map(({ text }) => text).join("");
 }

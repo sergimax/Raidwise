@@ -14,9 +14,9 @@
   /* Light tokens */
   --bg: #f5f5f3;
   --page-bg: var(--bg);
-  /* Direction S: quiet upright dots on the page, solid working islands. */
-  --dot-grid: color-mix(in srgb, #0a0a0a 10%, transparent);
-  --dot-grid-size: 8px;
+  /* Original quiet dot grid; panel surfaces hide the page pattern. */
+  --dot-grid: color-mix(in srgb, #0a0a0a 5.5%, transparent);
+  --dot-grid-size: 12px;
   --surface: #ffffff;
   --chip-bg: #f3f2ef;
   --header-bg: #f5f5f3;
@@ -66,8 +66,8 @@
 :root[data-color-mode="dark"] {
   --bg: #191919;
   --page-bg: var(--bg);
-  --dot-grid: color-mix(in srgb, #ffffff 12%, transparent);
-  --surface: #222222;
+  --dot-grid: color-mix(in srgb, #ffffff 6%, transparent);
+  --surface: #20242b;
   --chip-bg: #1f1f1f;
   --header-bg: #191919;
   --border: #454545;
@@ -134,15 +134,19 @@ body {
   isolation: isolate;
 }
 
-/* Upright page dots; working surfaces remain opaque. */
+/* Original page grid, rotated 45 degrees. Extra extent covers viewport corners. */
 body::before {
   content: "";
   position: fixed;
-  inset: 0;
+  top: -50vmax;
+  left: -50vmax;
+  width: 200vmax;
+  height: 200vmax;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(var(--dot-grid) 0.8px, transparent 1px);
+  background-image: radial-gradient(var(--dot-grid) 1px, transparent 1px);
   background-size: var(--dot-grid-size) var(--dot-grid-size);
+  transform: rotate(45deg);
 }
 
 input,

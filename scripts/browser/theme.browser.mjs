@@ -164,9 +164,9 @@ test("theme browser smoke checks", async (t) => {
       dark: {
         colorScheme: "dark",
         pageBackground: "rgb(25, 25, 25)",
-        cardBackground: "rgb(34, 34, 34)",
+        cardBackground: "rgb(43, 32, 32)",
         headingColor: "rgb(242, 242, 242)",
-        cardPixel: [34, 34, 34],
+        cardPixel: [32, 36, 43],
       },
     })) {
       await t.test(`${mode} settings appearance and accessibility`, () =>

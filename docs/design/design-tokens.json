@@ -55,6 +55,7 @@
   "shape": {
     "borderRadius": 6,
     "controlBorderRadius": 4,
+    "buttonBorderRadius": 0,
     "dialogBorderRadius": 8,
     "filterCardBorderRadius": 0,
     "inlineMentionBorderRadius": 8,
@@ -117,8 +118,8 @@
       "--bg": "#f5f5f3",
       "--page-bg": "#f5f5f3",
       "--surface": "#ffffff",
-      "--dot-grid": "color-mix(in srgb, #0a0a0a 10%, transparent)",
-      "--dot-grid-size": "8px",
+      "--dot-grid": "color-mix(in srgb, #0a0a0a 5.5%, transparent)",
+      "--dot-grid-size": "12px",
       "--chip-bg": "#f3f2ef",
       "--header-bg": "#f5f5f3",
       "--border": "#d6d4cf",
@@ -147,9 +148,9 @@
     "dark": {
       "--bg": "#191919",
       "--page-bg": "#191919",
-      "--surface": "#222222",
-      "--dot-grid": "color-mix(in srgb, #ffffff 12%, transparent)",
-      "--dot-grid-size": "8px",
+      "--surface": "#20242b",
+      "--dot-grid": "color-mix(in srgb, #ffffff 6%, transparent)",
+      "--dot-grid-size": "12px",
       "--chip-bg": "#1f1f1f",
       "--header-bg": "#191919",
       "--border": "#454545",
@@ -198,7 +199,7 @@
       "error": { "main": "#ff7b72", "light": "#fecaca", "dark": "#f87171", "contrastText": "#111111" },
       "info": { "main": "#38bdf8", "light": "#7dd3fc", "dark": "#0284c7" },
       "warning": { "main": "#f59e0b", "light": "#fbbf24", "dark": "#d97706" },
-      "background": { "default": "#191919", "paper": "#222222" },
+      "background": { "default": "#191919", "paper": "#20242b" },
       "divider": "#454545",
       "text": { "primary": "#f2f2f2", "secondary": "#a3a3a3" },
       "action": {
@@ -227,16 +228,16 @@
     }
   },
   "atmosphere": {
-    "direction": "S refinement — borderless page-coloured panel, flat rail sections",
-    "pattern": "radial-gradient(var(--dot-grid) 0.8px, transparent 1px)",
-    "gridSizePx": 8,
+    "direction": "S refinement — borderless surface-coloured panel, flat rail sections",
+    "pattern": "radial-gradient(var(--dot-grid) 1px, transparent 1px)",
+    "gridSizePx": 12,
     "position": "fixed",
     "gradient": "none",
-    "rotationDeg": 0
+    "rotationDeg": 45
   },
   "components": {
     "toolbarPanel": {
-      "background": "background.default",
+      "background": "background.paper",
       "border": "none",
       "headerDivider": false,
       "pattern": "none"
@@ -247,9 +248,13 @@
     },
     "filterSection": {
       "source": "src/components/filter-unit/filter-section.tsx",
-      "borderLeft": "1px solid divider",
+      "borderTop": "1px solid divider",
+      "borderSides": "1px gradient from divider to transparent over min(200px, 100%)",
+      "borderBottom": "none",
       "marker": { "sizePx": 7, "color": "secondary.main", "when": "unnumbered sections only" },
       "shellBackground": "transparent",
+      "shellGradient": { "enabled": false, "direction": "to bottom", "inkAlpha": { "light": 0.025, "dark": 0.045 }, "fadeEnd": "85%" },
+      "paddingTopThemeUnits": 1,
       "paddingLeftThemeUnits": 2,
       "contentBackground": "transparent",
       "contentRadiusPx": 0,

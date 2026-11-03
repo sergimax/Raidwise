@@ -24,7 +24,7 @@ export type TrackerToolbarPanelProps = {
   children: ReactNode;
 };
 
-/** Quiet page-coloured surface; internal section rails carry the hierarchy. */
+/** Shared panel/table surface; internal section rails carry the hierarchy. */
 export function TrackerToolbarPanel({
   panelId,
   title,
@@ -64,7 +64,7 @@ export function TrackerToolbarPanel({
         boxSizing: "border-box",
         // Keep unit-grid children (Character / Soft pick) from painting outside the panel.
         overflow: "hidden",
-        bgcolor: "background.default",
+        bgcolor: "background.paper",
         border: 0,
         borderRadius: "3px",
         boxShadow: "none",

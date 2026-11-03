@@ -5,6 +5,7 @@ import {
   clearAssignmentForItem,
   competingSoftWeight,
   formatGearPickCopyText,
+  formatGearPickCopyParts,
   pruneSoftAssignmentsToItemIds,
   remainingSoftBudget,
   selectGearPickCopyItems,
@@ -243,7 +244,7 @@ describe("gear-pick-soft-roll", () => {
     expect(selectGearPickCopyItems(items, {
       1: { mySofts: 2, othersByWeight: {} },
       2: { mySofts: 0, othersByWeight: { 1: 3 } },
-    })).toEqual([{ itemName: "Belt", bossName: "Putricide", softs: 2 }]);
+    })).toEqual([{ itemId: 1, itemName: "Belt", bossName: "Putricide", softs: 2 }]);
   });
 
   it("puts reserved items first when the full useful-item list is enabled", () => {
@@ -255,9 +256,9 @@ describe("gear-pick-soft-roll", () => {
     ];
     const assignments = { 2: { mySofts: 2, othersByWeight: {} } };
     expect(selectGearPickCopyItems(items, assignments, true)).toEqual([
-      { itemName: "Ring", bossName: "Halion", softs: 2 },
-      { itemName: "Belt", bossName: "Putricide", softs: 0 },
-      { itemName: "Trinket", bossName: "Saurfang", softs: 0 },
+      { itemId: 2, itemName: "Ring", bossName: "Halion", softs: 2 },
+      { itemId: 1, itemName: "Belt", bossName: "Putricide", softs: 0 },
+      { itemId: 3, itemName: "Trinket", bossName: "Saurfang", softs: 0 },
     ]);
     expect(selectGearPickCopyItems(items, {}, true)).toHaveLength(3);
     expect(formatGearPickCopyText({
@@ -351,3 +352,24 @@ function getSofts(
 ): number {
   return byItemId[itemId]?.mySofts ?? 0;
 }
+
+describe("soft reserve copy preview", () => {
+  it("tags only item names, retaining identical names with different IDs", () => {
+    const options = {
+      characterName: "Hero", specName: "Tank", includeSpec: true,
+      items: [
+        { itemId: 51225, itemName: "Helm", bossName: "Boss", softs: 2 },
+        { itemId: 1, itemName: "Helm", bossName: "Other boss", softs: 0 },
+      ],
+    };
+    const parts = formatGearPickCopyParts(options);
+    expect(parts.filter((part) => part.itemId != null)).toEqual([
+      { text: "Helm", itemId: 51225 }, { text: "Helm", itemId: 1 },
+    ]);
+    expect(parts.map(({ text }) => text).join("")).toBe(
+      "Hero Tank:\n- Helm ×2 (Boss)\n- Helm (Other boss)",
+    );
+    expect(formatGearPickCopyText({ ...options, compactLines: true, includeSoftCount: false }))
+      .toBe("Hero Tank:\n- Helm\n- Helm");
+  });
+});

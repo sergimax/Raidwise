@@ -47,7 +47,7 @@ export const appThemeTokens = {
   },
   dark: {
     bg: "#191919",
-    surface: "#222222",
+    surface: "#20242b",
     chipBg: "#1f1f1f",
     headerBg: "#191919",
     border: "#454545",
@@ -208,19 +208,23 @@ export function createAppTheme(mode: PaletteMode) {
             backgroundColor: "var(--page-bg)",
           },
           body: {
-            // Direction S: a flat canvas with upright dots behind solid islands.
+            // Original quiet rotated page dots; opaque panels hide the pattern.
             backgroundColor: "transparent",
             isolation: "isolate",
             lineHeight: 1.55,
             "&::before": {
               content: '""',
               position: "fixed",
-              inset: 0,
+              top: "-50vmax",
+              left: "-50vmax",
+              width: "200vmax",
+              height: "200vmax",
               zIndex: -1,
               pointerEvents: "none",
               backgroundImage:
-                "radial-gradient(var(--dot-grid) 0.8px, transparent 1px)",
+                "radial-gradient(var(--dot-grid) 1px, transparent 1px)",
               backgroundSize: "var(--dot-grid-size) var(--dot-grid-size)",
+              transform: "rotate(45deg)",
             },
           },
         },
@@ -231,7 +235,7 @@ export function createAppTheme(mode: PaletteMode) {
         },
         styleOverrides: {
           root: {
-              borderRadius: 4,
+            borderRadius: 0,
             paddingInline: 12,
           },
           sizeSmall: {

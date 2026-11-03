@@ -19,7 +19,7 @@ const modes = [
     "dark",
     {
       background: "#191919",
-      paper: "#222222",
+      paper: "#20242b",
       text: "#f2f2f2",
       muted: "#a3a3a3",
       primary: "#fafafa",

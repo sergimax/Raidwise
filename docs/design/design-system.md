@@ -26,11 +26,11 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 | Trait | Rule |
 | --- | --- |
-| Chrome | Direction S — neutral canvas (`#f5f5f3` / `#191919`), upright dots, unified working surfaces |
+| Chrome | Direction S — neutral canvas (`#f5f5f3` / `#191919`), quiet diagonal dots, unified working surfaces |
 | Brand | Burnt orange (Signal energy) — identity only, **not** primary CTAs |
 | Primary CTAs | Inverse ink (`#0a0a0a` on light / `#fafafa` on dark) |
 | Ok / Danger | Forest/mint green · true red — never reuse brand orange |
-| Surfaces | Bounded panels, vertical rails + brand markers, flat inner sections, 3px outer corners |
+| Surfaces | Bounded panels, vertical rails + brand markers, full top borders with fading sides, fill gradients disabled, 3px outer corners |
 | Type | Onest display · Noto Sans body · JetBrains Mono chips/meta (Cyrillic + Latin) |
 
 **Avoid:** Facebook/SaaS blue as brand; pink/magenta identity; brand≈danger or brand≈ok pairs; Latin-only display fonts (Syne, Space Grotesk) as sole UI fonts.
@@ -39,7 +39,7 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 **Toolbar panel backgrounds:** [panel-backgrounds/](./panel-backgrounds/) — hatch / grid / wash variants for `TrackerToolbarPanel` (step blocks stay solid).
 
-**Implemented direction:** S (M + N): flat section rails on an upright 8px dot grid, refined with a borderless, opaque page-coloured panel and 3px outer corners. The gallery remains an exploration reference.
+**Implemented direction:** S (M + N): flat section rails on a 12px dot grid rotated 45°, refined with a borderless, opaque panel using the shared table surface and 3px outer corners. The gallery remains an exploration reference.
 
 **App background directions:** [app-backgrounds/](./app-backgrounds/) — 24 surface proposals grouped into favourites, new combinations and other explorations with light/dark switching; S is the implemented basis, other variants remain exploratory.
 
@@ -93,7 +93,7 @@ Action:
 | Role | Hex | CSS var | MUI |
 | --- | --- | --- | --- |
 | Page background | `#191919` | `--bg` / `--page-bg` | `background.default` |
-| Surface / paper | `#222222` | `--surface` | `background.paper` |
+| Surface / paper | `#20242b` | `--surface` | `background.paper` |
 | Chip / inset | `#1f1f1f` | `--chip-bg` | — |
 | Sticky header | `#191919` | `--header-bg` | AppBar |
 | Border | `#454545` | `--border` | `divider` |
@@ -119,8 +119,8 @@ Action:
 
 ### Page atmosphere (CssBaseline `body`)
 
-Direction S uses a static upright 8px dot grid on `body::before`, mirrored in
-`src/index.css`. Pin radius is 0.8px, with 10% ink in light mode and 12% white
+Direction S uses the original static 12px dot grid rotated 45° on `body::before`, mirrored in
+`src/index.css`. Pin radius is 1px, with 5.5% ink in light mode and 6% white
 in dark mode. The page has no gradient wash. Toolbar panels, tables and the sticky header have opaque fills; inner sections
 are transparent and share the panel surface.
 
@@ -131,7 +131,8 @@ are transparent and share the panel surface.
 | Token | Value | Usage |
 | --- | --- | --- |
 | `--radius` / `shape.borderRadius` | `6px` | Global MUI shape |
-| Control | `4px` | Buttons, icon buttons, tooltips |
+| Button | `0px` | Regular text, outlined and contained action buttons |
+| Control | `4px` | Icon buttons, tooltips |
 | Dialog | `8px` | Dialog paper |
 | Working surface | `3px` | Toolbar panel, table containers, intro and outlined Paper default |
 | Inner section | `0px` | Transparent `FilterSection` content |
@@ -154,8 +155,8 @@ border: 1px solid <divider>
 
 | Surface | Border | Notes |
 | --- | --- | --- |
-| Outlined `Paper` | theme-adjusted `divider` | One solid working surface; toolbar panels override to borderless page-coloured fill |
-| Step / filter section | `1px` left `divider` rail + numbered badge (dot for unnumbered sections) | Transparent inner content on the shared panel surface |
+| Outlined `Paper` | theme-adjusted `divider` | One solid working surface; toolbar panels override to borderless surface fill |
+| Step / filter section | `1px` top `divider` border with fading sides + numbered badge (dot for unnumbered sections) | Transparent inner content on the shared panel surface |
 | Table container | none | Opaque paper fill, 3px corners, no shadow |
 | Dialog paper | `1px solid divider` | radius 8 |
 | Menu paper | `1px solid divider` | radius 6 |
@@ -213,10 +214,14 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 
 ## Forms & stepped panels
 
+Item names in the soft-reserve copy preview use the same ilvl palette as the target list. Header, counts and boss suffixes stay neutral; clipboard output stays plain text.
+
+The soft-reserve copy block uses two filter rows of height (460px with the default 12px gap), including on mobile; on wide layouts it spans both filter rows.
+
 ### Recipes
 
-1. **Toolbar shell** — borderless opaque `Paper` using `background.default` (page colour without dots), padding `{ xs: 1.5, sm: 2 }`, header row = title + close, separated from content by spacing (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
-2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: neutral title (Onest), soft brand **step badge** centred on the vertical divider rail (number only, 3px corners), replacing the dot; unnumbered sections retain a 7px brand dot. The content is transparent without a nested card, radius or shadow; the panel provides its background.
+1. **Toolbar shell** — borderless opaque `Paper` using `background.paper` (shared with tables, distinct from the page background), padding `{ xs: 1.5, sm: 2 }`, header row = title + close, separated from content by spacing (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
+2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: neutral title (Onest), soft brand **step badge** centred on the vertical divider rail (number only, 3px corners), replacing the dot; unnumbered sections retain a 7px brand dot. Each section has 8px of top padding; the rail number, title and actions share this inset. Sections have a full 1px divider border across the top and side borders fading to transparent over 200px (or the full section height if shorter). There is no bottom border. The top-to-bottom gradient is currently disabled; its settings (2.5% light, 4.5% dark) remain in design-tokens.json for comparison. No nested card, radius or shadow.
 3. **Field density** — Prefer `size="small"` on TextField / Select / FormControl in add forms.
 4. **Stack rhythm** — Outer form / panel stacks use `spacing={1.5}`; fields inside a step often `1`–`1.25`.
 5. **Errors** — Field-level `helperText` + `error` when possible; otherwise `FormErrorMessage` under actions.
