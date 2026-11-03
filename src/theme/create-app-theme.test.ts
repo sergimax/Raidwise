@@ -7,7 +7,7 @@ const modes = [
   [
     "light",
     {
-      background: "#fcfbf9",
+      background: "#f5f5f3",
       paper: "#ffffff",
       text: "#141414",
       muted: "#555555",
@@ -18,8 +18,8 @@ const modes = [
   [
     "dark",
     {
-      background: "#1a1a1a",
-      paper: "#242424",
+      background: "#191919",
+      paper: "#222222",
       text: "#f2f2f2",
       muted: "#a3a3a3",
       primary: "#fafafa",

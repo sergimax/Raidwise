@@ -57,7 +57,7 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
       variant="outlined"
       sx={{
         p: { xs: 1.5, sm: 2 },
-        borderRadius: 1,
+        borderRadius: "3px",
         overflow: "hidden",
         boxSizing: "border-box",
       }}

@@ -42,8 +42,6 @@ export function AppHeader({
       elevation={0}
       sx={(theme) => ({
         bgcolor: appThemeTokens[theme.palette.mode].headerBg,
-        backdropFilter: "saturate(1.2) blur(12px)",
-        WebkitBackdropFilter: "saturate(1.2) blur(12px)",
         borderBottom: 1,
         borderColor: "divider",
       })}

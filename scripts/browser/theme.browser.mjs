@@ -148,7 +148,7 @@ test("theme browser smoke checks", async (t) => {
     for (const scenario of scenarios) {
       await t.test(scenario.name, async () => {
         const result = await openThemePage(browser, url, scenario.options);
-        assert.deepEqual(result.beforeReact, { mode: "dark", meta: "#1a1a1a" });
+        assert.deepEqual(result.beforeReact, { mode: "dark", meta: "#191919" });
         assert.deepEqual(result.afterReact, result.beforeReact);
       });
     }
@@ -156,17 +156,17 @@ test("theme browser smoke checks", async (t) => {
     for (const [mode, expected] of Object.entries({
       light: {
         colorScheme: "light",
-        pageBackground: "rgb(252, 251, 249)",
+        pageBackground: "rgb(245, 245, 243)",
         cardBackground: "rgb(255, 255, 255)",
         headingColor: "rgb(20, 20, 20)",
         cardPixel: [255, 255, 255],
       },
       dark: {
         colorScheme: "dark",
-        pageBackground: "rgb(26, 26, 26)",
-        cardBackground: "rgb(36, 36, 36)",
+        pageBackground: "rgb(25, 25, 25)",
+        cardBackground: "rgb(34, 34, 34)",
         headingColor: "rgb(242, 242, 242)",
-        cardPixel: [36, 36, 36],
+        cardPixel: [34, 34, 34],
       },
     })) {
       await t.test(`${mode} settings appearance and accessibility`, () =>

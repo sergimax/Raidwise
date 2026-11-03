@@ -71,7 +71,7 @@ Full UI and item tooltips; first visit defaults to Russian.
 
 ### Theme
 
-Light/dark mode saved locally, with a system preference fallback when browser storage is unavailable; quiet MUJI chrome with a subtle page/panel dot grid; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
+Light/dark mode saved locally, with a system preference fallback when browser storage is unavailable; flat section rails within unified panels over a subtle page dot grid (refined design direction S); design tokens in [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Development
 

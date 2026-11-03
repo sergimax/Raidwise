@@ -12,14 +12,14 @@
 
 :root {
   /* Light tokens */
-  --bg: #fcfbf9;
+  --bg: #f5f5f3;
   --page-bg: var(--bg);
-  /* Shared pin-dot grid — page chrome + toolbar panel shells (gallery F). */
-  --dot-grid: color-mix(in srgb, #0a0a0a 5.5%, transparent);
-  --dot-grid-size: 12px;
+  /* Direction S: quiet upright dots on the page, solid working islands. */
+  --dot-grid: color-mix(in srgb, #0a0a0a 10%, transparent);
+  --dot-grid-size: 8px;
   --surface: #ffffff;
   --chip-bg: #f3f2ef;
-  --header-bg: rgba(252, 251, 249, 0.96);
+  --header-bg: #f5f5f3;
   --border: #d6d4cf;
   --text: #141414;
   --text-strong: #0a0a0a;
@@ -38,7 +38,7 @@
   --link-hover: var(--link-spot);
   --primary-bg: #0a0a0a;
   --primary-fg: #ffffff;
-  --shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  --shadow: none;
   --radius: 6px;
   --control-radius: 4px;
   --gap: 0.55rem;
@@ -64,12 +64,12 @@
 }
 
 :root[data-color-mode="dark"] {
-  --bg: #1a1a1a;
+  --bg: #191919;
   --page-bg: var(--bg);
-  --dot-grid: color-mix(in srgb, #ffffff 6%, transparent);
-  --surface: #242424;
+  --dot-grid: color-mix(in srgb, #ffffff 12%, transparent);
+  --surface: #222222;
   --chip-bg: #1f1f1f;
-  --header-bg: rgba(26, 26, 26, 0.96);
+  --header-bg: #191919;
   --border: #454545;
   --text: #f2f2f2;
   --text-strong: #fafafa;
@@ -88,7 +88,7 @@
   --link-hover: var(--link-spot);
   --primary-bg: #fafafa;
   --primary-fg: #111111;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow: none;
   --scrollbar-thumb: #555555;
   --scrollbar-thumb-hover: #8a8a8a;
   color-scheme: dark;
@@ -128,26 +128,21 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  /* Transparent so html page-bg + ::before dots show; washes stay on body. */
+  /* Transparent so the page dots show behind working islands. */
   background-color: transparent;
   /* Keep z-index:-1 ::before inside this context (above transparent bg). */
   isolation: isolate;
 }
 
-/* Page dots — rotated 45°. Toolbar panels keep upright dots on their Paper. */
+/* Upright page dots; working surfaces remain opaque. */
 body::before {
   content: "";
   position: fixed;
-  /* Extra extent so rotation still covers the viewport corners. */
-  top: -50vmax;
-  left: -50vmax;
-  width: 200vmax;
-  height: 200vmax;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(var(--dot-grid) 1px, transparent 1px);
+  background-image: radial-gradient(var(--dot-grid) 0.8px, transparent 1px);
   background-size: var(--dot-grid-size) var(--dot-grid-size);
-  transform: rotate(45deg);
 }
 
 input,

@@ -26,11 +26,11 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 | Trait | Rule |
 | --- | --- |
-| Chrome | Quiet MUJI neutrals — warm paper (`#fcfbf9` / `#1a1a1a`), not slate-blue fog |
+| Chrome | Direction S — neutral canvas (`#f5f5f3` / `#191919`), upright dots, unified working surfaces |
 | Brand | Burnt orange (Signal energy) — identity only, **not** primary CTAs |
 | Primary CTAs | Inverse ink (`#0a0a0a` on light / `#fafafa` on dark) |
 | Ok / Danger | Forest/mint green · true red — never reuse brand orange |
-| Surfaces | Soft card shadow + modest radii (`10` / `8`) |
+| Surfaces | Bounded panels, vertical rails + brand markers, flat inner sections, 3px outer corners |
 | Type | Onest display · Noto Sans body · JetBrains Mono chips/meta (Cyrillic + Latin) |
 
 **Avoid:** Facebook/SaaS blue as brand; pink/magenta identity; brand≈danger or brand≈ok pairs; Latin-only display fonts (Syne, Space Grotesk) as sole UI fonts.
@@ -39,7 +39,9 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 **Toolbar panel backgrounds:** [panel-backgrounds/](./panel-backgrounds/) — hatch / grid / wash variants for `TrackerToolbarPanel` (step blocks stay solid).
 
-**App background directions:** [app-backgrounds/](./app-backgrounds/) — eighteen full-layout surface proposals with light/dark switching; exploratory, not shipped.
+**Implemented direction:** S (M + N): flat section rails on an upright 8px dot grid, refined with a borderless, opaque page-coloured panel and 3px outer corners. The gallery remains an exploration reference.
+
+**App background directions:** [app-backgrounds/](./app-backgrounds/) — 24 surface proposals grouped into favourites, new combinations and other explorations with light/dark switching; S is the implemented basis, other variants remain exploratory.
 
 ---
 
@@ -48,7 +50,7 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 - Attribute: `document.documentElement.dataset.colorMode` = `light` | `dark`
 - CSS: `:root` / `:root[data-color-mode="dark"]` in `index.css`
 - Storage key: `raidwise-color-mode`
-- Theme-color meta: light `#fcfbf9`, dark `#1a1a1a`
+- Theme-color meta: light `#f5f5f3`, dark `#191919`
 - Default for new ports: `light`
 
 CSS variables mirror the MUI palette so non-MUI markup stays in sync.
@@ -61,10 +63,10 @@ CSS variables mirror the MUI palette so non-MUI markup stays in sync.
 
 | Role | Hex | CSS var | MUI |
 | --- | --- | --- | --- |
-| Page background | `#fcfbf9` | `--bg` / `--page-bg` | `background.default` |
+| Page background | `#f5f5f3` | `--bg` / `--page-bg` | `background.default` |
 | Surface / paper | `#ffffff` | `--surface` | `background.paper` |
 | Chip / inset | `#f3f2ef` | `--chip-bg` | — |
-| Sticky header | `rgba(252, 251, 249, 0.96)` | `--header-bg` | AppBar |
+| Sticky header | `#f5f5f3` | `--header-bg` | AppBar |
 | Border | `#d6d4cf` | `--border` | `divider` |
 | Text | `#141414` | `--text` | `text.primary` |
 | Text strong | `#0a0a0a` | `--text-strong` | — |
@@ -76,7 +78,7 @@ CSS variables mirror the MUI palette so non-MUI markup stays in sync.
 | Link (quiet) | `#2c5282` | `--link` | — |
 | Link spot | `#9a3412` | `--link-spot` | — |
 | Primary bg / fg | `#0a0a0a` / `#ffffff` | `--primary-bg` / `--primary-fg` | `primary.main` / contrast |
-| Shadow | `0 6px 18px rgba(0, 0, 0, 0.07)` | `--shadow` | card / paper outlined |
+| Shadow | `none` | `--shadow` | card / paper outlined |
 | Info (ilvl hints) | `#0284c7` | — | `info.main` (domain) |
 | Warning (BiS hints) | `#d97706` | — | `warning.main` (domain) |
 | Scrollbar thumb | `#c4c4c0` → hover `#8a8a8a` | `--scrollbar-thumb*` | — |
@@ -90,10 +92,10 @@ Action:
 
 | Role | Hex | CSS var | MUI |
 | --- | --- | --- | --- |
-| Page background | `#1a1a1a` | `--bg` / `--page-bg` | `background.default` |
-| Surface / paper | `#242424` | `--surface` | `background.paper` |
+| Page background | `#191919` | `--bg` / `--page-bg` | `background.default` |
+| Surface / paper | `#222222` | `--surface` | `background.paper` |
 | Chip / inset | `#1f1f1f` | `--chip-bg` | — |
-| Sticky header | `rgba(26, 26, 26, 0.96)` | `--header-bg` | AppBar |
+| Sticky header | `#191919` | `--header-bg` | AppBar |
 | Border | `#454545` | `--border` | `divider` |
 | Text | `#f2f2f2` | `--text` | `text.primary` |
 | Text strong | `#fafafa` | `--text-strong` | — |
@@ -105,7 +107,7 @@ Action:
 | Link (quiet) | `#8ab4c8` | `--link` | — |
 | Link spot | `#fb923c` | `--link-spot` | — |
 | Primary bg / fg | `#fafafa` / `#111111` | `--primary-bg` / `--primary-fg` | `primary.main` / contrast |
-| Shadow | `0 8px 24px rgba(0, 0, 0, 0.4)` | `--shadow` | card / paper outlined |
+| Shadow | `none` | `--shadow` | card / paper outlined |
 | Info | `#38bdf8` | — | `info.main` |
 | Warning | `#f59e0b` | — | `warning.main` |
 | Scrollbar thumb | `#555555` → hover `#8a8a8a` | `--scrollbar-thumb*` | — |
@@ -117,10 +119,10 @@ Action:
 
 ### Page atmosphere (CssBaseline `body`)
 
-Warm brand-soft radials (not SaaS blue/teal):
-
-- Light: `rgba(154, 52, 18, 0.06)` + `rgba(194, 65, 12, 0.04)`, `backgroundAttachment: fixed`
-- Dark: `rgba(251, 146, 60, 0.1)` + `rgba(61, 40, 24, 0.45)`, fixed
+Direction S uses a static upright 8px dot grid on `body::before`, mirrored in
+`src/index.css`. Pin radius is 0.8px, with 10% ink in light mode and 12% white
+in dark mode. The page has no gradient wash. Toolbar panels, tables and the sticky header have opaque fills; inner sections
+are transparent and share the panel surface.
 
 ---
 
@@ -129,9 +131,10 @@ Warm brand-soft radials (not SaaS blue/teal):
 | Token | Value | Usage |
 | --- | --- | --- |
 | `--radius` / `shape.borderRadius` | `6px` | Global MUI shape |
-| Control | `4px` | Buttons, icon buttons, table containers, tooltips |
+| Control | `4px` | Buttons, icon buttons, tooltips |
 | Dialog | `8px` | Dialog paper |
-| Filter / step card | `8px` (`borderRadius: 1`) | `FilterSection` |
+| Working surface | `3px` | Toolbar panel, table containers, intro and outlined Paper default |
+| Inner section | `0px` | Transparent `FilterSection` content |
 | Inline mention chip | `8px` | Intro feature chips |
 | Game / slot icon thumb | `4px` | Class, spec, raid, gear-slot thumbs |
 | Scrollbar thumb | `999` (pill) | WebKit thumb only |
@@ -151,9 +154,9 @@ border: 1px solid <divider>
 
 | Surface | Border | Notes |
 | --- | --- | --- |
-| Outlined `Paper` | `divider` | Toolbar panels (`TrackerToolbarPanel`) |
-| Step / filter card | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | `FilterSection` |
-| Table container | `1px solid divider` | + paper fill + soft shadow |
+| Outlined `Paper` | theme-adjusted `divider` | One solid working surface; toolbar panels override to borderless page-coloured fill |
+| Step / filter section | `1px` left `divider` rail + numbered badge (dot for unnumbered sections) | Transparent inner content on the shared panel surface |
+| Table container | none | Opaque paper fill, 3px corners, no shadow |
 | Dialog paper | `1px solid divider` | radius 8 |
 | Menu paper | `1px solid divider` | radius 6 |
 | Outlined button | `divider`; hover `#6b6b6b` / `#a3a3a3` | translucent paper fill |
@@ -168,7 +171,7 @@ Do **not** invent a second border color for generic chrome — use `divider` / `
 
 | Token | Light | Dark |
 | --- | --- | --- |
-| Card / outlined paper / table | `0 6px 18px rgba(0, 0, 0, 0.07)` | `0 8px 24px rgba(0, 0, 0, 0.4)` |
+| Card / outlined paper / table | `none` | `none` |
 | Inline mention (micro) | `0 1px 1px rgba(0, 0, 0, 0.04)` | `0 1px 1px rgba(0, 0, 0, 0.25)` |
 | Menu | `0 8px 24px rgba(0, 0, 0, 0.12)` | `0 8px 24px rgba(0, 0, 0, 0.45)` |
 | Tooltip | MUI `shadows[8]` | MUI `shadows[12]` |
@@ -212,8 +215,8 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 
 ### Recipes
 
-1. **Toolbar shell** — `Paper variant="outlined"`, padding `{ xs: 1.5, sm: 2 }`, header row = title + close (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
-2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: **brand** title (Onest), soft brand **step badge** (number only — not a `N.` text prefix; DOM text is `N` + title), **3px brand left edge** on the block.
+1. **Toolbar shell** — borderless opaque `Paper` using `background.default` (page colour without dots), padding `{ xs: 1.5, sm: 2 }`, header row = title + close, separated from content by spacing (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
+2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: neutral title (Onest), soft brand **step badge** centred on the vertical divider rail (number only, 3px corners), replacing the dot; unnumbered sections retain a 7px brand dot. The content is transparent without a nested card, radius or shadow; the panel provides its background.
 3. **Field density** — Prefer `size="small"` on TextField / Select / FormControl in add forms.
 4. **Stack rhythm** — Outer form / panel stacks use `spacing={1.5}`; fields inside a step often `1`–`1.25`.
 5. **Errors** — Field-level `helperText` + `error` when possible; otherwise `FormErrorMessage` under actions.
@@ -337,7 +340,7 @@ UI: MUI determinate `LinearProgress` only (`CompletionCountChip` in `dungeon-cel
 4. Load Noto Sans + Onest + JetBrains Mono (Cyrillic + Latin)
 5. Implement quiet vs `.link-spot` links (`links.css`)
 6. Use the mode-specific `divider` border and the implemented radii (4/6/8px)
-7. Prefer stepped `FilterSection`-style cards for multi-field workflows (brand title, step badge, 3px brand left edge)
+7. Prefer stepped `FilterSection`-style cards for multi-field workflows (neutral title, step badge, divider rail and brand marker)
 8. Contrast-check text / muted / brand / ok / danger / link / link-spot / border
 9. Port class-color chips (`character-display.ts`) and completion chip fills (`completion-chip-color.ts`) when the product needs them
 

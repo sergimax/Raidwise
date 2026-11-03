@@ -3,7 +3,7 @@ import type { SxProps, Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 
 type FilterSectionProps = {
-  /** Optional workflow step number shown before the title (Character pick). */
+  /** Optional workflow step number placed on the section rail. */
   step?: number;
   title: string;
   /** When set, shown muted after the title as `(…)` — e.g. optional filters. */
@@ -30,8 +30,11 @@ const stepBadgeSx = {
   minWidth: 22,
   height: 22,
   px: 0.5,
-  mr: 0.75,
-  borderRadius: "8px",
+  position: "absolute",
+  top: 0,
+  left: "-0.5px",
+  transform: "translateX(-50%)",
+  borderRadius: "3px",
   bgcolor: "var(--brand-soft)",
   color: "var(--brand)",
   border: "1px solid color-mix(in srgb, var(--brand) 40%, transparent)",
@@ -60,30 +63,45 @@ export function FilterSection({
   return (
     <Box
       sx={{
-        border: 1,
+        position: "relative",
+        borderLeft: "1px solid",
         borderColor: "divider",
-        borderLeft: "3px solid var(--brand)",
-        borderRadius: 1,
-        p: 1.25,
+        ml: step != null ? 1.5 : 0.5,
+        pl: 2,
+        "&::before": {
+          content: step == null ? '""' : "none",
+          position: "absolute",
+          left: -4,
+          top: 8,
+          width: 7,
+          height: 7,
+          borderRadius: "50%",
+          bgcolor: "secondary.main",
+        },
         minWidth: 0,
         minHeight: 0,
         maxWidth: "100%",
         height: "100%",
-        overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
-        bgcolor: "background.paper",
+        bgcolor: "transparent",
         ...sx,
       }}
     >
+      {step != null ? (
+        <Box component="span" sx={stepBadgeSx} aria-hidden>
+          {step}
+        </Box>
+      ) : null}
       <Stack
         direction="row"
         spacing={0.5}
         sx={{
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "space-between",
           flexShrink: 0,
+          minHeight: 22,
           minWidth: 0,
         }}
       >
@@ -93,19 +111,15 @@ export function FilterSection({
             fontFamily: "var(--font-display)",
             fontWeight: 700,
             lineHeight: 1.3,
+            minHeight: 22,
             minWidth: 0,
-            color: "var(--brand)",
+            color: "text.primary",
             display: "flex",
             alignItems: "center",
             flexWrap: "wrap",
             gap: 0,
           }}
         >
-          {step != null ? (
-            <Box component="span" sx={stepBadgeSx} aria-hidden>
-              {step}
-            </Box>
-          ) : null}
           <Box component="span" sx={{ minWidth: 0 }}>
             {title}
             {titleMark ? (
@@ -188,6 +202,8 @@ export function FilterSection({
           minWidth: 0,
           overflowX: "hidden",
           overflowY: "auto",
+          bgcolor: "transparent",
+          py: 0.5,
           ...contentSx,
         }}
       >

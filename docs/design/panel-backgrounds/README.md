@@ -17,7 +17,7 @@ light/dark toggle to check both modes.
 | Dot grid on `TrackerToolbarPanel` (upright) | `src/components/tracker-toolbar-panel/index.tsx` |
 | Solid `bgcolor` on step blocks | `src/components/filter-unit/filter-section.tsx` |
 
-Current shipping choice: **F — Dot grid** (`12px` pin dots) on page chrome and toolbar panels.
+Previous shipping choice: **F — Dot grid** (`12px` pin dots) on page chrome and toolbar panels.
 
 ## Variants in the gallery
 
@@ -37,3 +37,7 @@ Current shipping choice: **F — Dot grid** (`12px` pin dots) on page chrome and
 
 When you pick one, update the CSS vars / panel shell to match that variant’s
 rules from `index.html`.
+
+The app now uses direction **S** from [app-backgrounds](../app-backgrounds/):
+upright page dots, transparent toolbar shells and solid working islands.
+This gallery is retained as an exploration reference.
