@@ -28,8 +28,7 @@ export const ruMessages: Messages = {
       "Язык интерфейса: русский. Нажмите для английского. Подсказки предметов — WoWRoad.",
     localeAria: "Язык интерфейса {{locale}}. Переключить на {{nextLocale}}.",
     versionAria: "Версия {{version}}",
-    githubHint: "Исходники на GitHub · by sergimax via Cursor",
-    authorSiteAria: "sergimax.ru",
+    githubHint: "Исходный код на GitHub",
   },
   intro: {
     title: "Чем поможет приложение",
@@ -250,7 +249,6 @@ export const ruMessages: Messages = {
     title: "Настройки приложения",
     appInfo: "О Raidwise",
     sourceCode: "Исходный код на GitHub",
-    authorSite: "Сайт автора",
     theme: "Тема оформления",
     language: "Язык",
     whatsNew: "Что нового",

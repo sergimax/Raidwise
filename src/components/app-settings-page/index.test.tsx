@@ -24,7 +24,7 @@ vi.hoisted(() => {
 });
 
 describe("AppSettingsPage", () => {
-  it("shows labeled site links and the version on its own line", () => {
+  it("links the header version to GitHub and omits author website links", () => {
     render(
       <AppThemeProvider>
         <ItemTooltipLocaleProvider initialLocale="ru">
@@ -39,8 +39,9 @@ describe("AppSettingsPage", () => {
     expect(within(about).getByText(`Версия ${__APP_VERSION__}`)).toBeInTheDocument();
     expect(within(about).getByRole("link", { name: "Исходный код на GitHub" }))
       .toHaveAttribute("href", "https://github.com/sergimax/Raidwise");
-    expect(within(about).getByRole("link", { name: "Сайт автора" }))
-      .toHaveAttribute("href", "https://sergimax.ru");
+    expect(screen.queryByRole("link", { name: "Сайт автора" })).not.toBeInTheDocument();
+    expect(within(screen.getByRole("banner")).getByRole("link", { name: `Версия ${__APP_VERSION__}` }))
+      .toHaveAttribute("href", "https://github.com/sergimax/Raidwise");
   });
 
   it("shows all changes for the latest published version only", () => {

@@ -2,7 +2,7 @@ import { AppBar, Box, Button, Container, Menu, MenuItem, Toolbar, Typography } f
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
-import { AppMetaInfo, AppVersionLabel } from "../app-meta-info/index.tsx";
+import { AppVersionLabel } from "../app-meta-info/index.tsx";
 import { AppIntroToggle } from "../app-intro-toggle/index.tsx";
 import { ItemTooltipLocaleToggle } from "../item-tooltip-locale-toggle/index.tsx";
 import { ThemeModeToggle } from "../theme-mode-toggle/index.tsx";
@@ -170,7 +170,6 @@ export function AppHeader({
             <ThemeModeToggle />
             <ItemTooltipLocaleToggle />
             <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center", gap: 0.25 }}>
-              <AppMetaInfo />
               <AppVersionLabel />
             </Box>
           </Box>

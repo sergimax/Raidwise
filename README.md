@@ -35,7 +35,7 @@ Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with conf
 
 ### Settings
 
-The About section shows the app version and labeled links to the source code and author's website.
+The header version links to the GitHub repository. The About section shows the app version and a labeled source-code link.
 What's new shows all changes for the latest published version, with a link to the full changelog.
 
 ### Character pick for a raid

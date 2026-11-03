@@ -26,8 +26,7 @@ export const enMessages = {
       "Interface language: Russian. Click for English. Item tooltips use WoWRoad.",
     localeAria: "Interface language {{locale}}. Switch to {{nextLocale}}.",
     versionAria: "Version {{version}}",
-    githubHint: "Source on GitHub · by sergimax via Cursor",
-    authorSiteAria: "sergimax.ru",
+    githubHint: "Source code on GitHub",
   },
   intro: {
     title: "How this app can help",
@@ -248,7 +247,6 @@ export const enMessages = {
     title: "Application settings",
     appInfo: "About Raidwise",
     sourceCode: "Source code on GitHub",
-    authorSite: "Author's website",
     theme: "Theme",
     language: "Language",
     whatsNew: "What's new",
