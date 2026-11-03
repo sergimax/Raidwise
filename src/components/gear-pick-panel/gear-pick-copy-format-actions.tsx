@@ -33,98 +33,98 @@ export function GearPickCopyFormatActions({
   const { t } = useTranslation();
 
   return (
-    <Stack
-      direction="row"
-      spacing={0.5}
-      sx={{ alignItems: "center", flexWrap: "wrap", justifyContent: "flex-start" }}
-    >
-      <FormControlLabel
-        control={
-          <Switch
-            size="small"
-            checked={includeCharacterName}
-            onChange={(event) => {
-              onIncludeCharacterNameChange(event.target.checked);
-            }}
-            slotProps={{
-              input: {
-                "aria-label": t("gearPickPanel.copyIncludeNameAria"),
-              },
-            }}
-          />
-        }
-        label={
-          <Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>
-            {t("gearPickPanel.copyIncludeName")}
-          </Typography>
-        }
-        sx={{ mr: 0.5, ml: 0 }}
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            size="small"
-            checked={includeSpec}
-            onChange={(event) => onIncludeSpecChange(event.target.checked)}
-            slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeSpecAria") } }}
-          />
-        }
-        label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeSpec")}</Typography>}
-        sx={{ mr: 0, ml: 0 }}
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            size="small"
-            checked={includeSoftCount}
-            onChange={(event) => onIncludeSoftCountChange(event.target.checked)}
-            slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeSoftCountAria") } }}
-          />
-        }
-        label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeSoftCount")}</Typography>}
-        sx={{ mr: 0, ml: 0 }}
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            size="small"
-            checked={includeAllItems}
-            onChange={(event) => onIncludeAllItemsChange(event.target.checked)}
-            slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeAllItemsAria") } }}
-          />
-        }
-        label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeAllItems")}</Typography>}
-        sx={{ mr: 0, ml: 0 }}
-      />
-      <FormControlLabel
-        control={<Switch size="small" checked={includeAllBisItems}
-          onChange={(event) => onIncludeAllBisItemsChange(event.target.checked)}
-          slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeAllBisItems") } }} />}
-        label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeAllBisItems")}</Typography>}
-        sx={{ mr: 0, ml: 0 }}
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            size="small"
-            checked={!compactLines}
-            onChange={(event) => {
-              onCompactLinesChange(!event.target.checked);
-            }}
-            slotProps={{
-              input: {
-                "aria-label": t("gearPickPanel.copyIncludeDetailsAria"),
-              },
-            }}
-          />
-        }
-        label={
-          <Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>
-            {t("gearPickPanel.copyIncludeDetails")}
-          </Typography>
-        }
-        sx={{ mr: 0, ml: 0 }}
-      />
+    <Stack spacing={0.25} sx={{ width: "100%" }}>
+      <Stack direction="row" sx={{ alignItems: "center", flexWrap: "wrap", gap: 0.5 }}>
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={includeCharacterName}
+              onChange={(event) => {
+                onIncludeCharacterNameChange(event.target.checked);
+              }}
+              slotProps={{
+                input: {
+                  "aria-label": t("gearPickPanel.copyIncludeNameAria"),
+                },
+              }}
+            />
+          }
+          label={
+            <Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>
+              {t("gearPickPanel.copyIncludeName")}
+            </Typography>
+          }
+          sx={{ mr: 0.5, ml: 0 }}
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={includeSpec}
+              onChange={(event) => onIncludeSpecChange(event.target.checked)}
+              slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeSpecAria") } }}
+            />
+          }
+          label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeSpec")}</Typography>}
+          sx={{ mr: 0, ml: 0 }}
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={includeSoftCount}
+              onChange={(event) => onIncludeSoftCountChange(event.target.checked)}
+              slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeSoftCountAria") } }}
+            />
+          }
+          label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeSoftCount")}</Typography>}
+          sx={{ mr: 0, ml: 0 }}
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={!compactLines}
+              onChange={(event) => {
+                onCompactLinesChange(!event.target.checked);
+              }}
+              slotProps={{
+                input: {
+                  "aria-label": t("gearPickPanel.copyIncludeDetailsAria"),
+                },
+              }}
+            />
+          }
+          label={
+            <Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>
+              {t("gearPickPanel.copyIncludeDetails")}
+            </Typography>
+          }
+          sx={{ mr: 0, ml: 0 }}
+        />
+      </Stack>
+      <Stack direction="row" sx={{ alignItems: "center", flexWrap: "wrap", gap: 0.5 }}>
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={includeAllItems}
+              onChange={(event) => onIncludeAllItemsChange(event.target.checked)}
+              slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeAllItemsAria") } }}
+            />
+          }
+          label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeAllItems")}</Typography>}
+          sx={{ mr: 0, ml: 0 }}
+        />
+        <FormControlLabel
+          control={<Switch size="small" checked={includeAllBisItems}
+            onChange={(event) => onIncludeAllBisItemsChange(event.target.checked)}
+            slotProps={{ input: { "aria-label": t("gearPickPanel.copyIncludeAllBisItems") } }} />}
+          label={<Typography variant="caption" component="span" sx={{ lineHeight: 1.2 }}>{t("gearPickPanel.copyIncludeAllBisItems")}</Typography>}
+          sx={{ mr: 0, ml: 0 }}
+        />
+      </Stack>
     </Stack>
   );
 }

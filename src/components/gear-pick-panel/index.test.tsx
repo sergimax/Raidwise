@@ -115,7 +115,7 @@ describe("GearPickPanel", () => {
     const user = userEvent.setup();
     renderWithTheme(<GearPickHarness />);
     await user.click(screen.getByRole("radio", { name: /Select Retribution for Alpha/i }));
-    const allBis = screen.getByRole("switch", { name: "All items from the BiS list" });
+    const allBis = screen.getByRole("switch", { name: "All useful items from the BiS list" });
     const useful = screen.getByRole("switch", { name: /Include all useful items/i });
     await user.click(allBis);
     expect(allBis).toBeChecked();

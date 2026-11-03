@@ -424,9 +424,15 @@ export function createAppTheme(mode: PaletteMode) {
           },
         },
       },
+      MuiChip: {
+        styleOverrides: {
+          clickable: { borderRadius: 0 },
+        },
+      },
       MuiOutlinedInput: {
         styleOverrides: {
           root: ({ theme }) => ({
+            borderRadius: 0,
             backgroundColor: alpha(theme.palette.background.paper, isLight ? 0.8 : 0.35),
             "&:hover .MuiOutlinedInput-notchedOutline": {
               borderColor: tokens.inputHoverBorder,
@@ -437,7 +443,7 @@ export function createAppTheme(mode: PaletteMode) {
       MuiMenu: {
         styleOverrides: {
           paper: ({ theme }) => ({
-            borderRadius: 6,
+            borderRadius: 0,
             border: `1px solid ${alpha(theme.palette.divider, isLight ? 0.65 : 0.55)}`,
             boxShadow: isLight
               ? "0 8px 24px rgba(0, 0, 0, 0.12)"

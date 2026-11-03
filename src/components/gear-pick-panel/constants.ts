@@ -26,9 +26,9 @@ export type GearPickGridAreaId =
 
 export type GearPickGridLayout = "filters" | "md" | "wide";
 
-/** Soft-reserve call (copy) block span — 2 rows × 2 column units. */
+/** Soft-reserve call (copy) block height — 1.5 row units; width — 2 column units. */
 export const GEAR_PICK_COPY_BLOCK_SPAN = {
-  heightUnits: 2,
+  heightUnits: 1.5,
   widthUnits: 2,
 } as const;
 

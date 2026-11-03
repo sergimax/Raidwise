@@ -449,7 +449,7 @@ export const enMessages = {
     copyIncludeSpecAria: "Include selected spec in the soft reserve list",
     copyIncludeSoftCount: "Soft count",
     copyIncludeSoftCountAria: "Show the number of soft reserves assigned to each item",
-    copyIncludeAllBisItems: "All items from the BiS list",
+    copyIncludeAllBisItems: "All useful items from the BiS list",
     copyEmptyBis: "No BiS list items in the selected raids",
     copyIncludeAllItems: "All useful items",
     copyIncludeAllItemsAria: "Include all useful items after your selected soft reserves",

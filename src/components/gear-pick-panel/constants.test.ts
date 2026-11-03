@@ -43,15 +43,15 @@ describe("getGearPickGridTemplateAreas", () => {
 });
 
 describe("GEAR_PICK_COPY_BLOCK_SPAN", () => {
-  it("is a 2×2 filter span including track gaps", () => {
+  it("uses a compact 1.5-row height and two-column width", () => {
     expect(GEAR_PICK_COPY_BLOCK_SPAN).toEqual({
-      heightUnits: 2,
+      heightUnits: 1.5,
       widthUnits: 2,
     });
     expect(getGearPickCopyBlockMaxWidth()).toBe(
       FILTER_UNIT_WIDTH * 2 + 12,
     );
-    expect(getGearPickCopyBlockMaxHeight()).toBe(FILTER_UNIT_HEIGHT * 2 + 12);
+    expect(getGearPickCopyBlockMaxHeight()).toBe(FILTER_UNIT_HEIGHT * 1.5 + 6);
     expect(getGearPickSoftsBlockMaxWidth()).toBe(
       FILTER_UNIT_WIDTH * 2 + 12,
     );

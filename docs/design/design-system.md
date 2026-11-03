@@ -131,7 +131,7 @@ are transparent and share the panel surface.
 | Token | Value | Usage |
 | --- | --- | --- |
 | `--radius` / `shape.borderRadius` | `6px` | Global MUI shape |
-| Button | `0px` | Regular text, outlined and contained action buttons |
+| Square controls | `0px` | Regular buttons, clickable chips, outlined inputs/selects and menu paper |
 | Control | `4px` | Icon buttons, tooltips |
 | Dialog | `8px` | Dialog paper |
 | Working surface | `3px` | Toolbar panel, table containers, intro and outlined Paper default |
@@ -159,7 +159,7 @@ border: 1px solid <divider>
 | Step / filter section | `1px` top `divider` border with fading sides + numbered badge (dot for unnumbered sections) | Transparent inner content on the shared panel surface |
 | Table container | none | Opaque paper fill, 3px corners, no shadow |
 | Dialog paper | `1px solid divider` | radius 8 |
-| Menu paper | `1px solid divider` | radius 6 |
+| Menu paper | `1px solid divider` | square corners |
 | Outlined button | `divider`; hover `#6b6b6b` / `#a3a3a3` | translucent paper fill |
 | Outlined input hover outline | same hover border colors | soft paper fill behind field |
 | Intro / panel cards | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | matches filter cards |
@@ -216,7 +216,7 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 
 Item names in the soft-reserve copy preview use the same ilvl palette as the target list. Header, counts and boss suffixes stay neutral; clipboard output stays plain text.
 
-The soft-reserve copy block uses two filter rows of height (460px with the default 12px gap), including on mobile; on wide layouts it spans both filter rows.
+The soft-reserve copy block uses 1.5 filter units of height (342px with the default 12px gap), including on mobile; on wide layouts it occupies both filter rows but is capped to 342px. Format toggles (name, spec, count, boss) form the first row; inclusion toggles form a separate second row, wrapping on small screens.
 
 ### Recipes
 
