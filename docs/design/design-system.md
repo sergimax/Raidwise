@@ -39,6 +39,8 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 **Toolbar panel backgrounds:** [panel-backgrounds/](./panel-backgrounds/) — hatch / grid / wash variants for `TrackerToolbarPanel` (step blocks stay solid).
 
+**App background directions:** [app-backgrounds/](./app-backgrounds/) — eighteen full-layout surface proposals with light/dark switching; exploratory, not shipped.
+
 ---
 
 ## Color mode
