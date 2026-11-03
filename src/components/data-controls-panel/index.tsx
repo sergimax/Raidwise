@@ -17,7 +17,6 @@ import {
 } from "./constants.ts";
 import { DataControlsBlock } from "./data-controls-block.tsx";
 
-const DATA_CONTROLS_SECTION_SX = { p: 0.75 } as const;
 const DATA_CONTROLS_ACTIONS_SX = {
   display: "flex",
   justifyContent: "flex-end",
@@ -129,9 +128,9 @@ export function DataControlsPanel({
         <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.resetTogglesTitle")}
+            icon={<RestartAltIcon sx={{ fontSize: 16 }} />}
             description={t("dataControlsPanel.resetTogglesDescription")}
             contentSx={DATA_CONTROLS_ACTIONS_SX}
-            sx={DATA_CONTROLS_SECTION_SX}
           >
             <Button
               size="small"
@@ -149,9 +148,9 @@ export function DataControlsPanel({
         <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteCharactersTitle")}
+            icon={<PersonRemoveIcon sx={{ fontSize: 16 }} />}
             description={t("dataControlsPanel.deleteCharactersDescription")}
             contentSx={DATA_CONTROLS_ACTIONS_SX}
-            sx={DATA_CONTROLS_SECTION_SX}
           >
             <Button
               size="small"
@@ -169,13 +168,16 @@ export function DataControlsPanel({
         <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteDungeonsTitle")}
+            icon={hasDungeons
+              ? <DeleteSweepIcon sx={{ fontSize: 16 }} />
+              : <LibraryAddIcon sx={{ fontSize: 16 }} />
+            }
             description={
               hasDungeons
                 ? t("dataControlsPanel.deleteDungeonsDescription")
                 : t("dataControlsPanel.addFromTemplateDescription")
             }
             contentSx={DATA_CONTROLS_ACTIONS_SX}
-            sx={DATA_CONTROLS_SECTION_SX}
           >
             {hasDungeons ? (
               <Button
@@ -204,9 +206,9 @@ export function DataControlsPanel({
         <DataControlsBlock>
           <FilterSection
             title={t("dataControlsPanel.deleteBisTitle")}
+            icon={<PlaylistRemoveIcon sx={{ fontSize: 16 }} />}
             description={t("dataControlsPanel.deleteBisDescription")}
             contentSx={DATA_CONTROLS_ACTIONS_SX}
-            sx={DATA_CONTROLS_SECTION_SX}
           >
             <Button
               size="small"

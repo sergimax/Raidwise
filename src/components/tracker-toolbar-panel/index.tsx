@@ -77,6 +77,7 @@ export function TrackerToolbarPanel({
           sx={{
             alignItems: "flex-start",
             justifyContent: "space-between",
+            minHeight: 32,
           }}
         >
           <Box sx={{ minWidth: 0 }}>

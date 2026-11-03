@@ -243,6 +243,7 @@
       "background": "background.paper",
       "border": "none",
       "headerDivider": false,
+      "headerMinHeightPx": 32,
       "pattern": "none"
     },
     "outlinedPaper": {
@@ -254,9 +255,10 @@
       "borderTop": "1px solid divider",
       "borderSides": "1px gradient from divider to transparent over min(200px, 100%)",
       "borderBottom": "none",
-      "marker": { "sizePx": 7, "color": "secondary.main", "when": "unnumbered sections only" },
+      "marker": { "sizePx": 7, "color": "secondary.main", "when": "fallback without step or icon" },
       "shellBackground": "transparent",
       "shellGradient": { "enabled": false, "direction": "to bottom", "inkAlpha": { "light": 0.025, "dark": 0.045 }, "fadeEnd": "85%" },
+      "gutterThemeUnits": 1.5,
       "paddingTopThemeUnits": 1,
       "paddingLeftThemeUnits": 2,
       "contentBackground": "transparent",
@@ -269,6 +271,7 @@
       "titleColor": "text.primary",
       "stepBadge": {
         "placement": "centred on section rail, replacing the dot",
+        "iconSizePx": 16,
         "minWidth": 22,
         "height": 22,
         "borderRadius": "3px",
@@ -408,6 +411,7 @@
       "unknownItem": { "light": "#7c3aed", "dark": "#c084fc" }
     },
     "panelMaxWidthsPx": {
+      "newRaid": 1280,
       "narrow": 480,
       "dataControls": 680,
       "wide": 1280,

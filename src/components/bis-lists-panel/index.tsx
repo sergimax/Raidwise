@@ -379,7 +379,7 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
           maxWidth: "100%",
         }}
       >
-        <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+        <Stack spacing={1.5} useFlexGap sx={{ minWidth: 0 }}>
           <FilterSection
             step={1}
             title={t("bisPanel.classAndSpec")}

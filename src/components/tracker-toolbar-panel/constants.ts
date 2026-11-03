@@ -1,8 +1,8 @@
 /**
- * Cap for New raid (2× 300px unit columns + gap + panel padding).
- * Content grid is 612px; padding keeps the outlined card from clipping.
+ * Cap for New raid (4× 300px unit columns + gaps + panel padding).
+ * Content grid is 1236px; padding keeps the outlined card from clipping.
  */
-export const TRACKER_DUNGEON_FORM_PANEL_MAX_WIDTH = 680;
+export const TRACKER_DUNGEON_FORM_PANEL_MAX_WIDTH = 1280;
 
 /**
  * Cap for New character (1 + 2 + 2 unit columns + gaps + panel padding).

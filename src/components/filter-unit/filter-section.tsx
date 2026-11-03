@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 type FilterSectionProps = {
   /** Optional workflow step number placed on the section rail. */
   step?: number;
+  /** Semantic rail marker for a section without a workflow number. */
+  icon?: ReactNode;
   title: string;
   /** When set, shown muted after the title as `(…)` — e.g. optional filters. */
   titleMark?: string;
@@ -48,6 +50,7 @@ const stepBadgeSx = {
 
 export function FilterSection({
   step,
+  icon,
   title,
   titleMark,
   titleActions,
@@ -70,12 +73,12 @@ export function FilterSection({
         borderBottom: 0,
         borderColor: "divider",
         borderImage: "linear-gradient(to bottom, var(--border), transparent min(200px, 100%)) 1",
-        ml: step != null ? 1.5 : 0.5,
+        ml: 1.5,
         pt: 1,
         pl: 2,
         pr: 1.25,
         "&::before": {
-          content: step == null ? '""' : "none",
+          content: step == null && icon == null ? '""' : "none",
           position: "absolute",
           left: -4,
           top: 16,
@@ -96,9 +99,9 @@ export function FilterSection({
         ...sx,
       }}
     >
-      {step != null ? (
+      {step != null || icon != null ? (
         <Box component="span" sx={stepBadgeSx} aria-hidden>
-          {step}
+          {step ?? icon}
         </Box>
       ) : null}
       <Stack

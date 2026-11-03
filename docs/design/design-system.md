@@ -156,7 +156,7 @@ border: 1px solid <divider>
 | Surface | Border | Notes |
 | --- | --- | --- |
 | Outlined `Paper` | theme-adjusted `divider` | One solid working surface; toolbar panels override to borderless surface fill |
-| Step / filter section | `1px` top `divider` border with fading sides + numbered badge (dot for unnumbered sections) | Transparent inner content on the shared panel surface |
+| Step / filter section | `1px` top `divider` border with fading sides + number or semantic icon badge | Transparent inner content on the shared panel surface |
 | Table container | none | Opaque paper fill, 3px corners, no shadow |
 | Dialog paper | `1px solid divider` | radius 8 |
 | Menu paper | `1px solid divider` | square corners |
@@ -214,14 +214,18 @@ Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not t
 
 ## Forms & stepped panels
 
+The new-raid form places Name, Short name, Size/difficulty and Item levels in
+DOM order using auto-fit columns with a 300px minimum (or the available width
+on mobile). All four fit at 1236px content width; narrower panels wrap them.
+
 Item names in the soft-reserve copy preview use the same ilvl palette as the target list. Header, counts and boss suffixes stay neutral; clipboard output stays plain text.
 
 The soft-reserve copy block uses 1.5 filter units of height (342px with the default 12px gap), including on mobile; on wide layouts it occupies both filter rows but is capped to 342px. Format toggles (name, spec, count, boss) form the first row; inclusion toggles form a separate second row, wrapping on small screens.
 
 ### Recipes
 
-1. **Toolbar shell** — borderless opaque `Paper` using `background.paper` (shared with tables, distinct from the page background), padding `{ xs: 1.5, sm: 2 }`, header row = title + close, separated from content by spacing (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
-2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: neutral title (Onest), soft brand **step badge** centred on the vertical divider rail (number only, 3px corners), replacing the dot; unnumbered sections retain a 7px brand dot. Each section has 8px of top padding; the rail number, title and actions share this inset. Sections have a full 1px divider border across the top and side borders fading to transparent over 200px (or the full section height if shorter). There is no bottom border. The top-to-bottom gradient is currently disabled; its settings (2.5% light, 4.5% dark) remain in design-tokens.json for comparison. No nested card, radius or shadow.
+1. **Toolbar shell** — borderless opaque `Paper` using `background.paper` (shared with tables, distinct from the page background), padding `{ xs: 1.5, sm: 2 }`, header row = title + close (minimum height 32px), separated from content by spacing (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
+2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: neutral title (Onest), soft brand **step badge** centred on the vertical divider rail (number only, 3px corners), replacing the dot; unnumbered action sections supply an `icon` in the same 22px rail badge (16px icon); a dot remains only as a fallback without a number or icon. FilterSection owns spacing across every toolbar tab: 12px number gutter, 16px left / 10px right padding and 8px top padding. Use `useFlexGap` for parent Stacks containing sections so Stack spacing does not reset the number gutter. Do not override section padding per tab. Each section has 8px of top padding; the rail number, title and actions share this inset. Sections have a full 1px divider border across the top and side borders fading to transparent over 200px (or the full section height if shorter). There is no bottom border. The top-to-bottom gradient is currently disabled; its settings (2.5% light, 4.5% dark) remain in design-tokens.json for comparison. No nested card, radius or shadow.
 3. **Field density** — Prefer `size="small"` on TextField / Select / FormControl in add forms.
 4. **Stack rhythm** — Outer form / panel stacks use `spacing={1.5}`; fields inside a step often `1`–`1.25`.
 5. **Errors** — Field-level `helperText` + `error` when possible; otherwise `FormErrorMessage` under actions.
@@ -291,7 +295,7 @@ Panel max widths (app layout, not core brand):
 | Panel | Max width |
 | --- | --- |
 | Character form | `1600` |
-| Raid form | `680` |
+| Raid form | `1280` |
 | Data controls | `1280` |
 | BiS | `1280` |
 | Character / Soft pick | `1920` |
