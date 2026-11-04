@@ -59,7 +59,7 @@ function GearItemCounts({ hint, side }: {
             alignItems: "center",
             justifyContent: "center",
             color: "text.secondary",
-            opacity: 0.4,
+            opacity: 0.7,
             fontSize: 13,
             lineHeight: 1.2,
             fontWeight: 400,

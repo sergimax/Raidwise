@@ -185,8 +185,8 @@ describe("gearUpgradeHintBandsCellSx", () => {
       expect(background).toContain(`radial-gradient(ellipse at ${origin},`);
     }
     expect(background).toContain("rgba(225, 29, 72, 0) 100%");
-    expect(background).toContain("rgba(225, 29, 72, 0.08)");
-    expect(background).toContain("rgba(13, 148, 136, 0.11)");
+    expect(background).toContain("rgba(225, 29, 72, 0.12)");
+    expect(background).toContain("rgba(13, 148, 136, 0.165)");
   });
 
   it("leaves missing categories untinted and uses full width for a single spec", () => {

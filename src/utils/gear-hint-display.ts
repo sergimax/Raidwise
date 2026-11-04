@@ -202,12 +202,13 @@ export function gearUpgradeHintBandsCellSx(
         { kind: "ilvl" as const, level: hint.ilvl.level },
       ];
       for (const display of tracks) {
-        const tint = hintDisplayBackgroundColor(display, dungeonItemLevels, theme);
-        if (!tint) continue;
+        const baseTint = hintDisplayBackgroundColor(display, dungeonItemLevels, theme);
+        if (!baseTint) continue;
+        const tint = alpha(baseTint, Math.min(1, hintAlphasForMode(theme.palette.mode, display.kind)[display.level] * 1.5));
         const color = getGearHintKindColor(display.kind, theme);
         const strength = theme.palette.mode === "dark"
-          ? [0, 0.2, 0.28, 0.36]
-          : [0, 0.16, 0.23, 0.3];
+          ? [0, 0.3, 0.42, 0.54]
+          : [0, 0.24, 0.35, 0.45];
         const centerColor = alpha(color, strength[display.level]);
         const originX = dualSpec ? (side === "left" ? "right" : "left") : "center";
         const band = display.kind === "bis" ? "top" : "bottom";
