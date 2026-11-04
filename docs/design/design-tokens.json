@@ -101,7 +101,9 @@
     "thumbHover": { "light": "#8a8a8a", "dark": "#8a8a8a" }
   },
   "shell": {
-    "toolbarMinHeightPx": { "xs": 52, "sm": 52 },
+    "toolbarMinHeightPx": { "xs": 56, "sm": 64 },
+    "contextActionsHeightPx": 48,
+    "responsiveMenuBreakpointPx": 900,
     "mainPadding": {
       "top": { "xs": "0.5rem", "sm": "0.75rem" },
       "x": { "xs": "1.25rem", "sm": "1.75rem" },

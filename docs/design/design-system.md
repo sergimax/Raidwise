@@ -208,7 +208,7 @@ Fonts are self-hosted as WOFF2 files under `public/fonts/` and declared in `src/
 | **Quiet** (`a` / `--link`) | Informational, secondary | Slate ≠ body text; weight 500; **1px** underline; offset ~3px |
 | **Spot** (`a.link-spot` / `--link-spot`) | Must be found in prose | Brand; Onest; **bold + italic**; **2px** underline |
 
-Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not turn quiet links into full spot styling on hover alone.
+Implemented in `src/theme/links.css`. Header navigation (`.app-nav-link`) opts out of prose-link styling so AppBar buttons and branding retain MUI states. Hover may intensify toward brand; do not turn quiet links into full spot styling on hover alone.
 
 ---
 
@@ -284,11 +284,18 @@ Hide external WoW tooltips on scroll/mouseleave where item links live inside scr
 
 ## App shell spacing
 
+The header follows the MUI responsive AppBar pattern: linked logo, a section
+dropdown showing the current section, and contextual tracker tabs in one toolbar. Below md (900px),
+one hamburger menu contains both app sections and contextual tracker actions.
+Help, language and the GitHub version link retain their roles. Theme stays in
+Settings. Contextual tabs are absent outside tracker routes.
+
 | Token | Value |
 | --- | --- |
-| Toolbar min-height | `52px` at all breakpoints (`--app-toolbar-min-height`) |
+| Main toolbar | `56px` xs / `64px` sm+ (`--app-toolbar-min-height`), MUI responsive AppBar |
+| Context actions | `48px` within the main toolbar at md+; merged into the main menu below md |
 | Main padding | top `0.5rem` xs / `0.75rem` sm+, x `1.25rem` xs / `1.75rem` sm+, bottom `2rem` |
-| `html` scroll-padding-top | toolbar height |
+| `html` scroll-padding-top | Single toolbar height plus border (`--app-header-height`) |
 
 Panel max widths (app layout, not core brand):
 

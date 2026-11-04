@@ -65,7 +65,7 @@ describe("AppRouteContent", () => {
     expect(screen.getByRole("table")).toBeInTheDocument();
   });
 
-  it("redirects the old changelog URL to settings and navigates back through the menu", async () => {
+  it("redirects the old changelog URL to settings and navigates back through desktop navigation", async () => {
     const user = userEvent.setup();
     renderRoute("/changelog");
 
@@ -125,5 +125,26 @@ describe("AppRouteContent", () => {
     expect(screen.getByRole("button", {
       name: "Язык интерфейса RU. Переключить на EN.",
     })).toBeInTheDocument();
+  });
+});
+
+describe("responsive header menu", () => {
+  it("opens a tracker action from the same mobile menu as the app sections", async () => {
+    localStorage.clear();
+    const originalMatchMedia = window.matchMedia;
+    const media = vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+      ...originalMatchMedia(query), matches: query.includes("max-width:899.95px"),
+    }));
+    try {
+      const user = userEvent.setup();
+      renderRoute("/raids");
+      await user.click(screen.getByRole("button", { name: "Sections" }));
+      expect(screen.getByRole("menuitem", { name: "Settings" })).toBeInTheDocument();
+      await user.click(screen.getByRole("menuitem", { name: "BiS builds" }));
+      expect(screen.getByTestId("current-path")).toHaveTextContent("/raids/bis-builds");
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    } finally {
+      media.mockRestore();
+    }
   });
 });

@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 
 export type AppHeaderProps = {
-  /** Tracker actions in the toolbar center (flexGrow), like MUI responsive AppBar nav. */
+  /** Contextual desktop navigation within the main toolbar. */
   center?: ReactNode;
+  /** Direct menu items for the unified mobile navigation. */
+  mobileMenuItems?: (onClose: () => void) => ReactNode;
   introVisible?: boolean;
   onToggleIntro?: () => void;
 };

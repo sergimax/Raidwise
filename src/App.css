@@ -1,11 +1,16 @@
 /* Shared header height for every route. */
 :root {
-  --app-toolbar-min-height: 52px;
+  --app-toolbar-min-height: 56px;
+  --app-header-height: calc(var(--app-toolbar-min-height) + 1px);
+}
+
+@media (min-width: 600px) {
+  :root { --app-toolbar-min-height: 64px; }
 }
 
 /* Sticky AppBar: keep scrolled content from sitting under the toolbar. */
 html {
-  scroll-padding-top: var(--app-toolbar-min-height);
+  scroll-padding-top: var(--app-header-height);
   background-color: var(--page-bg);
 }
 
@@ -20,7 +25,7 @@ html {
   padding-bottom: 2rem;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
-  scroll-margin-top: var(--app-toolbar-min-height);
+  scroll-margin-top: var(--app-header-height);
 }
 
 .app-main,
