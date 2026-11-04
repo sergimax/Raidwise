@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.10.3-purple)
+![App version](https://img.shields.io/badge/App_version-2.11.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -17,7 +17,7 @@ Breadcrumbs at the top of each page show the current section or raid tool and li
 ### Characters & dungeons
 
 Add characters and raids manually (toolbar buttons or the dotted empty column/row on the table), or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
-The responsive MUI AppBar keeps app sections in a dropdown beside the logo and scrollable tracker actions in the same toolbar at every screen width; on mobile, the menu also contains these actions. The header **info** button shows or hides the usage intro (CDs, gear planning, or BiS-only). **Settings → Interface** controls the color theme. Both choices are saved locally.
+The responsive MUI AppBar keeps app sections in a dropdown beside the logo and scrollable tracker actions in the same toolbar at every screen width; on mobile, the menu also contains these actions. The logo text hides below 1200px. The header **info** button shows or hides the usage intro (CDs, gear planning, or BiS-only). **Settings → Interface** controls the color theme. Both choices are saved locally.
 
 ### Cooldown toggles
 
