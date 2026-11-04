@@ -57,6 +57,7 @@ export function AppHeader({ center, mobileMenuItems, introVisible = false, onTog
             component={RouterLink}
             className="app-nav-link"
             to={APP_ROUTES.raids}
+            aria-label={t("header.appTitle")}
             variant="h6"
             noWrap
             sx={{
@@ -67,7 +68,9 @@ export function AppHeader({ center, mobileMenuItems, introVisible = false, onTog
             }}
           >
             <Box component="img" src={`${import.meta.env.BASE_URL}logo.svg`} alt="" aria-hidden sx={{ width: { xs: 26, sm: 32 }, height: { xs: 26, sm: 32 } }} />
-            {t("header.appTitle")}
+            <Box component="span" sx={{ display: { xs: "none", lg: "inline" } }}>
+              {t("header.appTitle")}
+            </Box>
           </Typography>
           {desktop ? (
             <Button
