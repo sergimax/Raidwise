@@ -286,14 +286,15 @@ Hide external WoW tooltips on scroll/mouseleave where item links live inside scr
 
 The header follows the MUI responsive AppBar pattern: linked logo, a section
 dropdown showing the current section, and contextual tracker tabs in one toolbar. Below md (900px),
-one hamburger menu contains both app sections and contextual tracker actions.
+one hamburger menu contains both app sections and contextual tracker actions;
+the scrollable contextual tabs also remain visible in the toolbar.
 Help, language and the GitHub version link retain their roles. Theme stays in
 Settings. Contextual tabs are absent outside tracker routes.
 
 | Token | Value |
 | --- | --- |
 | Main toolbar | `56px` xs / `64px` sm+ (`--app-toolbar-min-height`), MUI responsive AppBar |
-| Context actions | `48px` within the main toolbar at md+; merged into the main menu below md |
+| Context actions | `48px` within the main toolbar at every width; also available in the main menu below md |
 | Main padding | top `0.5rem` xs / `0.75rem` sm+, x `1.25rem` xs / `1.75rem` sm+, bottom `2rem` |
 | `html` scroll-padding-top | Single toolbar height plus border (`--app-header-height`) |
 

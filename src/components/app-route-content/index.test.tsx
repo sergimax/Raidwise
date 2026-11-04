@@ -138,6 +138,7 @@ describe("responsive header menu", () => {
     try {
       const user = userEvent.setup();
       renderRoute("/raids");
+      expect(screen.getByRole("tab", { name: "BiS builds" })).toBeInTheDocument();
       await user.click(screen.getByRole("button", { name: "Sections" }));
       expect(screen.getByRole("menuitem", { name: "Settings" })).toBeInTheDocument();
       await user.click(screen.getByRole("menuitem", { name: "BiS builds" }));

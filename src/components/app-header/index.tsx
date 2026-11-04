@@ -86,7 +86,7 @@ export function AppHeader({ center, mobileMenuItems, introVisible = false, onTog
               {navItems.find(({ to }) => isSelected(to))?.label ?? t("appNavigation.menu")}
             </Button>
           ) : null}
-          {center && desktop ? (
+          {center ? (
             <Box component="nav" aria-label={t("toolbar.actionsAria")} sx={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
               {center}
             </Box>

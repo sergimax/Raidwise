@@ -34,6 +34,7 @@ export const TrackerControls = memo(function TrackerControls({
         variant="scrollable"
         scrollButtons="auto"
         sx={{
+          flex: 1,
           minWidth: 0,
           minHeight: 48,
           height: 48,
