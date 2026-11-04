@@ -164,7 +164,7 @@ test("theme browser smoke checks", async (t) => {
       dark: {
         colorScheme: "dark",
         pageBackground: "rgb(25, 25, 25)",
-        cardBackground: "rgb(43, 32, 32)",
+        cardBackground: "rgb(32, 36, 43)",
         headingColor: "rgb(242, 242, 242)",
         cardPixel: [32, 36, 43],
       },

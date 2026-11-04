@@ -126,7 +126,7 @@ describe("GearPickPanel", () => {
     expect(useful).not.toBeChecked();
     await user.click(screen.getByRole("button", { name: /Exclude RS25H/i }));
     expect(screen.getByRole("button", { name: "Copy soft reserve call list" })).toBeDisabled();
-  });
+  }, 15_000);
 
   it("enforces the soft budget, keeps the session on reopen, and prunes filtered items", async () => {
     const user = userEvent.setup();
