@@ -132,7 +132,7 @@ npm run dev
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / один прогон) |
 | `npm run test:coverage` | Тесты Vitest с покрытием исходного кода; непроверенные строки и ветви — в `coverage/index.html` |
-| `npm run test:coverage:changed` | Все тесты Vitest и покрытие локально изменённых файлов; для сравнения с базой: `npm run test:coverage -- --coverage.changed=<base>` |
+| `npm run test:coverage:changed` | Все тесты Vitest и покрытие локально изменённых файлов. Для сравнения с коммитом или веткой используйте `npm run test:run -- --coverage --coverage.changed=<base>`. |
 | `npm run test:browser` | Сборка и проверки темы, доступности, сохранений и восстановления справочников в Chrome (при необходимости задайте `CHROME_PATH`) |
 | `npm run ci` | Lint + test:coverage + build (проверки перед push) |
 | `npm run build:wow-data` | Пересборка бандлов WoW JSON из `scripts/wow-data/wowsims-db.json` (в т.ч. лут тира VoA из метаданных сетов, если WowSims не отдаёт зону 4603) |
@@ -145,7 +145,7 @@ npm run dev
 | `npm run lighthouse` | Lighthouse desktop для preview/production → `docs/lighthouse/` (для локали сначала `preview`) |
 | `npm run lighthouse:mobile` | То же с mobile-пресетом |
 
-Задание CI загружает артефакт `coverage-report`. Покрытие учитывает все рабочие файлы TypeScript в `src/`, включая не загруженные тестами; тесты и тестовые утилиты исключены. Минимального порога пока нет. Браузерные проверки запускаются отдельно.
+Задание CI загружает артефакт `coverage-report`. Покрытие учитывает все рабочие файлы TypeScript в `src/`, в том числе файлы, которые тесты не импортируют. Тесты и тестовые утилиты исключены. Пороги полного прогона составляют 87% для строк, 86% для инструкций и функций, 80% для ветвей. Браузерные проверки запускаются отдельно.
 
 Встроенные BiS пишутся в `scripts/bis/bis-list-sources.md` (Titans + community) и `scripts/bis/bis-list-mix.md` (Kingdom. With variants: нумерованное оружие и альтернативы `N-M`).
 После правок markdown перегенерируйте TypeScript-пресеты.

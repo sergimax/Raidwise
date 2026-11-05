@@ -131,7 +131,7 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / single run) |
 | `npm run test:coverage` | Run Vitest with source coverage; see `coverage/index.html` for uncovered lines and branches |
-| `npm run test:coverage:changed` | Run all Vitest tests and report coverage for locally changed source files; use `npm run test:coverage -- --coverage.changed=<base>` to compare with a commit or branch |
+| `npm run test:coverage:changed` | Run all Vitest tests and report coverage for locally changed source files. Use `npm run test:run -- --coverage --coverage.changed=<base>` to compare with a commit or branch. |
 | `npm run test:browser` | Build and check theme, accessibility, save persistence, and item-data recovery in Chrome (set `CHROME_PATH` if needed) |
 | `npm run ci` | Lint + test:coverage + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
@@ -144,7 +144,7 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run lighthouse` | Desktop Lighthouse vs preview/production URL → `docs/lighthouse/` (run `preview` first for local) |
 | `npm run lighthouse:mobile` | Same with the mobile preset |
 
-The CI test job uploads the `coverage-report` artifact. Coverage includes all runtime TypeScript files under `src/`, including files not imported by tests; it excludes tests and test helpers. There is no minimum coverage threshold yet. Browser smoke checks run separately.
+The CI test job uploads the `coverage-report` artifact. Coverage includes all runtime TypeScript files under `src/`, including files outside the test imports. Tests and test helpers are excluded. The full run requires 87% line coverage, 86% statement and function coverage, and 80% branch coverage. Browser smoke checks run separately.
 
 Built-in BiS lists are authored in `scripts/bis/bis-list-sources.md` (Titans + community) and `scripts/bis/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
 Regenerate TypeScript presets after editing the markdown.
