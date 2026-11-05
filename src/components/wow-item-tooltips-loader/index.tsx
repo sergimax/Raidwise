@@ -16,7 +16,11 @@ function appendScript(id: string, src: string): void {
   script.id = id;
   script.src = src;
   script.async = true;
-  script.addEventListener("error", () => script.remove(), { once: true });
+  const removeFailedScript = () => script.remove();
+  script.addEventListener("error", removeFailedScript, { once: true });
+  script.addEventListener("load", () => {
+    script.removeEventListener("error", removeFailedScript);
+  }, { once: true });
   document.head.appendChild(script);
 }
 

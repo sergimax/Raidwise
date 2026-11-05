@@ -1,6 +1,7 @@
 import type { RaidKey } from "./raid-names.ts";
 import { getWotlkItemLevel } from "./wotlk-item-levels.ts";
 import { createLazyJsonLoader } from "./lazy-json.ts";
+import dataUrl from "./raid-loot-by-key.json?url&no-inline";
 
 type RaidLootSlotData = {
   items: number[];
@@ -13,7 +14,7 @@ type RaidLootEntry = {
 let raidLootByKey: Record<string, RaidLootEntry> = {};
 
 export const ensureRaidLootLoaded = createLazyJsonLoader(
-  () => import("./raid-loot-by-key.json"),
+  dataUrl,
   (data) => {
     raidLootByKey = data as Record<RaidKey, RaidLootEntry>;
   },

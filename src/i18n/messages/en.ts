@@ -554,8 +554,16 @@ export const enMessages = {
   },
   wowData: {
     failed: "Some item data could not be loaded.",
+    missing: "Some item files are no longer available. Reload the app to get the current version.",
+    loading: "Loading item data…",
+    toolUnavailable: "This tool needs item data. Retry loading it above.",
     retry: "Retry",
     reload: "Reload app",
+  },
+  appRecovery: {
+    title: "Raidwise could not open",
+    message: "An unexpected error interrupted the app. Try opening it again or reload the page.",
+    retry: "Open Raidwise again",
   },
 } as const;
 

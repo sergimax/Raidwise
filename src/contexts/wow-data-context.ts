@@ -1,15 +1,16 @@
 import { createContext } from "react";
 
+export type WowDataStatus = "loading" | "ready" | "failed" | "missing";
+
 export type WowDataContextValue = {
-  /** Active-locale names + item levels ready for links. */
-  coreReady: boolean;
-  /** Stats / equip / drops / variants ready for gear-hint tints. */
-  hintReady: boolean;
-  failed?: boolean;
+  /** Active-locale names and item levels. */
+  coreStatus: WowDataStatus;
+  /** Stats, equipment, drops, and variant indexes. */
+  hintStatus: WowDataStatus;
   retry?: () => void;
 };
 
 export const WowDataContext = createContext<WowDataContextValue>({
-  coreReady: false,
-  hintReady: false,
+  coreStatus: "loading",
+  hintStatus: "loading",
 });

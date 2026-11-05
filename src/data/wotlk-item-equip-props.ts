@@ -1,5 +1,6 @@
 import { buildItemIdMap } from "./build-item-id-map.ts";
 import { createLazyJsonLoader } from "./lazy-json.ts";
+import dataUrl from "./wotlk-item-equip-props.json?url&no-inline";
 
 /** Compact WowSims item fields used for class/spec equip checks (from build:wow-data). */
 export type WotlkItemEquipProps = {
@@ -20,7 +21,7 @@ export type WotlkItemEquipProps = {
 let equipPropsByItemId = new Map<number, WotlkItemEquipProps>();
 
 export const ensureWotlkItemEquipPropsLoaded = createLazyJsonLoader(
-  () => import("./wotlk-item-equip-props.json"),
+  dataUrl,
   (data) => {
     equipPropsByItemId = buildItemIdMap(
       data as Record<string, WotlkItemEquipProps>,

@@ -118,7 +118,7 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
   getBisSlotMapForSpec,
 }: CharacterToggleCellProps) {
   const { t } = useTranslation();
-  const { hintReady } = useWowDataReady();
+  const hintReady = useWowDataReady().hintStatus === "ready";
 
   const gearHintTints = useMemo(
     () =>

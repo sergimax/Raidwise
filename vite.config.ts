@@ -1,7 +1,6 @@
-/// <reference types="vitest/config" />
 import { readFileSync } from "node:fs";
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { configDefaults, defineConfig } from "vitest/config";
 
 const pkg = JSON.parse(readFileSync("package.json", "utf-8")) as { version: string };
 
@@ -15,10 +14,20 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
-    include: [
-      "src/**/*.{test,spec}.{ts,tsx}",
-      // Generator helpers live under scripts/ (.mjs); keep their tests out of src/tsc.
-      "scripts/**/*.test.mjs",
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "default",
+          include: ["src/**/*.{test,spec}.{ts,tsx}", "scripts/**/*.test.mjs"],
+          exclude: [...configDefaults.exclude, "src/**/*.cold.test.{ts,tsx}"],
+          setupFiles: ["./src/test/wow-data-fixture.mjs"],
+        },
+      },
+      {
+        extends: true,
+        test: { name: "cold", include: ["src/**/*.cold.test.{ts,tsx}"] },
+      },
     ],
     coverage: {
       provider: "v8",
@@ -31,10 +40,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("src/data/") && id.endsWith(".json")) {
-            const fileName = id.split(/[/\\]/).pop() ?? "wow-data";
-            return `wow-${fileName.replace(/\.json$/, "")}`;
-          }
           if (!id.includes("node_modules")) return;
           if (id.includes("@mui/icons-material")) return "mui-icons";
           if (id.includes("@mui") || id.includes("@emotion")) return "mui";

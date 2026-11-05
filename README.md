@@ -91,7 +91,13 @@ On push/PR to `main`, GitHub Actions runs **Lint**, **Test and coverage**, **Bui
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
 
 **Performance:**
-WoW item JSON is code-split and loaded after the app shell (`WowDataProvider` / `ensure-wow-data`); fonts are self-hosted under `public/fonts/`; class/spec icons are 32×32 WebP; item tooltip scripts load on first item-link interaction for the active locale only.
+WoW item data loads after the app shell as separate JSON files.
+A failed request can be retried while the raid tracker stays available. 
+BiS and Soft pick wait for the data they need.
+If the current build refers to a missing file, the app offers a reload.
+Fonts are self-hosted under `public/fonts/` and class/spec icons are 32×32 WebP.
+External item tooltips load when you focus or hover over an item link. 
+After a failed request, the next interaction retries it.
 
 Contributor and agent conventions: [`AGENTS.md`](AGENTS.md).
 
@@ -116,7 +122,7 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run test` / `npm run test:run` | Vitest (watch / single run) |
 | `npm run test:coverage` | Run Vitest with source coverage; see `coverage/index.html` for uncovered lines and branches |
 | `npm run test:coverage:changed` | Run all Vitest tests and report coverage for locally changed source files; use `npm run test:coverage -- --coverage.changed=<base>` to compare with a commit or branch |
-| `npm run test:browser` | Build and check theme first paint, appearance, accessibility, and raid data persistence in Chrome (set `CHROME_PATH` if Chrome is not in a standard location) |
+| `npm run test:browser` | Build and check theme, accessibility, save persistence, and item-data recovery in Chrome (set `CHROME_PATH` if needed) |
 | `npm run ci` | Lint + test:coverage + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
 | `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |

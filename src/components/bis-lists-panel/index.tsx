@@ -25,6 +25,7 @@ import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
 import type { BisListsSessionState } from "../../hooks/use-bis-lists-session-state.ts";
 import { useBisListsEditorState } from "../../hooks/use-bis-lists-editor-state.ts";
 import { StorageProblem } from "../storage-problem/index.tsx";
+import { WowDataGate } from "../wow-data-gate/index.tsx";
 import { useClipboard } from "../../hooks/use-clipboard.ts";
 import { ClipboardFallback } from "../clipboard-fallback/index.tsx";
 import { Classes, type ClassName as ClassNameType } from "../../types/characters.ts";
@@ -99,7 +100,17 @@ export type BisListsPanelProps = {
   session: BisListsSessionState;
 };
 
-export function BisListsPanel({ session }: BisListsPanelProps) {
+export function BisListsPanel(props: BisListsPanelProps) {
+  const bisLists = useBisListsContext();
+  return (
+    <Stack spacing={1.25}>
+      <StorageProblem {...bisLists} filename="raidwise-bis-lists" />
+      <WowDataGate><BisListsEditor {...props} /></WowDataGate>
+    </Stack>
+  );
+}
+
+function BisListsEditor({ session }: BisListsPanelProps) {
   const { t, locale } = useTranslation();
   const bisLists = useBisListsContext();
   const { className, spec, setClassName, setSpec } = session;
@@ -334,7 +345,6 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
 
   return (
     <Stack spacing={1.25}>
-      <StorageProblem {...bisLists} filename="raidwise-bis-lists" />
       {copyFailed && <ClipboardFallback text={copyListText} />}
       <Box
         sx={{

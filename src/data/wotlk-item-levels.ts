@@ -1,10 +1,11 @@
 import { buildItemIdMap } from "./build-item-id-map.ts";
 import { createLazyJsonLoader } from "./lazy-json.ts";
+import dataUrl from "./wotlk-item-levels.json?url&no-inline";
 
 let itemLevelsById = new Map<number, number>();
 
 export const ensureWotlkItemLevelsLoaded = createLazyJsonLoader(
-  () => import("./wotlk-item-levels.json"),
+  dataUrl,
   (data) => {
     itemLevelsById = buildItemIdMap(data as Record<string, number>);
   },

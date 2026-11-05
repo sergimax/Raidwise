@@ -1,10 +1,11 @@
 import { buildItemIdMap } from "./build-item-id-map.ts";
 import { createLazyJsonLoader } from "./lazy-json.ts";
+import dataUrl from "./wotlk-item-gear-slots.json?url&no-inline";
 
 let itemGearSlotsById = new Map<number, readonly number[]>();
 
 export const ensureWotlkItemGearSlotsLoaded = createLazyJsonLoader(
-  () => import("./wotlk-item-gear-slots.json"),
+  dataUrl,
   (data) => {
     itemGearSlotsById = buildItemIdMap(
       data as Record<string, readonly number[]>,

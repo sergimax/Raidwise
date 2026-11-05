@@ -16,6 +16,7 @@ import { CharacterPickPanel } from "../character-pick-panel/index.tsx";
 import { ResetParametersActions } from "../filter-unit/reset-parameters-actions.tsx";
 import { GearHintLegend } from "../gear-hint-legend/index.tsx";
 import { GearPickPanel } from "../gear-pick-panel/index.tsx";
+import { WowDataGate } from "../wow-data-gate/index.tsx";
 import { RaidTrackerTable } from "../raid-tracker-table/index.tsx";
 import { TrackerToolbarPanel } from "../tracker-toolbar-panel/index.tsx";
 import { resolveToolbarPanelId } from "../tracker-toolbar-panel/resolve-toolbar-panel-id.ts";
@@ -207,15 +208,17 @@ export function RaidTrackerMain({
           ) : null}
 
           {showGearPickPanel ? (
-            <GearPickPanel
-              characters={domain.characters}
-              visibleDungeons={tableState.sortedDungeons}
-              dungeonToggles={domain.dungeonToggles}
-              dungeonNameSearch={tableState.dungeonNameSearch}
-              onDungeonNameSearchChange={tableState.setDungeonNameSearch}
-              totalDungeonCount={tableState.dungeonCount}
-              session={gearPickSession}
-            />
+            <WowDataGate>
+              <GearPickPanel
+                characters={domain.characters}
+                visibleDungeons={tableState.sortedDungeons}
+                dungeonToggles={domain.dungeonToggles}
+                dungeonNameSearch={tableState.dungeonNameSearch}
+                onDungeonNameSearchChange={tableState.setDungeonNameSearch}
+                totalDungeonCount={tableState.dungeonCount}
+                session={gearPickSession}
+              />
+            </WowDataGate>
           ) : null}
 
           {showBisListsPanel ? <BisListsPanel session={bisListsSession} /> : null}

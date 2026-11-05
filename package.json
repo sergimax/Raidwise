@@ -18,7 +18,7 @@
     "compress:class-icons": "node scripts/assets/compress-class-icons.mjs",
     "lighthouse": "node scripts/lighthouse/run-lighthouse.mjs",
     "lighthouse:mobile": "node scripts/lighthouse/run-lighthouse.mjs --mobile",
-    "test:browser": "npm run build && node --test --test-concurrency=1 scripts/browser/theme.browser.mjs scripts/browser/tracker-persistence.browser.mjs",
+    "test:browser": "npm run build && node --test --test-concurrency=1 scripts/browser/theme.browser.mjs scripts/browser/tracker-persistence.browser.mjs scripts/browser/wow-data-recovery.browser.mjs",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:coverage:changed": "vitest run --coverage --coverage.changed",

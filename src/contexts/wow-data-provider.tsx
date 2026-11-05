@@ -8,34 +8,36 @@ import {
 import {
   ensureCoreItemDataLoaded,
   ensureWowHintDataLoaded,
+  isCoreItemDataReady,
   isWowHintDataReady,
 } from "../data/ensure-wow-data.ts";
+import { MissingWowDataAssetError } from "../data/lazy-json.ts";
+import type { ItemTooltipLocale } from "../constants/item-tooltips.ts";
 import { useItemTooltipLocale } from "../hooks/use-item-tooltip-locale.ts";
-import { WowDataContext, type WowDataContextValue } from "./wow-data-context.ts";
+import { WowDataContext, type WowDataContextValue, type WowDataStatus } from "./wow-data-context.ts";
+
+type Result = { attempt: number; status: Exclude<WowDataStatus, "loading"> };
+
+function failureStatus(error: unknown): "missing" | "failed" {
+  return error instanceof MissingWowDataAssetError ? "missing" : "failed";
+}
 
 /** Starts deferred WoW JSON loads; exposes readiness for tint gating. */
 export function WowDataProvider({ children }: { children: ReactNode }) {
   const { locale } = useItemTooltipLocale();
-  const [coreReadyLocale, setCoreReadyLocale] = useState<string | null>(null);
-  const [hintReady, setHintReady] = useState(() => isWowHintDataReady());
-  const [coreFailedLocale, setCoreFailedLocale] = useState<string | null>(null);
-  const [hintFailed, setHintFailed] = useState(false);
+  const [core, setCore] = useState<(Result & { locale: ItemTooltipLocale }) | null>(null);
+  const [hint, setHint] = useState<Result | null>(null);
   const [attempt, setAttempt] = useState(0);
   const retry = useCallback(() => {
-    setCoreFailedLocale(null);
-    setHintFailed(false);
     setAttempt((previous) => previous + 1);
   }, []);
 
   useEffect(() => {
     let cancelled = false;
     void ensureCoreItemDataLoaded(locale).then(() => {
-      if (!cancelled) {
-        setCoreReadyLocale(locale);
-        setCoreFailedLocale(null);
-      }
-    }, () => {
-      if (!cancelled) setCoreFailedLocale(locale);
+      if (!cancelled) setCore({ locale, attempt, status: "ready" });
+    }, (error: unknown) => {
+      if (!cancelled) setCore({ locale, attempt, status: failureStatus(error) });
     });
     return () => {
       cancelled = true;
@@ -45,26 +47,22 @@ export function WowDataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     void ensureWowHintDataLoaded().then(() => {
-      if (!cancelled) {
-        setHintReady(true);
-        setHintFailed(false);
-      }
-    }, () => {
-      if (!cancelled) setHintFailed(true);
+      if (!cancelled) setHint({ attempt, status: "ready" });
+    }, (error: unknown) => {
+      if (!cancelled) setHint({ attempt, status: failureStatus(error) });
     });
     return () => {
       cancelled = true;
     };
   }, [attempt]);
 
+  const coreStatus = isCoreItemDataReady(locale)
+    ? "ready"
+    : core?.locale === locale && core.attempt === attempt ? core.status : "loading";
+  const hintStatus = isWowHintDataReady() ? "ready" : hint?.attempt === attempt ? hint.status : "loading";
   const value = useMemo<WowDataContextValue>(
-    () => ({
-      coreReady: coreReadyLocale === locale,
-      hintReady,
-      failed: coreFailedLocale === locale || hintFailed,
-      retry,
-    }),
-    [coreFailedLocale, coreReadyLocale, hintFailed, hintReady, locale, retry],
+    () => ({ coreStatus, hintStatus, retry }),
+    [coreStatus, hintStatus, retry],
   );
 
   return (

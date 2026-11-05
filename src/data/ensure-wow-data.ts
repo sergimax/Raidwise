@@ -13,6 +13,7 @@ import { ensureWotlkItemLevelsLoaded } from "./wotlk-item-levels.ts";
 import { ensureWotlkItemStatsLoaded } from "./wotlk-item-stats.ts";
 
 const coreLoads = new Map<ItemTooltipLocale, Promise<void>>();
+const readyCoreLocales = new Set<ItemTooltipLocale>();
 let hintLoadPromise: Promise<void> | null = null;
 let hintDataReady = false;
 
@@ -26,13 +27,19 @@ export function ensureCoreItemDataLoaded(
   const promise = Promise.all([
     ensureItemNamesLoaded(locale),
     ensureWotlkItemLevelsLoaded(),
-  ]).then(() => undefined).catch((error: unknown) => {
+  ]).then(() => {
+    readyCoreLocales.add(locale);
+  }).catch((error: unknown) => {
     coreLoads.delete(locale);
     throw error;
   });
 
   coreLoads.set(locale, promise);
   return promise;
+}
+
+export function isCoreItemDataReady(locale: ItemTooltipLocale): boolean {
+  return readyCoreLocales.has(locale);
 }
 
 /**

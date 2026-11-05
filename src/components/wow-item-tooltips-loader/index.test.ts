@@ -16,6 +16,9 @@ it.each([["en", COT_TOOLTIP_SCRIPT_ID], ["ru", WOWROAD_TOOLTIP_SCRIPT_ID]] as co
       const second = document.getElementById(id);
       expect(second).not.toBeNull();
       expect(second).not.toBe(first);
+      second!.dispatchEvent(new Event("load"));
+      ensureItemTooltipsLoaded(locale);
+      expect(document.getElementById(id)).toBe(second);
     } finally {
       document.getElementById(id)?.remove();
       document.getElementById(WOWROAD_TOOLTIP_CONFIG_SCRIPT_ID)?.remove();

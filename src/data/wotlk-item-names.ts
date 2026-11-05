@@ -1,13 +1,15 @@
 import type { ItemTooltipLocale } from "../constants/item-tooltips.ts";
 import { buildItemIdMap } from "./build-item-id-map.ts";
 import { createLazyJsonLoader } from "./lazy-json.ts";
+import dataUrl from "./wotlk-item-names.json?url&no-inline";
+import ruDataUrl from "./wotlk-item-names-ru.json?url&no-inline";
 
 let itemNamesEnById = new Map<number, string>();
 let itemNamesRuById = new Map<number, string>();
 let itemNameToIdEnCache: Map<string, number> | undefined;
 
 const ensureEnNamesLoaded = createLazyJsonLoader(
-  () => import("./wotlk-item-names.json"),
+  dataUrl,
   (data) => {
     itemNamesEnById = buildItemIdMap(data as Record<string, string>);
     itemNameToIdEnCache = undefined;
@@ -15,7 +17,7 @@ const ensureEnNamesLoaded = createLazyJsonLoader(
 );
 
 const ensureRuNamesLoaded = createLazyJsonLoader(
-  () => import("./wotlk-item-names-ru.json"),
+  ruDataUrl,
   (data) => {
     itemNamesRuById = buildItemIdMap(data as Record<string, string>);
   },

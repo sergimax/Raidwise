@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { useMemo } from "react";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
+import { useWowDataReady } from "../../hooks/use-wow-data-ready.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   clearUnavailableExportSpecSelections,
@@ -65,9 +66,10 @@ export function CharacterPickPanel({
     includeExportGearScore,
     setIncludeExportSpecs,
     setIncludeExportGearScore,
-    onlyCharactersWithUpgrades,
     setOnlyCharactersWithUpgrades,
   } = session;
+  const upgradesReady = useWowDataReady().hintStatus === "ready";
+  const onlyCharactersWithUpgrades = upgradesReady && session.onlyCharactersWithUpgrades;
 
   const hasDungeonFilter = totalDungeonCount > 0;
 
@@ -318,12 +320,12 @@ export function CharacterPickPanel({
                 onClearAll={() => clearAllCharacterSpecs(characters)}
               />
             }
-            descriptionActions={
+            descriptionActions={upgradesReady ? (
               <GearPickCharacterFilterActions
                 onlyWithUpgrades={onlyCharactersWithUpgrades}
                 onOnlyWithUpgradesChange={setOnlyCharactersWithUpgrades}
               />
-            }
+            ) : undefined}
           >
             <CharacterPickSpecFilter
               includedCharacterIds={availableCharacterIds}

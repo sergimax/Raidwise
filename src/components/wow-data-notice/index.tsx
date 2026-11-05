@@ -3,8 +3,10 @@ import { useWowDataReady } from "../../hooks/use-wow-data-ready.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 
 export function WowDataNotice() {
-  const { failed, retry } = useWowDataReady();
+  const { coreStatus, hintStatus, retry } = useWowDataReady();
   const { t } = useTranslation();
+  const missing = coreStatus === "missing" || hintStatus === "missing";
+  const failed = missing || coreStatus === "failed" || hintStatus === "failed";
   if (!failed) return null;
 
   return (
@@ -17,7 +19,7 @@ export function WowDataNotice() {
         </Stack>
       }
     >
-      {t("wowData.failed")}
+      {t(missing ? "wowData.missing" : "wowData.failed")}
     </Alert>
   );
 }

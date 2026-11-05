@@ -93,7 +93,13 @@ React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 Тесты рядом: `*.test.ts(x)`.
 
 **Производительность:**
-JSON предметов WoW грузится отдельными чанками после оболочки (`WowDataProvider` / `ensure-wow-data`); шрифты локальные в `public/fonts/`; иконки классов/спеков — WebP 32×32; скрипты тултипов предметов — при первом наведении/фокусе на ссылку, только для активной локали.
+Данные о предметах WoW загружаются отдельными JSON-файлами после оболочки.
+При сбое загрузку можно повторить, а трекер рейдов остаётся доступен.
+BiS и софт-резервы ждут нужных справочников.
+Если текущая сборка ссылается на недоступный файл, приложение предлагает перезагрузку.
+Шрифты локальные в `public/fonts/`, иконки классов и специализаций — WebP 32×32.
+Внешние подсказки загружаются при наведении или фокусе на ссылке предмета.
+После сбоя следующее взаимодействие повторяет запрос.
 
 Соглашения для контрибьюторов и агентов: [`AGENTS.md`](AGENTS.md).
 
@@ -118,7 +124,7 @@ npm run dev
 | `npm run test` / `npm run test:run` | Vitest (watch / один прогон) |
 | `npm run test:coverage` | Тесты Vitest с покрытием исходного кода; непроверенные строки и ветви — в `coverage/index.html` |
 | `npm run test:coverage:changed` | Все тесты Vitest и покрытие локально изменённых файлов; для сравнения с базой: `npm run test:coverage -- --coverage.changed=<base>` |
-| `npm run test:browser` | Сборка и проверки темы, доступности и сохранения данных в Chrome (при необходимости задайте `CHROME_PATH`) |
+| `npm run test:browser` | Сборка и проверки темы, доступности, сохранений и восстановления справочников в Chrome (при необходимости задайте `CHROME_PATH`) |
 | `npm run ci` | Lint + test:coverage + build (проверки перед push) |
 | `npm run build:wow-data` | Пересборка бандлов WoW JSON из `scripts/wow-data/wowsims-db.json` (в т.ч. лут тира VoA из метаданных сетов, если WowSims не отдаёт зону 4603) |
 | `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |

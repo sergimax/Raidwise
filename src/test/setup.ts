@@ -1,11 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
-import { afterEach, beforeAll, beforeEach } from "vitest";
-import { ensureAllWowDataLoaded } from "../data/ensure-wow-data.ts";
-
-beforeAll(async () => {
-  await ensureAllWowDataLoaded("en");
-});
+import { afterEach, beforeEach } from "vitest";
 
 beforeEach(() => {
   // Most UI tests need an uncontended save. Browser and persistence tests exercise the queue.
