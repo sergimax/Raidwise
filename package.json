@@ -25,6 +25,11 @@
     "ci": "npm run lint && npm run test:coverage && npm run build",
     "check:release-files": "node scripts/release/check-release-files.mjs"
   },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.4"
+    }
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
