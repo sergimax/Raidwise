@@ -7,6 +7,7 @@ import {
   STORAGE_READ_FAILED,
   STORAGE_WRITE_FAILED,
 } from "./constants.ts";
+import { readWorkspaceSave, workspaceSection, WorkspaceSaveReadError, writeWorkspaceSave } from "./workspace-save.ts";
 
 export type LoadWarning =
   | typeof LOAD_WARNING_CORRUPTED_SAVE
@@ -25,14 +26,41 @@ export type SaveSnapshot = { current: string | null; legacy: string | null };
 export type LoadedSave<T> = ParsedSave<T> & { snapshot: SaveSnapshot | null };
 export type StorageKeys = { key: string; legacyKey: string };
 
+export const saveLockName = (key: string) => `raidwise:save:${key}`;
+
 export function sameSnapshot(left: SaveSnapshot | null, right: SaveSnapshot | null): boolean {
   return left === right ||
     (left !== null && right !== null && left.current === right.current && left.legacy === right.legacy);
 }
 
 export function readSnapshot({ key, legacyKey }: StorageKeys): SaveSnapshot {
+  const section = workspaceSection(key);
+  if (section) {
+    const workspace = readWorkspaceSave();
+    if (workspace) return { current: workspace[section], legacy: null };
+  }
   const current = localStorage.getItem(key);
   return { current, legacy: current === null ? localStorage.getItem(legacyKey) : null };
+}
+
+/** The caller holds the domain lock and, in workspace mode, the shared lock. */
+export function writeSnapshot({ key, legacyKey }: StorageKeys, snapshot: SaveSnapshot, raw: string): void {
+  const section = workspaceSection(key);
+  if (section) {
+    const workspace = readWorkspaceSave();
+    if (workspace) {
+      writeWorkspaceSave({ ...workspace, [section]: raw });
+      return;
+    }
+  }
+  localStorage.setItem(key, raw);
+  if (snapshot.legacy !== null) {
+    try {
+      localStorage.removeItem(legacyKey);
+    } catch {
+      // The current key already contains the committed state.
+    }
+  }
 }
 
 export function loadLocalSave<T>(
@@ -42,7 +70,14 @@ export function loadLocalSave<T>(
   let snapshot: SaveSnapshot;
   try {
     snapshot = readSnapshot(keys);
-  } catch {
+  } catch (error) {
+    if (error instanceof WorkspaceSaveReadError) {
+      return {
+        state: parse(null).state,
+        loadWarning: error.unsupported ? LOAD_WARNING_UNSUPPORTED_SAVE : STORAGE_READ_FAILED,
+        snapshot: { current: error.raw, legacy: null },
+      };
+    }
     return { state: parse(null).state, loadWarning: STORAGE_READ_FAILED, snapshot: null };
   }
   return { ...parse(snapshot.current ?? snapshot.legacy), snapshot };

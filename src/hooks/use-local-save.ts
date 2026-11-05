@@ -5,8 +5,9 @@ import {
   STORAGE_LOCK_UNAVAILABLE,
   STORAGE_READ_FAILED,
 } from "../storage/constants.ts";
-import { getWriteError, readSnapshot, sameSnapshot, type SaveError, type StorageKeys } from "../storage/local-save.ts";
+import { getWriteError, readSnapshot, sameSnapshot, saveLockName, writeSnapshot, type SaveError, type StorageKeys } from "../storage/local-save.ts";
 import { readPendingSave, samePendingSave, writePendingSave, type WorkingSave } from "../storage/pending-save.ts";
+import { WORKSPACE_SAVE_KEY, WORKSPACE_SAVE_LOCK, workspaceSection } from "../storage/workspace-save.ts";
 
 /** Stage committed edits before requesting exclusive access to the shared save. */
 export function useLocalSave<T>(
@@ -45,54 +46,54 @@ export function useLocalSave<T>(
       setSaveError(getWriteError(error));
     };
 
+    const flush = () => {
+      scheduled.current = false;
+      setSaving(false);
+      const draft = pending.current;
+      if (!draft) return;
+
+      try {
+        const snapshot = readSnapshot(keys);
+        // A remount may have staged a newer draft while this lock was queued.
+        const ownsJournal = samePendingSave(readPendingSave(keys), journal.current);
+        if (snapshot.current !== draft.raw) {
+          if (!ownsJournal) {
+            setSaveError(STORAGE_READ_FAILED);
+            return;
+          }
+          if (!draft.base || !sameSnapshot(snapshot, draft.base)) {
+            setSaveError(STORAGE_CONFLICT);
+            return;
+          }
+          writeSnapshot(keys, snapshot, draft.raw);
+        }
+        expected.current = { current: draft.raw, legacy: null };
+        pending.current = null;
+        try {
+          if (ownsJournal) {
+            writePendingSave(keys, null);
+            journal.current = null;
+          }
+        } catch {
+          // A replay of an already committed draft is safe.
+        }
+        setHasDraft(false);
+        setVolatileDraft(false);
+        setSaveError(null);
+        if (draft.repair) setLoadWarning(null);
+      } catch (error) {
+        reportFailure(error);
+      }
+    };
+
     scheduled.current = true;
     setSaving(true);
     try {
-      void locks.request(`raidwise:save:${key}`, () => {
-        scheduled.current = false;
-        setSaving(false);
-        const draft = pending.current;
-        if (!draft) return;
-
-        try {
-          const snapshot = readSnapshot(keys);
-          // A remount may have staged a newer draft while this lock was queued.
-          const ownsJournal = samePendingSave(readPendingSave(keys), journal.current);
-          if (snapshot.current !== draft.raw) {
-            if (!ownsJournal) {
-              setSaveError(STORAGE_READ_FAILED);
-              return;
-            }
-            if (!draft.base || !sameSnapshot(snapshot, draft.base)) {
-              setSaveError(STORAGE_CONFLICT);
-              return;
-            }
-            localStorage.setItem(key, draft.raw);
-            if (snapshot.legacy !== null) {
-              try {
-                localStorage.removeItem(legacyKey);
-              } catch {
-                // The current key already contains the committed state.
-              }
-            }
-          }
-          expected.current = { current: draft.raw, legacy: null };
-          pending.current = null;
-          try {
-            if (ownsJournal) {
-              writePendingSave(keys, null);
-              journal.current = null;
-            }
-          } catch {
-            // A replay of an already committed draft is safe.
-          }
-          setHasDraft(false);
-          setVolatileDraft(false);
-          setSaveError(null);
-          if (draft.repair) setLoadWarning(null);
-        } catch (error) {
-          reportFailure(error);
+      void locks.request(saveLockName(key), () => {
+        if (workspaceSection(key) && localStorage.getItem(WORKSPACE_SAVE_KEY) !== null) {
+          return locks.request(WORKSPACE_SAVE_LOCK, flush);
         }
+        return flush();
       }).catch(reportFailure);
     } catch (error) {
       reportFailure(error);
@@ -132,7 +133,8 @@ export function useLocalSave<T>(
 
   useEffect(() => {
     const checkForExternalChange = (event: StorageEvent) => {
-      if (event.key !== null && event.key !== key && event.key !== legacyKey) return;
+      if (event.key !== null && event.key !== key && event.key !== legacyKey &&
+        !(event.key === WORKSPACE_SAVE_KEY && workspaceSection(key))) return;
       try {
         const snapshot = readSnapshot({ key, legacyKey });
         if (expected.current && !sameSnapshot(snapshot, expected.current)) {
@@ -147,6 +149,11 @@ export function useLocalSave<T>(
   }, [key, legacyKey]);
 
   const exportStorageDraft = useCallback(() => serialize(state), [serialize, state]);
+  const getRestoreSnapshot = useCallback(() => (
+    pending.current || (loadWarning && loadWarning !== LOAD_WARNING_CORRUPTED_SAVE)
+      ? null
+      : expected.current
+  ), [loadWarning]);
   const recoverStorage = useCallback(() => stage(state, true), [stage, state]);
   const retryStorageSave = useCallback(() => stage(state), [stage, state]);
   const discardStorageDraft = useCallback(() => {
@@ -169,11 +176,12 @@ export function useLocalSave<T>(
     storageHasDraft: hasDraft,
     storageVolatileDraft: volatileDraft,
     exportStorageDraft,
+    getRestoreSnapshot,
     recoverStorage: loadWarning === LOAD_WARNING_CORRUPTED_SAVE && original !== null ? recoverStorage : undefined,
     retryStorageSave: hasDraft && !loadWarning ? retryStorageSave : undefined,
     discardStorageDraft,
   }), [
-    discardStorageDraft, exportStorageDraft, hasDraft, loadWarning, original, recoverStorage,
+    discardStorageDraft, exportStorageDraft, getRestoreSnapshot, hasDraft, loadWarning, original, recoverStorage,
     retryStorageSave, saveError, saving, volatileDraft,
   ]);
 }

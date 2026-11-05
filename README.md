@@ -37,6 +37,12 @@ Character columns use class-colored names and main/off GS; Complete is a progres
 
 Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm); when empty, **Add raids from template**.
 
+**Workspace backup** downloads one JSON file with characters and their gear, raids, cooldown marks, custom BiS lists, and BiS selections from the current tab.
+Choose a file up to 10 MiB to compare its contents with the current workspace.
+Confirming replaces both data sections and reloads the app.
+The file covers workspace data.
+Language, theme, and panel filters are local to the browser session or profile.
+
 ### Settings
 
 The header version links to the GitHub repository. The About section shows the app version and a labeled source-code link.
@@ -149,11 +155,14 @@ Regenerate TypeScript presets after editing the markdown.
 |-----|----------|
 | `raidwise` | Characters, dungeons, toggles (`schemaVersion` 7) |
 | `raidwise-bis-lists` | BiS preset selections and local lists (`schemaVersion` 1; malformed entries skipped on load) |
+| `raidwise-workspace` | Both saves after restoring a workspace backup (`version` 1) |
 | `raidwise-item-tooltip-locale` | `en` or `ru` (defaults to `ru`) |
 | `raidwise-color-mode` | Light/dark preference |
 | `raidwise-gear-hint-legend-dismissed` | Dismissed gear-hint legend above the table |
 
 The tracker and BiS lists read legacy `my-raid-cds*` saves and move them to the current keys on the next successful save.
+
+Restoring a workspace backup commits both sections in one browser write. Subsequent edits use the combined save, which requires a Raidwise build with workspace backup support.
 
 Character names: new names are letters only (Unicode `\p{L}+`); display capitalizes the first letter. Legacy names with digits/symbols still load.
 

@@ -67,6 +67,23 @@ async function waitForConflict(page) {
   );
 }
 
+async function chooseBackup(page, contents) {
+  await page.$eval('input[type="file"]', (input, raw) => {
+    const transfer = new DataTransfer();
+    transfer.items.add(new File([raw], "exported-backup.json", { type: "application/json" }));
+    input.files = transfer.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }, contents);
+  await page.waitForSelector('[role="dialog"]');
+}
+
+async function clickTextButton(page, label) {
+  const button = await page.waitForFunction((text) =>
+    [...document.querySelectorAll("button")].find((element) => !element.disabled && element.textContent.trim() === text),
+  { timeout: 10000, polling: 50 }, label);
+  await button.evaluate((element) => element.click());
+}
+
 test("tracker and BiS restore queued edits and reject concurrent stale writes", async (t) => {
   const server = await preview({ preview: { host: "127.0.0.1", port: 0 } });
   let browser;
@@ -230,6 +247,88 @@ test("tracker and BiS restore queued edits and reject concurrent stale writes", 
       await waitForList(other, "Queued First");
       assert.equal(await other.evaluate(() => sessionStorage.getItem("raidwise-bis-lists:pending")), null);
       await other.close();
+    });
+
+    await t.test("round-trips a workspace backup and serializes later tracker and BiS edits", async () => {
+      const context = await browser.createBrowserContext();
+      try {
+        const restore = await context.newPage();
+        const writer = await context.newPage();
+        await writer.goto(`${url}logo.svg`, { waitUntil: "domcontentloaded" });
+        const original = await writer.evaluate(() => {
+          const tracker = {
+            schemaVersion: 7,
+            characters: [{ id: "smoke", name: "Smokehero", className: "Death Knight", mainSpec: { spec: "Unholy" } }],
+            dungeons: [{ id: "raid", name: "Smoke Raid", itemLevel: [251], size: 10, difficulty: "Normal" }],
+            dungeonToggles: { smoke: { raid: true } },
+          };
+          const bisLists = { schemaVersion: 1, entries: { "Death Knight|Unholy": {
+            selectedPresetId: "local-smoke",
+            presets: [{ id: "local-smoke", name: "Saved build", slots: [{ slot: 0, itemIds: [51312] }] }],
+          } } };
+          localStorage.setItem("raidwise", JSON.stringify(tracker));
+          localStorage.setItem("raidwise-bis-lists", JSON.stringify(bisLists));
+          localStorage.setItem("raidwise-item-tooltip-locale", "en");
+          return { tracker, bisLists };
+        });
+        const settingsUrl = `${url}raids/settings`;
+        await restore.bringToFront();
+        await restore.goto(settingsUrl, { waitUntil: "domcontentloaded" });
+        await restore.evaluate(() => {
+          const createObjectURL = URL.createObjectURL;
+          URL.createObjectURL = (blob) => {
+            window.exportedBackup = blob.text();
+            return createObjectURL(blob);
+          };
+          HTMLAnchorElement.prototype.click = function () { window.backupFilename = this.download; };
+        });
+        await clickTextButton(restore, "Download workspace backup");
+        const contents = await restore.evaluate(() => window.exportedBackup);
+        assert.match(await restore.evaluate(() => window.backupFilename), /^raidwise-backup-\d{4}-\d{2}-\d{2}\.json$/);
+        assert.deepEqual(JSON.parse(contents), { format: "raidwise-backup", version: 1, ...original });
+
+        await chooseBackup(restore, contents);
+        await writer.evaluate(() => localStorage.removeItem("raidwise-bis-lists"));
+        await clickTextButton(restore, "Replace workspace data");
+        await restore.waitForFunction(() => document.querySelector('[role="dialog"]').textContent.includes("The workspace changed"));
+        assert.equal(await writer.evaluate(() => localStorage.getItem("raidwise-workspace")), null);
+
+        await writer.evaluate(() => localStorage.removeItem("raidwise"));
+        await restore.reload({ waitUntil: "domcontentloaded" });
+        await restore.waitForSelector('input[type="file"]');
+        await chooseBackup(restore, contents);
+        assert.equal(await writer.evaluate(() => localStorage.getItem("raidwise-workspace")), null);
+        await Promise.all([
+          restore.waitForNavigation({ waitUntil: "domcontentloaded" }),
+          clickTextButton(restore, "Replace workspace data"),
+        ]);
+        await waitForSavedRow(restore, "Smokehero");
+        const committed = await writer.evaluate(() => JSON.parse(localStorage.getItem("raidwise-workspace")));
+        assert.deepEqual(JSON.parse(committed.tracker), original.tracker);
+        assert.deepEqual(JSON.parse(committed.bisLists), original.bisLists);
+
+        const editor = await context.newPage();
+        await editor.goto(settingsUrl, { waitUntil: "domcontentloaded" });
+        const lock = await holdSaveLock(writer, "workspace");
+        try {
+          await restore.bringToFront();
+          await restore.click('input[type="checkbox"][aria-label="Smokehero — Smoke Raid"]');
+          await editor.bringToFront();
+          await clickTextButton(editor, "Delete all custom lists");
+          await editor.waitForSelector('[role="dialog"]');
+          await clickTextButton(editor, "Delete");
+          await lock.waitForWriters(2);
+        } finally {
+          await lock.release();
+        }
+        await writer.waitForFunction(() => {
+          const { tracker, bisLists } = JSON.parse(localStorage.getItem("raidwise-workspace"));
+          return JSON.parse(tracker).dungeonToggles.smoke.raid === false &&
+            Object.keys(JSON.parse(bisLists).entries).length === 0;
+        }, { polling: 50 });
+      } finally {
+        await context.close();
+      }
     });
   } finally {
     await browser?.close();

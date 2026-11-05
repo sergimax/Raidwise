@@ -11,6 +11,7 @@ import {
   STORAGE_WRITE_FAILED,
 } from "../../storage/constants.ts";
 import type { LoadWarning, SaveError } from "../../storage/local-save.ts";
+import { downloadJson } from "../../utils/download-json.ts";
 import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog.tsx";
 
 const messages: Record<LoadWarning | SaveError, MessageKey> = {
@@ -22,16 +23,6 @@ const messages: Record<LoadWarning | SaveError, MessageKey> = {
   [STORAGE_QUOTA_EXCEEDED]: "storage.quotaExceeded",
   [STORAGE_WRITE_FAILED]: "storage.saveFailed",
 };
-
-function downloadSave(raw: string, filename: string) {
-  const url = URL.createObjectURL(new Blob([raw], { type: "application/json" }));
-  const revoke = URL.revokeObjectURL.bind(URL);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  window.setTimeout(() => revoke(url), 1000);
-}
 
 type StorageProblemProps = {
   storageLoadWarning: LoadWarning | null;
@@ -68,11 +59,11 @@ export function StorageProblem({
         {storageVolatileDraft && <Typography variant="body2">{t("storage.volatileDraft")}</Typography>}
         <Stack direction="row" spacing={1} useFlexGap sx={{ mt: 1, flexWrap: "wrap" }}>
           {storageOriginal != null && (
-            <Button color="inherit" onClick={() => downloadSave(storageOriginal, `${filename}-original.json`)}>
+            <Button color="inherit" onClick={() => downloadJson(storageOriginal, `${filename}-original.json`)}>
               {t("storage.downloadOriginal")}
             </Button>
           )}
-          <Button color="inherit" onClick={() => downloadSave(exportStorageDraft(), `${filename}-draft.json`)}>
+          <Button color="inherit" onClick={() => downloadJson(exportStorageDraft(), `${filename}-draft.json`)}>
             {t("storage.downloadDraft")}
           </Button>
           {conflict ? (
