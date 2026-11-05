@@ -1,0 +1,97 @@
+# Протокол проверок
+
+Дата: 05.11.2026, часовой пояс пользователя Europe/Moscow. Windows, PowerShell, Node **v24.15.0**, npm **11.12.1**.
+CI использует Node 22 через `.github/actions/setup-project/action.yml`; эквивалентность окружений не предполагается.
+Установленные инструменты: Vite 7.3.7, Vitest 4.1.12.
+ Проверен commit из [обзора](README.md) с существующим `node_modules`; свежий `npm ci` не выполнялся.
+
+## Команды и наблюдения
+
+| Команда | Exit | Результат |
+|---|---:|---|
+| `npm run lint` | 0 | Ошибок нет |
+| `npm run build` | 0 | tsc + Vite прошли; 1321 modules; Vite build 7,40 s |
+| `npm run test:coverage` вне sandbox | 0 | 96 файлов, 672 теста; 43,56 s |
+| `node --test --test-concurrency=1 scripts/browser/theme.browser.mjs scripts/browser/tracker-persistence.browser.mjs` вне sandbox | 0 | 7 passed; 5,43 s, использован уже собранный dist |
+| `npx vitest run --config docs/audits/2026-11-05/vitest.config.ts` вне sandbox | 0 | Окончательная конфигурация: 1 файл, 9 passed; 1,97 s |
+| `npm audit --json` онлайн вне sandbox | 1 | 7 moderate entries, 0 high/critical; одна исходная minimatch advisory |
+| `npm audit --omit=dev --json` онлайн вне sandbox | 0 | 0 advisory |
+
+Coverage baseline (до добавления диагностических проб):
+
+```text
+Statements: 4226 / 4912 = 86.03%
+Branches:   2975 / 3762 = 79.08%
+Functions:  1131 / 1307 = 86.53%
+Lines:      4103 / 4763 = 86.14%
+```
+
+Первый запуск coverage в sandbox завершился 96 failed suites / no tests из-за `EPERM ... rename` в temp/cache.
+Повтор вне sandbox прошёл целиком.
+Первый browser run не смог запустить Chrome и сообщил ошибку profile/credentials; повтор вне sandbox прошёл.
+Это ограничения исполнения, не 98 ошибок Raidwise.
+Первый онлайн npm audit в sandbox получил `ENOTFOUND registry.npmjs.org`; повтор вне sandbox получил реальный ответ.
+Offline audit вернул 0, но не использован как доказательство безопасности, поскольку онлайн ответ обнаружил advisory.
+
+Во время подготовки audit config `mergeConfig` сначала объединил include-массивы и запустил 97 файлов / 681 тест: всё прошло.
+Финальная конфигурация явно заменяет `test.include`, запускает только 9 проб и также проверена.
+
+## Что именно проверяют browser smoke
+
+- Сохранённая dark theme имеет приоритет над light system preference.
+- System dark применяется при отсутствии сохранённой темы.
+- System dark работает при заблокированном localStorage.
+- Light/dark Settings appearance и автоматическая accessibility-проверка axe.
+- Создание рейда/персонажа, переключение CD, ожидание сохранения, reload и восстановление.
+
+Счётчик Node test runner включает родительский theme test: итог 7, не семь независимых полных пользовательских journeys.
+Эти тесты не доказывают доступность всех панелей и не проверяют запись до завершения debounce.
+
+## Воспроизводимые диагностические пробы
+
+Исходник: [probes.test.ts](probes.test.ts).
+Конфигурация: [vitest.config.ts](vitest.config.ts).
+
+Запуск из корня репозитория:
+
+```powershell
+npx vitest run --config docs/audits/2026-11-05/vitest.config.ts
+```
+
+Пробы используют изолированный jsdom localStorage.
+Они не меняют сохранения пользователя в Chrome.
+**Зелёный результат означает подтверждение дефекта в проверенной версии**, поскольку assertions описывают фактическое проблемное поведение.
+После исправления соответствующая проба может закономерно стать красной; ожидаемое корректное поведение следует закрепить обычным colocated regression test.
+
+| Проба | Зафиксированное наблюдение |
+|---|---|
+| F01 current character | `[null]` вызывает TypeError |
+| F01 legacy dungeon | `[null]` вызывает TypeError в миграции |
+| F02 | После мутации и раннего unmount запись отсутствует |
+| F03 | Corrupt JSON заменяется пустым tracker, warning исчезает через 400 мс |
+| F04 | BiS schema 999 заменяется schema 1 / empty entries |
+| F05 | Второй stale store удаляет персонажа, добавленного первым |
+| F06 | Два вызова loader после отказа дают один import и два rejected results |
+| F07 | updateDungeon убирает raidKey; новое нестандартное имя не разрешается |
+| F08 | Ошибка копирования legacy возвращает null, хотя legacy всё ещё читается |
+
+F09–F12 проверены чтением и трассировкой кода, без новых браузерных assertions.
+F13 подтверждён онлайн-ответом npm; сведения меняются со временем, перед обновлением следует повторить команду.
+
+## Дополнительная верификация и ограничения
+
+- Для 42 font URLs из `src/fonts.css` проверено наличие соответствующих файлов в `dist`; все найдены. Warnings сборки не трактуются как 404.
+- У EN/RU типизированный общий контракт каталогов; полного семантического ревью каждого перевода не было.
+- Глобальный test setup загружает все WoW JSON; высокий coverage `lazy-json` (100% lines/branches) не покрывал rejection semantics. Процент покрытия не заменяет проверку отказов.
+- Online audit проверяет известные advisory, не supply-chain integrity всех пакетов. Lockfile и dependency graph прочитаны; `audit fix`, обновления и массовая регенерация данных не выполнялись.
+- Измерения bundle — вывод текущей локальной сборки; новая оценка Lighthouse, web vitals, production caching и поведение после реального deployment не измерены.
+- Production security headers, редиректы, SPA fallback и CDN availability не проверены. Рекомендации README про Nginx не считаются доказательством реальной конфигурации сервера.
+
+## Проверки для следующего цикла
+
+1. Browser regression: mutation → немедленный reload для tracker/BiS и две реальные вкладки с конкурирующими правками.
+2. Загрязнённое сохранение: invalid nested rows, duplicate ids, future schemas, quota, read-only storage и partial recovery.
+3. Network failure: chunk load, retry, EN/RU race, failed tooltip script, deploy со старыми asset URLs.
+4. WoWSims import → смена spec → hints → сохранение/reload; BiS save/select/delete с данными пользователя в тестовом профиле.
+5. Keyboard/screen-reader обход Soft pick, BiS и таблицы; narrow viewport и Firefox/Safari.
+6. Профилирование больших таблиц и bundle attribution перед изменением context architecture.
