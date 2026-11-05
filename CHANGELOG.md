@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Tracker and BiS saves:** Edits waiting to save survive a reload in the same tab. Web Locks coordinate writes across tabs. If another tab saves first, the stale tab keeps its draft and lets you download it or discard it to load the saved version.
+- **Save recovery:** Damaged saves show any recoverable records and pause automatic saving. You can download the original or confirm its replacement with the working copy. Saves from unsupported versions are available for download and protected from replacement.
+
+### Fixed
+
+- **Storage errors:** A failed write can be retried without another edit. Legacy saves remain readable if moving them to the current key fails.
+- **BiS lists:** Rapidly created local lists receive distinct IDs and survive a reload.
+- **Raid editing:** Custom names keep their template loot and icons. Changing to another recognized raid updates the template association and item levels for known variants.
+- **Item data and tooltips:** Failed loads can be retried. The app offers a reload when item data still cannot be loaded.
+- **Raid navigation:** Unknown raid URLs now show the not-found page.
+- **Copy and accessibility:** Character pick, Soft pick, and BiS offer selectable text when clipboard access fails. Soft reserve limit buttons have distinct accessible names.
+
+### Security
+
+- **Development tooling:** Updated the `minimatch` dependency used by TypeScript ESLint to address [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+
 ## [2.11.0] - 2026-11-05
 
 ### Added
