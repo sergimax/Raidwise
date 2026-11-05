@@ -216,6 +216,7 @@ export function migrateStoredPayload(payload: StoredPayload): StoredPayload {
     version = 6;
   }
 
+  // v7 adds an explicit null raidKey for detached rows. Missing legacy keys still infer by name.
   if (version < CURRENT_SCHEMA_VERSION) {
     return { ...next, schemaVersion: CURRENT_SCHEMA_VERSION };
   }

@@ -44,7 +44,7 @@ export function serializeRaidTrackerState(state: PersistedTrackerState): string 
     difficulty: dungeon.difficulty,
     ...(dungeon.shortName ? { shortName: dungeon.shortName } : {}),
     ...(dungeon.emblem ? { emblem: dungeon.emblem } : {}),
-    ...(dungeon.raidKey ? { raidKey: dungeon.raidKey } : {}),
+    ...(dungeon.raidKey !== undefined ? { raidKey: dungeon.raidKey } : {}),
   }));
 
   const storedToggles = pruneToggles(dungeonToggles, {

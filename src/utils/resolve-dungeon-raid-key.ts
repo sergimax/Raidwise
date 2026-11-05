@@ -52,6 +52,7 @@ export function getDungeonSearchNameCandidates(
 export function resolveDungeonRaidKey(
   dungeon: Pick<DungeonRecord, "name" | "raidKey">,
 ): RaidKey | undefined {
+  if (dungeon.raidKey === null) return undefined;
   if (dungeon.raidKey && isRaidKey(dungeon.raidKey)) {
     return dungeon.raidKey;
   }

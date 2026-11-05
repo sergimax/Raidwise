@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, useLocation } from "react-router-dom";
+import { MemoryRouter, useLocation, useNavigate } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BisListsProvider } from "../../contexts/bis-lists-provider.tsx";
 import { ItemTooltipLocaleProvider } from "../../contexts/item-tooltip-locale-provider.tsx";
@@ -31,17 +31,26 @@ function CurrentPath() {
   return <span data-testid="current-path">{useLocation().pathname}</span>;
 }
 
-function renderRoute(path: string) {
+function HistoryControls() {
+  const navigate = useNavigate();
+  return <>
+    <button onClick={() => navigate(-1)}>Back</button>
+    <button onClick={() => navigate(1)}>Forward</button>
+  </>;
+}
+
+function renderRoute(path: string, options: { locale?: "en" | "ru"; history?: string[]; basename?: string } = {}) {
   return render(
     <AppThemeProvider>
-      <ItemTooltipLocaleProvider initialLocale="en">
+      <ItemTooltipLocaleProvider initialLocale={options.locale ?? "en"}>
         <WowDataProvider>
-          <MemoryRouter initialEntries={[path]}>
+          <MemoryRouter basename={options.basename} initialEntries={[...(options.history ?? []), path]}>
             <RaidTrackerProvider>
               <BisListsProvider>
                 <RaidWorkspaceSessionProvider>
                   <AppRouteContent />
                   <CurrentPath />
+                  {options.history && <HistoryControls />}
                 </RaidWorkspaceSessionProvider>
               </BisListsProvider>
             </RaidTrackerProvider>
@@ -83,6 +92,18 @@ describe("AppRouteContent", () => {
 
     expect(screen.getByTestId("current-path")).toHaveTextContent(path);
     expect(screen.getByRole("heading", { name: "Page not found" })).toBeInTheDocument();
+  });
+
+  it("shows a localized 404 and restores the known raid tool with a trailing slash through history", async () => {
+    const user = userEvent.setup();
+    renderRoute("/raidwise/raids/typo", {
+      locale: "ru", basename: "/raidwise", history: ["/raidwise/raids/add-new-raid///"],
+    });
+    expect(screen.getByRole("heading", { name: "Страница не найдена" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect(document.querySelector('input[name="dungeonName"]')).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Forward" }));
+    expect(screen.getByRole("heading", { name: "Страница не найдена" })).toBeInTheDocument();
   });
 
   it("keeps the recovery warning and exports the original after an external write", async () => {

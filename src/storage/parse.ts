@@ -107,17 +107,17 @@ function toDungeonRecord(stored: StoredDungeon, warn: Warn): DungeonRecord | nul
   const shortName =
     typeof stored.shortName === "string" && stored.shortName.trim() !== ""
       ? stored.shortName.trim()
-      : defaultShortNameForDungeonName(stored.name);
+      : stored.raidKey === null ? undefined : defaultShortNameForDungeonName(stored.name);
   const raidKey =
     typeof stored.raidKey === "string" && isRaidKey(stored.raidKey)
       ? stored.raidKey
-      : undefined;
+      : stored.raidKey === null ? null : undefined;
   if (
     itemLevel.length !== stored.itemLevel.length ||
     (stored.size !== undefined && stored.size !== size) ||
     (rawDifficulty !== undefined && rawDifficulty !== difficulty) ||
     (stored.emblem !== undefined && !emblem) ||
-    (stored.raidKey !== undefined && !raidKey) ||
+    (stored.raidKey !== undefined && raidKey === undefined) ||
     (stored.shortName !== undefined && typeof stored.shortName !== "string")
   ) {
     warn();
@@ -130,7 +130,7 @@ function toDungeonRecord(stored: StoredDungeon, warn: Warn): DungeonRecord | nul
     difficulty,
     ...(shortName ? { shortName } : {}),
     ...(emblem ? { emblem } : {}),
-    ...(raidKey ? { raidKey } : {}),
+    ...(raidKey !== undefined ? { raidKey } : {}),
   };
 }
 

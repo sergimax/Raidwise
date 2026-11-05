@@ -184,6 +184,10 @@ export const ruMessages: Messages = {
   },
   dungeonEdit: {
     title: "Изменить подземелье",
+    lootTemplate: "Шаблон добычи",
+    noLootTemplate: "Без шаблона добычи",
+    keepLootTemplate: "Текущий шаблон: {{raid}}",
+    lootTemplateHelp: "Шаблон задаёт размер рейда, сложность и уровни предметов. Отметки КД остаются у этой строки.",
   },
   deleteDialog: {
     removeCharacterTitle: "Удалить персонажа?",

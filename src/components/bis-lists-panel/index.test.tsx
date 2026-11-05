@@ -92,6 +92,25 @@ describe("BisListsPanel", () => {
     );
   });
 
+  it("shows selectable Russian copy text when the clipboard API is missing", async () => {
+    const user = userEvent.setup();
+    const clipboard = Object.getOwnPropertyDescriptor(navigator, "clipboard");
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+    try {
+      renderWithTheme(<BisListsPanelHarness />, { locale: "ru" });
+      await user.click(screen.getByRole("button", { name: "Копировать текущий BiS-список" }));
+      expect(screen.getByRole("alert")).toHaveTextContent("Не удалось скопировать автоматически");
+      const field = screen.getByRole<HTMLTextAreaElement>("textbox", { name: "Текст для копирования" });
+      expect(field).toHaveAttribute("readonly");
+      expect(field.value).toContain("Голова:");
+      field.focus();
+      expect(field.selectionEnd - field.selectionStart).toBe(field.value.length);
+    } finally {
+      if (clipboard) Object.defineProperty(navigator, "clipboard", clipboard);
+      else Reflect.deleteProperty(navigator, "clipboard");
+    }
+  });
+
   it("shows built-in preset items for Warrior Arms", async () => {
     const user = userEvent.setup();
     renderWithTheme(<BisListsPanelHarness />);

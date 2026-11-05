@@ -17,6 +17,10 @@ Breadcrumbs at the top of each page show the current section or raid tool and li
 ### Characters & dungeons
 
 Add characters and raids manually (toolbar buttons or the dotted empty column/row on the table), or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
+In the raid editor, renaming a row keeps its loot template.
+Choose a different **Loot template** to apply that variant’s size, difficulty, and item levels.
+**No loot template** detaches the row and keeps its existing item levels.
+Cooldown marks stay with the row.
 The responsive MUI AppBar keeps app sections in a dropdown beside the logo and scrollable tracker actions in the same toolbar at every screen width; on mobile, the menu also contains these actions. The logo text hides below 1200px. The header **info** button shows or hides the usage intro (CDs, gear planning, or BiS-only). **Settings → Interface** controls the color theme. Both choices are saved locally.
 
 ### Cooldown toggles
@@ -143,7 +147,7 @@ Regenerate TypeScript presets after editing the markdown.
 
 | Key | Contents |
 |-----|----------|
-| `raidwise` | Characters, dungeons, toggles (`schemaVersion` 6) |
+| `raidwise` | Characters, dungeons, toggles (`schemaVersion` 7) |
 | `raidwise-bis-lists` | BiS preset selections and local lists (`schemaVersion` 1; malformed entries skipped on load) |
 | `raidwise-item-tooltip-locale` | `en` or `ru` (defaults to `ru`) |
 | `raidwise-color-mode` | Light/dark preference |

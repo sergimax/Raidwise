@@ -99,6 +99,7 @@ describe("useTrackerDomain", () => {
       result.current.moveCharacter(beta.id, -1);
       result.current.updateDungeon(dungeon.id, {
         name: "Renamed raid",
+        raidKey: null,
         shortName: "RR",
         size: 10,
         difficulty: DungeonDifficulty.HEROIC,
@@ -117,6 +118,7 @@ describe("useTrackerDomain", () => {
     expect(result.current.dungeons[0]).toEqual({
       ...dungeon,
       name: "Renamed raid",
+      raidKey: null,
       shortName: "RR",
       size: 10,
       difficulty: DungeonDifficulty.HEROIC,
@@ -202,7 +204,7 @@ describe("useTrackerDomain", () => {
     expect(loadRaidTrackerState().state.dungeons).toHaveLength(0);
   });
 
-  it("keeps template loot on a custom rename and updates it for a recognized replacement", () => {
+  it("keeps template loot on rename and updates it only for an explicitly selected variant", () => {
     const { result } = renderHook(() => useTrackerDomain());
     const raid = createTestDungeon({
       name: "Icecrown Citadel",
@@ -211,16 +213,18 @@ describe("useTrackerDomain", () => {
     });
     const variant = { size: raid.size, difficulty: raid.difficulty };
     act(() => result.current.addDungeon(raid));
-    act(() => result.current.updateDungeon(raid.id, { ...variant, name: "Friday team" }));
+    act(() => result.current.updateDungeon(raid.id, { ...variant, raidKey: "icecrownCitadel", name: "Friday team" }));
     const renamed = loadRaidTrackerState().state.dungeons[0]!;
     expect(renamed.raidKey).toBe("icecrownCitadel");
     expect(getLocalizedDungeonDisplayName(renamed, "ru", false)).toBe("Friday team");
 
-    act(() => result.current.updateDungeon(raid.id, { ...variant, name: "The Ruby Sanctum" }));
+    act(() => result.current.updateDungeon(raid.id, { ...variant, raidKey: "rubySanctum", name: "Friday team" }));
     expect(loadRaidTrackerState().state.dungeons[0]).toMatchObject({
       raidKey: "rubySanctum",
       itemLevel: [271],
     });
+    act(() => result.current.updateDungeon(raid.id, { ...variant, size: 40, raidKey: "rubySanctum", name: "Friday team" }));
+    expect(loadRaidTrackerState().state.dungeons[0]).toMatchObject({ size: raid.size, itemLevel: [271] });
   });
 
   it("reports a failed save and clears the error after a successful retry", () => {

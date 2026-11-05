@@ -18,7 +18,7 @@ export type AppRoute = (typeof APP_ROUTES)[keyof typeof APP_ROUTES] | "/not-foun
 
 export function useAppRoute(): AppRoute {
   const { pathname } = useLocation();
-  const normalizedPath = pathname.replace(/\/$/, "") || "/";
+  const normalizedPath = pathname.replace(/\/+$/, "") || "/";
   if (normalizedPath === "/" || normalizedPath === APP_ROUTES.raids) {
     return APP_ROUTES.raids;
   }

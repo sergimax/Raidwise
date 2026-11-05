@@ -106,7 +106,6 @@ function CharacterPickResultLineRow({
         >
           {copied ? t("characterPickPanel.copied") : t("characterPickPanel.copyLine")}
         </Button>
-        {copyFailed && <ClipboardFallback text={copyText} />}
       </TableCell>
       <TableCell sx={{ ...cellSx, width: "100%", pr: 0.25 }}>
         <Typography
@@ -122,6 +121,7 @@ function CharacterPickResultLineRow({
         >
           {line.charactersLabel}
         </Typography>
+        {copyFailed && <ClipboardFallback text={copyText} />}
       </TableCell>
     </TableRow>
   );

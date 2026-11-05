@@ -20,7 +20,7 @@ export function groupAdjacentRaids(dungeons: DungeonRecord[]): AdjacentRaidGroup
     ) {
       previous.dungeons.push(dungeon);
     } else {
-      groups.push({ raidKey: dungeon.raidKey, dungeons: [dungeon] });
+      groups.push({ raidKey: dungeon.raidKey ?? undefined, dungeons: [dungeon] });
     }
   }
   return groups;

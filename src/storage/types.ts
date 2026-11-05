@@ -46,7 +46,7 @@ export type StoredDungeon = {
   size: DungeonRecord["size"];
   itemLevel: number[];
   emblem?: EmblemKey;
-  raidKey?: RaidKey;
+  raidKey?: RaidKey | null;
   /** Legacy key from older saves */
   mode?: string;
   difficulty?: string;

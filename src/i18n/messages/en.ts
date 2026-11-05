@@ -182,6 +182,10 @@ export const enMessages = {
   },
   dungeonEdit: {
     title: "Edit dungeon details",
+    lootTemplate: "Loot template",
+    noLootTemplate: "No loot template",
+    keepLootTemplate: "Current template: {{raid}}",
+    lootTemplateHelp: "The template sets raid size, difficulty, and item levels. Cooldown marks stay with this row.",
   },
   deleteDialog: {
     removeCharacterTitle: "Remove character?",

@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { RaidTrackerProvider } from "../../contexts/raid-tracker-provider.tsx";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
-import { saveRaidTrackerState } from "../../storage/index.ts";
+import { loadRaidTrackerState, saveRaidTrackerState } from "../../storage/index.ts";
+import { getItemDropSources } from "../../data/item-drop-sources.ts";
+import { DungeonDifficulty } from "../../types/dungeons.ts";
+import { dungeonMatchesDropSource } from "../../utils/item-drop-sources.ts";
 import {
   createTestCharacter,
   createTestDungeon,
@@ -216,5 +220,46 @@ describe("RaidTrackerTable with saved data", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(screen.getByRole("button", { name: "Edit details for Updated Raid" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Edit details for Citadel" })).not.toBeInTheDocument();
+  });
+
+  it("keeps a loot association on rename, switches the full variant, and persists detachment", async () => {
+    const user = userEvent.setup();
+    const raid = createTestDungeon({
+      id: "citadel", name: "Icecrown Citadel", raidKey: "icecrownCitadel",
+      size: 10, difficulty: DungeonDifficulty.NORMAL, itemLevel: [251, 258],
+    });
+    saveRaidTrackerState({ characters: [], dungeons: [raid], dungeonToggles: {} });
+    const first = renderPopulatedTable();
+    await user.click(screen.getByRole("button", { name: "Edit details for Icecrown Citadel" }));
+    const edit = () => within(screen.getByRole("dialog"));
+    fireEvent.change(edit().getByRole("textbox", { name: "Name" }), {
+      target: { value: "The Ruby Sanctum" },
+    });
+    await user.click(edit().getByRole("button", { name: "Save" }));
+    expect(loadRaidTrackerState().state.dungeons[0]).toMatchObject({
+      name: "The Ruby Sanctum", raidKey: "icecrownCitadel", itemLevel: [251, 258],
+    });
+
+    await user.click(await screen.findByRole("button", { name: "Edit details for The Ruby Sanctum" }));
+    await user.click(edit().getByRole("combobox", { name: "Loot template" }));
+    await user.click(screen.getByRole("option", { name: "The Ruby Sanctum · 25 · Heroic" }));
+    await user.click(await screen.findByRole("button", { name: "Save" }));
+    first.unmount();
+    renderPopulatedTable();
+
+    const source = getItemDropSources(54581).find(({ raidKey }) => raidKey === "rubySanctum")!;
+    const switched = loadRaidTrackerState().state.dungeons[0];
+    expect(switched).toMatchObject({
+      raidKey: "rubySanctum", size: 25, difficulty: DungeonDifficulty.HEROIC, itemLevel: [284],
+    });
+    expect(dungeonMatchesDropSource(switched, source)).toBe(true);
+
+    await user.click(screen.getByRole("button", { name: "Edit details for The Ruby Sanctum" }));
+    await user.click(edit().getByRole("combobox", { name: "Loot template" }));
+    await user.click(screen.getByRole("option", { name: "No loot template" }));
+    await user.click(await screen.findByRole("button", { name: "Save" }));
+    const detached = loadRaidTrackerState().state.dungeons[0];
+    expect(detached).toMatchObject({ name: "The Ruby Sanctum", raidKey: null, itemLevel: [284] });
+    expect(dungeonMatchesDropSource(detached, source)).toBe(false);
   });
 });

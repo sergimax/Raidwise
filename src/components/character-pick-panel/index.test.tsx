@@ -62,7 +62,8 @@ describe("CharacterPickPanel", () => {
 
   it("updates export lines for raid and spec filters and preserves session filters when reopened", async () => {
     const user = userEvent.setup();
-    const writeText = vi.fn().mockResolvedValue(undefined);
+    const writeText = vi.fn().mockRejectedValueOnce(new DOMException("Denied", "NotAllowedError"))
+      .mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: { writeText },
@@ -99,6 +100,10 @@ describe("CharacterPickPanel", () => {
 
     await user.click(copyButtons()[0]!);
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining("Alpha"));
+    expect(screen.getByRole("textbox", { name: "Text to copy" })).toHaveValue(writeText.mock.calls[0][0]);
+    await user.click(copyButtons()[0]!);
+    expect(copyButtons()[0]).toHaveTextContent("Copied");
+    expect(screen.queryByRole("textbox", { name: "Text to copy" })).not.toBeInTheDocument();
   });
 
   it("omits characters on cooldown or without upgrades from export lines", async () => {

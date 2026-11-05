@@ -21,17 +21,18 @@ export type Dungeon = {
   difficulty: DungeonDifficulty;
   /** WotLK emblem primarily rewarded by this raid (display only). */
   emblem?: EmblemKey;
-  /** Template raid key for loot / upgrade hints (optional for custom rows). */
-  raidKey?: RaidKey;
+  /** Template for loot hints. Missing keys infer from legacy names. Null explicitly detaches. */
+  raidKey?: RaidKey | null;
 };
 
 export type DungeonRecord = Dungeon & { id: string };
 
-/** Editable dungeon display fields (names, size, mode, emblem badge). */
+/** Display fields and the selected loot template variant. */
 export type DungeonCustomizationUpdate = Pick<
   Dungeon,
   "name" | "size" | "difficulty"
 > & {
+  raidKey: RaidKey | null;
   shortName?: string;
   emblem?: EmblemKey;
 };

@@ -161,7 +161,7 @@ export function getLocalizedDungeonDisplayName(
 ): string {
   // A stored raid key still drives loot and icons when the user picks a custom label.
   const raidKey = resolveDungeonRaidKey({ name: dungeon.name });
-  if (raidKey) {
+  if (raidKey && raidKey === resolveDungeonRaidKey(dungeon)) {
     return raidDisplayName(
       raidKey,
       locale,

@@ -98,13 +98,16 @@ export function useTrackerDomain() {
             return dungeon;
           }
           const previousRaidKey = resolveDungeonRaidKey(dungeon);
-          const raidKey = resolveDungeonRaidKey(customization) ?? previousRaidKey;
+          const { raidKey } = customization;
           const variantChanged = raidKey !== previousRaidKey ||
             dungeon.size !== customization.size || dungeon.difficulty !== customization.difficulty;
           const template = variantChanged && raidKey && DungeonList.find((entry) =>
             entry.raidKey === raidKey && entry.size === customization.size &&
             entry.difficulty === customization.difficulty,
           );
+          // A previously linked variant may be outside the default list, but a new variant
+          // must supply its own item levels.
+          if (raidKey && variantChanged && !template) return dungeon;
           const next: DungeonRecord = {
             id: dungeon.id,
             name: customization.name,
@@ -113,7 +116,7 @@ export function useTrackerDomain() {
             difficulty: customization.difficulty,
             ...(customization.shortName ? { shortName: customization.shortName } : {}),
             ...(customization.emblem ? { emblem: customization.emblem } : {}),
-            ...(raidKey ? { raidKey } : {}),
+            raidKey,
           };
           return next;
         }),

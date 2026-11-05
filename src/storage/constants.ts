@@ -5,7 +5,7 @@ export const LEGACY_STORAGE_KEY = "my-raid-cds";
 export const TRACKER_STORAGE_KEYS = { key: STORAGE_KEY, legacyKey: LEGACY_STORAGE_KEY };
 
 /** Bump when stored JSON shape or migrations change. */
-export const CURRENT_SCHEMA_VERSION = 6;
+export const CURRENT_SCHEMA_VERSION = 7;
 
 export const LOAD_WARNING_CORRUPTED_SAVE =
   "corrupt-save";
