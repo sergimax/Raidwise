@@ -42,7 +42,7 @@ async function waitForSavedRow(page, name) {
   }
 }
 
-test("created raid data survives a page reload", async () => {
+test("raid edits survive immediate reload and a stale tab cannot overwrite them", async () => {
   const server = await preview({ preview: { host: "127.0.0.1", port: 0 } });
   let browser;
 
@@ -81,28 +81,32 @@ test("created raid data survives a page reload", async () => {
 
     const toggleSelector = 'input[type="checkbox"][aria-label="Smokehero — Smoke Raid"]';
     await page.waitForSelector(toggleSelector);
+    const staleTab = await browser.newPage();
+    await staleTab.goto(`${url}raids/add-new-raid`, { waitUntil: "domcontentloaded" });
+    await staleTab.waitForSelector('input[name="dungeonName"]');
+    await staleTab.type('input[name="dungeonName"]', "Stale Tab Raid");
+
+    await page.bringToFront();
     await page.click(toggleSelector);
-    await page.waitForFunction(
-      (selector) => document.querySelector(selector)?.checked === true,
-      {},
-      toggleSelector,
-    );
-
-    // Persistence is debounced; wait for the final write before reloading.
-    await page.waitForFunction(() => {
-      const raw = localStorage.getItem("raidwise");
-      if (!raw) return false;
-      const saved = JSON.parse(raw);
-      const character = saved.characters?.find(({ name }) => name === "Smokehero");
-      const dungeon = saved.dungeons?.find(({ name }) => name === "Smoke Raid");
-      return Boolean(character && dungeon && saved.dungeonToggles?.[character.id]?.[dungeon.id]);
-    });
-
     await page.reload({ waitUntil: "domcontentloaded" });
     await waitForSavedRow(page, "Smoke Raid");
     await waitForSavedRow(page, "Smokehero");
     await page.waitForSelector(toggleSelector);
     assert.equal(await page.$eval(toggleSelector, (input) => input.checked), true);
+
+    await staleTab.bringToFront();
+    await staleTab.click('form button[type="submit"]');
+    await waitForSavedRow(staleTab, "Stale Tab Raid");
+    await staleTab.waitForFunction(() =>
+      [...document.querySelectorAll('[role="alert"]')].some(
+        (alert) => alert.textContent.includes("The saved data changed in another tab."),
+      ),
+    );
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("raidwise")));
+    const character = saved.characters.find(({ name }) => name === "Smokehero");
+    const dungeon = saved.dungeons.find(({ name }) => name === "Smoke Raid");
+    assert.equal(saved.dungeonToggles[character.id][dungeon.id], true);
+    assert.equal(saved.dungeons.some(({ name }) => name === "Stale Tab Raid"), false);
   } finally {
     await browser?.close();
     await new Promise((resolve, reject) =>

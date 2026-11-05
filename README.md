@@ -143,12 +143,15 @@ Regenerate TypeScript presets after editing the markdown.
 | `raidwise-color-mode` | Light/dark preference |
 | `raidwise-gear-hint-legend-dismissed` | Dismissed gear-hint legend above the table |
 
-Legacy `my-raid-cds*` keys are copied to the new names on first load, then removed.
+The tracker and BiS lists read legacy `my-raid-cds*` saves and move them to the current keys on the next successful save.
 
 Character names: new names are letters only (Unicode `\p{L}+`); display capitalizes the first letter. Legacy names with digits/symbols still load.
 
-Corrupted tracker data resets with an error alert.
-Legacy saves migrate on load.
+Tracker and BiS edits save immediately.
+If another tab changes a save, Raidwise pauses writes from the stale tab and lets you download its working copy or reload the latest save.
+
+If a save is damaged or uses an unsupported version, Raidwise preserves the original and shows any records it can recover.
+Download the original or explicitly replace it with the working copy from the warning. BiS warnings appear in **BiS builds**.
 
 ### Deployment (caching & HTTP)
 
