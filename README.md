@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.11.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.12.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -40,7 +40,6 @@ Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with conf
 **Workspace backup** downloads one JSON file with characters and their gear, raids, cooldown marks, custom BiS lists, and BiS selections from the current tab.
 Choose a file up to 10 MiB to compare its contents with the current workspace.
 Confirming replaces both data sections and reloads the app.
-The file covers workspace data.
 Language, theme, and panel filters are local to the browser session or profile.
 
 ### Settings

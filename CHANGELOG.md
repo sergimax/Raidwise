@@ -7,17 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.0] - 2026-11-06
+
+### Added
+
+- **Workspace backup:** Raid settings can export the tracker and BiS data in one JSON file. Import shows a comparison before replacing both sections in one operation.
+
 ### Changed
 
-- **Tracker and BiS saves:** Edits waiting to save survive a reload in the same tab. Web Locks coordinate writes across tabs. If another tab saves first, the stale tab keeps its draft and lets you download it or discard it to load the saved version.
-- **Save recovery:** Damaged saves show any recoverable records and pause automatic saving. You can download the original or confirm its replacement with the working copy. Saves from unsupported versions are available for download and protected from replacement.
+- **Tracker and BiS saves:** Pending edits survive a reload and can be reopened after closing the tab in the same browser profile. When another tab saves first, Raidwise preserves the draft so you can download it or discard it to load the saved version.
+- **Save recovery:** Damaged saves show recoverable data and pause automatic saving. You can download the original and explicitly restore a verified backup. Saves from unsupported versions are available for download and protected from replacement.
+- **Raid editing:** Renaming a raid keeps its loot template. Selecting another template applies that variant’s size, difficulty, and item levels. Removing the template keeps the current item levels.
+- **Startup:** Settings and the empty tracker open without downloading item data. Raid tools and their data load as needed, and a populated tracker still prefetches data for gear hints.
 
 ### Fixed
 
 - **Storage errors:** A failed write can be retried without another edit. Legacy saves remain readable if moving them to the current key fails.
 - **BiS lists:** Rapidly created local lists receive distinct IDs and survive a reload.
-- **Raid editing:** Custom names keep their template loot and icons. Changing to another recognized raid updates the template association and item levels for known variants.
-- **Item data and tooltips:** Failed loads can be retried. The app offers a reload when item data still cannot be loaded.
+- **Item data, tooltips, and app recovery:** Failed item data and tooltip requests can be retried. The app offers a reload when a required data or JavaScript file cannot be loaded.
 - **Raid navigation:** Unknown raid URLs now show the not-found page.
 - **Copy and accessibility:** Character pick, Soft pick, and BiS offer selectable text when clipboard access fails. Soft reserve limit buttons have distinct accessible names.
 
