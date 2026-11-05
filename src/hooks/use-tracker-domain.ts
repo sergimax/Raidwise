@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 import { DungeonList } from "../data/dungeons.ts";
 import { TRACKER_STORAGE_KEYS } from "../storage/constants.ts";
-import { loadRaidTrackerState } from "../storage/parse.ts";
+import { loadRaidTrackerState, parseRaidTrackerState } from "../storage/parse.ts";
 import { serializeRaidTrackerState } from "../storage/persist.ts";
+import { loadWorkingSave } from "../storage/pending-save.ts";
 import { useLocalSave } from "./use-local-save.ts";
 import type { CharacterRecord, CharacterSpecGearUpdate } from "../types/characters.ts";
 import type {
@@ -24,7 +25,7 @@ import { resolveDungeonRaidKey } from "../utils/resolve-dungeon-raid-key.ts";
 
 /** Domain state: characters, dungeons, toggles, persistence, and mutations. */
 export function useTrackerDomain() {
-  const [initialLoad] = useState(loadRaidTrackerState);
+  const [initialLoad] = useState(() => loadWorkingSave(TRACKER_STORAGE_KEYS, loadRaidTrackerState(), parseRaidTrackerState));
   const [characters, setCharacters] = useState<CharacterRecord[]>(
     initialLoad.state.characters,
   );
@@ -38,8 +39,7 @@ export function useTrackerDomain() {
     () => ({ characters, dungeons, dungeonToggles }),
     [characters, dungeons, dungeonToggles],
   );
-  const { storageLoadWarning, storageSaveError, storageOriginal, exportStorageDraft, recoverStorage } =
-    useLocalSave(TRACKER_STORAGE_KEYS, initialLoad, state, serializeRaidTrackerState);
+  const storage = useLocalSave(TRACKER_STORAGE_KEYS, initialLoad, state, serializeRaidTrackerState);
 
   const addCharacter = useCallback((character: CharacterRecord) => {
     setCharacters((previous) => [...previous, character]);
@@ -192,11 +192,7 @@ export function useTrackerDomain() {
       characters,
       dungeons,
       dungeonToggles,
-      storageLoadWarning,
-      storageSaveError,
-      storageOriginal,
-      exportStorageDraft,
-      recoverStorage,
+      ...storage,
       addCharacter,
       updateCharacter,
       moveCharacter,
@@ -228,11 +224,7 @@ export function useTrackerDomain() {
       handleResetAllToggles,
       handleResetCharacterToggles,
       moveCharacter,
-      storageLoadWarning,
-      storageSaveError,
-      storageOriginal,
-      exportStorageDraft,
-      recoverStorage,
+      storage,
       updateCharacter,
       updateDungeon,
     ],

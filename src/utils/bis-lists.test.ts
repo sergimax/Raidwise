@@ -268,6 +268,7 @@ describe("resolveSaveLocalPresetByName", () => {
       builtInPresets,
       "My list",
       [{ slot: 1, itemIds: [54581] }],
+      "local-new",
     );
 
     expect("error" in resolved).toBe(false);
@@ -291,6 +292,7 @@ describe("resolveSaveLocalPresetByName", () => {
       builtInPresets,
       "circle",
       [{ slot: 1, itemIds: [54581] }],
+      "local-new",
     );
 
     expect("error" in resolved).toBe(false);
@@ -304,11 +306,11 @@ describe("resolveSaveLocalPresetByName", () => {
   });
 
   it("rejects empty names and built-in preset names", () => {
-    expect(resolveSaveLocalPresetByName([], builtInPresets, "  ", [])).toEqual({
+    expect(resolveSaveLocalPresetByName([], builtInPresets, "  ", [], "local-new")).toEqual({
       error: "List name is required",
     });
     expect(
-      resolveSaveLocalPresetByName([], builtInPresets, builtInPresets[0]!.name, []),
+      resolveSaveLocalPresetByName([], builtInPresets, builtInPresets[0]!.name, [], "local-new"),
     ).toEqual({
       error: "Use a custom name (not a built-in list name)",
     });

@@ -14,3 +14,4 @@ export const STORAGE_CONFLICT = "storage-conflict";
 export const STORAGE_READ_FAILED = "storage-read-failed";
 export const STORAGE_QUOTA_EXCEEDED = "storage-quota-exceeded";
 export const STORAGE_WRITE_FAILED = "storage-write-failed";
+export const STORAGE_LOCK_UNAVAILABLE = "storage-lock-unavailable";

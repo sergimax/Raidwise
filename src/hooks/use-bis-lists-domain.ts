@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { ClassName } from "../types/characters.ts";
 import type { BisListSlot, LocalBisListsState } from "../types/bis-lists.ts";
-import { loadLocalBisListsState } from "../storage/bis-lists/index.ts";
+import { loadLocalBisListsState, parseLocalBisListsState } from "../storage/bis-lists/index.ts";
 import { BIS_LISTS_STORAGE_KEYS } from "../storage/bis-lists/constants.ts";
+import { loadWorkingSave } from "../storage/pending-save.ts";
 import { useLocalSave } from "./use-local-save.ts";
 import { getBuiltInPresetsForSpec } from "../data/bis-presets/index.ts";
+import { generateUUID } from "../uuid.ts";
 import {
   clearAllLocalBisPresets,
   countLocalBisPresets,
@@ -26,24 +28,14 @@ import {
  * Persistence follows committed edits.
  */
 export function useBisListsDomain() {
-  const [initialLoad] = useState(loadLocalBisListsState);
+  const [initialLoad] = useState(() => loadWorkingSave(BIS_LISTS_STORAGE_KEYS, loadLocalBisListsState(), parseLocalBisListsState));
   const [localState, setLocalState] = useState(initialLoad.state);
-  const { storageLoadWarning, storageSaveError, storageOriginal, exportStorageDraft, recoverStorage } =
-    useLocalSave(BIS_LISTS_STORAGE_KEYS, initialLoad, localState, JSON.stringify);
-  const localStateRef = useRef(localState);
-
-  useEffect(() => {
-    localStateRef.current = localState;
-  }, [localState]);
+  const storage = useLocalSave(BIS_LISTS_STORAGE_KEYS, initialLoad, localState, JSON.stringify);
 
   /** Prefer this over reading `localState` inside mutation callbacks. */
   const applyLocalUpdate = useCallback(
     (updater: (previous: LocalBisListsState) => LocalBisListsState) => {
-      setLocalState((previous) => {
-        const next = updater(previous);
-        localStateRef.current = next;
-        return next;
-      });
+      setLocalState(updater);
     },
     [],
   );
@@ -103,13 +95,14 @@ export function useBisListsDomain() {
       slots: BisListSlot[],
     ): { ok: true } | { ok: false; error: string } => {
       const builtInPresets = getBuiltInPresetsForSpec(className, spec);
-      // Validate before scheduling state work. Do not capture the return value
-      // inside a `setState` updater — those run later and must stay pure.
+      const newPresetId = `local-${generateUUID()}`;
+      // Name validation is independent of local presets. Resolve the actual update against current state.
       const preview = resolveSaveLocalPresetByName(
-        getLocalPresetsForSpec(localStateRef.current, className, spec),
+        [],
         builtInPresets,
         name,
         slots,
+        newPresetId,
       );
       if ("error" in preview) {
         return { ok: false, error: preview.error };
@@ -121,6 +114,7 @@ export function useBisListsDomain() {
           builtInPresets,
           name,
           slots,
+          newPresetId,
         );
         if ("error" in resolved) {
           return previous;
@@ -218,11 +212,7 @@ export function useBisListsDomain() {
       updateSelectedLocalPresetSlots,
       clearAllLocalPresets,
       hasAnyLocalBisPresets,
-      storageLoadWarning,
-      storageSaveError,
-      storageOriginal,
-      exportStorageDraft,
-      recoverStorage,
+      ...storage,
     }),
     [
       clearAllLocalPresets,
@@ -233,11 +223,7 @@ export function useBisListsDomain() {
       hasAnyLocalBisPresets,
       savePresetByName,
       selectPreset,
-      storageLoadWarning,
-      storageSaveError,
-      storageOriginal,
-      exportStorageDraft,
-      recoverStorage,
+      storage,
       updateSelectedLocalPresetSlots,
     ],
   );

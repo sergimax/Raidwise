@@ -147,8 +147,9 @@ The tracker and BiS lists read legacy `my-raid-cds*` saves and move them to the 
 
 Character names: new names are letters only (Unicode `\p{L}+`); display capitalizes the first letter. Legacy names with digits/symbols still load.
 
-Tracker and BiS edits save immediately.
-If another tab changes a save, Raidwise pauses writes from the stale tab and lets you download its working copy or reload the latest save.
+Tracker and BiS edits are staged in the current tab and written to the shared save under a browser lock. A reload in the same tab restores edits that were still waiting to save.
+If another tab changes the shared save first, Raidwise keeps the working copy and lets you download it or explicitly discard it and load the saved version. Save failures can be retried from the warning.
+Shared saves require Web Locks over HTTPS or on localhost. If the browser blocks both local and session storage, download the working copy before leaving the page. A tab’s draft lasts for that tab session.
 
 If a save is damaged, Raidwise pauses writes and shows the records it can recover. The warning lets you download the original or confirm a replacement with the working copy.
 For an unsupported save version, download the original or open it in a compatible version of Raidwise. BiS warnings appear in **BiS builds**.

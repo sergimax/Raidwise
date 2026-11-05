@@ -147,6 +147,7 @@ export function resolveSaveLocalPresetByName(
   builtInPresets: readonly BisListPreset[],
   name: string,
   slots: BisListSlot[],
+  newPresetId: string,
 ): { preset: BisListPreset; presets: BisListPreset[] } | { error: string } {
   const trimmedName = name.trim();
   if (!trimmedName) {
@@ -176,7 +177,7 @@ export function resolveSaveLocalPresetByName(
   }
 
   const preset: BisListPreset = {
-    id: `local-${Date.now()}`,
+    id: newPresetId,
     name: trimmedName,
     slots,
   };
