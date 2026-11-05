@@ -110,8 +110,12 @@
 
 ## F13 — P2: advisory в dev-цепочке `typescript-eslint → minimatch`
 
-**Подтверждение:** онлайн `npm audit --json` 05.11.2026; [lockfile](../../../package-lock.json) содержит `typescript-eslint` 8.56.0 и вложенный `minimatch` 9.0.9.
+**Подтверждение:** онлайн `npm audit --json` 05.11.2026. На момент исходной проверки lockfile содержал `typescript-eslint` 8.56.0 и вложенный `minimatch` 9.0.9.
 
 Реестр сообщил [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249): potential denial of service via globparts amplification, moderate. Семь entries — распространение одной исходной advisory по dependency graph, не семь независимых уязвимостей. Доступность эксплуатации через Web UI не установлена; это инструменты разработки. Production audit вернул 0.
 
 **Исправление:** подобрать совместимую исправленную цепочку и обновить lockfile отдельной задачей с lint/test/build. Предлагаемый npm автоматический переход на `typescript-eslint` 8.36.0 нельзя принимать без проверки совместимости; `audit fix --force` в аудите не запускался. **Приёмка:** исходная advisory отсутствует в повторном онлайн-аудите, CI проходит.
+
+Исправление внесено в `6e40420`. Переопределение `minimatch` ограничено зависимостями `@typescript-eslint/typescript-estree`, а lockfile фиксирует версию 11.0.4.
+Повторный онлайн-аудит полного дерева и production-зависимостей вернул 0 уязвимостей.
+[Протокол этапа 5](verification.md#этап-5-зависимости).
