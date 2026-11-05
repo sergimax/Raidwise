@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 
 export type AppHeaderProps = {
-  /** Tracker actions in the toolbar center (flexGrow), like MUI responsive AppBar nav. */
+  /** Contextual navigation within the main toolbar at every screen width. */
   center?: ReactNode;
-  /** Whether the usage-help intro panel is currently visible. */
+  /** Direct menu items for the unified mobile navigation. */
+  mobileMenuItems?: (onClose: () => void) => ReactNode;
   introVisible?: boolean;
-  /** Toggle the usage-help intro panel (header info button). */
   onToggleIntro?: () => void;
 };

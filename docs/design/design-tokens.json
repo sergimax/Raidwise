@@ -55,8 +55,12 @@
   "shape": {
     "borderRadius": 6,
     "controlBorderRadius": 4,
+    "buttonBorderRadius": 0,
+    "inputBorderRadius": 0,
+    "menuBorderRadius": 0,
+    "clickableChipBorderRadius": 0,
     "dialogBorderRadius": 8,
-    "filterCardBorderRadius": 8,
+    "filterCardBorderRadius": 0,
     "inlineMentionBorderRadius": 8,
     "iconThumbBorderRadius": 4,
     "scrollbarThumbBorderRadius": 999,
@@ -77,8 +81,8 @@
   },
   "shadows": {
     "card": {
-      "light": "0 6px 18px rgba(0, 0, 0, 0.07)",
-      "dark": "0 8px 24px rgba(0, 0, 0, 0.4)"
+      "light": "none",
+      "dark": "none"
     },
     "inlineMention": {
       "light": "0 1px 1px rgba(0, 0, 0, 0.04)",
@@ -97,7 +101,9 @@
     "thumbHover": { "light": "#8a8a8a", "dark": "#8a8a8a" }
   },
   "shell": {
-    "toolbarMinHeightPx": { "xs": 52, "sm": 52 },
+    "toolbarMinHeightPx": { "xs": 56, "sm": 64 },
+    "contextActionsHeightPx": 48,
+    "responsiveMenuBreakpointPx": 900,
     "mainPadding": {
       "top": { "xs": "0.5rem", "sm": "0.75rem" },
       "x": { "xs": "1.25rem", "sm": "1.75rem" },
@@ -108,17 +114,19 @@
     "htmlAttribute": "data-color-mode",
     "storageKeyExample": "raidwise-color-mode",
     "themeColorMeta": {
-      "light": "#fcfbf9",
-      "dark": "#1a1a1a"
+      "light": "#f5f5f3",
+      "dark": "#191919"
     }
   },
   "cssVariables": {
     "light": {
-      "--bg": "#fcfbf9",
-      "--page-bg": "#fcfbf9",
+      "--bg": "#f5f5f3",
+      "--page-bg": "#f5f5f3",
       "--surface": "#ffffff",
+      "--dot-grid": "color-mix(in srgb, #0a0a0a 5.5%, transparent)",
+      "--dot-grid-size": "12px",
       "--chip-bg": "#f3f2ef",
-      "--header-bg": "rgba(252, 251, 249, 0.96)",
+      "--header-bg": "#f5f5f3",
       "--border": "#d6d4cf",
       "--text": "#141414",
       "--text-strong": "#0a0a0a",
@@ -136,18 +144,20 @@
       "--link-spot": "#9a3412",
       "--primary-bg": "#0a0a0a",
       "--primary-fg": "#ffffff",
-      "--shadow": "0 6px 18px rgba(0, 0, 0, 0.07)",
+      "--shadow": "none",
       "--scrollbar-size": "8px",
       "--scrollbar-track": "transparent",
       "--scrollbar-thumb": "#c4c4c0",
       "--scrollbar-thumb-hover": "#8a8a8a"
     },
     "dark": {
-      "--bg": "#1a1a1a",
-      "--page-bg": "#1a1a1a",
-      "--surface": "#242424",
+      "--bg": "#191919",
+      "--page-bg": "#191919",
+      "--surface": "#20242b",
+      "--dot-grid": "color-mix(in srgb, #ffffff 6%, transparent)",
+      "--dot-grid-size": "12px",
       "--chip-bg": "#1f1f1f",
-      "--header-bg": "rgba(26, 26, 26, 0.96)",
+      "--header-bg": "#191919",
       "--border": "#454545",
       "--text": "#f2f2f2",
       "--text-strong": "#fafafa",
@@ -165,7 +175,7 @@
       "--link-spot": "#fb923c",
       "--primary-bg": "#fafafa",
       "--primary-fg": "#111111",
-      "--shadow": "0 8px 24px rgba(0, 0, 0, 0.4)",
+      "--shadow": "none",
       "--scrollbar-thumb": "#555555",
       "--scrollbar-thumb-hover": "#8a8a8a"
     }
@@ -178,7 +188,7 @@
       "error": { "main": "#dc2626", "light": "#f87171", "dark": "#b91c1c", "contrastText": "#ffffff" },
       "info": { "main": "#0284c7", "light": "#38bdf8", "dark": "#0369a1" },
       "warning": { "main": "#d97706", "light": "#fbbf24", "dark": "#b45309" },
-      "background": { "default": "#fcfbf9", "paper": "#ffffff" },
+      "background": { "default": "#f5f5f3", "paper": "#ffffff" },
       "divider": "#d6d4cf",
       "text": { "primary": "#141414", "secondary": "#555555" },
       "action": {
@@ -194,7 +204,7 @@
       "error": { "main": "#ff7b72", "light": "#fecaca", "dark": "#f87171", "contrastText": "#111111" },
       "info": { "main": "#38bdf8", "light": "#7dd3fc", "dark": "#0284c7" },
       "warning": { "main": "#f59e0b", "light": "#fbbf24", "dark": "#d97706" },
-      "background": { "default": "#1a1a1a", "paper": "#242424" },
+      "background": { "default": "#191919", "paper": "#20242b" },
       "divider": "#454545",
       "text": { "primary": "#f2f2f2", "secondary": "#a3a3a3" },
       "action": {
@@ -223,30 +233,50 @@
     }
   },
   "atmosphere": {
-    "light": "radial-gradient(1200px 600px at 10% -10%, rgba(154, 52, 18, 0.06), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(194, 65, 12, 0.04), transparent 50%)",
-    "dark": "radial-gradient(1000px 520px at 8% -12%, rgba(251, 146, 60, 0.1), transparent 55%), radial-gradient(800px 480px at 100% 0%, rgba(61, 40, 24, 0.45), transparent 50%)",
-    "backgroundAttachment": "fixed"
+    "direction": "S refinement — borderless surface-coloured panel, flat rail sections",
+    "pattern": "radial-gradient(var(--dot-grid) 1px, transparent 1px)",
+    "gridSizePx": 12,
+    "position": "fixed",
+    "gradient": "none",
+    "rotationDeg": 45
   },
   "components": {
+    "toolbarPanel": {
+      "background": "background.paper",
+      "border": "none",
+      "headerDivider": false,
+      "headerMinHeightPx": 32,
+      "pattern": "none"
+    },
     "outlinedPaper": {
       "borderColor": "divider",
       "shadowToken": "card"
     },
     "filterSection": {
       "source": "src/components/filter-unit/filter-section.tsx",
-      "border": 1,
-      "borderColor": "divider",
-      "borderLeft": "3px solid var(--brand)",
-      "borderRadiusThemeUnits": 1,
-      "paddingThemeUnits": 1.25,
+      "borderTop": "1px solid divider",
+      "borderSides": "1px gradient from divider to transparent over min(200px, 100%)",
+      "borderBottom": "none",
+      "marker": { "sizePx": 7, "color": "secondary.main", "when": "fallback without step or icon" },
+      "shellBackground": "transparent",
+      "shellGradient": { "enabled": false, "direction": "to bottom", "inkAlpha": { "light": 0.025, "dark": 0.045 }, "fadeEnd": "85%" },
+      "gutterThemeUnits": 1.5,
+      "paddingTopThemeUnits": 1,
+      "paddingLeftThemeUnits": 2,
+      "contentBackground": "transparent",
+      "contentRadiusPx": 0,
+      "contentPaddingYThemeUnits": 0.5,
+      "contentShadowToken": "card",
       "titleVariant": "body2",
       "titleFontFamily": "var(--font-display)",
       "titleFontWeight": 700,
-      "titleColor": "var(--brand)",
+      "titleColor": "text.primary",
       "stepBadge": {
+        "placement": "centred on section rail, replacing the dot",
+        "iconSizePx": 16,
         "minWidth": 22,
         "height": 22,
-        "borderRadius": "8px",
+        "borderRadius": "3px",
         "bgcolor": "var(--brand-soft)",
         "color": "var(--brand)",
         "border": "1px solid color-mix(in srgb, var(--brand) 40%, transparent)",
@@ -383,6 +413,7 @@
       "unknownItem": { "light": "#7c3aed", "dark": "#c084fc" }
     },
     "panelMaxWidthsPx": {
+      "newRaid": 1280,
       "narrow": 480,
       "dataControls": 680,
       "wide": 1280,

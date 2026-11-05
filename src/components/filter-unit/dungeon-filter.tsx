@@ -84,7 +84,8 @@ export function DungeonFilter({
           <Stack
             direction="row"
             spacing={0.75}
-            sx={{ flexWrap: "wrap", gap: 0.75 }}
+            useFlexGap
+            sx={{ flexWrap: "wrap" }}
           >
             {visibleDungeons.map((dungeon) => {
               const raidKey = resolveDungeonRaidKey(dungeon);

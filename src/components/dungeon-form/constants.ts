@@ -1,25 +1,16 @@
 import {
   FILTER_UNIT_GRID_GAP_SPACING,
   FILTER_UNIT_WIDTH,
-  getFilterUnitColumnTemplate,
 } from "../filter-unit/constants.ts";
 
-/** Two columns: name/short | type/ilvl. */
-export const DUNGEON_FORM_GRID_COLUMN_COUNT = 2;
+/** Four sequential sections, wrapping to the available panel width. */
+export const DUNGEON_FORM_GRID_COLUMN_COUNT = 4;
 
 export function getDungeonFormGridTemplateColumns(): string {
-  const unitColumn = getFilterUnitColumnTemplate();
-  return `${unitColumn} ${unitColumn}`;
+  return `repeat(auto-fit, minmax(min(100%, ${FILTER_UNIT_WIDTH}px), 1fr))`;
 }
 
-export function getDungeonFormGridTemplateAreas(): string {
-  return [
-    '"name type"',
-    '"shortName itemLevels"',
-  ].join(" ");
-}
-
-/** Content width of the 2-column unit grid (columns + inter-column gap). */
+/** Content width of the four-column unit grid (columns + inter-column gap). */
 export function getDungeonFormGridMaxWidth(
   gridColumnGapPx = FILTER_UNIT_GRID_GAP_SPACING * 8,
 ): number {

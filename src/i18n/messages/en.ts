@@ -15,19 +15,18 @@ export const enMessages = {
     optional: "optional",
   },
   header: {
+    introShowAria: "Show how this app can help",
+    introHideAria: "Hide how this app can help",
     appTitle: "Raidwise",
     themeLight: "Switch to light mode",
     themeDark: "Switch to dark mode",
-    introShowAria: "Show how this app can help",
-    introHideAria: "Hide how this app can help",
     localeTooltipEn:
       "Interface language: English. Click for Russian. Item tooltips use Cavern of Time.",
     localeTooltipRu:
       "Interface language: Russian. Click for English. Item tooltips use WoWRoad.",
     localeAria: "Interface language {{locale}}. Switch to {{nextLocale}}.",
     versionAria: "Version {{version}}",
-    githubHint: "Source on GitHub · by sergimax via Cursor",
-    authorSiteAria: "sergimax.ru",
+    githubHint: "Source code on GitHub",
   },
   intro: {
     title: "How this app can help",
@@ -245,10 +244,12 @@ export const enMessages = {
     notFound: "Page not found",
   },
   appSettings: {
+    interface: "Interface",
+    darkTheme: "Dark theme",
+
     title: "Application settings",
     appInfo: "About Raidwise",
     sourceCode: "Source code on GitHub",
-    authorSite: "Author's website",
     theme: "Theme",
     language: "Language",
     whatsNew: "What's new",
@@ -256,6 +257,7 @@ export const enMessages = {
     githubChangelog: "View the full changelog on GitHub",
   },
   bisPanel: {
+    emblemsOfFrost: "Emblems of Frost",
     title: "BiS lists",
     classAndSpec: "Class & spec",
     classAndSpecHelper:
@@ -391,7 +393,7 @@ export const enMessages = {
       "Search here or in the table header — both stay in sync. Soft reserve targets come from matching raid rows. Click a chip to exclude it (stays visible; click again to include)",
     itemsTitle: "Soft reserve targets",
     itemsHelper:
-      "From the active BiS list: missing BiS / variants in selected raids. Set your softs and others' calls — caption color shows demand (green→red), odds show how many softs improve your chance. Reset one row or the whole block.",
+      "Missing BiS and variants from selected raids. Set your softs and others’ calls to see demand and odds.",
     itemsEmptyNoSelection: "Select a character and spec to see soft reserve targets",
     itemsEmptyNoGearPrefix: "Click",
     itemsEmptyNoGearSuffix:
@@ -448,6 +450,8 @@ export const enMessages = {
     copyIncludeSpecAria: "Include selected spec in the soft reserve list",
     copyIncludeSoftCount: "Soft count",
     copyIncludeSoftCountAria: "Show the number of soft reserves assigned to each item",
+    copyIncludeAllBisItems: "All useful items from the BiS list",
+    copyEmptyBis: "No BiS list items in the selected raids",
     copyIncludeAllItems: "All useful items",
     copyIncludeAllItemsAria: "Include all useful items after your selected soft reserves",
     copyIncludeDetails: "Boss",

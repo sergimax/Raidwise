@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
@@ -24,7 +25,7 @@ vi.hoisted(() => {
 });
 
 describe("AppSettingsPage", () => {
-  it("shows labeled site links and the version on its own line", () => {
+  it("links the header version to GitHub and omits author website links", () => {
     render(
       <AppThemeProvider>
         <ItemTooltipLocaleProvider initialLocale="ru">
@@ -39,8 +40,9 @@ describe("AppSettingsPage", () => {
     expect(within(about).getByText(`Версия ${__APP_VERSION__}`)).toBeInTheDocument();
     expect(within(about).getByRole("link", { name: "Исходный код на GitHub" }))
       .toHaveAttribute("href", "https://github.com/sergimax/Raidwise");
-    expect(within(about).getByRole("link", { name: "Сайт автора" }))
-      .toHaveAttribute("href", "https://sergimax.ru");
+    expect(screen.queryByRole("link", { name: "Сайт автора" })).not.toBeInTheDocument();
+    expect(within(screen.getByRole("banner")).getByRole("link", { name: `Версия ${__APP_VERSION__}` }))
+      .toHaveAttribute("href", "https://github.com/sergimax/Raidwise");
   });
 
   it("shows all changes for the latest published version only", () => {
@@ -64,5 +66,27 @@ describe("AppSettingsPage", () => {
     expect(within(release).getByRole("heading", { name: versions[0] })).toBeInTheDocument();
     expect(within(release).getAllByRole("listitem")).toHaveLength(firstReleaseChanges.length);
     expect(within(whatsNew).queryByRole("heading", { name: versions[1] })).not.toBeInTheDocument();
+  });
+});
+
+describe("interface preferences", () => {
+  it("keeps theme selection in settings and usage help out of settings", async () => {
+    localStorage.clear();
+    const user = userEvent.setup();
+    render(
+      <AppThemeProvider>
+        <ItemTooltipLocaleProvider initialLocale="ru">
+          <MemoryRouter initialEntries={["/settings"]}>
+            <AppSettingsPage />
+          </MemoryRouter>
+        </ItemTooltipLocaleProvider>
+      </AppThemeProvider>,
+    );
+    const header = within(screen.getByRole("banner"));
+    expect(header.queryByRole("button", { name: /Переключить.*тему/ })).not.toBeInTheDocument();
+    expect(header.queryByRole("button", { name: /чем поможет приложение/ })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("switch", { name: "Тёмная тема" }));
+    expect(document.documentElement).toHaveAttribute("data-color-mode", "dark");
+    expect(screen.queryByRole("switch", { name: "Показывать подсказку по приложению" })).not.toBeInTheDocument();
   });
 });

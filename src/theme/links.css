@@ -6,7 +6,7 @@
  * dotted underlines — do not restyle them as quiet/spot chrome.
  */
 
-a:not(.wow-item-link):not(.link-spot) {
+a:not(.wow-item-link):not(.link-spot):not(.app-nav-link) {
   color: var(--link);
   font-weight: 500;
   text-decoration: underline;
@@ -14,7 +14,7 @@ a:not(.wow-item-link):not(.link-spot) {
   text-underline-offset: 3px;
 }
 
-a:not(.wow-item-link):not(.link-spot):hover {
+a:not(.wow-item-link):not(.link-spot):not(.app-nav-link):hover {
   color: var(--link-spot);
 }
 

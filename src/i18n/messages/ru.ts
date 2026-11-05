@@ -17,19 +17,18 @@ export const ruMessages: Messages = {
     optional: "необязательно",
   },
   header: {
+    introShowAria: "Показать, чем поможет приложение",
+    introHideAria: "Скрыть подсказку «чем поможет приложение»",
     appTitle: "Raidwise",
     themeLight: "Переключить на светлую тему",
     themeDark: "Переключить на тёмную тему",
-    introShowAria: "Показать, чем поможет приложение",
-    introHideAria: "Скрыть подсказку «чем поможет приложение»",
     localeTooltipEn:
       "Язык интерфейса: английский. Нажмите для русского. Подсказки предметов — Cavern of Time.",
     localeTooltipRu:
       "Язык интерфейса: русский. Нажмите для английского. Подсказки предметов — WoWRoad.",
     localeAria: "Язык интерфейса {{locale}}. Переключить на {{nextLocale}}.",
     versionAria: "Версия {{version}}",
-    githubHint: "Исходники на GitHub · by sergimax via Cursor",
-    authorSiteAria: "sergimax.ru",
+    githubHint: "Исходный код на GitHub",
   },
   intro: {
     title: "Чем поможет приложение",
@@ -247,10 +246,12 @@ export const ruMessages: Messages = {
     notFound: "Страница не найдена",
   },
   appSettings: {
+    interface: "Интерфейс",
+    darkTheme: "Тёмная тема",
+
     title: "Настройки приложения",
     appInfo: "О Raidwise",
     sourceCode: "Исходный код на GitHub",
-    authorSite: "Сайт автора",
     theme: "Тема оформления",
     language: "Язык",
     whatsNew: "Что нового",
@@ -258,6 +259,7 @@ export const ruMessages: Messages = {
     githubChangelog: "Полный журнал изменений на GitHub",
   },
   bisPanel: {
+    emblemsOfFrost: "Эмблемы льда",
     title: "BIS листы",
     classAndSpec: "Класс и спек",
     classAndSpecHelper:
@@ -393,7 +395,7 @@ export const ruMessages: Messages = {
       "Текстовый поиск по таблице. Нажмите на значок рейда — исключить или добавить рейд",
     itemsTitle: "Предметы для софта",
     itemsHelper:
-      "Из активного BiS-списка: недостающие BiS и варианты в выбранных рейдах. Назначьте свои софты и чужие заявки — цвет подсказки показывает спрос (зелёный→красный), рядом расчёт, сколько софтов повышает шанс. Сброс — по строке или для всего блока.",
+      "Недостающие BiS и варианты из выбранных рейдов. Укажите свои софты и чужие заявки — ниже спрос и шансы.",
     itemsEmptyNoSelection: "Выберите персонажа и спек, чтобы увидеть предметы для софта",
     itemsEmptyNoGearPrefix: "Нажмите",
     itemsEmptyNoGearSuffix:
@@ -450,6 +452,8 @@ export const ruMessages: Messages = {
     copyIncludeSpecAria: "Включать выбранный спек в список софт-резервов",
     copyIncludeSoftCount: "Кол-во софтов",
     copyIncludeSoftCountAria: "Показывать количество софтов, отданных на каждый предмет",
+    copyIncludeAllBisItems: "Все полезные предметы из BIS-листа",
+    copyEmptyBis: "В выбранных рейдах нет предметов из BIS-листа",
     copyIncludeAllItems: "Все полезные предметы",
     copyIncludeAllItemsAria: "Добавить все полезные предметы после выбранных софтов",
     copyIncludeDetails: "Босс",

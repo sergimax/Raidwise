@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.10.3-purple)
+![App version](https://img.shields.io/badge/App_version-2.11.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -17,7 +17,7 @@ Breadcrumbs at the top of each page show the current section or raid tool and li
 ### Characters & dungeons
 
 Add characters and raids manually (toolbar buttons or the dotted empty column/row on the table), or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
-Header **info** opens a short intro (CDs, gear planning, or BiS-only).
+The responsive MUI AppBar keeps app sections in a dropdown beside the logo and scrollable tracker actions in the same toolbar at every screen width; on mobile, the menu also contains these actions. The logo text hides below 1200px. The header **info** button shows or hides the usage intro (CDs, gear planning, or BiS-only). **Settings → Interface** controls the color theme. Both choices are saved locally.
 
 ### Cooldown toggles
 
@@ -35,7 +35,7 @@ Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with conf
 
 ### Settings
 
-The About section shows the app version and labeled links to the source code and author's website.
+The header version links to the GitHub repository. The About section shows the app version and a labeled source-code link.
 What's new shows all changes for the latest published version, with a link to the full changelog.
 
 ### Character pick for a raid
@@ -49,18 +49,21 @@ Plan soft reserves for one character + spec on BiS upgrades from filtered raids 
 For re-rolls, ordinary rolls count only when one player calls softs on an item; with multiple callers, only soft rolls count.
 The call list contains only your selected soft reserves. A toggle controls whether to show the number assigned to each item.
 The **All useful items** toggle (off by default) appends the remaining items from the useful-item list after your selected reserves.
+**All items from the BiS list** includes exact active-list items from selected raids, including owned gear; it is mutually exclusive with **All useful items**.
 Optional **With upgrades** dims characters with no BiS targets; **Reset parameters** clears the panel filters.
 Uses the active **BiS builds** list; other-spec gear counts as owned; session state survives closing the panel.
 
 ### BiS builds
 
 Built-in presets per spec (Kingdom first, then Titans/community); local copies are editable for gear-choice hints.
-Paper-doll slot layout with alternatives; **Copy** exports `Slot: Item` lines.
+Single-column gear slot list with alternatives (shirt and tabard omitted); **Copy** exports `Slot: Item` lines.
+T9/T10 sources in the BiS list show Emblems of Frost, or Vault of Archavon for hands and legs, plus ICC25H for upgrade tokens.
 
 ### Gear hints
 
-CD cells tint <span style="color:#d97706">amber</span> for missing BiS and <span style="color:#0284c7">blue</span> for stat-filtered ilvl upgrades (hidden when that CD is marked; main/off split when both specs are set).
-Boss-grouped tooltips include tier tokens; also-owned items count without being on the WowSims export.
+CD cells use color gradients fading from the center toward the edges: main spec on the left, off spec on the right; BiS (coral, including variants) on top and ordinary ilvl upgrades (teal) below. Each band has independent strength based on upgrade slots; empty bands stay untinted and marked CDs hide the hints.
+Cells show unique BiS counts (including variants) and ordinary upgrade counts beside the toggle: main spec on the left, off spec on the right. Counts hide when CD is marked.
+Boss-grouped tooltips show unique item counts for each BiS, BiS variant, and ordinary upgrade category and include tier tokens; also-owned items count without being on the WowSims export.
 
 ### EN / RU
 
@@ -68,7 +71,7 @@ Full UI and item tooltips; first visit defaults to Russian.
 
 ### Theme
 
-Light/dark mode saved locally, with a system preference fallback when browser storage is unavailable; quiet MUJI chrome with a subtle page/panel dot grid; design tokens in [docs/design/design-system.md](docs/design/design-system.md).
+Light/dark mode saved locally, with a system preference fallback when browser storage is unavailable; flat section rails within unified panels over a subtle page dot grid (refined design direction S); design tokens in [docs/design/design-system.md](docs/design/design-system.md).
 
 ## Development
 

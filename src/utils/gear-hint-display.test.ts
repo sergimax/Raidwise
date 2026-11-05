@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { alpha } from "@mui/material/styles";
 import { createAppTheme } from "../theme/create-app-theme.ts";
 import {
+  gearUpgradeHintBandsCellSx,
   gearUpgradeHintCellSx,
   gearUpgradeHintDualCellSx,
   getGearHintCellBackgroundColor,
@@ -51,6 +52,8 @@ describe("gearUpgradeHintCellSx", () => {
     expect(resolved["&::after"]).toMatchObject({
       background: getGearHintCellBackgroundColor({ kind: "bis", level: 1 }, theme),
       pointerEvents: "none",
+      inset: "0 1px",
+      boxShadow: `inset 4px 0 0 ${alpha(getGearHintKindColor("bis", theme), 0.35)}`,
     });
   });
 });
@@ -64,6 +67,9 @@ describe("gearUpgradeHintDualCellSx", () => {
 
     expect(resolved.position).toBe("relative");
     expect(resolved.background).toBeUndefined();
+    expect(resolved["&::after"]).toMatchObject({
+      boxShadow: `inset 4px 0 0 ${alpha(getGearHintKindColor("ilvl", createAppTheme("light")), 0.55)}`,
+    });
 
     expect(background).toMatch(/^linear-gradient\(to right,/);
     expect(background).toContain("50%, transparent 50%");
@@ -102,7 +108,7 @@ describe("gearUpgradeHintDualCellSx", () => {
 });
 
 describe("getGearHintCellBackgroundColor", () => {
-  it("uses theme warning and info colors for BiS and ilvl tints", () => {
+  it("uses coral and teal colors for BiS and ilvl tints", () => {
     const theme = createAppTheme("light");
     const bisLevel1 = getGearHintCellBackgroundColor(
       { kind: "bis", level: 1 },
@@ -113,9 +119,9 @@ describe("getGearHintCellBackgroundColor", () => {
       theme,
     );
 
-    expect(bisLevel1).toBe(alpha(theme.palette.warning.main, 0.22));
-    expect(ilvlLevel1).toBe(alpha(theme.palette.info.main, 0.18));
-    expect(theme.palette.warning.main).toBe("#d97706");
+    expect(bisLevel1).toBe(alpha(getGearHintKindColor("bis", theme), 0.08));
+    expect(ilvlLevel1).toBe(alpha(getGearHintKindColor("ilvl", theme), 0.06));
+    expect(getGearHintKindColor("bis", theme)).toBe("#e11d48");
   });
 
   it("uses higher alphas in dark mode than light for the same hint level", () => {
@@ -138,20 +144,58 @@ describe("getGearHintCellBackgroundColor", () => {
     }
   });
 
-  it("uses a lighter warning main in dark mode for zinc backgrounds", () => {
-    expect(createAppTheme("dark").palette.warning.main).toBe("#f59e0b");
+  it("uses lighter coral in dark mode for zinc backgrounds", () => {
+    expect(getGearHintKindColor("bis", createAppTheme("dark"))).toBe("#fb7185");
   });
 });
 
 describe("getGearHintKindColor", () => {
-  it("returns warning and info mains for BiS and ilvl dots", () => {
+  it("returns coral and teal for BiS and ilvl dots", () => {
     const theme = createAppTheme("light");
 
     expect(getGearHintKindColor("bis", theme)).toBe(
-      theme.palette.warning.main,
+      "#e11d48",
     );
     expect(getGearHintKindColor("ilvl", theme)).toBe(
-      theme.palette.info.main,
+      "#0d9488",
     );
+  });
+});
+
+describe("gearUpgradeHintBandsCellSx", () => {
+  const emptyTrack = { level: 0 as const, upgradeSlotCount: 0, upgradeSlots: [] };
+  const hint = {
+    bis: { ...emptyTrack, level: 1 as const },
+    bisVariant: emptyTrack,
+    ilvl: { ...emptyTrack, level: 2 as const },
+    equippedCount: 16,
+    peakDungeonItemLevel: 284,
+    slotAware: true,
+    bisListActive: true,
+  };
+
+  it("shows both categories on both spec sides independently", () => {
+    const sx = gearUpgradeHintBandsCellSx(hint, hint, dungeonItemLevels, true);
+    const resolved = (typeof sx === "function" ? sx(createAppTheme("light")) : sx) as Record<string, unknown>;
+    const background = (resolved["&::after"] as { background: string }).background;
+    for (const position of ["left top", "left bottom", "right top", "right bottom"]) {
+      expect(background).toContain(`${position} / 50% 50% no-repeat`);
+    }
+    for (const origin of ["right bottom", "right top", "left bottom", "left top"]) {
+      expect(background).toContain(`radial-gradient(ellipse at ${origin},`);
+    }
+    expect(background).toContain("rgba(225, 29, 72, 0) 100%");
+    expect(background).toContain("rgba(225, 29, 72, 0.12)");
+    expect(background).toContain("rgba(13, 148, 136, 0.165)");
+  });
+
+  it("leaves missing categories untinted and uses full width for a single spec", () => {
+    const sx = gearUpgradeHintBandsCellSx({ ...hint, bis: emptyTrack }, undefined, dungeonItemLevels, false);
+    const resolved = (typeof sx === "function" ? sx(createAppTheme("light")) : sx) as Record<string, unknown>;
+    const background = (resolved["&::after"] as { background: string }).background;
+    expect(background).toContain("left bottom / 100% 50% no-repeat");
+    expect(background).not.toContain("left top /");
+    expect(background).toContain("radial-gradient(ellipse at center top,");
+    expect(gearUpgradeHintBandsCellSx(hint, hint, [], true)).toEqual({});
   });
 });

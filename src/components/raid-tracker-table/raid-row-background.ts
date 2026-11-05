@@ -20,8 +20,8 @@ export function raidRowBackgroundSx(theme: Theme, file: string) {
   const paper = theme.palette.background.paper;
   const overlay =
     theme.palette.mode === "dark"
-      ? `linear-gradient(90deg, ${alpha(paper, 0.25)} 0%, ${alpha(paper, 0.7)} 72%, ${paper} 100%)`
-      : `linear-gradient(90deg, ${alpha(paper, 0.35)} 0%, ${alpha(paper, 0.78)} 72%, ${paper} 100%)`;
+      ? `linear-gradient(90deg, ${alpha(paper, 0.45)} 0%, ${alpha(paper, 0.85)} 72%, ${paper} 100%)`
+      : `linear-gradient(90deg, ${alpha(paper, 0.45)} 0%, ${alpha(paper, 0.89)} 72%, ${paper} 100%)`;
 
   return {
     backgroundImage: `${overlay}, url("${import.meta.env.BASE_URL}images/raids/${file}")`,

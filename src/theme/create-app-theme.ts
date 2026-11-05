@@ -22,10 +22,10 @@ export const fontFamilyMono = [
 /** Mode tokens (shared with CSS vars in index.css). */
 export const appThemeTokens = {
   light: {
-    bg: "#fcfbf9",
+    bg: "#f5f5f3",
     surface: "#ffffff",
     chipBg: "#f3f2ef",
-    headerBg: "rgba(252, 251, 249, 0.96)",
+    headerBg: "#f5f5f3",
     border: "#d6d4cf",
     text: "#141414",
     textStrong: "#0a0a0a",
@@ -41,15 +41,15 @@ export const appThemeTokens = {
     linkSpot: "#9a3412",
     primaryBg: "#0a0a0a",
     primaryFg: "#ffffff",
-    shadow: "0 6px 18px rgba(0, 0, 0, 0.07)",
+    shadow: "none",
     inputHoverBorder: "#6b6b6b",
-    themeColorMeta: "#fcfbf9",
+    themeColorMeta: "#f5f5f3",
   },
   dark: {
-    bg: "#1a1a1a",
-    surface: "#242424",
+    bg: "#191919",
+    surface: "#20242b",
     chipBg: "#1f1f1f",
-    headerBg: "rgba(26, 26, 26, 0.96)",
+    headerBg: "#191919",
     border: "#454545",
     text: "#f2f2f2",
     textStrong: "#fafafa",
@@ -65,9 +65,9 @@ export const appThemeTokens = {
     linkSpot: "#fb923c",
     primaryBg: "#fafafa",
     primaryFg: "#111111",
-    shadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+    shadow: "none",
     inputHoverBorder: "#a3a3a3",
-    themeColorMeta: "#1a1a1a",
+    themeColorMeta: "#191919",
   },
 } as const;
 
@@ -208,15 +208,9 @@ export function createAppTheme(mode: PaletteMode) {
             backgroundColor: "var(--page-bg)",
           },
           body: {
-            // Washes on body; dots on ::before (rotated). Keep body fill transparent
-            // so dots are not covered by an opaque page color.
+            // Original quiet rotated page dots; opaque panels hide the pattern.
             backgroundColor: "transparent",
             isolation: "isolate",
-            backgroundImage: isLight
-              ? "radial-gradient(1200px 600px at 10% -10%, rgba(154, 52, 18, 0.06), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(194, 65, 12, 0.04), transparent 50%)"
-              : "radial-gradient(1000px 520px at 8% -12%, rgba(251, 146, 60, 0.1), transparent 55%), radial-gradient(800px 480px at 100% 0%, rgba(61, 40, 24, 0.45), transparent 50%)",
-            backgroundAttachment: "fixed",
-            backgroundRepeat: "no-repeat",
             lineHeight: 1.55,
             "&::before": {
               content: '""',
@@ -241,7 +235,7 @@ export function createAppTheme(mode: PaletteMode) {
         },
         styleOverrides: {
           root: {
-              borderRadius: 4,
+            borderRadius: 0,
             paddingInline: 12,
           },
           sizeSmall: {
@@ -321,7 +315,8 @@ export function createAppTheme(mode: PaletteMode) {
           },
           outlined: ({ theme }) => ({
             borderColor: alpha(theme.palette.divider, isLight ? 0.65 : 0.55),
-            boxShadow: "none",
+            borderRadius: 3,
+            boxShadow: tokens.shadow,
           }),
         },
       },
@@ -338,21 +333,17 @@ export function createAppTheme(mode: PaletteMode) {
       MuiTableContainer: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: 4,
+            borderRadius: 3,
             border: "none",
             backgroundColor: theme.palette.background.paper,
-            boxShadow: "none",
+            boxShadow: tokens.shadow,
           }),
         },
       },
       MuiTableCell: {
         styleOverrides: {
           head: ({ theme }) => ({
-            backgroundColor: alpha(
-              theme.palette.background.paper,
-              isLight ? 0.92 : 0.88,
-            ),
-            backdropFilter: "blur(8px)",
+            backgroundColor: theme.palette.background.paper,
             borderBottomColor: theme.palette.divider,
             fontWeight: 600,
           }),
@@ -433,9 +424,15 @@ export function createAppTheme(mode: PaletteMode) {
           },
         },
       },
+      MuiChip: {
+        styleOverrides: {
+          clickable: { borderRadius: 0 },
+        },
+      },
       MuiOutlinedInput: {
         styleOverrides: {
           root: ({ theme }) => ({
+            borderRadius: 0,
             backgroundColor: alpha(theme.palette.background.paper, isLight ? 0.8 : 0.35),
             "&:hover .MuiOutlinedInput-notchedOutline": {
               borderColor: tokens.inputHoverBorder,
@@ -446,7 +443,7 @@ export function createAppTheme(mode: PaletteMode) {
       MuiMenu: {
         styleOverrides: {
           paper: ({ theme }) => ({
-            borderRadius: 6,
+            borderRadius: 0,
             border: `1px solid ${alpha(theme.palette.divider, isLight ? 0.65 : 0.55)}`,
             boxShadow: isLight
               ? "0 8px 24px rgba(0, 0, 0, 0.12)"

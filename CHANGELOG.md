@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0] - 2026-11-05
+
+### Added
+
+- **Soft reserve output:** Include all active BiS-list items from selected raids, including owned gear, as an alternative to appending all useful items.
+- **Gear hint counts:** Cooldown cells show unique BiS and upgrade counts for main and off specs; tooltips show counts for each category, including BiS variants.
+
+### Changed
+
+- **Header navigation:** Main sections use a dropdown, with scrollable page actions alongside it at every screen width. The logo text hides below 1200px, and the mobile menu also includes page actions.
+- **Gear hints:** Independent coral BiS and teal upgrade bands distinguish main and off specs, with stronger tints and more legible counts.
+- **Interface:** Refined light and dark colors, flatter panels, compact filters and forms, a single-column BiS gear list, and a clearer soft-reserve copy preview.
+- **App information:** Theme selection lives in Settings, and the header version links directly to GitHub.
+
+### Fixed
+
+- **Usage help:** Explicit show/hide choices now survive navigation and reloads, including on populated raid trackers.
+- **BiS sources:** Improved tier-item source labels for emblems, Vault of Archavon, and heroic upgrade tokens.
+- **Raid artwork:** Reduced background contrast for clearer table content.
+
 ## [2.10.3] - 2026-10-25
 
 ### Fixed

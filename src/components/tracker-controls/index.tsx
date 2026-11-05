@@ -1,10 +1,7 @@
-import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Button, IconButton, Menu, Tab, Tabs } from "@mui/material";
-import { memo, useCallback, useId, useMemo, useState, type MouseEvent } from "react";
-import { useCompactLayout } from "../../hooks/use-compact-layout.ts";
+import { Box, Button, Tab, Tabs } from "@mui/material";
+import { memo, useMemo } from "react";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { buildTrackerActions } from "./actions.ts";
-import { renderTrackerAction } from "./render-tracker-action.tsx";
 import type { TrackerControlsSource } from "./types.ts";
 
 type TrackerControlsProps = {
@@ -17,49 +14,8 @@ export const TrackerControls = memo(function TrackerControls({
   const { t } = useTranslation();
   const actions = useMemo(() => buildTrackerActions(source, t), [source, t]);
 
-  const menuLayout = useCompactLayout();
-  const menuId = useId();
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(menuAnchor);
-
-  const closeMenu = useCallback(() => setMenuAnchor(null), []);
-
-  const openMenu = useCallback((event: MouseEvent<HTMLElement>) => {
-    setMenuAnchor(event.currentTarget);
-  }, []);
-
-  if (menuLayout) {
-    return (
-      <>
-        <IconButton
-          size="small"
-          color="inherit"
-          aria-label={t("toolbar.actionsAria")}
-          aria-controls={menuOpen ? menuId : undefined}
-          aria-haspopup="true"
-          aria-expanded={menuOpen}
-          onClick={openMenu}
-        >
-          <MenuIcon fontSize="small" />
-        </IconButton>
-        <Menu
-          id={menuId}
-          anchorEl={menuAnchor}
-          open={menuOpen}
-          onClose={closeMenu}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-        >
-          {actions.map((action) =>
-            renderTrackerAction(action, "menuItem", { onAfterClick: closeMenu }),
-          )}
-        </Menu>
-      </>
-    );
-  }
-
   return (
-    <Box sx={{ display: "flex", alignItems: "stretch", minWidth: 0, alignSelf: "stretch" }}>
+    <Box sx={{ display: "flex", alignItems: "stretch", minWidth: 0, flex: 1, alignSelf: "stretch" }}>
       {actions.some((action) => action.id === "addFromTemplate" && action.visible !== false) ? (
         <Button
           size="small"
@@ -76,10 +32,12 @@ export const TrackerControls = memo(function TrackerControls({
         onChange={(_, value: string) => actions.find((action) => action.id === value)?.onClick()}
         aria-label={t("toolbar.actionsAria")}
         variant="scrollable"
-        scrollButtons={false}
+        scrollButtons="auto"
         sx={{
-          minHeight: 52,
-          height: 52,
+          flex: 1,
+          minWidth: 0,
+          minHeight: 48,
+          height: 48,
           "& .MuiTabs-flexContainer": { gap: { xs: 0, sm: 0.5 } },
           "& .MuiTabs-indicator": { height: 2, bgcolor: "secondary.main" },
         }}
@@ -95,7 +53,7 @@ export const TrackerControls = memo(function TrackerControls({
               aria-expanded={action.ariaExpanded}
               sx={{
                 minWidth: 0,
-                minHeight: 52,
+                minHeight: 48,
                 px: { xs: 1, sm: 1.25 },
                 py: 0.75,
                 fontSize: { xs: "0.72rem", sm: "0.8rem" },

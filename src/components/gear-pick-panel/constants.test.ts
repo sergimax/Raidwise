@@ -38,20 +38,20 @@ describe("getGearPickGridTemplateAreas", () => {
     const areas = getGearPickGridTemplateAreas("wide");
 
     expect(areas).toContain("dungeon characterSpecs softs copy");
-    expect(areas).toContain("rules characterSpecs softs .");
+    expect(areas).toContain("rules characterSpecs softs copy");
   });
 });
 
 describe("GEAR_PICK_COPY_BLOCK_SPAN", () => {
-  it("is a 1×2 filter unit including the inter-column gap", () => {
+  it("uses a compact 1.5-row height and two-column width", () => {
     expect(GEAR_PICK_COPY_BLOCK_SPAN).toEqual({
-      heightUnits: 1,
+      heightUnits: 1.5,
       widthUnits: 2,
     });
     expect(getGearPickCopyBlockMaxWidth()).toBe(
       FILTER_UNIT_WIDTH * 2 + 12,
     );
-    expect(getGearPickCopyBlockMaxHeight()).toBe(FILTER_UNIT_HEIGHT);
+    expect(getGearPickCopyBlockMaxHeight()).toBe(FILTER_UNIT_HEIGHT * 1.5 + 6);
     expect(getGearPickSoftsBlockMaxWidth()).toBe(
       FILTER_UNIT_WIDTH * 2 + 12,
     );
@@ -96,7 +96,7 @@ describe("getGearPickGridTemplateRows", () => {
 
   it("keeps two filter rows plus a copy row when softs is beside", () => {
     expect(getGearPickGridTemplateRows("md")).toBe(
-      `repeat(2, ${FILTER_UNIT_HEIGHT}px) ${FILTER_UNIT_HEIGHT}px`,
+      `repeat(2, ${FILTER_UNIT_HEIGHT}px) ${getGearPickCopyBlockMaxHeight()}px`,
     );
   });
 

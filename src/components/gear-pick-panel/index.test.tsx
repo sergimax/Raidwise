@@ -111,6 +111,23 @@ describe("GearPickPanel", () => {
     localStorage.clear();
   });
 
+  it("copies all BiS items from filtered raids and switches copy modes exclusively", async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<GearPickHarness />);
+    await user.click(screen.getByRole("radio", { name: /Select Retribution for Alpha/i }));
+    const allBis = screen.getByRole("switch", { name: "All useful items from the BiS list" });
+    const useful = screen.getByRole("switch", { name: /Include all useful items/i });
+    await user.click(allBis);
+    expect(allBis).toBeChecked();
+    expect(screen.getByRole("button", { name: "Copy soft reserve call list" })).toBeEnabled();
+    await user.click(useful);
+    expect(allBis).not.toBeChecked();
+    await user.click(allBis);
+    expect(useful).not.toBeChecked();
+    await user.click(screen.getByRole("button", { name: /Exclude RS25H/i }));
+    expect(screen.getByRole("button", { name: "Copy soft reserve call list" })).toBeDisabled();
+  }, 15_000);
+
   it("enforces the soft budget, keeps the session on reopen, and prunes filtered items", async () => {
     const user = userEvent.setup();
     const writeText = vi.fn().mockResolvedValue(undefined);

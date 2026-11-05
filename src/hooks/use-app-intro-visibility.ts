@@ -5,13 +5,12 @@ import {
 } from "../constants/app-intro.ts";
 import { getLocalStorageItemMigrating } from "../utils/local-storage-migrate.ts";
 
-function readAppIntroDismissed(): boolean {
-  return (
-    getLocalStorageItemMigrating(
-      APP_INTRO_DISMISSED_STORAGE_KEY,
-      LEGACY_APP_INTRO_DISMISSED_STORAGE_KEY,
-    ) === "1"
+function readAppIntroPreference(): boolean | null {
+  const value = getLocalStorageItemMigrating(
+    APP_INTRO_DISMISSED_STORAGE_KEY,
+    LEGACY_APP_INTRO_DISMISSED_STORAGE_KEY,
   );
+  return value === "1" ? false : value === "0" ? true : null;
 }
 
 function writeAppIntroDismissed(dismissed: boolean) {
@@ -19,7 +18,7 @@ function writeAppIntroDismissed(dismissed: boolean) {
     if (dismissed) {
       localStorage.setItem(APP_INTRO_DISMISSED_STORAGE_KEY, "1");
     } else {
-      localStorage.removeItem(APP_INTRO_DISMISSED_STORAGE_KEY);
+      localStorage.setItem(APP_INTRO_DISMISSED_STORAGE_KEY, "0");
     }
     localStorage.removeItem(LEGACY_APP_INTRO_DISMISSED_STORAGE_KEY);
   } catch {
@@ -34,33 +33,23 @@ type UseAppIntroVisibilityOptions = {
 
 /**
  * Intro help panel: open by default on an empty tracker unless dismissed;
- * header info toggle can show/hide anytime (including scenario C / BiS-only).
+ * the header info button can show/hide it, including on a populated tracker. An explicit
+ * choice is persisted so it survives navigation and reloads.
  */
 export function useAppIntroVisibility({
   isEmptyTracker,
 }: UseAppIntroVisibilityOptions) {
-  const [dismissed, setDismissed] = useState(readAppIntroDismissed);
-  const [forcedOpen, setForcedOpen] = useState(false);
-
-  const visible = forcedOpen || (isEmptyTracker && !dismissed);
+  const [preference, setPreference] = useState(readAppIntroPreference);
+  const visible = preference ?? isEmptyTracker;
 
   const dismiss = useCallback(() => {
-    setForcedOpen(false);
-    setDismissed(true);
+    setPreference(false);
     writeAppIntroDismissed(true);
   }, []);
 
   const toggle = useCallback(() => {
-    if (visible) {
-      setForcedOpen(false);
-      setDismissed(true);
-      writeAppIntroDismissed(true);
-      return;
-    }
-
-    setDismissed(false);
-    writeAppIntroDismissed(false);
-    setForcedOpen(true);
+    setPreference(!visible);
+    writeAppIntroDismissed(visible);
   }, [visible]);
 
   return useMemo(

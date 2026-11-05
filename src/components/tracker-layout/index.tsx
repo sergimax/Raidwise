@@ -15,6 +15,8 @@ import { AppHeader } from "../app-header/index.tsx";
 import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog.tsx";
 import { RaidTrackerMain } from "../raid-tracker-main/index.tsx";
+import { buildTrackerActions } from "../tracker-controls/actions.ts";
+import { renderTrackerAction } from "../tracker-controls/render-tracker-action.tsx";
 import { TrackerControls } from "../tracker-controls/index.tsx";
 import type { TrackerControlsSource } from "../tracker-controls/types.ts";
 
@@ -89,6 +91,9 @@ function TrackerLayoutContents() {
     <div className="app-shell">
       <AppHeader
         center={<TrackerControls source={controlsSource} />}
+        mobileMenuItems={(onClose) => buildTrackerActions(controlsSource, t).map((action) =>
+          renderTrackerAction(action, "menuItem", { onAfterClick: onClose }),
+        )}
         introVisible={appIntro.visible}
         onToggleIntro={appIntro.toggle}
       />

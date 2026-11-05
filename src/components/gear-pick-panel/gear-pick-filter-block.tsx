@@ -27,7 +27,10 @@ export function GearPickFilterBlock({
         minWidth: 0,
         minHeight: 0,
         display: "flex",
-        height: { xs: "auto", md: "100%" },
+        height: {
+          xs: copyBlockSized ? getGearPickCopyBlockMaxHeight() : "auto",
+          md: "100%",
+        },
         maxHeight: copyBlockSized
           ? {
               xs: getGearPickCopyBlockMaxHeight(),

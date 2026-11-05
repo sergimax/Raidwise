@@ -1,4 +1,4 @@
-/** localStorage flag: user hid the empty-state intro help panel. */
+/** localStorage preference: 1 = hidden, 0 = shown, absent = automatic for empty trackers. */
 export const APP_INTRO_DISMISSED_STORAGE_KEY = "raidwise-app-intro-dismissed";
 
 /** Pre-rename key; migrated on load via `getLocalStorageItemMigrating`. */

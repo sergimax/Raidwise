@@ -14,13 +14,64 @@ import {
   evaluateCharacterGearHintTints,
   hasAnyGearHint,
 } from "../../utils/character-gear-hints.ts";
-import { getGearHintCellDisplay } from "../../utils/gear-upgrade-hint.ts";
 import {
-  gearUpgradeHintDualCellSx,
-  gearUpgradeHintCellSx,
+  collectMissingBisLootItemIds,
+  collectMissingIlvlLootItemIds,
+  type GearUpgradeHint,
+} from "../../utils/gear-upgrade-hint.ts";
+import {
+  gearUpgradeHintBandsCellSx,
 } from "../../utils/gear-hint-display.ts";
 import { GearHintTooltipContent } from "../gear-hint-tooltip/index.tsx";
 import { CHARACTER_BODY_CELL_SX } from "./table-layout.ts";
+
+function GearItemCounts({ hint, side }: {
+  hint?: GearUpgradeHint;
+  side: "left" | "right";
+}) {
+  const { t } = useTranslation();
+  if (!hint) return <Box component="span" />;
+
+  const bis = collectMissingBisLootItemIds(hint);
+  const counts = [
+    { kind: "bis" as const, count: new Set([...bis.exact, ...bis.variant]).size },
+    { kind: "ilvl" as const, count: collectMissingIlvlLootItemIds(hint).length },
+  ].filter(({ count }) => count > 0);
+
+  return (
+    <Box component="span" sx={{
+      position: "absolute",
+      insetBlock: 0,
+      left: side === "left" ? 0 : "50%",
+      width: "50%",
+      display: "grid",
+      gridTemplateRows: "repeat(2, 1fr)",
+      pointerEvents: "none",
+    }}>
+      {counts.map(({ kind, count }) => (
+        <Box
+          component="span"
+          key={kind}
+          aria-label={`${t(kind === "bis" ? "gearHint.kindLabelBis" : "gearHint.kindLabelUpgrades")}: ${count}`}
+          sx={{
+            gridRow: kind === "bis" ? 1 : 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "text.secondary",
+            opacity: 0.7,
+            fontSize: 13,
+            lineHeight: 1.2,
+            fontWeight: 400,
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          х{count}
+        </Box>
+      ))}
+    </Box>
+  );
+}
 
 type CharacterToggleCellProps = {
   character: CharacterRecord;
@@ -90,44 +141,16 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
   const hasGearHints = hasAnyGearHint(gearHintTints);
   const dungeonDisplayName = getLocalizedDungeonDisplayName(dungeon, locale, false);
 
-  const mainDisplay = gearHintTints.main
-    ? getGearHintCellDisplay(gearHintTints.main.gearHint)
-    : null;
-  const offDisplay = gearHintTints.off
-    ? getGearHintCellDisplay(gearHintTints.off.gearHint)
-    : null;
   const hasDualSpecGear = Boolean(character.mainSpec && character.offSpec);
-
-  const mainKind = mainDisplay?.kind;
-  const mainLevel = mainDisplay?.level;
-  const offKind = offDisplay?.kind;
-  const offLevel = offDisplay?.level;
-
-  const cellHintSx = useMemo(() => {
-    if (isDungeonMarkedComplete) {
-      return {};
-    }
-    const main =
-      mainKind !== undefined && mainLevel !== undefined
-        ? { kind: mainKind, level: mainLevel }
-        : null;
-    const off =
-      offKind !== undefined && offLevel !== undefined
-        ? { kind: offKind, level: offLevel }
-        : null;
-    if (hasDualSpecGear) {
-      return gearUpgradeHintDualCellSx(main, off, dungeon.itemLevel);
-    }
-    return gearUpgradeHintCellSx(main ?? off, dungeon.itemLevel);
-  }, [
-    dungeon.itemLevel,
-    hasDualSpecGear,
-    isDungeonMarkedComplete,
-    mainKind,
-    mainLevel,
-    offKind,
-    offLevel,
-  ]);
+  const cellHintSx = useMemo(
+    () => isDungeonMarkedComplete ? {} : gearUpgradeHintBandsCellSx(
+      gearHintTints.main?.gearHint,
+      gearHintTints.off?.gearHint,
+      dungeon.itemLevel,
+      hasDualSpecGear,
+    ),
+    [gearHintTints, dungeon.itemLevel, hasDualSpecGear, isDungeonMarkedComplete],
+  );
 
   const [gearHintTooltipOpen, setGearHintTooltipOpen] = useState(false);
 
@@ -191,6 +214,27 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
     />
   );
 
+  const toggleWithCounts = (
+    <Box component="span" sx={{
+      position: "relative",
+      minHeight: 36,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+    }}>
+      <GearItemCounts
+        side="left"
+        hint={isDungeonMarkedComplete ? undefined : gearHintTints.main?.gearHint}
+      />
+      {toggleSwitch}
+      <GearItemCounts
+        side="right"
+        hint={isDungeonMarkedComplete ? undefined : gearHintTints.off?.gearHint}
+      />
+    </Box>
+  );
+
   return (
     <TableCell
       className="raid-tracker-table__toggle-cell"
@@ -208,7 +252,7 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
     >
       <Box
         component="span"
-        sx={{ position: "relative", zIndex: 1, display: "inline-flex" }}
+        sx={{ position: "relative", zIndex: 1, display: "inline-flex", width: "100%" }}
       >
         {hasGearHints ? (
           <Tooltip
@@ -223,10 +267,10 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
             }}
             title={tooltipTitle ?? ""}
           >
-            <span>{toggleSwitch}</span>
+            <Box component="span" sx={{ width: "100%" }}>{toggleWithCounts}</Box>
           </Tooltip>
         ) : (
-          toggleSwitch
+          toggleWithCounts
         )}
       </Box>
     </TableCell>

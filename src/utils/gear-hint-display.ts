@@ -1,38 +1,38 @@
 import type { SystemStyleObject } from "@mui/system";
 import type { Theme } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
-import type { GearHintCellDisplay, GearUpgradeHintLevel } from "./gear-upgrade-hint.ts";
+import type { GearHintCellDisplay, GearUpgradeHintLevel, GearUpgradeHint } from "./gear-upgrade-hint.ts";
 
 type HintAlphaScale = Record<GearUpgradeHintLevel, number>;
 
-/** BiS (amber) cell tint opacity by hint level — slightly stronger in dark mode. */
+/** BiS (coral) cell tint opacity by hint level — slightly stronger in dark mode. */
 const BIS_HINT_ALPHAS_LIGHT: HintAlphaScale = {
   0: 0,
-  1: 0.22,
-  2: 0.32,
-  3: 0.44,
+  1: 0.08,
+  2: 0.13,
+  3: 0.19,
 };
 
 const BIS_HINT_ALPHAS_DARK: HintAlphaScale = {
   0: 0,
-  1: 0.26,
-  2: 0.38,
-  3: 0.5,
+  1: 0.1,
+  2: 0.16,
+  3: 0.23,
 };
 
-/** Ilvl (blue) cell tint opacity by hint level — slightly stronger in dark mode. */
+/** Ilvl (teal) cell tint opacity by hint level — slightly stronger in dark mode. */
 const ILVL_HINT_ALPHAS_LIGHT: HintAlphaScale = {
   0: 0,
-  1: 0.18,
-  2: 0.28,
-  3: 0.4,
+  1: 0.06,
+  2: 0.11,
+  3: 0.17,
 };
 
 const ILVL_HINT_ALPHAS_DARK: HintAlphaScale = {
   0: 0,
-  1: 0.22,
-  2: 0.34,
-  3: 0.46,
+  1: 0.08,
+  2: 0.14,
+  3: 0.21,
 };
 
 function hintAlphasForMode(
@@ -57,27 +57,21 @@ function hintDisplayBackgroundColor(
   const alphas = hintAlphasForMode(theme.palette.mode, display.kind);
   const opacity = alphas[display.level];
 
-  if (display.kind === "bis") {
-    return alpha(theme.palette.warning.main, opacity);
-  }
-
-  const infoMain = theme.palette.info?.main ?? theme.palette.primary.main;
-  return alpha(infoMain, opacity);
+  return alpha(getGearHintKindColor(display.kind, theme), opacity);
 }
 
-/** Solid BiS (amber) or ilvl (blue) accent — tooltip dots, legends. */
+/** Solid BiS (coral) or ilvl (teal) accent — tooltip dots, legends. */
 export function getGearHintKindColor(
   kind: GearHintCellDisplay["kind"],
   theme: Theme,
 ): string {
-  if (kind === "bis") {
-    return theme.palette.warning.main;
-  }
-
-  return theme.palette.info?.main ?? theme.palette.primary.main;
+  const dark = theme.palette.mode === "dark";
+  return kind === "bis"
+    ? (dark ? "#fb7185" : "#e11d48")
+    : (dark ? "#2dd4bf" : "#0d9488");
 }
 
-/** Toggle cell tint (amber BiS or blue ilvl by hint level). */
+/** Toggle cell tint (coral BiS or teal ilvl by hint level). */
 export function getGearHintCellBackgroundColor(
   display: GearHintCellDisplay,
   theme: Theme,
@@ -90,14 +84,27 @@ const GEAR_HINT_CELL_OVERLAY_SX = {
   "&::after": {
     content: '""',
     position: "absolute",
-    inset: 0,
+    inset: "0 1px",
     pointerEvents: "none",
     zIndex: 0,
   },
 } as const;
 
+/** Edge accents keep hint strength readable without obscuring raid artwork. */
+function hintEdgeShadow(
+  display: GearHintCellDisplay | null,
+  theme: Theme,
+  side: "left" | "right",
+): string | undefined {
+  if (!display || display.level === 0) return undefined;
+  const opacity = [0, 0.35, 0.55, 0.75][display.level];
+  const color = alpha(getGearHintKindColor(display.kind, theme), opacity);
+  return `inset ${side === "left" ? 4 : -4}px 0 0 ${color}`;
+}
+
 function gearHintOverlaySx(
   overlayBackground: string | undefined,
+  edgeShadows: (string | undefined)[] = [],
 ): SystemStyleObject<Theme> {
   if (!overlayBackground) {
     return {};
@@ -108,6 +115,7 @@ function gearHintOverlaySx(
     "&::after": {
       ...GEAR_HINT_CELL_OVERLAY_SX["&::after"],
       background: overlayBackground,
+      boxShadow: edgeShadows.filter(Boolean).join(", ") || undefined,
     },
   };
 }
@@ -115,6 +123,7 @@ function gearHintOverlaySx(
 export function gearUpgradeHintCellSx(
   display: GearHintCellDisplay | null,
   dungeonItemLevels: readonly number[],
+  side: "left" | "right" = "left",
 ): SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>) {
   if (!display || display.level === 0 || dungeonItemLevels.length === 0) {
     return {};
@@ -123,6 +132,7 @@ export function gearUpgradeHintCellSx(
   return (theme) =>
     gearHintOverlaySx(
       hintDisplayBackgroundColor(display, dungeonItemLevels, theme),
+      [hintEdgeShadow(display, theme, side)],
     );
 }
 
@@ -147,21 +157,65 @@ export function gearUpgradeHintDualCellSx(
       ? hintDisplayBackgroundColor(offDisplay, dungeonItemLevels, theme)
       : undefined;
 
+    const edges = [
+      hintEdgeShadow(mainDisplay, theme, "left"),
+      hintEdgeShadow(offDisplay, theme, "right"),
+    ];
+
     if (mainColor && offColor) {
       return gearHintOverlaySx(
         `linear-gradient(to right, ${mainColor} 50%, ${offColor} 50%)`,
+        edges,
       );
     }
     if (mainColor) {
       return gearHintOverlaySx(
         `linear-gradient(to right, ${mainColor} 50%, transparent 50%)`,
+        edges,
       );
     }
     if (offColor) {
       return gearHintOverlaySx(
         `linear-gradient(to right, transparent 50%, ${offColor} 50%)`,
+        edges,
       );
     }
     return {};
+  };
+}
+
+/** Independent spec/category bands fade out from the cell center. */
+export function gearUpgradeHintBandsCellSx(
+  main: GearUpgradeHint | undefined,
+  off: GearUpgradeHint | undefined,
+  dungeonItemLevels: readonly number[],
+  dualSpec: boolean,
+): SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>) {
+  if (dungeonItemLevels.length === 0 || (!main && !off)) return {};
+
+  return (theme) => {
+    const layers: string[] = [];
+    for (const [hint, side] of [[main, "left"], [off, "right"]] as const) {
+      if (!hint) continue;
+      const tracks = [
+        { kind: "bis" as const, level: hint.bisListActive ? Math.max(hint.bis.level, hint.bisVariant.level) as GearUpgradeHintLevel : 0 as const },
+        { kind: "ilvl" as const, level: hint.ilvl.level },
+      ];
+      for (const display of tracks) {
+        const baseTint = hintDisplayBackgroundColor(display, dungeonItemLevels, theme);
+        if (!baseTint) continue;
+        const tint = alpha(baseTint, Math.min(1, hintAlphasForMode(theme.palette.mode, display.kind)[display.level] * 1.5));
+        const color = getGearHintKindColor(display.kind, theme);
+        const strength = theme.palette.mode === "dark"
+          ? [0, 0.3, 0.42, 0.54]
+          : [0, 0.24, 0.35, 0.45];
+        const centerColor = alpha(color, strength[display.level]);
+        const originX = dualSpec ? (side === "left" ? "right" : "left") : "center";
+        const band = display.kind === "bis" ? "top" : "bottom";
+        const originY = band === "top" ? "bottom" : "top";
+        layers.push(`radial-gradient(ellipse at ${originX} ${originY}, ${centerColor} 0%, ${tint} 45%, ${alpha(color, 0)} 100%) ${side} ${band} / ${dualSpec ? "50%" : "100%"} 50% no-repeat`);
+      }
+    }
+    return gearHintOverlaySx(layers.length > 0 ? layers.join(", ") : undefined);
   };
 }

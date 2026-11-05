@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import type { AppLocale } from "../../i18n/types.ts";
-import { getFormattedItemDropSources } from "../../utils/item-drop-sources.ts";
+import { getBisItemSourceText } from "../../utils/bis-item-sources.ts";
+import { useTranslation } from "../../i18n/use-translation.ts";
 
 type BisItemDropSourcesProps = {
   itemIds: readonly number[];
@@ -8,8 +9,9 @@ type BisItemDropSourcesProps = {
 };
 
 export function BisItemDropSources({ itemIds, locale }: BisItemDropSourcesProps) {
+  const { t } = useTranslation();
   const sourceLines = itemIds.flatMap((itemId) => {
-    const sources = getFormattedItemDropSources(itemId, locale);
+    const sources = getBisItemSourceText(itemId, locale, t);
     if (sources.length === 0) {
       return [];
     }
@@ -29,7 +31,7 @@ export function BisItemDropSources({ itemIds, locale }: BisItemDropSourcesProps)
           component="span"
           sx={{ display: "block", color: "text.disabled", lineHeight: 1.35 }}
         >
-          {sources.map((source) => `${source.raidLabel} · ${source.bossName}`).join(" · ")}
+          {sources}
         </Typography>
       ))}
     </Box>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="Track raid cooldowns for your characters and dungeons. Manage characters, dungeon lockouts, and cooldown toggles." />
-    <meta name="theme-color" content="#fcfbf9" />
+    <meta name="theme-color" content="#f5f5f3" />
     <!-- Sync theme before paint (same key/logic as use-color-mode) to avoid a light flash. -->
     <script>
       (function () {
@@ -45,7 +45,7 @@
         // Match browser chrome (address bar, etc.) to --page-bg for each mode.
         var themeMeta = document.querySelector('meta[name="theme-color"]');
         if (themeMeta) {
-          themeMeta.setAttribute("content", mode === "dark" ? "#1a1a1a" : "#fcfbf9");
+          themeMeta.setAttribute("content", mode === "dark" ? "#191919" : "#f5f5f3");
         }
       })();
     </script>

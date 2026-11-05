@@ -30,7 +30,7 @@ import { FormActionsRow } from "../form-actions-row/index.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import {
   FILTER_UNIT_GRID_GAP_SPACING,
-  getDungeonFormGridTemplateAreas,
+  getDungeonFormGridMaxWidth,
   getDungeonFormGridTemplateColumns,
 } from "./constants.ts";
 import type { DungeonFormProps } from "./types.ts";
@@ -101,26 +101,14 @@ export function DungeonForm({
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: {
-              xs: "minmax(0, 1fr)",
-              md: getDungeonFormGridTemplateColumns(),
-            },
-            gridTemplateAreas: {
-              xs: `
-                "name"
-                "shortName"
-                "type"
-                "itemLevels"
-              `,
-              md: getDungeonFormGridTemplateAreas(),
-            },
+            gridTemplateColumns: getDungeonFormGridTemplateColumns(),
             gap: FILTER_UNIT_GRID_GAP_SPACING,
             alignItems: "stretch",
             width: "100%",
-            maxWidth: "100%",
+            maxWidth: getDungeonFormGridMaxWidth(),
           }}
         >
-          <Box sx={{ gridArea: "name", minWidth: 0, minHeight: 0 }}>
+          <Box sx={{ minWidth: 0, minHeight: 0 }}>
             <FilterSection
               step={1}
               title={t("dungeonForm.stepName")}
@@ -147,7 +135,7 @@ export function DungeonForm({
             </FilterSection>
           </Box>
 
-          <Box sx={{ gridArea: "shortName", minWidth: 0, minHeight: 0 }}>
+          <Box sx={{ minWidth: 0, minHeight: 0 }}>
             <FilterSection
               step={2}
               title={t("dungeonForm.stepShortName")}
@@ -172,7 +160,7 @@ export function DungeonForm({
             </FilterSection>
           </Box>
 
-          <Box sx={{ gridArea: "type", minWidth: 0, minHeight: 0 }}>
+          <Box sx={{ minWidth: 0, minHeight: 0 }}>
             <FilterSection
               step={3}
               title={t("dungeonForm.stepType")}
@@ -227,7 +215,7 @@ export function DungeonForm({
             </FilterSection>
           </Box>
 
-          <Box sx={{ gridArea: "itemLevels", minWidth: 0, minHeight: 0 }}>
+          <Box sx={{ minWidth: 0, minHeight: 0 }}>
             <FilterSection
               step={4}
               title={t("dungeonForm.stepItemLevels")}

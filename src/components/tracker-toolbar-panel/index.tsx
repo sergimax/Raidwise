@@ -24,7 +24,7 @@ export type TrackerToolbarPanelProps = {
   children: ReactNode;
 };
 
-/** Shared shell for header toolbar panels (outlined card, title, optional hint, close icon). */
+/** Shared panel/table surface; internal section rails carry the hierarchy. */
 export function TrackerToolbarPanel({
   panelId,
   title,
@@ -62,21 +62,23 @@ export function TrackerToolbarPanel({
         maxWidth,
         minWidth: 0,
         boxSizing: "border-box",
-        // Keep unit-grid children (Character / Soft pick) from painting past the outlined edge.
+        // Keep unit-grid children (Character / Soft pick) from painting outside the panel.
         overflow: "hidden",
         bgcolor: "background.paper",
-        // Gallery F — dot grid (shared with page); step blocks stay solid fill.
-        backgroundImage:
-          "radial-gradient(var(--dot-grid) 1px, transparent 1px)",
-        backgroundSize: "var(--dot-grid-size) var(--dot-grid-size)",
-        backgroundPosition: "0 0",
+        border: 0,
+        borderRadius: "3px",
+        boxShadow: "none",
       }}
     >
       <Stack spacing={1.5}>
         <Stack
           direction="row"
           spacing={1}
-          sx={{ alignItems: "flex-start", justifyContent: "space-between" }}
+          sx={{
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            minHeight: 32,
+          }}
         >
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.3 }}>

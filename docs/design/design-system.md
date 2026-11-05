@@ -26,11 +26,11 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 | Trait | Rule |
 | --- | --- |
-| Chrome | Quiet MUJI neutrals — warm paper (`#fcfbf9` / `#1a1a1a`), not slate-blue fog |
+| Chrome | Direction S — neutral canvas (`#f5f5f3` / `#191919`), quiet diagonal dots, unified working surfaces |
 | Brand | Burnt orange (Signal energy) — identity only, **not** primary CTAs |
 | Primary CTAs | Inverse ink (`#0a0a0a` on light / `#fafafa` on dark) |
 | Ok / Danger | Forest/mint green · true red — never reuse brand orange |
-| Surfaces | Soft card shadow + modest radii (`10` / `8`) |
+| Surfaces | Bounded panels, vertical rails + brand markers, full top borders with fading sides, fill gradients disabled, 3px outer corners |
 | Type | Onest display · Noto Sans body · JetBrains Mono chips/meta (Cyrillic + Latin) |
 
 **Avoid:** Facebook/SaaS blue as brand; pink/magenta identity; brand≈danger or brand≈ok pairs; Latin-only display fonts (Syne, Space Grotesk) as sole UI fonts.
@@ -39,6 +39,10 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 
 **Toolbar panel backgrounds:** [panel-backgrounds/](./panel-backgrounds/) — hatch / grid / wash variants for `TrackerToolbarPanel` (step blocks stay solid).
 
+**Implemented direction:** S (M + N): flat section rails on a 12px dot grid rotated 45°, refined with a borderless, opaque panel using the shared table surface and 3px outer corners. The gallery remains an exploration reference.
+
+**App background directions:** [app-backgrounds/](./app-backgrounds/) — 24 surface proposals grouped into favourites, new combinations and other explorations with light/dark switching; S is the implemented basis, other variants remain exploratory.
+
 ---
 
 ## Color mode
@@ -46,7 +50,7 @@ When tokens change in code, update this doc and `design-tokens.json` in the same
 - Attribute: `document.documentElement.dataset.colorMode` = `light` | `dark`
 - CSS: `:root` / `:root[data-color-mode="dark"]` in `index.css`
 - Storage key: `raidwise-color-mode`
-- Theme-color meta: light `#fcfbf9`, dark `#1a1a1a`
+- Theme-color meta: light `#f5f5f3`, dark `#191919`
 - Default for new ports: `light`
 
 CSS variables mirror the MUI palette so non-MUI markup stays in sync.
@@ -59,10 +63,10 @@ CSS variables mirror the MUI palette so non-MUI markup stays in sync.
 
 | Role | Hex | CSS var | MUI |
 | --- | --- | --- | --- |
-| Page background | `#fcfbf9` | `--bg` / `--page-bg` | `background.default` |
+| Page background | `#f5f5f3` | `--bg` / `--page-bg` | `background.default` |
 | Surface / paper | `#ffffff` | `--surface` | `background.paper` |
 | Chip / inset | `#f3f2ef` | `--chip-bg` | — |
-| Sticky header | `rgba(252, 251, 249, 0.96)` | `--header-bg` | AppBar |
+| Sticky header | `#f5f5f3` | `--header-bg` | AppBar |
 | Border | `#d6d4cf` | `--border` | `divider` |
 | Text | `#141414` | `--text` | `text.primary` |
 | Text strong | `#0a0a0a` | `--text-strong` | — |
@@ -74,7 +78,7 @@ CSS variables mirror the MUI palette so non-MUI markup stays in sync.
 | Link (quiet) | `#2c5282` | `--link` | — |
 | Link spot | `#9a3412` | `--link-spot` | — |
 | Primary bg / fg | `#0a0a0a` / `#ffffff` | `--primary-bg` / `--primary-fg` | `primary.main` / contrast |
-| Shadow | `0 6px 18px rgba(0, 0, 0, 0.07)` | `--shadow` | card / paper outlined |
+| Shadow | `none` | `--shadow` | card / paper outlined |
 | Info (ilvl hints) | `#0284c7` | — | `info.main` (domain) |
 | Warning (BiS hints) | `#d97706` | — | `warning.main` (domain) |
 | Scrollbar thumb | `#c4c4c0` → hover `#8a8a8a` | `--scrollbar-thumb*` | — |
@@ -88,10 +92,10 @@ Action:
 
 | Role | Hex | CSS var | MUI |
 | --- | --- | --- | --- |
-| Page background | `#1a1a1a` | `--bg` / `--page-bg` | `background.default` |
-| Surface / paper | `#242424` | `--surface` | `background.paper` |
+| Page background | `#191919` | `--bg` / `--page-bg` | `background.default` |
+| Surface / paper | `#20242b` | `--surface` | `background.paper` |
 | Chip / inset | `#1f1f1f` | `--chip-bg` | — |
-| Sticky header | `rgba(26, 26, 26, 0.96)` | `--header-bg` | AppBar |
+| Sticky header | `#191919` | `--header-bg` | AppBar |
 | Border | `#454545` | `--border` | `divider` |
 | Text | `#f2f2f2` | `--text` | `text.primary` |
 | Text strong | `#fafafa` | `--text-strong` | — |
@@ -103,7 +107,7 @@ Action:
 | Link (quiet) | `#8ab4c8` | `--link` | — |
 | Link spot | `#fb923c` | `--link-spot` | — |
 | Primary bg / fg | `#fafafa` / `#111111` | `--primary-bg` / `--primary-fg` | `primary.main` / contrast |
-| Shadow | `0 8px 24px rgba(0, 0, 0, 0.4)` | `--shadow` | card / paper outlined |
+| Shadow | `none` | `--shadow` | card / paper outlined |
 | Info | `#38bdf8` | — | `info.main` |
 | Warning | `#f59e0b` | — | `warning.main` |
 | Scrollbar thumb | `#555555` → hover `#8a8a8a` | `--scrollbar-thumb*` | — |
@@ -115,10 +119,10 @@ Action:
 
 ### Page atmosphere (CssBaseline `body`)
 
-Warm brand-soft radials (not SaaS blue/teal):
-
-- Light: `rgba(154, 52, 18, 0.06)` + `rgba(194, 65, 12, 0.04)`, `backgroundAttachment: fixed`
-- Dark: `rgba(251, 146, 60, 0.1)` + `rgba(61, 40, 24, 0.45)`, fixed
+Direction S uses the original static 12px dot grid rotated 45° on `body::before`, mirrored in
+`src/index.css`. Pin radius is 1px, with 5.5% ink in light mode and 6% white
+in dark mode. The page has no gradient wash. Toolbar panels, tables and the sticky header have opaque fills; inner sections
+are transparent and share the panel surface.
 
 ---
 
@@ -127,9 +131,11 @@ Warm brand-soft radials (not SaaS blue/teal):
 | Token | Value | Usage |
 | --- | --- | --- |
 | `--radius` / `shape.borderRadius` | `6px` | Global MUI shape |
-| Control | `4px` | Buttons, icon buttons, table containers, tooltips |
+| Square controls | `0px` | Regular buttons, clickable chips, outlined inputs/selects and menu paper |
+| Control | `4px` | Icon buttons, tooltips |
 | Dialog | `8px` | Dialog paper |
-| Filter / step card | `8px` (`borderRadius: 1`) | `FilterSection` |
+| Working surface | `3px` | Toolbar panel, table containers, intro and outlined Paper default |
+| Inner section | `0px` | Transparent `FilterSection` content |
 | Inline mention chip | `8px` | Intro feature chips |
 | Game / slot icon thumb | `4px` | Class, spec, raid, gear-slot thumbs |
 | Scrollbar thumb | `999` (pill) | WebKit thumb only |
@@ -149,11 +155,11 @@ border: 1px solid <divider>
 
 | Surface | Border | Notes |
 | --- | --- | --- |
-| Outlined `Paper` | `divider` | Toolbar panels (`TrackerToolbarPanel`) |
-| Step / filter card | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | `FilterSection` |
-| Table container | `1px solid divider` | + paper fill + soft shadow |
+| Outlined `Paper` | theme-adjusted `divider` | One solid working surface; toolbar panels override to borderless surface fill |
+| Step / filter section | `1px` top `divider` border with fading sides + number or semantic icon badge | Transparent inner content on the shared panel surface |
+| Table container | none | Opaque paper fill, 3px corners, no shadow |
 | Dialog paper | `1px solid divider` | radius 8 |
-| Menu paper | `1px solid divider` | radius 6 |
+| Menu paper | `1px solid divider` | square corners |
 | Outlined button | `divider`; hover `#6b6b6b` / `#a3a3a3` | translucent paper fill |
 | Outlined input hover outline | same hover border colors | soft paper fill behind field |
 | Intro / panel cards | `border: 1`, `borderColor: "divider"`, `borderRadius: 1` | matches filter cards |
@@ -166,7 +172,7 @@ Do **not** invent a second border color for generic chrome — use `divider` / `
 
 | Token | Light | Dark |
 | --- | --- | --- |
-| Card / outlined paper / table | `0 6px 18px rgba(0, 0, 0, 0.07)` | `0 8px 24px rgba(0, 0, 0, 0.4)` |
+| Card / outlined paper / table | `none` | `none` |
 | Inline mention (micro) | `0 1px 1px rgba(0, 0, 0, 0.04)` | `0 1px 1px rgba(0, 0, 0, 0.25)` |
 | Menu | `0 8px 24px rgba(0, 0, 0, 0.12)` | `0 8px 24px rgba(0, 0, 0, 0.45)` |
 | Tooltip | MUI `shadows[8]` | MUI `shadows[12]` |
@@ -202,16 +208,24 @@ Fonts are self-hosted as WOFF2 files under `public/fonts/` and declared in `src/
 | **Quiet** (`a` / `--link`) | Informational, secondary | Slate ≠ body text; weight 500; **1px** underline; offset ~3px |
 | **Spot** (`a.link-spot` / `--link-spot`) | Must be found in prose | Brand; Onest; **bold + italic**; **2px** underline |
 
-Implemented in `src/theme/links.css`. Hover may intensify toward brand; do not turn quiet links into full spot styling on hover alone.
+Implemented in `src/theme/links.css`. Header navigation (`.app-nav-link`) opts out of prose-link styling so AppBar buttons and branding retain MUI states. Hover may intensify toward brand; do not turn quiet links into full spot styling on hover alone.
 
 ---
 
 ## Forms & stepped panels
 
+The new-raid form places Name, Short name, Size/difficulty and Item levels in
+DOM order using auto-fit columns with a 300px minimum (or the available width
+on mobile). All four fit at 1236px content width; narrower panels wrap them.
+
+Item names in the soft-reserve copy preview use the same ilvl palette as the target list. Header, counts and boss suffixes stay neutral; clipboard output stays plain text.
+
+The soft-reserve copy block uses 1.5 filter units of height (342px with the default 12px gap), including on mobile; on wide layouts it occupies both filter rows but is capped to 342px. Format toggles (name, spec, count, boss) form the first row; inclusion toggles form a separate second row, wrapping on small screens.
+
 ### Recipes
 
-1. **Toolbar shell** — `Paper variant="outlined"`, padding `{ xs: 1.5, sm: 2 }`, header row = title + close (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
-2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: **brand** title (Onest), soft brand **step badge** (number only — not a `N.` text prefix; DOM text is `N` + title), **3px brand left edge** on the block.
+1. **Toolbar shell** — borderless opaque `Paper` using `background.paper` (shared with tables, distinct from the page background), padding `{ xs: 1.5, sm: 2 }`, header row = title + close (minimum height 32px), separated from content by spacing (`TrackerToolbarPanel`). Prefer **no** panel-level layout blurb; put help on steps.
+2. **Numbered step** — Always use `FilterSection` (`step`, `title`, optional `titleMark` / `description` / `subtitle`). Do not add a second step-chrome component. Header chrome: neutral title (Onest), soft brand **step badge** centred on the vertical divider rail (number only, 3px corners), replacing the dot; unnumbered action sections supply an `icon` in the same 22px rail badge (16px icon); a dot remains only as a fallback without a number or icon. FilterSection owns spacing across every toolbar tab: 12px number gutter, 16px left / 10px right padding and 8px top padding. Use `useFlexGap` for parent Stacks containing sections so Stack spacing does not reset the number gutter. Do not override section padding per tab. Each section has 8px of top padding; the rail number, title and actions share this inset. Sections have a full 1px divider border across the top and side borders fading to transparent over 200px (or the full section height if shorter). There is no bottom border. The top-to-bottom gradient is currently disabled; its settings (2.5% light, 4.5% dark) remain in design-tokens.json for comparison. No nested card, radius or shadow.
 3. **Field density** — Prefer `size="small"` on TextField / Select / FormControl in add forms.
 4. **Stack rhythm** — Outer form / panel stacks use `spacing={1.5}`; fields inside a step often `1`–`1.25`.
 5. **Errors** — Field-level `helperText` + `error` when possible; otherwise `FormErrorMessage` under actions.
@@ -270,18 +284,26 @@ Hide external WoW tooltips on scroll/mouseleave where item links live inside scr
 
 ## App shell spacing
 
+The header follows the MUI responsive AppBar pattern: linked logo, a section
+dropdown showing the current section, and contextual tracker tabs in one toolbar. Below md (900px),
+one hamburger menu contains both app sections and contextual tracker actions;
+the scrollable contextual tabs also remain visible in the toolbar.
+Help, language and the GitHub version link retain their roles. Theme stays in
+Settings. Contextual tabs are absent outside tracker routes.
+
 | Token | Value |
 | --- | --- |
-| Toolbar min-height | `52px` at all breakpoints (`--app-toolbar-min-height`) |
+| Main toolbar | `56px` xs / `64px` sm+ (`--app-toolbar-min-height`), MUI responsive AppBar |
+| Context actions | `48px` within the main toolbar at every width; also available in the main menu below md |
 | Main padding | top `0.5rem` xs / `0.75rem` sm+, x `1.25rem` xs / `1.75rem` sm+, bottom `2rem` |
-| `html` scroll-padding-top | toolbar height |
+| `html` scroll-padding-top | Single toolbar height plus border (`--app-header-height`) |
 
 Panel max widths (app layout, not core brand):
 
 | Panel | Max width |
 | --- | --- |
 | Character form | `1600` |
-| Raid form | `680` |
+| Raid form | `1280` |
 | Data controls | `1280` |
 | BiS | `1280` |
 | Character / Soft pick | `1920` |
@@ -335,7 +357,7 @@ UI: MUI determinate `LinearProgress` only (`CompletionCountChip` in `dungeon-cel
 4. Load Noto Sans + Onest + JetBrains Mono (Cyrillic + Latin)
 5. Implement quiet vs `.link-spot` links (`links.css`)
 6. Use the mode-specific `divider` border and the implemented radii (4/6/8px)
-7. Prefer stepped `FilterSection`-style cards for multi-field workflows (brand title, step badge, 3px brand left edge)
+7. Prefer stepped `FilterSection`-style cards for multi-field workflows (neutral title, step badge, divider rail and brand marker)
 8. Contrast-check text / muted / brand / ok / danger / link / link-spot / border
 9. Port class-color chips (`character-display.ts`) and completion chip fills (`completion-chip-color.ts`) when the product needs them
 

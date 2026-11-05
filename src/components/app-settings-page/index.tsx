@@ -1,4 +1,5 @@
-import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, FormControlLabel, Paper, Stack, Switch, Typography } from "@mui/material";
+import { useColorMode } from "../../hooks/use-color-mode.ts";
 import changelog from "../../../CHANGELOG.md?raw";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { getLatestRelease } from "../../utils/changelog.ts";
@@ -33,6 +34,7 @@ const GITHUB_CHANGELOG_URL = "https://github.com/sergimax/Raidwise/blob/main/CHA
 
 export function AppSettingsPage() {
   const { t } = useTranslation();
+  const { mode, setMode } = useColorMode();
 
   return (
     <div className="app-shell">
@@ -43,6 +45,19 @@ export function AppSettingsPage() {
           <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
             {t("appSettings.title")}
           </Typography>
+
+          <Box component="section" aria-labelledby="app-interface-title">
+            <Stack spacing={1}>
+              <Typography id="app-interface-title" variant="h6" component="h2" sx={{ fontWeight: 700 }}>
+                {t("appSettings.interface")}
+              </Typography>
+              <FormControlLabel
+                sx={{ alignSelf: "flex-start", ml: 0 }}
+                control={<Switch checked={mode === "dark"} onChange={(_, checked) => setMode(checked ? "dark" : "light")} />}
+                label={t("appSettings.darkTheme")}
+              />
+            </Stack>
+          </Box>
 
           <Box component="section" aria-labelledby="app-info-title">
             <Stack spacing={1.5}>

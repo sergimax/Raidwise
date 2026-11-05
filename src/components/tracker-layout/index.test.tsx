@@ -104,3 +104,17 @@ describe("TrackerLayout add from template confirm", () => {
     ).toBeInTheDocument();
   });
 });
+
+describe("header usage help", () => {
+  it("toggles the intro from the header while leaving theme selection in settings", async () => {
+    localStorage.clear();
+    const user = userEvent.setup();
+    renderTrackerLayout();
+    const header = within(screen.getByRole("banner"));
+    expect(header.queryByRole("button", { name: /Switch to .* mode/ })).not.toBeInTheDocument();
+    await user.click(header.getByRole("button", { name: "Hide how this app can help" }));
+    expect(header.getByRole("button", { name: "Show how this app can help" })).toHaveAttribute("aria-pressed", "false");
+    await user.click(header.getByRole("button", { name: "Show how this app can help" }));
+    expect(header.getByRole("button", { name: "Hide how this app can help" })).toHaveAttribute("aria-pressed", "true");
+  });
+});

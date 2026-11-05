@@ -14,7 +14,7 @@ import {
 } from "../../utils/build-gear-pick-items.ts";
 import {
   emptySoftAssignment,
-  formatGearPickCopyText,
+  formatGearPickCopyParts,
   remainingSoftBudget,
   selectGearPickCopyItems,
   sumMySofts,
@@ -85,12 +85,14 @@ export function GearPickPanel({
     includeCopySpec,
     includeCopySoftCount,
     includeAllCopyItems,
+    includeAllBisCopyItems,
     onlyCharactersWithUpgrades,
     setIncludeCopyCharacterName,
     setCompactCopyLines,
     setIncludeCopySpec,
     setIncludeCopySoftCount,
     setIncludeAllCopyItems,
+    setIncludeAllBisCopyItems,
     setOnlyCharactersWithUpgrades,
   } = session;
 
@@ -226,23 +228,34 @@ export function GearPickPanel({
     selectedSpecGear,
   ]);
 
+  const allBisCopyItems = useMemo(() => {
+    if (!includeAllBisCopyItems || !selectedCharacter || !activeSelection) return [];
+    return buildGearPickItems({
+      character: selectedCharacter, specSide: activeSelection.side,
+      dungeons: activeDungeons, getBisSlotMapForSpec, locale, includeOwnedBis: true,
+    });
+  }, [includeAllBisCopyItems, selectedCharacter, activeSelection, activeDungeons, getBisSlotMapForSpec, locale]);
+
   const copyItems = useMemo(
     () =>
       selectGearPickCopyItems(
-        gearPickItems.map((item) => ({
+        (includeAllBisCopyItems ? [
+          ...gearPickItems.filter((item) => (assignmentsByItemId[item.itemId]?.mySofts ?? 0) > 0),
+          ...allBisCopyItems,
+        ] : gearPickItems).map((item) => ({
           itemId: item.itemId,
           itemName: getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`,
           bossName: item.bossName,
         })),
         assignmentsByItemId,
-        includeAllCopyItems,
+        includeAllCopyItems || includeAllBisCopyItems,
       ),
-    [assignmentsByItemId, gearPickItems, includeAllCopyItems, itemLocale],
+    [assignmentsByItemId, gearPickItems, includeAllCopyItems, includeAllBisCopyItems, allBisCopyItems, itemLocale],
   );
 
-  const copyText = useMemo(
+  const copyParts = useMemo(
     () =>
-      formatGearPickCopyText({
+      formatGearPickCopyParts({
         characterName: selectedCharacter?.name,
         specName: selectedSpecGear?.spec,
         items: copyItems,
@@ -439,17 +452,19 @@ export function GearPickPanel({
 
       <GearPickFilterBlock gridArea="copy" copyBlockSized>
         <GearPickCopyBlock
-          copyText={copyText}
+          copyParts={copyParts}
           hasCopyItems={copyItems.length > 0}
           includeCharacterName={includeCopyCharacterName}
           includeSpec={includeCopySpec}
           includeSoftCount={includeCopySoftCount}
           includeAllItems={includeAllCopyItems}
+          includeAllBisItems={includeAllBisCopyItems}
           compactLines={compactCopyLines}
           onIncludeCharacterNameChange={setIncludeCopyCharacterName}
           onIncludeSpecChange={setIncludeCopySpec}
           onIncludeSoftCountChange={setIncludeCopySoftCount}
           onIncludeAllItemsChange={setIncludeAllCopyItems}
+          onIncludeAllBisItemsChange={setIncludeAllBisCopyItems}
           onCompactLinesChange={setCompactCopyLines}
           t={t}
         />

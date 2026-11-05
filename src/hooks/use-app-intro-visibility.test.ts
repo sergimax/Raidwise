@@ -58,3 +58,19 @@ describe("useAppIntroVisibility", () => {
     expect(result.current.visible).toBe(false);
   });
 });
+
+describe("intro preference across settings navigation", () => {
+  it("retains an explicit show choice on a populated tracker after remount", () => {
+    localStorage.clear();
+    const { result, unmount } = renderHook(() => useAppIntroVisibility({ isEmptyTracker: false }));
+    expect(result.current.visible).toBe(false);
+    act(() => result.current.toggle());
+    expect(result.current.visible).toBe(true);
+    unmount();
+    const next = renderHook(() => useAppIntroVisibility({ isEmptyTracker: false }));
+    expect(next.result.current.visible).toBe(true);
+    act(() => next.result.current.dismiss());
+    next.unmount();
+    expect(renderHook(() => useAppIntroVisibility({ isEmptyTracker: true })).result.current.visible).toBe(false);
+  });
+});
