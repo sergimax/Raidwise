@@ -4,24 +4,21 @@ import type {
   LocalBisListsState,
   LocalSpecBisEntry,
 } from "../../types/bis-lists.ts";
+import { isSpecValidForClass } from "../../data/class-specs.ts";
+import { ClassName } from "../../types/characters.ts";
 import {
   BIS_LISTS_SCHEMA_VERSION,
   BIS_LISTS_STORAGE_KEY,
-  LEGACY_BIS_LISTS_STORAGE_KEY,
+  BIS_LISTS_STORAGE_KEYS,
 } from "./constants.ts";
 import { isRecord } from "../guards.ts";
-import { getLocalStorageItemMigrating } from "../../utils/local-storage-migrate.ts";
+import { getWriteError, loadLocalSave, type ParsedSave, type SaveError } from "../local-save.ts";
 import { LOAD_WARNING_CORRUPTED_SAVE, LOAD_WARNING_UNSUPPORTED_SAVE } from "../constants.ts";
 
 const EMPTY_STATE: LocalBisListsState = {
   schemaVersion: BIS_LISTS_SCHEMA_VERSION,
   entries: {},
 };
-
-export const BIS_LISTS_STORAGE_QUOTA_MESSAGE =
-  "Storage quota exceeded. Please free up space.";
-export const BIS_LISTS_STORAGE_SAVE_FAILED_MESSAGE =
-  "Failed to save data. Please try again.";
 
 /** Soft-parse one slot; drop non-integer / non-positive item ids, keep the rest. */
 function parseBisListSlot(value: unknown, warn: () => void): BisListSlot | null {
@@ -30,7 +27,7 @@ function parseBisListSlot(value: unknown, warn: () => void): BisListSlot | null 
   }
   if (
     typeof value.slot !== "number" ||
-    !Number.isInteger(value.slot) ||
+    !Number.isSafeInteger(value.slot) ||
     value.slot < 0
   ) {
     return null;
@@ -40,7 +37,7 @@ function parseBisListSlot(value: unknown, warn: () => void): BisListSlot | null 
   }
   const itemIds = value.itemIds.filter(
     (itemId): itemId is number =>
-      typeof itemId === "number" && Number.isInteger(itemId) && itemId > 0,
+      typeof itemId === "number" && Number.isSafeInteger(itemId) && itemId > 0,
   );
   if (itemIds.length !== value.itemIds.length) warn();
   return { slot: value.slot, itemIds };
@@ -60,17 +57,19 @@ function parseBisListPreset(value: unknown, warn: () => void): BisListPreset | n
   if (!Array.isArray(value.slots)) {
     return null;
   }
-  const slots: BisListSlot[] = [];
+  const slots = new Map<number, BisListSlot>();
   for (const slotEntry of value.slots) {
     const parsedSlot = parseBisListSlot(slotEntry, warn);
-    if (parsedSlot) {
-      slots.push(parsedSlot);
-    } else warn();
+    if (!parsedSlot || slots.has(parsedSlot.slot)) {
+      warn();
+      continue;
+    }
+    slots.set(parsedSlot.slot, parsedSlot);
   }
   return {
     id: value.id,
     name: value.name,
-    slots,
+    slots: [...slots.values()],
   };
 }
 
@@ -88,23 +87,22 @@ function parseLocalSpecBisEntry(value: unknown, warn: () => void): LocalSpecBisE
   if (!Array.isArray(value.presets)) {
     return null;
   }
-  const presets: BisListPreset[] = [];
+  const presets = new Map<string, BisListPreset>();
   for (const preset of value.presets) {
     const parsedPreset = parseBisListPreset(preset, warn);
-    if (parsedPreset) {
-      presets.push(parsedPreset);
-    } else warn();
+    if (!parsedPreset || presets.has(parsedPreset.id)) {
+      warn();
+      continue;
+    }
+    presets.set(parsedPreset.id, parsedPreset);
   }
   return {
     selectedPresetId: value.selectedPresetId,
-    presets,
+    presets: [...presets.values()],
   };
 }
 
-/**
- * Keys must look like `ClassName|Spec` (see `specBisStorageKey`).
- * Malformed entries are skipped so one bad row does not wipe the whole BiS store.
- */
+/** Keep recognized class and spec buckets, even if neighboring entries are invalid. */
 function parseEntries(
   value: unknown,
   warn: () => void,
@@ -116,7 +114,9 @@ function parseEntries(
 
   const entries: LocalBisListsState["entries"] = {};
   for (const [storageKey, entryValue] of Object.entries(value)) {
-    if (typeof storageKey !== "string" || !storageKey.includes("|")) {
+    const [classKey, spec, extra] = storageKey.split("|");
+    const className = Object.values(ClassName).find((value) => value === classKey);
+    if (!className || !spec || extra !== undefined || !isSpecValidForClass(className, spec)) {
       warn();
       continue;
     }
@@ -128,19 +128,12 @@ function parseEntries(
   return entries;
 }
 
-/**
- * Load BiS lists from `raidwise-bis-lists` (migrates legacy `my-raid-cds-bis-lists`).
- * Wrong schema or corrupt JSON → empty.
- * Entries are soft-validated; bad rows are dropped rather than failing the whole load.
- */
-export function parseLocalBisListsState(raw: string | null): {
-  state: LocalBisListsState;
-  loadWarning: string | null;
-} {
+/** Recover valid rows and report any discarded data. */
+export function parseLocalBisListsState(raw: string | null): ParsedSave<LocalBisListsState> {
   if (raw === null) return { state: EMPTY_STATE, loadWarning: null };
   try {
     const parsed: unknown = JSON.parse(raw);
-    if (!isRecord(parsed)) {
+    if (!isRecord(parsed) || !Number.isSafeInteger(parsed.schemaVersion)) {
       return { state: EMPTY_STATE, loadWarning: LOAD_WARNING_CORRUPTED_SAVE };
     }
     if (parsed.schemaVersion !== BIS_LISTS_SCHEMA_VERSION) {
@@ -157,29 +150,18 @@ export function parseLocalBisListsState(raw: string | null): {
   }
 }
 
-export function loadLocalBisListsState(): LocalBisListsState {
-  return parseLocalBisListsState(getLocalStorageItemMigrating(
-    BIS_LISTS_STORAGE_KEY,
-    LEGACY_BIS_LISTS_STORAGE_KEY,
-  )).state;
+export function loadLocalBisListsState() {
+  return loadLocalSave(BIS_LISTS_STORAGE_KEYS, parseLocalBisListsState);
 }
 
-/**
- * Persist BiS lists. `onError(null)` on success; quota/unknown failures use the
- * exported English message constants (mapped to i18n in the BiS panel).
- */
 export function saveLocalBisListsState(
   state: LocalBisListsState,
-  onError?: (message: string | null) => void,
+  onError?: (error: SaveError | null) => void,
 ): void {
   try {
     localStorage.setItem(BIS_LISTS_STORAGE_KEY, JSON.stringify(state));
     onError?.(null);
   } catch (error) {
-    const message =
-      error instanceof DOMException && error.name === "QuotaExceededError"
-        ? BIS_LISTS_STORAGE_QUOTA_MESSAGE
-        : BIS_LISTS_STORAGE_SAVE_FAILED_MESSAGE;
-    onError?.(message);
+    onError?.(getWriteError(error));
   }
 }

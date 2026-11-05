@@ -531,7 +531,7 @@ export const enMessages = {
   storage: {
     corrupted:
       "Some saved data could not be read. The original is intact and automatic saving is paused.",
-    unsupported: "This save uses an unsupported version. Automatic saving is paused.",
+    unsupported: "This save uses an unsupported version. Download the original or open it in a compatible version of Raidwise.",
     readFailed: "Browser storage could not be read. Download your working copy before reloading.",
     conflict: "The saved data changed in another tab. Download this tab’s working copy before reloading if you want to keep it.",
     downloadOriginal: "Download original",

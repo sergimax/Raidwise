@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { ClassName } from "../../types/characters.ts";
 import type { LocalBisListsState } from "../../types/bis-lists.ts";
 import { specBisStorageKey } from "../../utils/bis-lists.ts";
+import { LOAD_WARNING_CORRUPTED_SAVE, LOAD_WARNING_UNSUPPORTED_SAVE } from "../constants.ts";
 import {
   BIS_LISTS_SCHEMA_VERSION,
   BIS_LISTS_STORAGE_KEY,
@@ -23,24 +24,30 @@ describe("loadLocalBisListsState", () => {
   });
 
   it("returns empty state when storage key is missing", () => {
-    expect(loadLocalBisListsState()).toEqual(EMPTY_STATE);
+    expect(loadLocalBisListsState().state).toEqual(EMPTY_STATE);
   });
 
   it("returns empty state for invalid JSON", () => {
     writeRawBisListsStorage("{not-json");
-    expect(loadLocalBisListsState()).toEqual(EMPTY_STATE);
+    expect(loadLocalBisListsState()).toMatchObject({
+      state: EMPTY_STATE,
+      loadWarning: LOAD_WARNING_CORRUPTED_SAVE,
+    });
   });
 
   it("returns empty state for wrong schema version", () => {
     writeRawBisListsStorage(JSON.stringify({ schemaVersion: 99, entries: {} }));
-    expect(loadLocalBisListsState()).toEqual(EMPTY_STATE);
+    expect(loadLocalBisListsState()).toMatchObject({
+      state: EMPTY_STATE,
+      loadWarning: LOAD_WARNING_UNSUPPORTED_SAVE,
+    });
   });
 
   it("returns empty state when entries is not an object", () => {
     writeRawBisListsStorage(
       JSON.stringify({ schemaVersion: BIS_LISTS_SCHEMA_VERSION, entries: [] }),
     );
-    expect(loadLocalBisListsState()).toEqual(EMPTY_STATE);
+    expect(loadLocalBisListsState().state).toEqual(EMPTY_STATE);
   });
 
   it("loads a valid persisted state", () => {
@@ -61,7 +68,7 @@ describe("loadLocalBisListsState", () => {
       },
     };
     localStorage.setItem(BIS_LISTS_STORAGE_KEY, JSON.stringify(persisted));
-    expect(loadLocalBisListsState()).toEqual(persisted);
+    expect(loadLocalBisListsState().state).toEqual(persisted);
   });
 
   it("drops malformed entries and presets while keeping valid ones", () => {
@@ -89,7 +96,9 @@ describe("loadLocalBisListsState", () => {
       }),
     );
 
-    expect(loadLocalBisListsState()).toEqual({
+    const { state, loadWarning } = loadLocalBisListsState();
+    expect(loadWarning).toBe(LOAD_WARNING_CORRUPTED_SAVE);
+    expect(state).toEqual({
       schemaVersion: BIS_LISTS_SCHEMA_VERSION,
       entries: {
         [storageKey]: {
@@ -131,6 +140,6 @@ describe("saveLocalBisListsState", () => {
     };
 
     saveLocalBisListsState(state);
-    expect(loadLocalBisListsState()).toEqual(state);
+    expect(loadLocalBisListsState().state).toEqual(state);
   });
 });

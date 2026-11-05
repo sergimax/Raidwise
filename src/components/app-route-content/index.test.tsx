@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -83,6 +83,41 @@ describe("AppRouteContent", () => {
 
     expect(screen.getByTestId("current-path")).toHaveTextContent(path);
     expect(screen.getByRole("heading", { name: "Page not found" })).toBeInTheDocument();
+  });
+
+  it("keeps the recovery warning and exports the original after an external write", async () => {
+    const raw = '{"characters":[null],"dungeons":[],"dungeonToggles":{}}';
+    localStorage.setItem("raidwise", raw);
+    const user = userEvent.setup();
+    renderRoute("/raids");
+
+    localStorage.setItem("raidwise", '{"characters":[],"dungeons":[],"dungeonToggles":{}}');
+    fireEvent(window, new StorageEvent("storage", { key: "raidwise" }));
+    expect(screen.getByText(/Some saved data could not be read/)).toBeInTheDocument();
+    expect(screen.getByText(/The saved data changed in another tab/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Replace with working copy" })).not.toBeInTheDocument();
+
+    const createObjectURL = vi.fn<(blob: Blob) => string>().mockReturnValue("blob:recovery");
+    const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    vi.stubGlobal("URL", class extends URL {
+      static createObjectURL = createObjectURL;
+      static revokeObjectURL = vi.fn();
+    });
+    try {
+      await user.click(screen.getByRole("button", { name: "Download original" }));
+      const [blob] = createObjectURL.mock.calls[0];
+      const contents = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(blob);
+      });
+      expect(contents).toBe(raw);
+      expect(click.mock.contexts[0]).toHaveAttribute("download", "raidwise-tracker-original.json");
+    } finally {
+      click.mockRestore();
+      vi.unstubAllGlobals();
+    }
   });
 
   it("opens a raid tool from its URL and returns to the workspace when closed", async () => {

@@ -150,8 +150,8 @@ Character names: new names are letters only (Unicode `\p{L}+`); display capitali
 Tracker and BiS edits save immediately.
 If another tab changes a save, Raidwise pauses writes from the stale tab and lets you download its working copy or reload the latest save.
 
-If a save is damaged or uses an unsupported version, Raidwise preserves the original and shows any records it can recover.
-Download the original or explicitly replace it with the working copy from the warning. BiS warnings appear in **BiS builds**.
+If a save is damaged, Raidwise pauses writes and shows the records it can recover. The warning lets you download the original or confirm a replacement with the working copy.
+For an unsupported save version, download the original or open it in a compatible version of Raidwise. BiS warnings appear in **BiS builds**.
 
 ### Deployment (caching & HTTP)
 

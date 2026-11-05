@@ -1,36 +1,26 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { STORAGE_CONFLICT, STORAGE_READ_FAILED } from "../storage/constants.ts";
+import {
+  LOAD_WARNING_CORRUPTED_SAVE,
+  STORAGE_CONFLICT,
+  STORAGE_READ_FAILED,
+} from "../storage/constants.ts";
+import {
+  getWriteError,
+  readSnapshot,
+  type LoadedSave,
+  type SaveError,
+  type SaveSnapshot,
+  type StorageKeys,
+} from "../storage/local-save.ts";
 
-type StorageKeys = { key: string; legacyKey: string };
-type Snapshot = { current: string | null; legacy: string | null };
-type LoadedState<T> = { state: T; loadWarning: string | null };
-
-function readSnapshot({ key, legacyKey }: StorageKeys): Snapshot {
-  const current = localStorage.getItem(key);
-  return { current, legacy: current === null ? localStorage.getItem(legacyKey) : null };
-}
-
-function sameSnapshot(left: Snapshot, right: Snapshot): boolean {
+function sameSnapshot(left: SaveSnapshot, right: SaveSnapshot): boolean {
   return left.current === right.current && left.legacy === right.legacy;
-}
-
-export function loadLocalSave<T>(
-  keys: StorageKeys,
-  parse: (raw: string | null) => LoadedState<T>,
-) {
-  let snapshot: Snapshot;
-  try {
-    snapshot = readSnapshot(keys);
-  } catch {
-    return { ...parse(null), loadWarning: STORAGE_READ_FAILED, snapshot: null };
-  }
-  return { ...parse(snapshot.current ?? snapshot.legacy), snapshot };
 }
 
 /** Save committed edits immediately and keep the draft when a different snapshot is found. */
 export function useLocalSave<T>(
   keys: StorageKeys,
-  initial: LoadedState<T> & { snapshot: Snapshot | null },
+  initial: LoadedSave<T>,
   state: T,
   serialize: (state: T) => string,
 ) {
@@ -38,8 +28,9 @@ export function useLocalSave<T>(
   const expected = useRef(initial.snapshot);
   const observedState = useRef(state);
   const [loadWarning, setLoadWarning] = useState(initial.loadWarning);
-  const [saveError, setSaveError] = useState<string | null>(null);
-  const original = loadWarning ? initial.snapshot?.current ?? initial.snapshot?.legacy : null;
+  const [saveError, setSaveError] = useState<SaveError | null>(null);
+  const original = loadWarning ? initial.snapshot?.current ?? initial.snapshot?.legacy ?? null : null;
+  const canRecover = loadWarning === LOAD_WARNING_CORRUPTED_SAVE && original !== null;
 
   const persist = useCallback((value: T): boolean => {
     try {
@@ -61,11 +52,7 @@ export function useLocalSave<T>(
       setSaveError(null);
       return true;
     } catch (error) {
-      setSaveError(
-        error instanceof DOMException && error.name === "QuotaExceededError"
-          ? "Storage quota exceeded. Please free up space."
-          : "Failed to save data. Please try again.",
-      );
+      setSaveError(getWriteError(error));
       return false;
     }
   }, [key, legacyKey, serialize]);
@@ -95,13 +82,14 @@ export function useLocalSave<T>(
 
   const exportStorageDraft = useCallback(() => serialize(state), [serialize, state]);
   const recoverStorage = useCallback(() => {
-    if (original != null && persist(state)) setLoadWarning(null);
-  }, [original, persist, state]);
+    if (canRecover && persist(state)) setLoadWarning(null);
+  }, [canRecover, persist, state]);
 
   return {
-    storageError: saveError ?? loadWarning,
+    storageLoadWarning: loadWarning,
+    storageSaveError: saveError,
     storageOriginal: original,
     exportStorageDraft,
-    recoverStorage: original != null ? recoverStorage : undefined,
+    recoverStorage: canRecover ? recoverStorage : undefined,
   };
 }

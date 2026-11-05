@@ -9,15 +9,14 @@ import {
   DungeonDifficulty,
   DungeonSizes,
   type DungeonRecord,
-  type DungeonToggles,
 } from "../types/dungeons.ts";
 import {
   CURRENT_SCHEMA_VERSION,
-  LEGACY_STORAGE_KEY,
   LOAD_WARNING_CORRUPTED_SAVE,
   LOAD_WARNING_UNSUPPORTED_SAVE,
-  STORAGE_KEY,
+  TRACKER_STORAGE_KEYS,
 } from "./constants.ts";
+import { loadLocalSave, type LoadWarning } from "./local-save.ts";
 import { migrateStoredPayload } from "./migrate.ts";
 import {
   EMPTY_STATE,
@@ -27,9 +26,13 @@ import {
   type StoredPayload,
 } from "./types.ts";
 import { isRecord } from "./guards.ts";
-import { getLocalStorageItemMigrating } from "../utils/local-storage-migrate.ts";
 
 const VALID_EMBLEM_KEYS = new Set<string>(Object.values(EmblemKey));
+type Warn = () => void;
+
+function isStoredId(value: unknown): value is string {
+  return typeof value === "string" && value.trim() !== "" && !Object.hasOwn(Object.prototype, value);
+}
 
 function parseStoredEmblem(stored: StoredDungeon): EmblemKeyType | undefined {
   if (typeof stored.emblem === "string" && VALID_EMBLEM_KEYS.has(stored.emblem)) {
@@ -40,7 +43,7 @@ function parseStoredEmblem(stored: StoredDungeon): EmblemKeyType | undefined {
 
 function readRawPayload(raw: string): {
   payload: StoredPayload | null;
-  warning: string | null;
+  warning: LoadWarning | null;
 } {
   let parsed: unknown;
   try {
@@ -79,14 +82,14 @@ function readRawPayload(raw: string): {
       schemaVersion,
       characters: characterRows as StoredCharacter[],
       dungeons: dungeonRows as StoredDungeon[],
-      dungeonToggles: (toggles ?? {}) as Record<string, Record<string, boolean>>,
+      dungeonToggles: toggles ?? {},
     },
     warning: partial ? LOAD_WARNING_CORRUPTED_SAVE : null,
   };
 }
 
-function toDungeonRecord(stored: StoredDungeon): DungeonRecord | null {
-  if (typeof stored.id !== "string" || typeof stored.name !== "string") {
+function toDungeonRecord(stored: StoredDungeon, warn: Warn): DungeonRecord | null {
+  if (!isStoredId(stored.id) || typeof stored.name !== "string" || !stored.name.trim()) {
     return null;
   }
 
@@ -96,9 +99,9 @@ function toDungeonRecord(stored: StoredDungeon): DungeonRecord | null {
       ? DungeonDifficulty.HEROIC
       : DungeonDifficulty.NORMAL;
   const size = DungeonSizes.includes(stored.size) ? stored.size : 10;
-  if (!Array.isArray(stored.itemLevel) || !stored.itemLevel.every(Number.isFinite)) {
-    return null;
-  }
+  if (!Array.isArray(stored.itemLevel)) return null;
+  const itemLevel = stored.itemLevel.filter(Number.isFinite);
+  if (itemLevel.length === 0 && stored.itemLevel.length > 0) return null;
 
   const emblem = parseStoredEmblem(stored);
   const shortName =
@@ -109,11 +112,21 @@ function toDungeonRecord(stored: StoredDungeon): DungeonRecord | null {
     typeof stored.raidKey === "string" && isRaidKey(stored.raidKey)
       ? stored.raidKey
       : undefined;
+  if (
+    itemLevel.length !== stored.itemLevel.length ||
+    (stored.size !== undefined && stored.size !== size) ||
+    (rawDifficulty !== undefined && rawDifficulty !== difficulty) ||
+    (stored.emblem !== undefined && !emblem) ||
+    (stored.raidKey !== undefined && !raidKey) ||
+    (stored.shortName !== undefined && typeof stored.shortName !== "string")
+  ) {
+    warn();
+  }
   return {
     id: stored.id,
     name: stored.name,
     size,
-    itemLevel: stored.itemLevel as number[],
+    itemLevel,
     difficulty,
     ...(shortName ? { shortName } : {}),
     ...(emblem ? { emblem } : {}),
@@ -121,11 +134,14 @@ function toDungeonRecord(stored: StoredDungeon): DungeonRecord | null {
   };
 }
 
-function parseOptionalStoredInteger(value: unknown): number | undefined {
-  if (typeof value !== "number" || !Number.isFinite(value) || !Number.isInteger(value)) {
-    return undefined;
-  }
-  return value > 0 ? value : undefined;
+function isPositiveInteger(value: unknown): value is number {
+  return typeof value === "number" && Number.isSafeInteger(value) && value > 0;
+}
+
+function parseOptionalStoredInteger(value: unknown, warn: Warn): number | undefined {
+  if (isPositiveInteger(value)) return value;
+  if (value !== undefined) warn();
+  return undefined;
 }
 
 function parseOptionalStoredSpec(
@@ -145,6 +161,7 @@ function parseOptionalStoredSpec(
 function parseStoredSpecGearPair(
   className: ClassName,
   storedValue: unknown,
+  warn: Warn,
   legacyGearScore?: number,
 ): CharacterSpecGear | undefined {
   if (storedValue === null || storedValue === undefined) {
@@ -155,10 +172,11 @@ function parseStoredSpecGearPair(
     const record = storedValue as Record<string, unknown>;
     const spec = parseOptionalStoredSpec(className, record.spec);
     if (!spec) {
+      warn();
       return undefined;
     }
-    const gearScore = parseOptionalStoredInteger(record.gearScore);
-    const gearItems = parseStoredGearItems(record.gearItems);
+    const gearScore = parseOptionalStoredInteger(record.gearScore, warn);
+    const gearItems = parseStoredGearItems(record.gearItems, warn);
     const result: CharacterSpecGear = { spec };
     if (gearScore !== undefined) {
       result.gearScore = gearScore;
@@ -172,6 +190,7 @@ function parseStoredSpecGearPair(
   if (typeof storedValue === "string") {
     const spec = parseOptionalStoredSpec(className, storedValue);
     if (!spec) {
+      warn();
       return undefined;
     }
     const result: CharacterSpecGear = { spec };
@@ -181,52 +200,43 @@ function parseStoredSpecGearPair(
     return result;
   }
 
+  warn();
   return undefined;
 }
 
-function parseStoredGearItems(value: unknown): CharacterGearItem[] | undefined {
+function parseStoredGearItems(value: unknown, warn: Warn): CharacterGearItem[] | undefined {
   if (!Array.isArray(value)) {
+    if (value !== undefined) warn();
     return undefined;
   }
 
   const gearItems: CharacterGearItem[] = [];
   for (const entry of value) {
-    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
-      continue;
-    }
-    const record = entry as Record<string, unknown>;
     if (
-      typeof record.slot !== "number" ||
-      !Number.isInteger(record.slot) ||
-      record.slot < 0 ||
-      typeof record.id !== "number" ||
-      !Number.isInteger(record.id) ||
-      record.id <= 0
+      !isRecord(entry) || typeof entry.slot !== "number" ||
+      !Number.isSafeInteger(entry.slot) || entry.slot < 0 ||
+      !isPositiveInteger(entry.id)
     ) {
+      warn();
       continue;
     }
 
     const item: CharacterGearItem = {
-      slot: record.slot,
-      id: record.id,
+      slot: entry.slot,
+      id: entry.id,
     };
 
-    if (
-      typeof record.enchant === "number" &&
-      Number.isInteger(record.enchant) &&
-      record.enchant > 0
-    ) {
-      item.enchant = record.enchant;
-    }
+    const enchant = parseOptionalStoredInteger(entry.enchant, warn);
+    if (enchant !== undefined) item.enchant = enchant;
 
-    if (Array.isArray(record.gems)) {
-      const gems = record.gems.filter(
-        (gem): gem is number =>
-          typeof gem === "number" && Number.isInteger(gem) && gem > 0,
-      );
+    if (Array.isArray(entry.gems)) {
+      const gems = entry.gems.filter(isPositiveInteger);
+      if (gems.length !== entry.gems.length) warn();
       if (gems.length > 0) {
         item.gems = gems;
       }
+    } else if (entry.gems !== undefined) {
+      warn();
     }
 
     gearItems.push(item);
@@ -235,95 +245,73 @@ function parseStoredGearItems(value: unknown): CharacterGearItem[] | undefined {
   return gearItems.length > 0 ? gearItems : undefined;
 }
 
-function parseStoredAlsoOwnedItemIds(value: unknown): number[] | undefined {
+function parseStoredAlsoOwnedItemIds(value: unknown, warn: Warn): number[] | undefined {
   if (!Array.isArray(value)) {
+    if (value !== undefined) warn();
     return undefined;
   }
 
-  const itemIds: number[] = [];
-  for (const entry of value) {
-    if (
-      typeof entry !== "number" ||
-      !Number.isInteger(entry) ||
-      entry <= 0 ||
-      itemIds.includes(entry)
-    ) {
-      continue;
-    }
-    itemIds.push(entry);
-  }
+  const validIds = value.filter(isPositiveInteger);
+  if (validIds.length !== value.length) warn();
+  const itemIds = [...new Set(validIds)];
 
   return itemIds.length > 0 ? itemIds : undefined;
 }
 
-function parseCharacters(storedCharacters: StoredCharacter[]): CharacterRecord[] {
-  return storedCharacters
-    .map((stored) => {
-      if (typeof stored.id !== "string" || typeof stored.name !== "string") {
-        return null;
-      }
-      const charClass = Classes.find(
-        (candidate) => candidate.name === stored.className,
-      );
-      if (!charClass) return null;
-
-      const legacyGearScore = parseOptionalStoredInteger(stored.gearScore);
-      const legacyGearItems = parseStoredGearItems(stored.gearItems);
-      let mainSpec = parseStoredSpecGearPair(
-        charClass.name,
-        stored.mainSpec,
-        legacyGearScore,
-      );
-      const offSpec = parseStoredSpecGearPair(charClass.name, stored.offSpec);
-
-      if (mainSpec && legacyGearItems && !mainSpec.gearItems) {
-        mainSpec = { ...mainSpec, gearItems: legacyGearItems };
-      }
-
-      const alsoOwnedItemIds = parseStoredAlsoOwnedItemIds(
-        stored.alsoOwnedItemIds,
-      );
-
-      return {
-        id: stored.id,
-        name: stored.name,
-        class: charClass,
-        ...(mainSpec ? { mainSpec } : {}),
-        ...(offSpec && offSpec.spec !== mainSpec?.spec ? { offSpec } : {}),
-        ...(alsoOwnedItemIds ? { alsoOwnedItemIds } : {}),
-      } as CharacterRecord;
-    })
-    .filter((character): character is CharacterRecord => character !== null);
-}
-
-function parseDungeons(storedDungeons: StoredDungeon[]): DungeonRecord[] {
-  const result: DungeonRecord[] = [];
-  for (const stored of storedDungeons) {
-    const dungeon = toDungeonRecord(stored);
-    if (dungeon) result.push(dungeon);
+function toCharacterRecord(stored: StoredCharacter, warn: Warn): CharacterRecord | null {
+  if (!isStoredId(stored.id) || typeof stored.name !== "string" || !stored.name.trim()) {
+    return null;
   }
-  return result;
+  const charClass = Classes.find((candidate) => candidate.name === stored.className);
+  if (!charClass) return null;
+
+  const legacyGearScore = parseOptionalStoredInteger(stored.gearScore, warn);
+  const legacyGearItems = parseStoredGearItems(stored.gearItems, warn);
+  let mainSpec = parseStoredSpecGearPair(charClass.name, stored.mainSpec, warn, legacyGearScore);
+  const offSpec = parseStoredSpecGearPair(charClass.name, stored.offSpec, warn);
+
+  if (mainSpec && legacyGearItems && !mainSpec.gearItems) {
+    mainSpec = { ...mainSpec, gearItems: legacyGearItems };
+  }
+  if (offSpec && offSpec.spec === mainSpec?.spec) warn();
+  const alsoOwnedItemIds = parseStoredAlsoOwnedItemIds(stored.alsoOwnedItemIds, warn);
+
+  return {
+    id: stored.id,
+    name: stored.name,
+    class: charClass,
+    ...(mainSpec ? { mainSpec } : {}),
+    ...(offSpec && offSpec.spec !== mainSpec?.spec ? { offSpec } : {}),
+    ...(alsoOwnedItemIds ? { alsoOwnedItemIds } : {}),
+  };
 }
 
-function parseDungeonToggles(
-  storedToggles: Record<string, Record<string, boolean>>,
-  dungeonIds: Set<string>,
-): DungeonToggles {
-  return pruneToggles(storedToggles, {
-    dungeonIds,
-    requireBooleanValues: true,
-  });
+function parseUniqueRows<Stored, Row extends { id: string }>(
+  storedRows: Stored[],
+  parse: (stored: Stored, warn: Warn) => Row | null,
+  warn: Warn,
+): Row[] {
+  const rows = new Map<string, Row>();
+  for (const stored of storedRows) {
+    const row = parse(stored, warn);
+    if (!row || rows.has(row.id)) {
+      warn();
+      continue;
+    }
+    rows.set(row.id, row);
+  }
+  return [...rows.values()];
 }
 
-function parsePayload(payload: StoredPayload): LoadRaidTrackerResult["state"] {
+function parsePayload(payload: StoredPayload, warn: Warn): LoadRaidTrackerResult["state"] {
   const migrated = migrateStoredPayload(payload);
-  const characters = parseCharacters(migrated.characters);
-  const dungeons = parseDungeons(migrated.dungeons);
-  const dungeonIds = new Set(dungeons.map((dungeon) => dungeon.id));
-  const dungeonToggles =
-    dungeons.length > 0
-      ? parseDungeonToggles(migrated.dungeonToggles, dungeonIds)
-      : {};
+  const characters = parseUniqueRows(migrated.characters, toCharacterRecord, warn);
+  const dungeons = parseUniqueRows(migrated.dungeons, toDungeonRecord, warn);
+  const dungeonToggles = pruneToggles(migrated.dungeonToggles, {
+    characterIds: new Set(characters.map(({ id }) => id)),
+    dungeonIds: new Set(dungeons.map(({ id }) => id)),
+    onDiscard: warn,
+  });
 
   return { characters, dungeons, dungeonToggles };
 }
@@ -335,15 +323,14 @@ export function parseRaidTrackerState(raw: string | null): LoadRaidTrackerResult
 
   const { payload, warning } = readRawPayload(raw);
   if (!payload) return { state: EMPTY_STATE, loadWarning: warning };
-  const state = parsePayload(payload);
-  const skippedRows = state.characters.length !== payload.characters.length ||
-    state.dungeons.length !== payload.dungeons.length;
+  let corrupt = warning === LOAD_WARNING_CORRUPTED_SAVE;
+  const state = parsePayload(payload, () => { corrupt = true; });
   return {
     state,
-    loadWarning: warning ?? (skippedRows ? LOAD_WARNING_CORRUPTED_SAVE : null),
+    loadWarning: corrupt ? LOAD_WARNING_CORRUPTED_SAVE : null,
   };
 }
 
-export function loadRaidTrackerState(): LoadRaidTrackerResult {
-  return parseRaidTrackerState(getLocalStorageItemMigrating(STORAGE_KEY, LEGACY_STORAGE_KEY));
+export function loadRaidTrackerState() {
+  return loadLocalSave(TRACKER_STORAGE_KEYS, parseRaidTrackerState);
 }

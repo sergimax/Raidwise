@@ -2,6 +2,7 @@ import {
   CURRENT_SCHEMA_VERSION,
   STORAGE_KEY,
 } from "./constants.ts";
+import { getWriteError, type SaveError } from "./local-save.ts";
 import { pruneToggles } from "../utils/dungeon-toggles.ts";
 import type { CharacterRecord } from "../types/characters.ts";
 import type { PersistedTrackerState, StoredCharacter, StoredCharacterSpecGear, StoredDungeon, StoredPayload } from "./types.ts";
@@ -63,16 +64,12 @@ export function serializeRaidTrackerState(state: PersistedTrackerState): string 
 
 export function saveRaidTrackerState(
   state: PersistedTrackerState,
-  onError?: (message: string | null) => void,
+  onError?: (error: SaveError | null) => void,
 ): void {
   try {
     localStorage.setItem(STORAGE_KEY, serializeRaidTrackerState(state));
     onError?.(null);
   } catch (error) {
-    const message =
-      error instanceof DOMException && error.name === "QuotaExceededError"
-        ? "Storage quota exceeded. Please free up space."
-        : "Failed to save data. Please try again.";
-    onError?.(message);
+    onError?.(getWriteError(error));
   }
 }

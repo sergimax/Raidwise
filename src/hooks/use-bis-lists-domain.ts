@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ClassName } from "../types/characters.ts";
 import type { BisListSlot, LocalBisListsState } from "../types/bis-lists.ts";
-import { parseLocalBisListsState } from "../storage/bis-lists/index.ts";
-import { BIS_LISTS_STORAGE_KEY, LEGACY_BIS_LISTS_STORAGE_KEY } from "../storage/bis-lists/constants.ts";
-import { loadLocalSave, useLocalSave } from "./use-local-save.ts";
+import { loadLocalBisListsState } from "../storage/bis-lists/index.ts";
+import { BIS_LISTS_STORAGE_KEYS } from "../storage/bis-lists/constants.ts";
+import { useLocalSave } from "./use-local-save.ts";
 import { getBuiltInPresetsForSpec } from "../data/bis-presets/index.ts";
 import {
   clearAllLocalBisPresets,
@@ -19,8 +19,6 @@ import {
   upsertLocalSpecEntry,
 } from "../utils/bis-lists.ts";
 
-const storageKeys = { key: BIS_LISTS_STORAGE_KEY, legacyKey: LEGACY_BIS_LISTS_STORAGE_KEY };
-
 /**
  * BiS presets domain: built-in + local lists, selection, and slot maps.
  * Mutations must go through functional updates (`applyLocalUpdate` /
@@ -28,10 +26,10 @@ const storageKeys = { key: BIS_LISTS_STORAGE_KEY, legacyKey: LEGACY_BIS_LISTS_ST
  * Persistence follows committed edits.
  */
 export function useBisListsDomain() {
-  const [initialLoad] = useState(() => loadLocalSave(storageKeys, parseLocalBisListsState));
+  const [initialLoad] = useState(loadLocalBisListsState);
   const [localState, setLocalState] = useState(initialLoad.state);
-  const { storageError, storageOriginal, exportStorageDraft, recoverStorage } =
-    useLocalSave(storageKeys, initialLoad, localState, JSON.stringify);
+  const { storageLoadWarning, storageSaveError, storageOriginal, exportStorageDraft, recoverStorage } =
+    useLocalSave(BIS_LISTS_STORAGE_KEYS, initialLoad, localState, JSON.stringify);
   const localStateRef = useRef(localState);
 
   useEffect(() => {
@@ -220,7 +218,8 @@ export function useBisListsDomain() {
       updateSelectedLocalPresetSlots,
       clearAllLocalPresets,
       hasAnyLocalBisPresets,
-      storageError,
+      storageLoadWarning,
+      storageSaveError,
       storageOriginal,
       exportStorageDraft,
       recoverStorage,
@@ -234,7 +233,8 @@ export function useBisListsDomain() {
       hasAnyLocalBisPresets,
       savePresetByName,
       selectPreset,
-      storageError,
+      storageLoadWarning,
+      storageSaveError,
       storageOriginal,
       exportStorageDraft,
       recoverStorage,

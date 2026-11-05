@@ -9,7 +9,7 @@ import { saveLocalBisListsState } from "../storage/bis-lists/index.ts";
 import { ClassName } from "../types/characters.ts";
 import { specBisStorageKey } from "../utils/bis-lists.ts";
 import { useBisListsDomain } from "./use-bis-lists-domain.ts";
-import { LOAD_WARNING_UNSUPPORTED_SAVE, STORAGE_CONFLICT } from "../storage/constants.ts";
+import { LOAD_WARNING_UNSUPPORTED_SAVE, STORAGE_CONFLICT, STORAGE_QUOTA_EXCEEDED } from "../storage/constants.ts";
 
 const builtInPresetId = unholyDeathKnightBis.presets[0]!.id;
 const storageKey = specBisStorageKey(ClassName.DeathKnight, "Unholy");
@@ -33,8 +33,9 @@ describe("useBisListsDomain", () => {
     localStorage.setItem(BIS_LISTS_STORAGE_KEY, raw);
     const { result, unmount } = renderHook(() => useBisListsDomain());
     act(() => result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId));
-    expect(result.current.storageError).toBe(LOAD_WARNING_UNSUPPORTED_SAVE);
+    expect(result.current.storageLoadWarning).toBe(LOAD_WARNING_UNSUPPORTED_SAVE);
     expect(result.current.storageOriginal).toBe(raw);
+    expect(result.current.recoverStorage).toBeUndefined();
     unmount();
     expect(localStorage.getItem(BIS_LISTS_STORAGE_KEY)).toBe(raw);
   });
@@ -45,7 +46,7 @@ describe("useBisListsDomain", () => {
     act(() => first.result.current.savePresetByName(ClassName.DeathKnight, "Unholy", "First", []));
     const saved = localStorage.getItem(BIS_LISTS_STORAGE_KEY);
     act(() => second.result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId));
-    expect(second.result.current.storageError).toBe(STORAGE_CONFLICT);
+    expect(second.result.current.storageSaveError).toBe(STORAGE_CONFLICT);
     expect(saved).not.toBeNull();
     expect(localStorage.getItem(BIS_LISTS_STORAGE_KEY)).toBe(saved);
   });
@@ -305,15 +306,15 @@ describe("useBisListsDomain", () => {
         { slot: 0, itemIds: [51312] },
       ]);
     });
-    expect(result.current.storageError).toBe(
-      "Storage quota exceeded. Please free up space.",
+    expect(result.current.storageSaveError).toBe(
+      STORAGE_QUOTA_EXCEEDED,
     );
 
     write.mockRestore();
     act(() => {
       result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId);
     });
-    expect(result.current.storageError).toBeNull();
+    expect(result.current.storageSaveError).toBeNull();
     expect(readPersistedBisLists().entries[storageKey].presets[0].name).toBe(
       "Retry",
     );

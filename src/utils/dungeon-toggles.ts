@@ -1,4 +1,5 @@
 import type { DungeonToggles } from "../types/dungeons.ts";
+import { isRecord } from "../storage/guards.ts";
 
 export function isCooldownOn(
   toggles: DungeonToggles,
@@ -70,32 +71,36 @@ type PruneTogglesOptions = {
   characterIds?: ReadonlySet<string>;
   /** Drop character keys with no dungeon toggles left (save path). */
   omitEmptyCharacters?: boolean;
-  /** Ignore non-boolean toggle values (load path). */
-  requireBooleanValues?: boolean;
+  /** Report malformed or orphaned entries during recovery. */
+  onDiscard?: () => void;
 };
 
 /**
  * Filter by character/dungeon IDs (save + load paths)
  */
 export function pruneToggles(
-  toggles: DungeonToggles,
+  toggles: Record<string, unknown>,
   {
     characterIds,
     dungeonIds,
     omitEmptyCharacters = false,
-    requireBooleanValues = false,
+    onDiscard,
   }: PruneTogglesOptions,
 ): DungeonToggles {
   const result: DungeonToggles = {};
 
   for (const [characterId, togglesByDungeon] of Object.entries(toggles)) {
-    if (characterIds && !characterIds.has(characterId)) continue;
-    if (!togglesByDungeon || typeof togglesByDungeon !== "object") continue;
+    if ((characterIds && !characterIds.has(characterId)) || !isRecord(togglesByDungeon)) {
+      onDiscard?.();
+      continue;
+    }
 
     const prunedForCharacter: Record<string, boolean> = {};
     for (const [dungeonId, value] of Object.entries(togglesByDungeon)) {
-      if (!dungeonIds.has(dungeonId)) continue;
-      if (requireBooleanValues && typeof value !== "boolean") continue;
+      if (!dungeonIds.has(dungeonId) || typeof value !== "boolean") {
+        onDiscard?.();
+        continue;
+      }
       prunedForCharacter[dungeonId] = value;
     }
 

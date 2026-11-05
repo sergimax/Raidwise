@@ -115,7 +115,7 @@ describe("pruneToggles", () => {
     });
   });
 
-  it("ignores non-boolean values when requireBooleanValues is true", () => {
+  it("ignores non-boolean values", () => {
     const toggles = {
       "character-1": {
         "dungeon-1": true,
@@ -124,7 +124,6 @@ describe("pruneToggles", () => {
     };
     const pruned = pruneToggles(toggles, {
       dungeonIds,
-      requireBooleanValues: true,
     });
     expect(pruned).toEqual({
       "character-1": { "dungeon-1": true },
