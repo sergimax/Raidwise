@@ -11,6 +11,7 @@ import {
   STORAGE_WRITE_FAILED,
 } from "../../storage/constants.ts";
 import type { LoadWarning, SaveError } from "../../storage/local-save.ts";
+import type { DurableSave } from "../../storage/pending-save.ts";
 import { downloadJson } from "../../utils/download-json.ts";
 import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog.tsx";
 
@@ -31,6 +32,9 @@ type StorageProblemProps = {
   storageSaving: boolean;
   storageHasDraft: boolean;
   storageVolatileDraft: boolean;
+  storageTabOnlyDraft: boolean;
+  storageDrafts: DurableSave[];
+  openStorageDraft: (id: string) => boolean;
   exportStorageDraft: () => string;
   recoverStorage?: () => void;
   retryStorageSave?: () => void;
@@ -40,23 +44,43 @@ type StorageProblemProps = {
 
 export function StorageProblem({
   storageLoadWarning, storageSaveError, storageOriginal, storageSaving, storageHasDraft,
-  storageVolatileDraft, exportStorageDraft, recoverStorage, retryStorageSave, discardStorageDraft, filename,
+  storageVolatileDraft, storageTabOnlyDraft, storageDrafts, openStorageDraft,
+  exportStorageDraft, recoverStorage, retryStorageSave, discardStorageDraft, filename,
 }: StorageProblemProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [confirm, setConfirm] = useState<"replace" | "discard" | null>(null);
-  if (!storageLoadWarning && !storageSaveError && !storageVolatileDraft) {
+  const [openFailed, setOpenFailed] = useState(false);
+  const availableDrafts = !storageHasDraft && storageDrafts.length > 0 ? (
+    <Alert severity="info">
+      {t("storage.savedDrafts")}
+      {openFailed && <Typography>{t("storage.draftOpenFailed")}</Typography>}
+      {storageDrafts.map(({ id, savedAt, raw }) => (
+        <Stack key={id} direction="row" sx={{ flexWrap: "wrap" }}>
+          <Button color="inherit" onClick={() => {
+            if (openStorageDraft(id)) window.location.reload();
+            else setOpenFailed(true);
+          }}>{t("storage.openDraft", { date: new Date(savedAt).toLocaleString(locale) })}</Button>
+          <Button color="inherit" onClick={() => downloadJson(raw, `${filename}-${id}.json`)}>{t("storage.downloadDraft")}</Button>
+        </Stack>
+      ))}
+    </Alert>
+  ) : null;
+  if (!storageLoadWarning && !storageSaveError && !storageTabOnlyDraft) {
+    if (availableDrafts) return availableDrafts;
     return storageSaving ? <Alert severity="info" role="status">{t("storage.saving")}</Alert> : null;
   }
   const conflict = storageSaveError === STORAGE_CONFLICT;
+  const canDiscard = storageHasDraft && (conflict || (storageLoadWarning !== null && !recoverStorage));
 
   return (
     <>
+      {availableDrafts}
       <Alert severity="error">
         {storageLoadWarning && <Typography variant="body2">{t(messages[storageLoadWarning])}</Typography>}
         {storageSaveError && storageSaveError !== storageLoadWarning && (
           <Typography variant="body2">{t(messages[storageSaveError])}</Typography>
         )}
-        {storageVolatileDraft && <Typography variant="body2">{t("storage.volatileDraft")}</Typography>}
+        {storageTabOnlyDraft && <Typography variant="body2">{t(storageVolatileDraft ? "storage.volatileDraft" : "storage.tabOnlyDraft")}</Typography>}
         <Stack direction="row" spacing={1} useFlexGap sx={{ mt: 1, flexWrap: "wrap" }}>
           {storageOriginal != null && (
             <Button color="inherit" onClick={() => downloadJson(storageOriginal, `${filename}-original.json`)}>
@@ -66,7 +90,7 @@ export function StorageProblem({
           <Button color="inherit" onClick={() => downloadJson(exportStorageDraft(), `${filename}-draft.json`)}>
             {t("storage.downloadDraft")}
           </Button>
-          {conflict ? (
+          {conflict || canDiscard ? (
             <Button color="inherit" onClick={() => {
               if (storageHasDraft) setConfirm("discard");
               else window.location.reload();
@@ -98,7 +122,7 @@ export function StorageProblem({
           }}
         />
       )}
-      {confirm === "discard" && conflict && (
+      {confirm === "discard" && canDiscard && (
         <DeleteConfirmDialog
           open
           title={t("storage.loadLatest")}

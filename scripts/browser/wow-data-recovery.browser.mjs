@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { platform } from "node:os";
 import { test } from "node:test";
 import puppeteer from "puppeteer-core";
@@ -55,8 +55,35 @@ test("production item data recovers from network and deployment failures", async
     const { port } = server.httpServer.address();
     const url = `http://127.0.0.1:${port}/raidwise/raids/bis-builds`;
 
+    await t.test("reloads the workspace when its JavaScript module fails", async () => {
+      const { page } = await preparePage(browser);
+      const chunk = readdirSync("dist/assets").find((name) => name.endsWith(".js") &&
+        readFileSync(`dist/assets/${name}`, "utf8").includes("workspace-backup-title"));
+      assert.ok(chunk);
+      let blocked = true;
+      page.on("request", (request) => {
+        if (blocked && new URL(request.url()).pathname.endsWith(`/${chunk}`)) void request.abort();
+        else void request.continue();
+      });
+      try {
+        await page.setCacheEnabled(false);
+        await page.goto(new URL("./", url).href, { waitUntil: "domcontentloaded" });
+        await waitForText(page, "Part of Raidwise could not load.");
+        assert.deepEqual(await page.$$eval(".app-recovery button", (buttons) => buttons.map((button) => button.textContent)), ["Reload app"]);
+        blocked = false;
+        await Promise.all([
+          page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+          clickButton(page, "Reload app"),
+        ]);
+        await page.waitForSelector("table", { timeout: 10000 });
+      } finally {
+        await page.close();
+      }
+    });
+
     await t.test("loads item data when entering a populated workspace from settings", async () => {
       const { page, pageErrors } = await preparePage(browser);
+      await page.setCacheEnabled(false);
       const itemDataRequests = [];
       page.on("request", (request) => {
         if (itemDataAsset.test(request.url())) itemDataRequests.push(request.url());

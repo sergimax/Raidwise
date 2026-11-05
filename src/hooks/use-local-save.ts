@@ -6,8 +6,12 @@ import {
   STORAGE_READ_FAILED,
 } from "../storage/constants.ts";
 import { getWriteError, readSnapshot, sameSnapshot, saveLockName, writeSnapshot, type SaveError, type StorageKeys } from "../storage/local-save.ts";
-import { readPendingSave, samePendingSave, writePendingSave, type WorkingSave } from "../storage/pending-save.ts";
+import {
+  durableDraftPrefix, listDurableSaves, readDurableSave, readPendingSave, removeDurableSave,
+  samePendingSave, writeDurableSave, writePendingSave, type DurableSave, type WorkingSave,
+} from "../storage/pending-save.ts";
 import { WORKSPACE_SAVE_KEY, WORKSPACE_SAVE_LOCK, workspaceSection } from "../storage/workspace-save.ts";
+import { generateUUID } from "../uuid.ts";
 
 /** Stage committed edits before requesting exclusive access to the shared save. */
 export function useLocalSave<T>(
@@ -20,6 +24,8 @@ export function useLocalSave<T>(
   const observedState = useRef(state);
   const pending = useRef(initial.pending);
   const journal = useRef(initial.pending);
+  const durableId = useRef(initial.pending?.id);
+  const resumedId = useRef(initial.pending?.id);
   const scheduled = useRef(false);
   const [loadWarning, setLoadWarning] = useState(initial.loadWarning);
   const [saveError, setSaveError] = useState<SaveError | null>(() =>
@@ -29,7 +35,11 @@ export function useLocalSave<T>(
   const [hasDraft, setHasDraft] = useState(initial.pending !== null);
   const [saving, setSaving] = useState(false);
   const [volatileDraft, setVolatileDraft] = useState(false);
-  const original = loadWarning ? initial.snapshot?.current ?? initial.snapshot?.legacy ?? null : null;
+  const [drafts, setDrafts] = useState(() => listDurableSaves(key, initial.snapshot?.current));
+  const [tabOnlyDraft, setTabOnlyDraft] = useState(() => Boolean(initial.pending &&
+    (!initial.pending.id || !readDurableSave(key, initial.pending.id))));
+  const original = loadWarning ? initial.snapshot?.workspaceOriginal ?? initial.snapshot?.current ?? initial.snapshot?.legacy ?? null : null;
+  const canRepairSection = loadWarning === LOAD_WARNING_CORRUPTED_SAVE && initial.snapshot?.workspaceOriginal === undefined;
 
   const scheduleWrite = useCallback(() => {
     if (scheduled.current || !pending.current) return;
@@ -55,7 +65,11 @@ export function useLocalSave<T>(
       try {
         const snapshot = readSnapshot(keys);
         // A remount may have staged a newer draft while this lock was queued.
-        const ownsJournal = samePendingSave(readPendingSave(keys), journal.current);
+        const sessionDraft = readPendingSave(keys);
+        const ownsSession = samePendingSave(sessionDraft, journal.current);
+        const ownsDurable = draft.id !== undefined && samePendingSave(readDurableSave(key, draft.id), draft);
+        const ownsJournal = sessionDraft ? ownsSession : ownsDurable ||
+          (journal.current === null && durableId.current === undefined);
         if (snapshot.current !== draft.raw) {
           if (!ownsJournal) {
             setSaveError(STORAGE_READ_FAILED);
@@ -70,15 +84,24 @@ export function useLocalSave<T>(
         expected.current = { current: draft.raw, legacy: null };
         pending.current = null;
         try {
-          if (ownsJournal) {
+          if (ownsSession) {
             writePendingSave(keys, null);
             journal.current = null;
           }
         } catch {
           // A replay of an already committed draft is safe.
         }
+        const completedIds = new Set([durableId.current, resumedId.current]);
+        for (const id of completedIds) {
+          if (!id) continue;
+          try { removeDurableSave(key, id); } catch { /* The committed copy remains available. */ }
+        }
+        durableId.current = undefined;
+        resumedId.current = undefined;
+        setDrafts((previous) => previous.filter(({ id }) => !completedIds.has(id)));
         setHasDraft(false);
         setVolatileDraft(false);
+        setTabOnlyDraft(false);
         setSaveError(null);
         if (draft.repair) setLoadWarning(null);
       } catch (error) {
@@ -101,18 +124,27 @@ export function useLocalSave<T>(
   }, [key, legacyKey]);
 
   const stage = useCallback((value: T, repair = false) => {
-    const draft = { base: expected.current, raw: serialize(value), repair };
+    const draft: DurableSave = { base: expected.current, raw: serialize(value), repair, id: generateUUID(), savedAt: Date.now() };
     pending.current = draft;
     setHasDraft(true);
+    let savedInSession = false;
+    let savedDurably = false;
     try {
       writePendingSave({ key, legacyKey }, draft);
       journal.current = draft;
-      setVolatileDraft(false);
-    } catch {
-      setVolatileDraft(true);
-    }
-    if (!loadWarning || (repair && loadWarning === LOAD_WARNING_CORRUPTED_SAVE)) scheduleWrite();
-  }, [key, legacyKey, loadWarning, scheduleWrite, serialize]);
+      savedInSession = true;
+    } catch { /* The durable journal can still hold this edit. */ }
+    try {
+      writeDurableSave(key, draft);
+      savedDurably = true;
+      const previousId = durableId.current;
+      durableId.current = draft.id;
+      if (previousId && previousId !== resumedId.current) removeDurableSave(key, previousId);
+    } catch { /* Keep any previous durable revision and the current working copy. */ }
+    setTabOnlyDraft(!savedDurably);
+    setVolatileDraft(!savedDurably && !savedInSession);
+    if (!loadWarning || (repair && canRepairSection)) scheduleWrite();
+  }, [key, legacyKey, loadWarning, canRepairSection, scheduleWrite, serialize]);
 
   useLayoutEffect(() => {
     if (observedState.current === state) return;
@@ -124,19 +156,35 @@ export function useLocalSave<T>(
 
   useEffect(() => {
     const draft = pending.current;
-    if (draft && (!loadWarning || (draft.repair && loadWarning === LOAD_WARNING_CORRUPTED_SAVE))) {
+    if (draft && (!loadWarning || (draft.repair && canRepairSection))) {
       // A lock callback reports the result after the browser grants the lock.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       scheduleWrite();
     }
-  }, [loadWarning, scheduleWrite]);
+  }, [loadWarning, canRepairSection, scheduleWrite]);
+
+  useEffect(() => {
+    if (!hasDraft || !tabOnlyDraft) return;
+    const warn = (event: BeforeUnloadEvent) => {
+      if (!pending.current) return;
+      event.preventDefault();
+      event.returnValue = true;
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [hasDraft, tabOnlyDraft]);
 
   useEffect(() => {
     const checkForExternalChange = (event: StorageEvent) => {
+      if (event.key?.startsWith(durableDraftPrefix(key))) {
+        setDrafts(listDurableSaves(key, expected.current?.current));
+        return;
+      }
       if (event.key !== null && event.key !== key && event.key !== legacyKey &&
         !(event.key === WORKSPACE_SAVE_KEY && workspaceSection(key))) return;
       try {
         const snapshot = readSnapshot({ key, legacyKey });
+        setDrafts(listDurableSaves(key, snapshot.current ?? snapshot.legacy));
         if (expected.current && !sameSnapshot(snapshot, expected.current)) {
           setSaveError(STORAGE_CONFLICT);
         }
@@ -156,9 +204,22 @@ export function useLocalSave<T>(
   ), [loadWarning]);
   const recoverStorage = useCallback(() => stage(state, true), [stage, state]);
   const retryStorageSave = useCallback(() => stage(state), [stage, state]);
+  const openStorageDraft = useCallback((id: string) => {
+    if (pending.current) return false;
+    const draft = readDurableSave(key, id);
+    if (!draft) return false;
+    try {
+      writePendingSave({ key, legacyKey }, draft);
+      return true;
+    } catch { return false; }
+  }, [key, legacyKey]);
   const discardStorageDraft = useCallback(() => {
     try {
       writePendingSave({ key, legacyKey }, null);
+      if (durableId.current) removeDurableSave(key, durableId.current);
+      if (resumedId.current && resumedId.current !== durableId.current) removeDurableSave(key, resumedId.current);
+      durableId.current = undefined;
+      resumedId.current = undefined;
       pending.current = null;
       journal.current = null;
       return true;
@@ -175,13 +236,16 @@ export function useLocalSave<T>(
     storageSaving: saving,
     storageHasDraft: hasDraft,
     storageVolatileDraft: volatileDraft,
+    storageTabOnlyDraft: hasDraft && tabOnlyDraft,
+    storageDrafts: drafts,
+    openStorageDraft,
     exportStorageDraft,
     getRestoreSnapshot,
-    recoverStorage: loadWarning === LOAD_WARNING_CORRUPTED_SAVE && original !== null ? recoverStorage : undefined,
+    recoverStorage: canRepairSection && original !== null ? recoverStorage : undefined,
     retryStorageSave: hasDraft && !loadWarning ? retryStorageSave : undefined,
     discardStorageDraft,
   }), [
-    discardStorageDraft, exportStorageDraft, getRestoreSnapshot, hasDraft, loadWarning, original, recoverStorage,
-    retryStorageSave, saveError, saving, volatileDraft,
+    discardStorageDraft, drafts, exportStorageDraft, getRestoreSnapshot, hasDraft, loadWarning, openStorageDraft, original, recoverStorage,
+    retryStorageSave, saveError, saving, tabOnlyDraft, volatileDraft, canRepairSection,
   ]);
 }

@@ -7,7 +7,11 @@ import type { MessageKey } from "../../i18n/use-translation.ts";
 import { AppHeader } from "../app-header/index.tsx";
 import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { AppSettingsPage } from "../app-settings-page/index.tsx";
-const TrackerLayout = lazy(async () => ({ default: (await import("../tracker-layout/index.tsx")).TrackerLayout }));
+import { loadRouteModule } from "../../routing/load-route-module.ts";
+
+const TrackerLayout = lazy(() => loadRouteModule(async () => ({
+  default: (await import("../tracker-layout/index.tsx")).TrackerLayout,
+})));
 
 function RaidWorkspace() {
   const { t } = useTranslation();

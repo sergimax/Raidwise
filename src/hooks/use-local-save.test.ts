@@ -12,6 +12,7 @@ import { createTestCharacter } from "../test/fixtures.ts";
 import { ClassName } from "../types/characters.ts";
 import { useBisListsDomain } from "./use-bis-lists-domain.ts";
 import { useTrackerDomain } from "./use-tracker-domain.ts";
+import { listDurableSaves } from "../storage/pending-save.ts";
 
 function useTrackerEdits() {
   const domain = useTrackerDomain();
@@ -42,6 +43,28 @@ describe.each([
   { name: "tracker", key: STORAGE_KEY, useDomain: useTrackerEdits },
   { name: "BiS", key: BIS_LISTS_STORAGE_KEY, useDomain: useBisEdits },
 ])("$name write lifecycle", ({ key, useDomain }) => {
+  it("offers the latest draft in a fresh session and commits it only after opening it", () => {
+    const release = holdWrites();
+    const first = renderHook(() => useDomain());
+    act(() => first.result.current.edit("First"));
+    act(() => first.result.current.edit("Latest"));
+    const raw = first.result.current.exportStorageDraft();
+    first.unmount();
+    sessionStorage.clear();
+
+    const next = renderHook(() => useDomain());
+    expect(next.result.current.storageDrafts.map((draft) => draft.raw)).toEqual([raw]);
+    expect(localStorage.getItem(key)).toBeNull();
+    expect(next.result.current.openStorageDraft(next.result.current.storageDrafts[0].id)).toBe(true);
+    next.unmount();
+
+    const recovered = renderHook(() => useDomain());
+    expect(recovered.result.current.exportStorageDraft()).toBe(raw);
+    release();
+    expect(localStorage.getItem(key)).toBe(raw);
+    expect(listDurableSaves(key, null)).toEqual([]);
+  });
+
   it("restores all queued edits on remount and saves them once access is granted", () => {
     const release = holdWrites();
     const first = renderHook(() => useDomain());
@@ -80,6 +103,8 @@ describe.each([
       expect(hook.result.current.storageSaveError).toBe(STORAGE_QUOTA_EXCEEDED);
       expect(hook.result.current.storageHasDraft).toBe(true);
       expect(hook.result.current.storageVolatileDraft).toBe(false);
+      expect(hook.result.current.storageTabOnlyDraft).toBe(true);
+      expect(window.dispatchEvent(new Event("beforeunload", { cancelable: true }))).toBe(false);
       expect(localStorage.getItem(key)).toBeNull();
     } finally {
       write.mockRestore();
@@ -87,6 +112,7 @@ describe.each([
     act(() => hook.result.current.retryStorageSave?.());
     expect(localStorage.getItem(key)).toBe(hook.result.current.exportStorageDraft());
     expect(hook.result.current.storageHasDraft).toBe(false);
+    expect(window.dispatchEvent(new Event("beforeunload", { cancelable: true }))).toBe(true);
   });
 
   it("does not publish a draft based on an unreadable store", () => {

@@ -326,6 +326,66 @@ test("tracker and BiS restore queued edits and reject concurrent stale writes", 
           return JSON.parse(tracker).dungeonToggles.smoke.raid === false &&
             Object.keys(JSON.parse(bisLists).entries).length === 0;
         }, { polling: 50 });
+
+        await writer.evaluate(() => {
+          const workspace = JSON.parse(localStorage.getItem("raidwise-workspace"));
+          localStorage.setItem("raidwise-workspace", JSON.stringify({ ...workspace, bisLists: null }));
+        });
+        await restore.bringToFront();
+        await restore.reload({ waitUntil: "domcontentloaded" });
+        await waitForSavedRow(restore, "Smokehero");
+        await restore.waitForSelector('input[type="file"]');
+        await chooseBackup(restore, contents);
+        await Promise.all([
+          restore.waitForNavigation({ waitUntil: "domcontentloaded" }),
+          clickTextButton(restore, "Replace workspace data"),
+        ]);
+        await waitForSavedRow(restore, "Smokehero");
+        const repaired = await writer.evaluate(() => JSON.parse(localStorage.getItem("raidwise-workspace")));
+        assert.deepEqual(JSON.parse(repaired.bisLists), original.bisLists);
+      } finally {
+        await context.close();
+      }
+    });
+
+    await t.test("recovers queued tracker and BiS drafts after closing their tabs", async () => {
+      const context = await browser.createBrowserContext();
+      try {
+        const owner = await context.newPage();
+        await owner.goto(`${url}logo.svg`);
+        await owner.evaluate(() => localStorage.setItem("raidwise-item-tooltip-locale", "en"));
+        const bisName = 'input[placeholder="Custom list name"]';
+        for (const [key, route, edit, name] of [
+          ["raidwise", "raids/add-new-raid", async (tab) => {
+            await tab.waitForSelector('input[name="dungeonName"]');
+            await tab.type('input[name="dungeonName"]', "Closed Tab Raid");
+            await tab.click('form button[type="submit"]');
+          }, "Closed Tab Raid"],
+          ["raidwise-bis-lists", "raids/bis-builds", async (tab) => {
+            await tab.waitForSelector(bisName);
+            await tab.type(bisName, "Closed Tab Build");
+            await clickTextButton(tab, "Save list");
+          }, "Closed Tab Build"],
+        ]) {
+          const lock = await holdSaveLock(owner, key);
+          try {
+            const editing = await context.newPage();
+            await editing.goto(url + route, { waitUntil: "domcontentloaded" });
+            await edit(editing);
+            await lock.waitForWriters(1);
+            await editing.close();
+          } finally {
+            await lock.release();
+          }
+          const recovered = await context.newPage();
+          await recovered.goto(url + route, { waitUntil: "domcontentloaded" });
+          assert.equal(await recovered.evaluate((storageKey) => localStorage.getItem(storageKey), key), null);
+          const button = await recovered.waitForFunction(() => [...document.querySelectorAll("button")]
+            .find((element) => element.textContent.startsWith("Open draft from ")), { polling: 50 });
+          await Promise.all([recovered.waitForNavigation({ waitUntil: "domcontentloaded" }), button.evaluate((element) => element.click())]);
+          await recovered.waitForFunction((storageKey, label) => localStorage.getItem(storageKey)?.includes(label), { polling: 50 }, key, name);
+          await recovered.close();
+        }
       } finally {
         await context.close();
       }

@@ -99,9 +99,26 @@ describe("workspace backup", () => {
     expect(localStorage.getItem(WORKSPACE_SAVE_KEY)).toBeNull();
   });
 
-  it("does not replace unreadable or future workspace storage", async () => {
+  it("recovers the readable section and restores a damaged workspace only against its original bytes", async () => {
+    const backup = validBackup();
+    const damaged = JSON.stringify({ version: 1, tracker: backup.save.tracker, bisLists: null });
+    localStorage.setItem(WORKSPACE_SAVE_KEY, damaged);
+    expect(loadRaidTrackerState()).toMatchObject({ state: tracker, snapshot: { workspaceOriginal: damaged } });
     const expected = readWorkspaceSnapshots();
-    for (const [raw, warning] of [["{", STORAGE_READ_FAILED], ['{"version":2}', LOAD_WARNING_UNSUPPORTED_SAVE]]) {
+    localStorage.setItem(WORKSPACE_SAVE_KEY, damaged + " ");
+    expect(await restoreWorkspaceBackup(backup, expected, () => expected)).toBe(STORAGE_CONFLICT);
+    expect(localStorage.getItem(WORKSPACE_SAVE_KEY)).toBe(damaged + " ");
+    expect(await restoreWorkspaceBackup(backup, readWorkspaceSnapshots(), readWorkspaceSnapshots)).toBeNull();
+    expect(loadLocalBisListsState().state).toEqual(bisLists);
+  });
+
+  it("can restore malformed workspace JSON and preserves future workspace storage", async () => {
+    localStorage.setItem(WORKSPACE_SAVE_KEY, "{");
+    const damaged = readWorkspaceSnapshots();
+    expect(damaged.tracker.workspaceOriginal).toBe("{");
+    expect(await restoreWorkspaceBackup(validBackup(), damaged, () => damaged)).toBeNull();
+    const expected = readWorkspaceSnapshots();
+    for (const [raw, warning] of [['{"version":2}', LOAD_WARNING_UNSUPPORTED_SAVE]]) {
       localStorage.setItem(WORKSPACE_SAVE_KEY, raw);
       const load = loadRaidTrackerState();
       expect(load.loadWarning).toBe(warning);

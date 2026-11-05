@@ -22,7 +22,7 @@ export type SaveError =
   | typeof STORAGE_WRITE_FAILED;
 
 export type ParsedSave<T> = { state: T; loadWarning: LoadWarning | null };
-export type SaveSnapshot = { current: string | null; legacy: string | null };
+export type SaveSnapshot = { current: string | null; legacy: string | null; workspaceOriginal?: string };
 export type LoadedSave<T> = ParsedSave<T> & { snapshot: SaveSnapshot | null };
 export type StorageKeys = { key: string; legacyKey: string };
 
@@ -30,14 +30,15 @@ export const saveLockName = (key: string) => `raidwise:save:${key}`;
 
 export function sameSnapshot(left: SaveSnapshot | null, right: SaveSnapshot | null): boolean {
   return left === right ||
-    (left !== null && right !== null && left.current === right.current && left.legacy === right.legacy);
+    (left !== null && right !== null && left.current === right.current && left.legacy === right.legacy &&
+      left.workspaceOriginal === right.workspaceOriginal);
 }
 
 export function readSnapshot({ key, legacyKey }: StorageKeys): SaveSnapshot {
   const section = workspaceSection(key);
   if (section) {
     const workspace = readWorkspaceSave();
-    if (workspace) return { current: workspace[section], legacy: null };
+    if (workspace) return { current: workspace[section], legacy: null, workspaceOriginal: workspace.original };
   }
   const current = localStorage.getItem(key);
   return { current, legacy: current === null ? localStorage.getItem(legacyKey) : null };
@@ -49,7 +50,8 @@ export function writeSnapshot({ key, legacyKey }: StorageKeys, snapshot: SaveSna
   if (section) {
     const workspace = readWorkspaceSave();
     if (workspace) {
-      writeWorkspaceSave({ ...workspace, [section]: raw });
+      if (workspace.tracker === null || workspace.bisLists === null) throw new Error("Workspace requires a full restore");
+      writeWorkspaceSave({ tracker: workspace.tracker, bisLists: workspace.bisLists, [section]: raw });
       return;
     }
   }
@@ -74,13 +76,15 @@ export function loadLocalSave<T>(
     if (error instanceof WorkspaceSaveReadError) {
       return {
         state: parse(null).state,
-        loadWarning: error.unsupported ? LOAD_WARNING_UNSUPPORTED_SAVE : STORAGE_READ_FAILED,
+        loadWarning: LOAD_WARNING_UNSUPPORTED_SAVE,
         snapshot: { current: error.raw, legacy: null },
       };
     }
     return { state: parse(null).state, loadWarning: STORAGE_READ_FAILED, snapshot: null };
   }
-  return { ...parse(snapshot.current ?? snapshot.legacy), snapshot };
+  const parsed = parse(snapshot.current ?? snapshot.legacy);
+  return { ...parsed, loadWarning: parsed.loadWarning ??
+    (snapshot.workspaceOriginal !== undefined ? LOAD_WARNING_CORRUPTED_SAVE : null), snapshot };
 }
 
 export function getWriteError(error: unknown): SaveError {

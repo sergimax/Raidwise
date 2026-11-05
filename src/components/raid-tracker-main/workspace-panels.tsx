@@ -9,9 +9,11 @@ import {
 import { ResetParametersActions } from "../filter-unit/reset-parameters-actions.tsx";
 import { RaidTrackerTable, type RaidTrackerTableProps } from "../raid-tracker-table/index.tsx";
 
-const BisListsPanel = lazy(async () => ({ default: (await import("../bis-lists-panel/index.tsx")).BisListsPanel }));
-const CharacterPickPanel = lazy(async () => ({ default: (await import("../character-pick-panel/index.tsx")).CharacterPickPanel }));
-const GearPickPanel = lazy(async () => ({ default: (await import("../gear-pick-panel/index.tsx")).GearPickPanel }));
+import { loadRouteModule } from "../../routing/load-route-module.ts";
+
+const BisListsPanel = lazy(() => loadRouteModule(async () => ({ default: (await import("../bis-lists-panel/index.tsx")).BisListsPanel })));
+const CharacterPickPanel = lazy(() => loadRouteModule(async () => ({ default: (await import("../character-pick-panel/index.tsx")).CharacterPickPanel })));
+const GearPickPanel = lazy(() => loadRouteModule(async () => ({ default: (await import("../gear-pick-panel/index.tsx")).GearPickPanel })));
 
 function useRaidSelection() {
   const { characters, dungeonToggles } = useRaidTrackerContext();

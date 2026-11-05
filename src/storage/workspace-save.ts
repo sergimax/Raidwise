@@ -10,12 +10,10 @@ export type WorkspaceSave = { tracker: string; bisLists: string };
 
 export class WorkspaceSaveReadError extends Error {
   readonly raw: string;
-  readonly unsupported: boolean;
 
-  constructor(raw: string, unsupported: boolean) {
-    super("Cannot read the saved workspace");
+  constructor(raw: string) {
+    super("Unsupported workspace version");
     this.raw = raw;
-    this.unsupported = unsupported;
   }
 }
 
@@ -24,23 +22,22 @@ export function workspaceSection(key: string): keyof WorkspaceSave | undefined {
   if (key === BIS_LISTS_STORAGE_KEY) return "bisLists";
 }
 
-export function readWorkspaceSave(): WorkspaceSave | null {
+export function readWorkspaceSave(): { tracker: string | null; bisLists: string | null; original?: string } | null {
   const raw = localStorage.getItem(WORKSPACE_SAVE_KEY);
   if (raw === null) return null;
   let value: unknown;
   try {
     value = JSON.parse(raw);
   } catch {
-    throw new WorkspaceSaveReadError(raw, false);
+    return { tracker: null, bisLists: null, original: raw };
   }
   if (isRecord(value) && typeof value.version === "number" && value.version > WORKSPACE_SAVE_VERSION) {
-    throw new WorkspaceSaveReadError(raw, true);
+    throw new WorkspaceSaveReadError(raw);
   }
-  if (!isRecord(value) || value.version !== WORKSPACE_SAVE_VERSION ||
-    typeof value.tracker !== "string" || typeof value.bisLists !== "string") {
-    throw new WorkspaceSaveReadError(raw, false);
-  }
-  return { tracker: value.tracker, bisLists: value.bisLists };
+  if (!isRecord(value) || value.version !== WORKSPACE_SAVE_VERSION) return { tracker: null, bisLists: null, original: raw };
+  const tracker = typeof value.tracker === "string" ? value.tracker : null;
+  const bisLists = typeof value.bisLists === "string" ? value.bisLists : null;
+  return tracker === null || bisLists === null ? { tracker, bisLists, original: raw } : { tracker, bisLists };
 }
 
 export function writeWorkspaceSave(save: WorkspaceSave): void {

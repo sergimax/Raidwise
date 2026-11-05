@@ -570,6 +570,10 @@ export const enMessages = {
     conflict: "The saved data changed in another tab. Download this tab’s working copy or choose to load the saved version.",
     lockUnavailable: "This browser cannot coordinate saving here. Open Raidwise over HTTPS in a browser that supports Web Locks.",
     volatileDraft: "The working copy is only in memory. Download it before leaving this page.",
+    tabOnlyDraft: "This draft can only be recovered in this tab. Download it before closing the tab.",
+    savedDrafts: "Unsaved drafts are available in this browser.",
+    openDraft: "Open draft from {{date}}",
+    draftOpenFailed: "Could not open the draft. Download it to keep a copy.",
     saving: "Saving changes…",
     retry: "Retry saving",
     discard: "Discard working copy",
@@ -597,6 +601,7 @@ export const enMessages = {
   appRecovery: {
     title: "Raidwise could not open",
     message: "An unexpected error interrupted the app. Try opening it again or reload the page.",
+    moduleMessage: "Part of Raidwise could not load. Reload the page to request the current files.",
     retry: "Open Raidwise again",
   },
 } as const;
