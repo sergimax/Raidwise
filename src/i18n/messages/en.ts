@@ -246,6 +246,8 @@ export const enMessages = {
     settings: "Settings",
     comingSoon: "This section is planned for a future update.",
     notFound: "Page not found",
+    loadingRaids: "Loading raid workspace…",
+    loadingRaidTool: "Loading raid tool…",
   },
   appSettings: {
     interface: "Interface",

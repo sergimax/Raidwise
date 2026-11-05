@@ -1,5 +1,5 @@
 import type { TranslateFn } from "../../i18n/translate.ts";
-import type { RaidTrackerPendingDelete } from "./types.ts";
+import type { RaidTrackerPendingDelete } from "../../types/raid-tracker-table.ts";
 
 export type RaidTrackerDeleteDialogContent = {
   title: string;

@@ -1,6 +1,5 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import SaveIcon from "@mui/icons-material/Save";
 import {
   Box,
   Button,
@@ -10,12 +9,10 @@ import {
   MenuItem,
   Select,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useCallback, useEffect, useMemo } from "react";
 import { specsForClass } from "../../data/class-specs.ts";
-import type { TranslateFn } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   getLocalizedClassName,
@@ -42,6 +39,7 @@ import { ClassOptionLabel } from "../class-option-label/index.tsx";
 import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import { SpecOptionLabel } from "../spec-option-label/index.tsx";
+import { BisListSaveForm } from "./bis-list-save-form.tsx";
 import {
   BIS_ITEMS_CONTENT_MAX_HEIGHT_XS_PX,
   FILTER_UNIT_GRID_GAP_SPACING,
@@ -49,20 +47,6 @@ import {
   getBisListsContentMaxHeight,
   getBisListsGridTemplateColumns,
 } from "./constants.ts";
-
-/** Save-step name errors from `resolveSaveLocalPresetByName` (shown on the list-name field). */
-function localizeBisSaveNameError(
-  message: string,
-  t: TranslateFn,
-): string | null {
-  if (message === "List name is required") {
-    return t("validation.bisListNameRequired");
-  }
-  if (message === "Use a custom name (not a built-in list name)") {
-    return t("validation.bisListNameBuiltin");
-  }
-  return null;
-}
 
 const bisClassSpecSelectSx = {
   "& .MuiSelect-select": {
@@ -302,33 +286,17 @@ function BisListsEditor({ session }: BisListsPanelProps) {
     </Stack>
   );
 
-  const saveNameError = error ? localizeBisSaveNameError(error, t) : null;
-
   const saveListForm = (
-    <Stack spacing={1}>
-      <TextField
-        size="small"
-        label={t("bisPanel.listName")}
-        value={saveListName}
-        onChange={(event) => {
-          setSaveListName(event.target.value);
-          clearError();
-        }}
-        placeholder={t("bisPanel.listNamePlaceholder")}
-        error={Boolean(saveNameError)}
-        helperText={saveNameError ?? undefined}
-        fullWidth
-      />
-      <Button
-        variant="contained"
-        startIcon={<SaveIcon />}
-        onClick={handleSaveList}
-        disabled={hasSlotErrors || hasUnconfirmedSlots}
-        fullWidth
-      >
-        {t("bisPanel.saveList")}
-      </Button>
-    </Stack>
+    <BisListSaveForm
+      name={saveListName}
+      nameError={error?.kind === "name" ? error.code : undefined}
+      onNameChange={(name) => {
+        setSaveListName(name);
+        clearError();
+      }}
+      onSave={handleSaveList}
+      disabled={hasSlotErrors || hasUnconfirmedSlots}
+    />
   );
 
   const slotEditor = slotDrafts.length === 0 ? null : (
@@ -495,7 +463,7 @@ function BisListsEditor({ session }: BisListsPanelProps) {
         </FilterSection>
       </Box>
 
-      {error && !saveNameError ? <FormErrorMessage message={error} /> : null}
+      {error?.kind === "slots" ? <FormErrorMessage message={error.message} /> : null}
     </Stack>
   );
 }

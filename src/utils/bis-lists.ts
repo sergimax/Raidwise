@@ -142,16 +142,18 @@ export function isLocalBisPreset(preset: BisListPreset): boolean {
   return preset.id.startsWith("local-");
 }
 
+export type BisPresetNameError = "name-required" | "name-reserved";
+
 export function resolveSaveLocalPresetByName(
   localPresets: readonly BisListPreset[],
   builtInPresets: readonly BisListPreset[],
   name: string,
   slots: BisListSlot[],
   newPresetId: string,
-): { preset: BisListPreset; presets: BisListPreset[] } | { error: string } {
+): { preset: BisListPreset; presets: BisListPreset[] } | { error: BisPresetNameError } {
   const trimmedName = name.trim();
   if (!trimmedName) {
-    return { error: "List name is required" };
+    return { error: "name-required" };
   }
 
   const normalizedName = trimmedName.toLowerCase();
@@ -159,7 +161,7 @@ export function resolveSaveLocalPresetByName(
     (preset) => preset.name.toLowerCase() === normalizedName,
   );
   if (builtInNameMatch) {
-    return { error: "Use a custom name (not a built-in list name)" };
+    return { error: "name-reserved" };
   }
 
   const existingPreset = localPresets.find(

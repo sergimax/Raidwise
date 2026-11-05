@@ -2,6 +2,7 @@ import type { AppLocale } from "../i18n/types.ts";
 import type { RaidKey } from "../data/raid-names.ts";
 import type { CharacterRecord } from "../types/characters.ts";
 import type { DungeonRecord } from "../types/dungeons.ts";
+import type { GearPickSpecSide } from "../types/gear-pick.ts";
 import { compareBossNamesByEncounterOrder } from "../data/raid-boss-encounter-order.ts";
 import {
   evaluateSpecGearHint,
@@ -13,8 +14,6 @@ import { groupBisItemIdsByBossForDungeon } from "./item-drop-sources.ts";
 import { resolveDungeonRaidKey } from "./resolve-dungeon-raid-key.ts";
 
 export type GearPickItemKind = "bis" | "variant";
-
-export type GearPickSpecSide = "main" | "off";
 
 export type GearPickItem = {
   itemId: number;

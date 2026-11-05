@@ -307,12 +307,12 @@ describe("resolveSaveLocalPresetByName", () => {
 
   it("rejects empty names and built-in preset names", () => {
     expect(resolveSaveLocalPresetByName([], builtInPresets, "  ", [], "local-new")).toEqual({
-      error: "List name is required",
+      error: "name-required",
     });
     expect(
       resolveSaveLocalPresetByName([], builtInPresets, builtInPresets[0]!.name, [], "local-new"),
     ).toEqual({
-      error: "Use a custom name (not a built-in list name)",
+      error: "name-reserved",
     });
   });
 });

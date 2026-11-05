@@ -16,6 +16,15 @@ export const APP_ROUTES = {
 
 export type AppRoute = (typeof APP_ROUTES)[keyof typeof APP_ROUTES] | "/not-found";
 
+export const RAID_WORKSPACE_ROUTES = [
+  APP_ROUTES.raids, APP_ROUTES.characterPick, APP_ROUTES.gearPick,
+  APP_ROUTES.bisLists, APP_ROUTES.addCharacter, APP_ROUTES.addRaid, APP_ROUTES.raidSettings,
+] as const satisfies readonly AppRoute[];
+
+export function isRaidWorkspaceRoute(route: AppRoute): boolean {
+  return RAID_WORKSPACE_ROUTES.some((path) => route === path);
+}
+
 export function useAppRoute(): AppRoute {
   const { pathname } = useLocation();
   const normalizedPath = pathname.replace(/\/+$/, "") || "/";

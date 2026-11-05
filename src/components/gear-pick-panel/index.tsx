@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useEffect, useMemo } from "react";
 import { getWotlkItemName } from "../../data/wotlk-item-names.ts";
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
@@ -13,9 +13,7 @@ import {
   characterHasGearPickUpgrades,
 } from "../../utils/build-gear-pick-items.ts";
 import {
-  emptySoftAssignment,
   formatGearPickCopyParts,
-  remainingSoftBudget,
   selectGearPickCopyItems,
   sumMySofts,
 } from "../../utils/gear-pick-soft-roll.ts";
@@ -37,9 +35,8 @@ import {
 import { GearPickCharacterSelect } from "./gear-pick-character-select.tsx";
 import { GearPickCharacterFilterActions } from "./gear-pick-character-filter-actions.tsx";
 import { GearPickCopyBlock } from "./gear-pick-copy-block.tsx";
-import { GearPickEmptyNoGear } from "./gear-pick-empty-no-gear.tsx";
 import { GearPickFilterBlock } from "./gear-pick-filter-block.tsx";
-import { GearPickItemRow } from "./gear-pick-item-row.tsx";
+import { GearPickItemResults, type GearPickItemsEmptyReason } from "./gear-pick-item-results.tsx";
 import { GearPickItemsActions } from "./gear-pick-items-actions.tsx";
 import { GearPickRules } from "./gear-pick-rules.tsx";
 
@@ -73,9 +70,6 @@ export function GearPickPanel({
     excludedDungeonIds,
     handleSelectionChange,
     handleRulesChange,
-    handleMySoftsChange,
-    handleOthersCountChange,
-    handleClearItemAssignment,
     toggleDungeonExcluded,
     clearExcludedDungeonIds,
     pruneAssignmentsToItemIds,
@@ -198,7 +192,7 @@ export function GearPickPanel({
 
   const softBudgetUsed = sumMySofts(assignmentsByItemId);
 
-  const emptyItemsState = useMemo((): "noSelection" | "noGear" | "noBis" | "noItems" | null => {
+  const emptyItemsState = useMemo((): GearPickItemsEmptyReason | null => {
     if (!activeSelection || !selectedCharacter) {
       return "noSelection";
     }
@@ -275,7 +269,6 @@ export function GearPickPanel({
     ],
   );
 
-  const defaultAssignment = useMemo(() => emptySoftAssignment(), []);
 
   const resetDungeonFilter = () => {
     onDungeonNameSearchChange("");
@@ -407,46 +400,11 @@ export function GearPickPanel({
             overflowY: "auto",
           }}
         >
-          {emptyItemsState === "noGear" ? (
-            <GearPickEmptyNoGear t={t} />
-          ) : emptyItemsState ? (
-            <Typography variant="body2" color="text.secondary">
-              {emptyItemsState === "noSelection"
-                ? t("gearPickPanel.itemsEmptyNoSelection")
-                : emptyItemsState === "noBis"
-                  ? t("gearPickPanel.itemsEmptyNoBis")
-                  : t("gearPickPanel.itemsEmptyNoItems")}
-            </Typography>
-          ) : (
-            <Stack spacing={0}>
-              {gearPickItems.map((item) => {
-                const assignment =
-                  assignmentsByItemId[item.itemId] ?? defaultAssignment;
-                const itemLabel =
-                  getWotlkItemName(item.itemId, itemLocale) ?? `#${item.itemId}`;
-                const budgetForItem = remainingSoftBudget(
-                  assignmentsByItemId,
-                  rules.maxSofts,
-                  item.itemId,
-                );
-
-                return (
-                  <GearPickItemRow
-                    key={item.itemId}
-                    item={item}
-                    assignment={assignment}
-                    maxSofts={rules.maxSofts}
-                    system={rules.system}
-                    remainingBudgetForItem={budgetForItem}
-                    itemLabel={itemLabel}
-                    onMySoftsChange={handleMySoftsChange}
-                    onOthersCountChange={handleOthersCountChange}
-                    onClearAssignment={handleClearItemAssignment}
-                  />
-                );
-              })}
-            </Stack>
-          )}
+          <GearPickItemResults
+            gearPickItems={gearPickItems}
+            emptyItemsState={emptyItemsState}
+            session={session}
+          />
         </FilterSection>
       </GearPickFilterBlock>
 

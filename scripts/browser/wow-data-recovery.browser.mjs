@@ -8,6 +8,7 @@ import { preview } from "vite";
 const tooltipUrl = "https://cdn.cavernoftime.com/api/tooltip.js";
 const statsAsset = /\/assets\/wotlk-item-stats-[^/]+\.json$/;
 const englishNamesAsset = /\/assets\/wotlk-item-names-[^/]+\.json$/;
+const itemDataAsset = /\/assets\/(?:wotlk-|raid-loot-)[^/]+\.json$/;
 
 function findChrome() {
   const candidates = [
@@ -53,6 +54,43 @@ test("production item data recovers from network and deployment failures", async
     });
     const { port } = server.httpServer.address();
     const url = `http://127.0.0.1:${port}/raidwise/raids/bis-builds`;
+
+    await t.test("loads item data when entering a populated workspace from settings", async () => {
+      const { page, pageErrors } = await preparePage(browser);
+      const itemDataRequests = [];
+      page.on("request", (request) => {
+        if (itemDataAsset.test(request.url())) itemDataRequests.push(request.url());
+        void request.continue();
+      });
+      await page.evaluateOnNewDocument(() => localStorage.setItem("raidwise", JSON.stringify({
+        schemaVersion: 7,
+        characters: [{ id: "smoke", name: "Smokehero", className: "Warrior" }],
+        dungeons: [{ id: "citadel", name: "Icecrown Citadel", itemLevel: [251], size: 10, difficulty: "Normal" }],
+        dungeonToggles: {},
+      })));
+      try {
+        await page.goto(`http://127.0.0.1:${port}/raidwise/settings`, { waitUntil: "networkidle0" });
+        await waitForText(page, "Application settings");
+        assert.deepEqual(itemDataRequests, []);
+
+        await page.click('button[aria-label="Sections"]');
+        await Promise.all([
+          page.waitForResponse((response) => statsAsset.test(response.url()) && response.ok()),
+          page.locator('[role="menuitem"]').filter((element) => element.textContent.includes("My Raids")).click(),
+        ]);
+        await waitForText(page, "Smokehero");
+
+        await page.goBack();
+        await waitForText(page, "Application settings");
+        await page.goForward();
+        await waitForText(page, "Smokehero");
+        await page.waitForNetworkIdle();
+        assert.equal(itemDataRequests.filter((request) => statsAsset.test(request)).length, 1);
+        assert.deepEqual(pageErrors, []);
+      } finally {
+        await page.close();
+      }
+    });
 
     await t.test("retries a cold asset and external tooltip without reloading", async () => {
       const { page, pageErrors } = await preparePage(browser);

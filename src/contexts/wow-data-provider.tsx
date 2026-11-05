@@ -17,13 +17,14 @@ import { useItemTooltipLocale } from "../hooks/use-item-tooltip-locale.ts";
 import { WowDataContext, type WowDataContextValue, type WowDataStatus } from "./wow-data-context.ts";
 
 type Result = { attempt: number; status: Exclude<WowDataStatus, "loading"> };
+type WowDataDemand = "none" | "core" | "hints";
 
 function failureStatus(error: unknown): "missing" | "failed" {
   return error instanceof MissingWowDataAssetError ? "missing" : "failed";
 }
 
 /** Starts deferred WoW JSON loads; exposes readiness for tint gating. */
-export function WowDataProvider({ children }: { children: ReactNode }) {
+export function WowDataProvider({ children, demand = "hints" }: { children: ReactNode; demand?: WowDataDemand }) {
   const { locale } = useItemTooltipLocale();
   const [core, setCore] = useState<(Result & { locale: ItemTooltipLocale }) | null>(null);
   const [hint, setHint] = useState<Result | null>(null);
@@ -31,8 +32,11 @@ export function WowDataProvider({ children }: { children: ReactNode }) {
   const retry = useCallback(() => {
     setAttempt((previous) => previous + 1);
   }, []);
+  const needsCore = demand !== "none";
+  const needsHints = demand === "hints";
 
   useEffect(() => {
+    if (!needsCore) return;
     let cancelled = false;
     void ensureCoreItemDataLoaded(locale).then(() => {
       if (!cancelled) setCore({ locale, attempt, status: "ready" });
@@ -42,9 +46,10 @@ export function WowDataProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [locale, attempt]);
+  }, [locale, attempt, needsCore]);
 
   useEffect(() => {
+    if (!needsHints) return;
     let cancelled = false;
     void ensureWowHintDataLoaded().then(() => {
       if (!cancelled) setHint({ attempt, status: "ready" });
@@ -54,12 +59,12 @@ export function WowDataProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [attempt]);
+  }, [attempt, needsHints]);
 
-  const coreStatus = isCoreItemDataReady(locale)
+  const coreStatus = !needsCore ? "loading" : isCoreItemDataReady(locale)
     ? "ready"
     : core?.locale === locale && core.attempt === attempt ? core.status : "loading";
-  const hintStatus = isWowHintDataReady() ? "ready" : hint?.attempt === attempt ? hint.status : "loading";
+  const hintStatus = !needsHints ? "loading" : isWowHintDataReady() ? "ready" : hint?.attempt === attempt ? hint.status : "loading";
   const value = useMemo<WowDataContextValue>(
     () => ({ coreStatus, hintStatus, retry }),
     [coreStatus, hintStatus, retry],

@@ -17,7 +17,7 @@ import {
   waitFor,
   within,
 } from "../../test/render-with-theme.tsx";
-import { useRaidTrackerTableState } from "./use-raid-tracker-table-state.ts";
+import { useRaidTrackerTableState } from "../../hooks/use-raid-tracker-table-state.ts";
 import { RaidTrackerTable } from "./index.tsx";
 
 function TableHarness({

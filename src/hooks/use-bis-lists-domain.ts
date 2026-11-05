@@ -17,6 +17,7 @@ import {
   resolveBisSlotMap,
   resolveSaveLocalPresetByName,
   specBisStorageKey,
+  type BisPresetNameError,
   type BisSlotMap,
   upsertLocalSpecEntry,
 } from "../utils/bis-lists.ts";
@@ -93,7 +94,7 @@ export function useBisListsDomain() {
       spec: string,
       name: string,
       slots: BisListSlot[],
-    ): { ok: true } | { ok: false; error: string } => {
+    ): { ok: true } | { ok: false; error: BisPresetNameError } => {
       const builtInPresets = getBuiltInPresetsForSpec(className, spec);
       const newPresetId = `local-${generateUUID()}`;
       // Name validation is independent of local presets. Resolve the actual update against current state.

@@ -6,6 +6,7 @@ import {
   confirmBisSlotItemsText,
   confirmedSlotDraftsToPresetSlots,
   isLocalBisPreset,
+  type BisPresetNameError,
   validateBisSlotItemsText,
 } from "../utils/bis-lists.ts";
 import {
@@ -29,6 +30,8 @@ type UseBisListsEditorStateOptions = {
   bisLists: BisListsDomain;
 };
 
+type BisEditorError = { kind: "slots"; message: string } | { kind: "name"; code: BisPresetNameError };
+
 export function useBisListsEditorState({
   editorSessionKey,
   className,
@@ -43,7 +46,7 @@ export function useBisListsEditorState({
   const [slotErrors, setSlotErrors] = useState<Record<number, string>>({});
   const [editingSlots, setEditingSlots] = useState<Record<number, boolean>>({});
   const [saveListName, setSaveListName] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<BisEditorError | null>(null);
   const [trackedEditorSessionKey, setTrackedEditorSessionKey] = useState("");
 
   if (editorSessionKey !== trackedEditorSessionKey) {
@@ -57,14 +60,14 @@ export function useBisListsEditorState({
     setSaveListName(
       selectedPreset && isLocalBisPreset(selectedPreset) ? selectedPreset.name : "",
     );
-    setError("");
+    setError(null);
   }
 
   const hasSlotErrors = Object.keys(slotErrors).length > 0;
   const hasUnconfirmedSlots = slotDrafts.some(isSlotDraftDirty);
 
   const clearError = useCallback(() => {
-    setError("");
+    setError(null);
   }, []);
 
   const updateSlotValidation = useCallback(
@@ -146,7 +149,7 @@ export function useBisListsEditorState({
         delete nextEditing[slotDraft.slot];
         return nextEditing;
       });
-      setError("");
+      setError(null);
       persistLocalDraftSlots(nextDrafts);
     },
     [equipContext, persistLocalDraftSlots, slotDrafts],
@@ -158,7 +161,7 @@ export function useBisListsEditorState({
         return;
       }
       setEditingSlots((previousEditing) => ({ ...previousEditing, [slot]: true }));
-      setError("");
+      setError(null);
     },
     [isBuiltInPresetSelected],
   );
@@ -234,7 +237,7 @@ export function useBisListsEditorState({
         delete nextEditing[slotDraft.slot];
         return nextEditing;
       });
-      setError("");
+      setError(null);
       persistLocalDraftSlots(nextDrafts);
     },
     [isBuiltInPresetSelected, persistLocalDraftSlots, slotDrafts],
@@ -249,26 +252,26 @@ export function useBisListsEditorState({
     setSlotDrafts(nextDrafts);
     setSlotErrors({});
     setEditingSlots({});
-    setError("");
+    setError(null);
     persistLocalDraftSlots(nextDrafts);
   }, [isBuiltInPresetSelected, persistLocalDraftSlots]);
 
   const handleSaveList = useCallback(() => {
     if (hasUnconfirmedSlots) {
-      setError(t("bisPanel.confirmAllSlots"));
+      setError({ kind: "slots", message: t("bisPanel.confirmAllSlots") });
       return;
     }
 
     const strictErrors = collectSlotValidationErrors(slotDrafts, "strict", equipContext);
     if (Object.keys(strictErrors).length > 0) {
       setSlotErrors(strictErrors);
-      setError(t("bisPanel.fixItemErrors"));
+      setError({ kind: "slots", message: t("bisPanel.fixItemErrors") });
       return;
     }
 
     const parsed = slotDraftsToPresetSlots(slotDrafts, locale, equipContext);
     if (parsed.error) {
-      setError(parsed.error);
+      setError({ kind: "slots", message: parsed.error });
       return;
     }
 
@@ -279,11 +282,11 @@ export function useBisListsEditorState({
       parsed.slots,
     );
     if (!result.ok) {
-      setError(result.error);
+      setError({ kind: "name", code: result.error });
       return;
     }
 
-    setError("");
+    setError(null);
   }, [
     activeSpec,
     bisLists,
@@ -304,7 +307,7 @@ export function useBisListsEditorState({
         ),
       );
       updateSlotValidation(slot, nextValue, "partial");
-      setError("");
+      setError(null);
     },
     [updateSlotValidation],
   );

@@ -123,7 +123,7 @@ describe("useBisListsDomain", () => {
 
     expect(saveResult).toEqual({
       ok: false,
-      error: "Use a custom name (not a built-in list name)",
+      error: "name-reserved",
     });
     expect(readPersistedBisLists()).toBeNull();
   });

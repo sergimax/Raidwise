@@ -7,6 +7,7 @@ import {
   TableCell,
   TableRow,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useClipboard } from "../../hooks/use-clipboard.ts";
 import { ClipboardFallback } from "../clipboard-fallback/index.tsx";
@@ -16,11 +17,10 @@ import {
   type BuildExportStatusResult,
   type ExportStatusLine,
 } from "../../utils/build-export-status.ts";
-import { CHARACTER_PICK_RESULT_MAX_HEIGHT } from "./constants.ts";
+import { CHARACTER_PICK_RESULT_MAX_HEIGHT, CHARACTER_PICK_SIDE_BY_SIDE_MQ } from "./constants.ts";
 import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { RaidIcon } from "../filter-unit/raid-icon.tsx";
 import { CharacterPickResultFormatActions } from "./result-format-actions.tsx";
-import { useCharacterPickPanelSideBySide } from "./use-character-pick-panel-side-by-side.ts";
 
 type CharacterPickResultLinesProps = {
   result: BuildExportStatusResult;
@@ -135,7 +135,7 @@ export function CharacterPickResultLines({
   onIncludeGearScoreChange,
 }: CharacterPickResultLinesProps) {
   const { t } = useTranslation();
-  const sideBySide = useCharacterPickPanelSideBySide();
+  const sideBySide = useMediaQuery(CHARACTER_PICK_SIDE_BY_SIDE_MQ);
 
   const sectionLayoutSx = sideBySide
     ? { width: "100%", height: "100%", minHeight: 0, flex: 1 }

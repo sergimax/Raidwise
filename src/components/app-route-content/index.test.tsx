@@ -27,6 +27,17 @@ vi.hoisted(() => {
   });
 });
 
+const headerCommits = vi.hoisted(() => vi.fn());
+vi.mock("../app-header/index.tsx", async (importOriginal) => {
+  const { AppHeader } = await importOriginal<typeof import("../app-header/index.tsx")>();
+  const { Profiler } = await import("react");
+  return {
+    AppHeader: (props: React.ComponentProps<typeof AppHeader>) => (
+      <Profiler id="header" onRender={headerCommits}><AppHeader {...props} /></Profiler>
+    ),
+  };
+});
+
 function CurrentPath() {
   return <span data-testid="current-path">{useLocation().pathname}</span>;
 }
@@ -39,8 +50,8 @@ function HistoryControls() {
   </>;
 }
 
-function renderRoute(path: string, options: { locale?: "en" | "ru"; history?: string[]; basename?: string } = {}) {
-  return render(
+async function renderRoute(path: string, options: { locale?: "en" | "ru"; history?: string[]; basename?: string } = {}) {
+  render(
     <AppThemeProvider>
       <ItemTooltipLocaleProvider initialLocale={options.locale ?? "en"}>
         <WowDataProvider>
@@ -59,6 +70,7 @@ function renderRoute(path: string, options: { locale?: "en" | "ru"; history?: st
       </ItemTooltipLocaleProvider>
     </AppThemeProvider>,
   );
+  await screen.findByRole("main", {}, { timeout: 5000 });
 }
 
 describe("AppRouteContent", () => {
@@ -67,16 +79,32 @@ describe("AppRouteContent", () => {
     window.scrollTo = vi.fn();
   });
 
-  it("redirects the root URL to the raid workspace", () => {
-    renderRoute("/");
+  it("updates the character pick filter without committing the workspace header", async () => {
+    const user = userEvent.setup();
+    await renderRoute("/raids/select-character", { history: ["/settings"] });
+    const filterName = "Enable minimum gear score filter for character pick";
+    const filter = await screen.findByLabelText(filterName, {}, { timeout: 5000 });
+    headerCommits.mockClear();
+    await user.click(filter);
+    expect(filter).toBeChecked();
+    expect(headerCommits.mock.calls).toHaveLength(0);
+
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect(screen.getByRole("heading", { name: "Application settings" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Forward" }));
+    expect(await screen.findByLabelText(filterName)).toBeChecked();
+  });
+
+  it("redirects the root URL to the raid workspace", async () => {
+    await renderRoute("/");
 
     expect(screen.getByTestId("current-path")).toHaveTextContent("/raids");
-    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(await screen.findByRole("table")).toBeInTheDocument();
   });
 
   it("redirects the old changelog URL to settings and navigates back through desktop navigation", async () => {
     const user = userEvent.setup();
-    renderRoute("/changelog");
+    await renderRoute("/changelog");
 
     expect(screen.getByTestId("current-path")).toHaveTextContent("/settings");
     expect(screen.getByRole("heading", { name: "Application settings" })).toBeInTheDocument();
@@ -84,11 +112,11 @@ describe("AppRouteContent", () => {
     await user.click(screen.getByRole("button", { name: "Sections" }));
     await user.click(screen.getByRole("menuitem", { name: "My Raids" }));
     expect(screen.getByTestId("current-path")).toHaveTextContent("/raids");
-    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(await screen.findByRole("table")).toBeInTheDocument();
   });
 
-  it.each(["/unknown", "/raids/typo"])("shows a not found page for %s", (path) => {
-    renderRoute(path);
+  it.each(["/unknown", "/raids/typo"])("shows a not found page for %s", async (path) => {
+    await renderRoute(path);
 
     expect(screen.getByTestId("current-path")).toHaveTextContent(path);
     expect(screen.getByRole("heading", { name: "Page not found" })).toBeInTheDocument();
@@ -96,11 +124,12 @@ describe("AppRouteContent", () => {
 
   it("shows a localized 404 and restores the known raid tool with a trailing slash through history", async () => {
     const user = userEvent.setup();
-    renderRoute("/raidwise/raids/typo", {
+    await renderRoute("/raidwise/raids/typo", {
       locale: "ru", basename: "/raidwise", history: ["/raidwise/raids/add-new-raid///"],
     });
     expect(screen.getByRole("heading", { name: "Страница не найдена" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Back" }));
+    await screen.findByRole("table");
     expect(document.querySelector('input[name="dungeonName"]')).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Forward" }));
     expect(screen.getByRole("heading", { name: "Страница не найдена" })).toBeInTheDocument();
@@ -110,7 +139,7 @@ describe("AppRouteContent", () => {
     const raw = '{"characters":[null],"dungeons":[],"dungeonToggles":{}}';
     localStorage.setItem("raidwise", raw);
     const user = userEvent.setup();
-    renderRoute("/raids");
+    await renderRoute("/raids");
 
     localStorage.setItem("raidwise", '{"characters":[],"dungeons":[],"dungeonToggles":{}}');
     fireEvent(window, new StorageEvent("storage", { key: "raidwise" }));
@@ -143,7 +172,7 @@ describe("AppRouteContent", () => {
 
   it("opens a raid tool from its URL and returns to the workspace when closed", async () => {
     const user = userEvent.setup();
-    renderRoute("/raids/bis-builds");
+    await renderRoute("/raids/bis-builds");
 
     expect(screen.getByTestId("current-path")).toHaveTextContent("/raids/bis-builds");
     expect(screen.getByText("BiS lists")).toBeInTheDocument();
@@ -157,7 +186,7 @@ describe("AppRouteContent", () => {
     ["/raids/add-character", "characterName", "Close add character panel"],
   ])("opens and closes the form at %s", async (path, fieldName, closeLabel) => {
     const user = userEvent.setup();
-    renderRoute(path);
+    await renderRoute(path);
 
     expect(screen.getByTestId("current-path")).toHaveTextContent(path);
     expect(document.querySelector(`input[name="${fieldName}"]`)).toBeInTheDocument();
@@ -169,7 +198,7 @@ describe("AppRouteContent", () => {
 
   it("keeps the selected language while navigating between settings and raids", async () => {
     const user = userEvent.setup();
-    renderRoute("/settings");
+    await renderRoute("/settings");
 
     await user.click(screen.getByRole("button", {
       name: "Interface language EN. Switch to RU.",
@@ -178,7 +207,7 @@ describe("AppRouteContent", () => {
     await user.click(screen.getByRole("button", { name: "Разделы" }));
     await user.click(screen.getByRole("menuitem", { name: "Мои рейды" }));
     expect(screen.getByTestId("current-path")).toHaveTextContent("/raids");
-    expect(screen.getByRole("button", {
+    expect(await screen.findByRole("button", {
       name: "Язык интерфейса RU. Переключить на EN.",
     })).toBeInTheDocument();
   });
@@ -193,7 +222,7 @@ describe("responsive header menu", () => {
     }));
     try {
       const user = userEvent.setup();
-      renderRoute("/raids");
+      await renderRoute("/raids");
       expect(screen.getByRole("tab", { name: "BiS builds" })).toBeInTheDocument();
       await user.click(screen.getByRole("button", { name: "Sections" }));
       expect(screen.getByRole("menuitem", { name: "Settings" })).toBeInTheDocument();

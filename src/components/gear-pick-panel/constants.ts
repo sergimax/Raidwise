@@ -122,9 +122,6 @@ export function getGearPickWideContainerMqKey(): string {
  * Legacy alias — Soft pick wide layout now uses container queries.
  * Kept for the unused side-by-side hook export surface.
  */
-export const GEAR_PICK_SIDE_BY_SIDE_MIN_PX = getGearPickWideLayoutMinWidth();
-export const GEAR_PICK_SIDE_BY_SIDE_MQ = `(min-width:${GEAR_PICK_SIDE_BY_SIDE_MIN_PX}px)`;
-export const GEAR_PICK_SIDE_BY_SIDE_MQ_KEY = `@media ${GEAR_PICK_SIDE_BY_SIDE_MQ}`;
 
 export function getGearPickGridTemplateAreas(layout: GearPickGridLayout): string {
   if (layout === "wide") {

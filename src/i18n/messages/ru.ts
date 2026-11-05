@@ -248,6 +248,8 @@ export const ruMessages: Messages = {
     settings: "Настройки",
     comingSoon: "Этот раздел планируется добавить в будущем.",
     notFound: "Страница не найдена",
+    loadingRaids: "Загрузка раздела рейдов…",
+    loadingRaidTool: "Загрузка инструмента рейдов…",
   },
   appSettings: {
     interface: "Интерфейс",
