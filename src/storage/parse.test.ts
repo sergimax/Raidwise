@@ -49,6 +49,20 @@ describe("loadRaidTrackerState", () => {
     });
   });
 
+  it.each([undefined, 6])("recovers valid rows beside malformed rows in schema %s", (schemaVersion) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      schemaVersion,
+      characters: [null, { id: "one", name: "Alpha", className: Classes[0].name }],
+      dungeons: [null, { id: "raid", name: "Raid", size: 10, itemLevel: [200] }],
+      dungeonToggles: { one: { raid: true } },
+    }));
+    const { state, loadWarning } = loadRaidTrackerState();
+    expect(loadWarning).toBe(LOAD_WARNING_CORRUPTED_SAVE);
+    expect(state.characters.map(({ id }) => id)).toEqual(["one"]);
+    expect(state.dungeons.map(({ id }) => id)).toEqual(["raid"]);
+    expect(state.dungeonToggles).toEqual({ one: { raid: true } });
+  });
+
   it("maps legacy mode to difficulty", () => {
     writeStoredPayload({
       schemaVersion: 1,

@@ -374,7 +374,8 @@ export const enMessages = {
     rulesTitle: "Soft reserve rules",
     rulesHelper: "How many softs the raid allows, and whether softs add +100 or grant extra /rolls",
     maxSoftsLabel: "Max softs",
-    maxSoftsAria: "Maximum soft rolls allowed for this raid",
+    decreaseMaxSofts: "Decrease the soft reserve limit",
+    increaseMaxSofts: "Increase the soft reserve limit",
     systemLabel: "Soft reserve system",
     systemPlus100: "+100 per soft reserve",
     systemPlus100Aria: "Each soft reserve adds +100 to the roll",
@@ -529,9 +530,26 @@ export const enMessages = {
   },
   storage: {
     corrupted:
-      "Saved data was corrupted and has been reset. Your previous tracker data could not be loaded.",
+      "Some saved data could not be read. The original is intact and automatic saving is paused.",
+    unsupported: "This save uses an unsupported version. Automatic saving is paused.",
+    readFailed: "Browser storage could not be read. Download your working copy before reloading.",
+    conflict: "The saved data changed in another tab. Download this tab’s working copy before reloading if you want to keep it.",
+    downloadOriginal: "Download original",
+    downloadDraft: "Download working copy",
+    loadLatest: "Reload saved data",
+    replace: "Replace with working copy",
+    replaceConfirm: "This replaces the original save with the data currently shown. Download the original first if you want to keep it.",
     quotaExceeded: "Storage quota exceeded. Please free up space.",
     saveFailed: "Failed to save data. Please try again.",
+  },
+  clipboard: {
+    failed: "Could not copy automatically. Select and copy the text below.",
+    textLabel: "Text to copy",
+  },
+  wowData: {
+    failed: "Some item data could not be loaded.",
+    retry: "Retry",
+    reload: "Reload app",
   },
 } as const;
 

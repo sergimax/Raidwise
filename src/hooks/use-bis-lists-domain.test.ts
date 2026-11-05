@@ -8,10 +8,8 @@ import {
 import { saveLocalBisListsState } from "../storage/bis-lists/index.ts";
 import { ClassName } from "../types/characters.ts";
 import { specBisStorageKey } from "../utils/bis-lists.ts";
-import {
-  BIS_LISTS_SAVE_DEBOUNCE_MS,
-  useBisListsDomain,
-} from "./use-bis-lists-domain.ts";
+import { useBisListsDomain } from "./use-bis-lists-domain.ts";
+import { LOAD_WARNING_UNSUPPORTED_SAVE, STORAGE_CONFLICT } from "../storage/constants.ts";
 
 const builtInPresetId = unholyDeathKnightBis.presets[0]!.id;
 const storageKey = specBisStorageKey(ClassName.DeathKnight, "Unholy");
@@ -21,21 +19,35 @@ function readPersistedBisLists() {
   return raw ? JSON.parse(raw) : null;
 }
 
-function flushBisListsSave() {
-  act(() => {
-    vi.advanceTimersByTime(BIS_LISTS_SAVE_DEBOUNCE_MS);
-  });
-}
-
 describe("useBisListsDomain", () => {
   beforeEach(() => {
     localStorage.clear();
-    vi.useFakeTimers();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.useRealTimers();
+  });
+
+  it("keeps a future schema on mount, edit, and unmount", () => {
+    const raw = JSON.stringify({ schemaVersion: 999, entries: { future: "keep me" } });
+    localStorage.setItem(BIS_LISTS_STORAGE_KEY, raw);
+    const { result, unmount } = renderHook(() => useBisListsDomain());
+    act(() => result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId));
+    expect(result.current.storageError).toBe(LOAD_WARNING_UNSUPPORTED_SAVE);
+    expect(result.current.storageOriginal).toBe(raw);
+    unmount();
+    expect(localStorage.getItem(BIS_LISTS_STORAGE_KEY)).toBe(raw);
+  });
+
+  it("does not overwrite lists created by another tab", () => {
+    const first = renderHook(() => useBisListsDomain());
+    const second = renderHook(() => useBisListsDomain());
+    act(() => first.result.current.savePresetByName(ClassName.DeathKnight, "Unholy", "First", []));
+    const saved = localStorage.getItem(BIS_LISTS_STORAGE_KEY);
+    act(() => second.result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId));
+    expect(second.result.current.storageError).toBe(STORAGE_CONFLICT);
+    expect(saved).not.toBeNull();
+    expect(localStorage.getItem(BIS_LISTS_STORAGE_KEY)).toBe(saved);
   });
 
   it("selectPreset persists the selection and keeps local presets", () => {
@@ -64,7 +76,6 @@ describe("useBisListsDomain", () => {
     );
     expect(presets.some((preset) => preset.id.startsWith("local-"))).toBe(true);
 
-    flushBisListsSave();
     const persisted = readPersistedBisLists();
     expect(persisted.entries[storageKey].selectedPresetId).toBe(builtInPresetId);
     expect(persisted.entries[storageKey].presets).toHaveLength(1);
@@ -91,7 +102,6 @@ describe("useBisListsDomain", () => {
       51312,
     ]);
 
-    flushBisListsSave();
     const persisted = readPersistedBisLists();
     expect(persisted.schemaVersion).toBe(BIS_LISTS_SCHEMA_VERSION);
     expect(persisted.entries[storageKey].presets[0].name).toBe("My list");
@@ -157,7 +167,6 @@ describe("useBisListsDomain", () => {
     expect(
       result.current.getBisSlotMapForSpec(ClassName.DeathKnight, "Unholy").get(0),
     ).toEqual([51312]);
-    flushBisListsSave();
     expect(readPersistedBisLists().entries[storageKey].presets).toEqual([]);
   });
 
@@ -251,7 +260,6 @@ describe("useBisListsDomain", () => {
         .map((preset) => preset.name),
     ).toEqual(["First", "Second"]);
 
-    flushBisListsSave();
     expect(readPersistedBisLists().entries[storageKey].selectedPresetId).toBe(
       "local-first",
     );
@@ -270,7 +278,7 @@ describe("useBisListsDomain", () => {
     expect(readPersistedBisLists().entries[storageKey].presets).toHaveLength(2);
   });
 
-  it("flushes the latest local preset when the domain unmounts", () => {
+  it("commits the latest local preset before the domain unmounts", () => {
     const { result, unmount } = renderHook(() => useBisListsDomain());
 
     act(() => {
@@ -278,7 +286,7 @@ describe("useBisListsDomain", () => {
         { slot: 0, itemIds: [51312] },
       ]);
     });
-    expect(readPersistedBisLists()).toBeNull();
+    expect(readPersistedBisLists().entries[storageKey].presets[0].name).toBe("Before close");
 
     unmount();
     expect(readPersistedBisLists().entries[storageKey].presets[0].name).toBe(
@@ -297,7 +305,6 @@ describe("useBisListsDomain", () => {
         { slot: 0, itemIds: [51312] },
       ]);
     });
-    flushBisListsSave();
     expect(result.current.storageError).toBe(
       "Storage quota exceeded. Please free up space.",
     );
@@ -306,7 +313,6 @@ describe("useBisListsDomain", () => {
     act(() => {
       result.current.selectPreset(ClassName.DeathKnight, "Unholy", builtInPresetId);
     });
-    flushBisListsSave();
     expect(result.current.storageError).toBeNull();
     expect(readPersistedBisLists().entries[storageKey].presets[0].name).toBe(
       "Retry",

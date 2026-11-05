@@ -1,12 +1,11 @@
-import { Alert, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import { useGearHintLegendDismissed } from "../../hooks/use-gear-hint-legend-dismissed.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
 import { useRaidWorkspaceSessions } from "../../hooks/use-raid-workspace-sessions.ts";
 import type { TrackerFormsState } from "../../hooks/use-overlay-panels.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
-import type { TranslateFn } from "../../i18n/translate.ts";
-import { LOAD_WARNING_CORRUPTED_SAVE } from "../../storage/constants.ts";
+import { StorageProblem } from "../storage-problem/index.tsx";
 import { hideExternalWowTooltips } from "../../utils/hide-external-wow-tooltips.ts";
 import { AppIntro } from "../app-intro/index.tsx";
 import { BisListsPanel } from "../bis-lists-panel/index.tsx";
@@ -36,22 +35,6 @@ type RaidTrackerMainProps = {
   showDataControlsPanel: boolean;
   closeDataControlsPanel: () => void;
 };
-
-const STORAGE_QUOTA_MESSAGE = "Storage quota exceeded. Please free up space.";
-const STORAGE_SAVE_FAILED_MESSAGE = "Failed to save data. Please try again.";
-
-function localizeStorageMessage(message: string, t: TranslateFn): string {
-  if (message === LOAD_WARNING_CORRUPTED_SAVE) {
-    return t("storage.corrupted");
-  }
-  if (message === STORAGE_QUOTA_MESSAGE) {
-    return t("storage.quotaExceeded");
-  }
-  if (message === STORAGE_SAVE_FAILED_MESSAGE) {
-    return t("storage.saveFailed");
-  }
-  return message;
-}
 
 export function RaidTrackerMain({
   forms,
@@ -165,11 +148,7 @@ export function RaidTrackerMain({
     <Stack spacing={2}>
       <AppIntro visible={introVisible} onDismiss={onDismissIntro} />
 
-      {domain.storageError ? (
-        <Alert severity="error">
-          {localizeStorageMessage(domain.storageError, t)}
-        </Alert>
-      ) : null}
+      <StorageProblem {...domain} filename="raidwise-tracker" />
 
       {toolbarPanelId && toolbarPanelMeta ? (
         <TrackerToolbarPanel panelId={toolbarPanelId} {...toolbarPanelMeta}>

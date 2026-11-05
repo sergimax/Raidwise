@@ -8,7 +8,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useClipboard } from "../../hooks/use-clipboard.ts";
+import { ClipboardFallback } from "../clipboard-fallback/index.tsx";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   formatExportLineCopyText,
@@ -28,15 +29,6 @@ type CharacterPickResultLinesProps = {
   onIncludeSpecsChange: (includeSpecs: boolean) => void;
   onIncludeGearScoreChange: (includeGearScore: boolean) => void;
 };
-
-async function copyTextToClipboard(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 const resultTableCellSx = {
   borderBottom: 1,
@@ -58,18 +50,8 @@ function CharacterPickResultLineRow({
   isLast,
 }: CharacterPickResultLineRowProps) {
   const { t } = useTranslation();
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = useCallback(async () => {
-    const didCopy = await copyTextToClipboard(formatExportLineCopyText(line));
-    if (!didCopy) {
-      return;
-    }
-    setCopied(true);
-    window.setTimeout(() => {
-      setCopied(false);
-    }, 1500);
-  }, [line]);
+  const copyText = formatExportLineCopyText(line);
+  const { copied, copyFailed, copy } = useClipboard(copyText);
 
   const cellSx = {
     ...resultTableCellSx,
@@ -117,13 +99,14 @@ function CharacterPickResultLineRow({
           variant={emphasizeCopy ? "contained" : "outlined"}
           startIcon={<ContentCopyIcon fontSize="small" />}
           onClick={() => {
-            void handleCopy();
+            void copy();
           }}
           aria-label={t("characterPickPanel.copyLineAria", { raid: line.raidLabel })}
           sx={{ whiteSpace: "nowrap" }}
         >
           {copied ? t("characterPickPanel.copied") : t("characterPickPanel.copyLine")}
         </Button>
+        {copyFailed && <ClipboardFallback text={copyText} />}
       </TableCell>
       <TableCell sx={{ ...cellSx, width: "100%", pr: 0.25 }}>
         <Typography

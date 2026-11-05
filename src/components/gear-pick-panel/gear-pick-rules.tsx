@@ -47,7 +47,7 @@ export function GearPickRules({
         <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
           <IconButton
             size="small"
-            aria-label={t("gearPickPanel.maxSoftsAria")}
+            aria-label={t("gearPickPanel.decreaseMaxSofts")}
             disabled={rules.maxSofts <= 1}
             onClick={() => {
               setMaxSofts(-1);
@@ -60,7 +60,7 @@ export function GearPickRules({
           </Typography>
           <IconButton
             size="small"
-            aria-label={t("gearPickPanel.maxSoftsAria")}
+            aria-label={t("gearPickPanel.increaseMaxSofts")}
             onClick={() => {
               setMaxSofts(1);
             }}

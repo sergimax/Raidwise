@@ -12,8 +12,10 @@ import {
   type DungeonToggles,
 } from "../types/dungeons.ts";
 import {
+  CURRENT_SCHEMA_VERSION,
   LEGACY_STORAGE_KEY,
   LOAD_WARNING_CORRUPTED_SAVE,
+  LOAD_WARNING_UNSUPPORTED_SAVE,
   STORAGE_KEY,
 } from "./constants.ts";
 import { migrateStoredPayload } from "./migrate.ts";
@@ -36,45 +38,50 @@ function parseStoredEmblem(stored: StoredDungeon): EmblemKeyType | undefined {
   return undefined;
 }
 
-function readRawPayload(): { payload: StoredPayload | null; corrupted: boolean } {
-  let raw: string | null;
-  try {
-    raw = getLocalStorageItemMigrating(STORAGE_KEY, LEGACY_STORAGE_KEY);
-  } catch {
-    return { payload: null, corrupted: true };
-  }
-
-  if (!raw) {
-    return { payload: null, corrupted: false };
-  }
-
+function readRawPayload(raw: string): {
+  payload: StoredPayload | null;
+  warning: string | null;
+} {
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
   } catch {
-    return { payload: null, corrupted: true };
+    return { payload: null, warning: LOAD_WARNING_CORRUPTED_SAVE };
   }
 
   if (!isRecord(parsed)) {
-    return { payload: null, corrupted: true };
+    return { payload: null, warning: LOAD_WARNING_CORRUPTED_SAVE };
   }
 
-  if (!Array.isArray(parsed.characters) || !isRecord(parsed.dungeonToggles)) {
-    return { payload: null, corrupted: true };
+  if (typeof parsed.schemaVersion === "number" && parsed.schemaVersion > CURRENT_SCHEMA_VERSION) {
+    return { payload: null, warning: LOAD_WARNING_UNSUPPORTED_SAVE };
   }
 
+  const characters = Array.isArray(parsed.characters) ? parsed.characters : [];
   const dungeons = Array.isArray(parsed.dungeons) ? parsed.dungeons : [];
+  const characterRows = characters.filter(isRecord);
+  const dungeonRows = dungeons.filter(isRecord);
+  const toggles = isRecord(parsed.dungeonToggles) ? parsed.dungeonToggles : null;
   const schemaVersion =
-    typeof parsed.schemaVersion === "number" ? parsed.schemaVersion : undefined;
+    typeof parsed.schemaVersion === "number" &&
+    Number.isInteger(parsed.schemaVersion) && parsed.schemaVersion >= 0
+      ? parsed.schemaVersion
+      : undefined;
+  const partial =
+    !Array.isArray(parsed.characters) || !toggles ||
+    (parsed.schemaVersion !== undefined && schemaVersion === undefined) ||
+    (parsed.dungeons !== undefined && !Array.isArray(parsed.dungeons)) ||
+    characterRows.length !== characters.length ||
+    dungeonRows.length !== dungeons.length;
 
   return {
     payload: {
       schemaVersion,
-      characters: parsed.characters as StoredCharacter[],
-      dungeons: dungeons as StoredDungeon[],
-      dungeonToggles: parsed.dungeonToggles as Record<string, Record<string, boolean>>,
+      characters: characterRows as StoredCharacter[],
+      dungeons: dungeonRows as StoredDungeon[],
+      dungeonToggles: (toggles ?? {}) as Record<string, Record<string, boolean>>,
     },
-    corrupted: false,
+    warning: partial ? LOAD_WARNING_CORRUPTED_SAVE : null,
   };
 }
 
@@ -321,22 +328,22 @@ function parsePayload(payload: StoredPayload): LoadRaidTrackerResult["state"] {
   return { characters, dungeons, dungeonToggles };
 }
 
-export function loadRaidTrackerState(): LoadRaidTrackerResult {
-  const { payload, corrupted } = readRawPayload();
-
-  if (corrupted) {
-    return {
-      state: EMPTY_STATE,
-      loadWarning: LOAD_WARNING_CORRUPTED_SAVE,
-    };
-  }
-
-  if (!payload) {
+export function parseRaidTrackerState(raw: string | null): LoadRaidTrackerResult {
+  if (raw === null) {
     return { state: EMPTY_STATE, loadWarning: null };
   }
 
+  const { payload, warning } = readRawPayload(raw);
+  if (!payload) return { state: EMPTY_STATE, loadWarning: warning };
+  const state = parsePayload(payload);
+  const skippedRows = state.characters.length !== payload.characters.length ||
+    state.dungeons.length !== payload.dungeons.length;
   return {
-    state: parsePayload(payload),
-    loadWarning: null,
+    state,
+    loadWarning: warning ?? (skippedRows ? LOAD_WARNING_CORRUPTED_SAVE : null),
   };
+}
+
+export function loadRaidTrackerState(): LoadRaidTrackerResult {
+  return parseRaidTrackerState(getLocalStorageItemMigrating(STORAGE_KEY, LEGACY_STORAGE_KEY));
 }

@@ -16,6 +16,7 @@ function appendScript(id: string, src: string): void {
   script.id = id;
   script.src = src;
   script.async = true;
+  script.addEventListener("error", () => script.remove(), { once: true });
   document.head.appendChild(script);
 }
 
@@ -30,18 +31,11 @@ function appendInlineScript(id: string, content: string): void {
   document.head.appendChild(script);
 }
 
-const loadedLocales = new Set<ItemTooltipLocale>();
-
 /**
  * Injects the tooltip provider for the active UI locale only (RU → WowRoad, EN → CoT).
- * Safe to call repeatedly; no-ops after the first successful load per locale.
+ * A pending or loaded script stays in the DOM. A failed request can be retried.
  */
 export function ensureItemTooltipsLoaded(locale: ItemTooltipLocale): void {
-  if (loadedLocales.has(locale)) {
-    return;
-  }
-  loadedLocales.add(locale);
-
   if (locale === "ru") {
     appendInlineScript(
       WOWROAD_TOOLTIP_CONFIG_SCRIPT_ID,

@@ -12,8 +12,7 @@ import { ensureWotlkItemGearSlotsLoaded } from "./wotlk-item-gear-slots.ts";
 import { ensureWotlkItemLevelsLoaded } from "./wotlk-item-levels.ts";
 import { ensureWotlkItemStatsLoaded } from "./wotlk-item-stats.ts";
 
-let coreLoadPromise: Promise<void> | null = null;
-let coreLocale: ItemTooltipLocale | null = null;
+const coreLoads = new Map<ItemTooltipLocale, Promise<void>>();
 let hintLoadPromise: Promise<void> | null = null;
 let hintDataReady = false;
 
@@ -21,17 +20,19 @@ let hintDataReady = false;
 export function ensureCoreItemDataLoaded(
   locale: ItemTooltipLocale,
 ): Promise<void> {
-  if (coreLoadPromise && coreLocale === locale) {
-    return coreLoadPromise;
-  }
+  const cached = coreLoads.get(locale);
+  if (cached) return cached;
 
-  coreLocale = locale;
-  coreLoadPromise = Promise.all([
+  const promise = Promise.all([
     ensureItemNamesLoaded(locale),
     ensureWotlkItemLevelsLoaded(),
-  ]).then(() => undefined);
+  ]).then(() => undefined).catch((error: unknown) => {
+    coreLoads.delete(locale);
+    throw error;
+  });
 
-  return coreLoadPromise;
+  coreLoads.set(locale, promise);
+  return promise;
 }
 
 /**
@@ -56,7 +57,10 @@ export function ensureWowHintDataLoaded(): Promise<void> {
     ]);
     rebuildBisItemVariantIndex();
     hintDataReady = true;
-  })();
+  })().catch((error: unknown) => {
+    hintLoadPromise = null;
+    throw error;
+  });
 
   return hintLoadPromise;
 }

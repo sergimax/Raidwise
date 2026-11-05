@@ -130,7 +130,8 @@ describe("GearPickPanel", () => {
 
   it("enforces the soft budget, keeps the session on reopen, and prunes filtered items", async () => {
     const user = userEvent.setup();
-    const writeText = vi.fn().mockResolvedValue(undefined);
+    const writeText = vi.fn().mockRejectedValueOnce(new DOMException("Denied", "NotAllowedError"))
+      .mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: { writeText },
@@ -152,7 +153,7 @@ describe("GearPickPanel", () => {
     expect(increaseButtons().every((button) => button.hasAttribute("disabled"))).toBe(true);
 
     await user.click(
-      screen.getAllByRole("button", { name: "Maximum soft rolls allowed for this raid" })[0]!,
+      screen.getByRole("button", { name: "Decrease the soft reserve limit" }),
     );
     expect(screen.getByText("2 / 2 softs used")).toBeInTheDocument();
 
@@ -162,6 +163,9 @@ describe("GearPickPanel", () => {
 
     await user.click(screen.getByRole("button", { name: "Copy soft reserve call list" }));
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining(itemName));
+    expect(screen.getByRole("textbox", { name: "Text to copy" })).toHaveValue(writeText.mock.calls[0][0]);
+    await user.click(screen.getByRole("button", { name: "Copy soft reserve call list" }));
+    expect(screen.queryByRole("textbox", { name: "Text to copy" })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Toggle all cooldowns" }));
     expect(screen.getByRole("button", { name: "Copy soft reserve call list" })).toBeDisabled();
@@ -191,7 +195,7 @@ describe("GearPickPanel", () => {
 
     await user.click(screen.getAllByRole("button", { name: /Increase soft reserves for/i })[0]!);
     await user.click(
-      screen.getAllByRole("button", { name: "Maximum soft rolls allowed for this raid" })[0]!,
+      screen.getByRole("button", { name: "Decrease the soft reserve limit" }),
     );
     expect(screen.getByText("1 / 2 softs used")).toBeInTheDocument();
 

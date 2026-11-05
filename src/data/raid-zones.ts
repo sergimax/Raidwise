@@ -13,5 +13,5 @@ export const RaidZoneIds: Record<RaidKey, readonly number[]> = {
 };
 
 export function isRaidKey(value: string): value is RaidKey {
-  return value in RaidNames;
+  return Object.hasOwn(RaidNames, value);
 }

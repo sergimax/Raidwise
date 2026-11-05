@@ -19,10 +19,7 @@ function toStoredSpecGear(
   return stored;
 }
 
-export function saveRaidTrackerState(
-  state: PersistedTrackerState,
-  onError?: (message: string | null) => void,
-): void {
+export function serializeRaidTrackerState(state: PersistedTrackerState): string {
   const { characters, dungeons, dungeonToggles } = state;
   const characterIds = new Set(characters.map((character) => character.id));
   const dungeonIds = new Set(dungeons.map((dungeon) => dungeon.id));
@@ -61,9 +58,15 @@ export function saveRaidTrackerState(
     dungeons: storedDungeons,
     dungeonToggles: storedToggles,
   };
+  return JSON.stringify(payload);
+}
 
+export function saveRaidTrackerState(
+  state: PersistedTrackerState,
+  onError?: (message: string | null) => void,
+): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    localStorage.setItem(STORAGE_KEY, serializeRaidTrackerState(state));
     onError?.(null);
   } catch (error) {
     const message =

@@ -1,6 +1,7 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Box, Button, Typography } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useClipboard } from "../../hooks/use-clipboard.ts";
+import { ClipboardFallback } from "../clipboard-fallback/index.tsx";
 import { useWowDataReady } from "../../hooks/use-wow-data-ready.ts";
 import type { GearPickCopyPart } from "../../utils/gear-pick-soft-roll.ts";
 import { wowItemLinkColor } from "../wow-item-link/item-link-styles.ts";
@@ -26,15 +27,6 @@ type GearPickCopyBlockProps = {
   t: TranslateFn;
 };
 
-async function copyTextToClipboard(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 export function GearPickCopyBlock({
   copyParts,
   hasCopyItems,
@@ -53,22 +45,8 @@ export function GearPickCopyBlock({
   t,
 }: GearPickCopyBlockProps) {
   useWowDataReady();
-  const [copied, setCopied] = useState(false);
   const copyText = copyParts.map(({ text }) => text).join("");
-
-  const handleCopy = useCallback(async () => {
-    if (!hasCopyItems) {
-      return;
-    }
-    const didCopy = await copyTextToClipboard(copyText);
-    if (!didCopy) {
-      return;
-    }
-    setCopied(true);
-    window.setTimeout(() => {
-      setCopied(false);
-    }, 1500);
-  }, [copyText, hasCopyItems]);
+  const { copied, copyFailed, copy } = useClipboard(copyText);
 
   return (
     <FilterSection
@@ -83,7 +61,7 @@ export function GearPickCopyBlock({
           disabled={!hasCopyItems}
           aria-label={t("gearPickPanel.copyLineAria")}
           onClick={() => {
-            void handleCopy();
+            void copy();
           }}
         >
           {copied ? t("gearPickPanel.copied") : t("gearPickPanel.copyLine")}
@@ -106,6 +84,7 @@ export function GearPickCopyBlock({
         />
       }
     >
+      {copyFailed && <ClipboardFallback text={copyText} />}
       {hasCopyItems ? (
         <Box
           component="pre"

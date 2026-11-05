@@ -7,8 +7,11 @@ export function createLazyJsonLoader<T>(
 
   return function ensureLoaded(): Promise<void> {
     if (!loadPromise) {
-      loadPromise = importJson().then((module) => {
+      loadPromise = Promise.resolve().then(importJson).then((module) => {
         hydrate(module.default);
+      }).catch((error: unknown) => {
+        loadPromise = null;
+        throw error;
       });
     }
     return loadPromise;

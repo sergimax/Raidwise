@@ -11,6 +11,7 @@ import {
 } from "./constants.ts";
 import { isRecord } from "../guards.ts";
 import { getLocalStorageItemMigrating } from "../../utils/local-storage-migrate.ts";
+import { LOAD_WARNING_CORRUPTED_SAVE, LOAD_WARNING_UNSUPPORTED_SAVE } from "../constants.ts";
 
 const EMPTY_STATE: LocalBisListsState = {
   schemaVersion: BIS_LISTS_SCHEMA_VERSION,
@@ -23,7 +24,7 @@ export const BIS_LISTS_STORAGE_SAVE_FAILED_MESSAGE =
   "Failed to save data. Please try again.";
 
 /** Soft-parse one slot; drop non-integer / non-positive item ids, keep the rest. */
-function parseBisListSlot(value: unknown): BisListSlot | null {
+function parseBisListSlot(value: unknown, warn: () => void): BisListSlot | null {
   if (!isRecord(value)) {
     return null;
   }
@@ -41,11 +42,12 @@ function parseBisListSlot(value: unknown): BisListSlot | null {
     (itemId): itemId is number =>
       typeof itemId === "number" && Number.isInteger(itemId) && itemId > 0,
   );
+  if (itemIds.length !== value.itemIds.length) warn();
   return { slot: value.slot, itemIds };
 }
 
 /** Reject presets missing id/name; skip invalid slot rows inside a valid preset. */
-function parseBisListPreset(value: unknown): BisListPreset | null {
+function parseBisListPreset(value: unknown, warn: () => void): BisListPreset | null {
   if (!isRecord(value)) {
     return null;
   }
@@ -60,10 +62,10 @@ function parseBisListPreset(value: unknown): BisListPreset | null {
   }
   const slots: BisListSlot[] = [];
   for (const slotEntry of value.slots) {
-    const parsedSlot = parseBisListSlot(slotEntry);
+    const parsedSlot = parseBisListSlot(slotEntry, warn);
     if (parsedSlot) {
       slots.push(parsedSlot);
-    }
+    } else warn();
   }
   return {
     id: value.id,
@@ -73,7 +75,7 @@ function parseBisListPreset(value: unknown): BisListPreset | null {
 }
 
 /** One class|spec bucket: requires `selectedPresetId` + `presets` array. */
-function parseLocalSpecBisEntry(value: unknown): LocalSpecBisEntry | null {
+function parseLocalSpecBisEntry(value: unknown, warn: () => void): LocalSpecBisEntry | null {
   if (!isRecord(value)) {
     return null;
   }
@@ -88,10 +90,10 @@ function parseLocalSpecBisEntry(value: unknown): LocalSpecBisEntry | null {
   }
   const presets: BisListPreset[] = [];
   for (const preset of value.presets) {
-    const parsedPreset = parseBisListPreset(preset);
+    const parsedPreset = parseBisListPreset(preset, warn);
     if (parsedPreset) {
       presets.push(parsedPreset);
-    }
+    } else warn();
   }
   return {
     selectedPresetId: value.selectedPresetId,
@@ -105,20 +107,23 @@ function parseLocalSpecBisEntry(value: unknown): LocalSpecBisEntry | null {
  */
 function parseEntries(
   value: unknown,
+  warn: () => void,
 ): LocalBisListsState["entries"] {
   if (!isRecord(value)) {
+    warn();
     return {};
   }
 
   const entries: LocalBisListsState["entries"] = {};
   for (const [storageKey, entryValue] of Object.entries(value)) {
     if (typeof storageKey !== "string" || !storageKey.includes("|")) {
+      warn();
       continue;
     }
-    const parsedEntry = parseLocalSpecBisEntry(entryValue);
+    const parsedEntry = parseLocalSpecBisEntry(entryValue, warn);
     if (parsedEntry) {
       entries[storageKey] = parsedEntry;
-    }
+    } else warn();
   }
   return entries;
 }
@@ -128,28 +133,35 @@ function parseEntries(
  * Wrong schema or corrupt JSON → empty.
  * Entries are soft-validated; bad rows are dropped rather than failing the whole load.
  */
-export function loadLocalBisListsState(): LocalBisListsState {
+export function parseLocalBisListsState(raw: string | null): {
+  state: LocalBisListsState;
+  loadWarning: string | null;
+} {
+  if (raw === null) return { state: EMPTY_STATE, loadWarning: null };
   try {
-    const raw = getLocalStorageItemMigrating(
-      BIS_LISTS_STORAGE_KEY,
-      LEGACY_BIS_LISTS_STORAGE_KEY,
-    );
-    if (!raw) {
-      return EMPTY_STATE;
-    }
-
     const parsed: unknown = JSON.parse(raw);
-    if (!isRecord(parsed) || parsed.schemaVersion !== BIS_LISTS_SCHEMA_VERSION) {
-      return EMPTY_STATE;
+    if (!isRecord(parsed)) {
+      return { state: EMPTY_STATE, loadWarning: LOAD_WARNING_CORRUPTED_SAVE };
     }
-
+    if (parsed.schemaVersion !== BIS_LISTS_SCHEMA_VERSION) {
+      return { state: EMPTY_STATE, loadWarning: LOAD_WARNING_UNSUPPORTED_SAVE };
+    }
+    let corrupt = false;
+    const entries = parseEntries(parsed.entries, () => { corrupt = true; });
     return {
-      schemaVersion: BIS_LISTS_SCHEMA_VERSION,
-      entries: parseEntries(parsed.entries),
+      state: { schemaVersion: BIS_LISTS_SCHEMA_VERSION, entries },
+      loadWarning: corrupt ? LOAD_WARNING_CORRUPTED_SAVE : null,
     };
   } catch {
-    return EMPTY_STATE;
+    return { state: EMPTY_STATE, loadWarning: LOAD_WARNING_CORRUPTED_SAVE };
   }
+}
+
+export function loadLocalBisListsState(): LocalBisListsState {
+  return parseLocalBisListsState(getLocalStorageItemMigrating(
+    BIS_LISTS_STORAGE_KEY,
+    LEGACY_BIS_LISTS_STORAGE_KEY,
+  )).state;
 }
 
 /**

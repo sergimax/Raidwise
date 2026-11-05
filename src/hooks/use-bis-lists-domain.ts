@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ClassName } from "../types/characters.ts";
 import type { BisListSlot, LocalBisListsState } from "../types/bis-lists.ts";
-import {
-  loadLocalBisListsState,
-  saveLocalBisListsState,
-} from "../storage/bis-lists/index.ts";
+import { parseLocalBisListsState } from "../storage/bis-lists/index.ts";
+import { BIS_LISTS_STORAGE_KEY, LEGACY_BIS_LISTS_STORAGE_KEY } from "../storage/bis-lists/constants.ts";
+import { loadLocalSave, useLocalSave } from "./use-local-save.ts";
 import { getBuiltInPresetsForSpec } from "../data/bis-presets/index.ts";
 import {
   clearAllLocalBisPresets,
@@ -20,40 +19,24 @@ import {
   upsertLocalSpecEntry,
 } from "../utils/bis-lists.ts";
 
-/** Debounce window for BiS localStorage writes (mirror tracker domain). */
-export const BIS_LISTS_SAVE_DEBOUNCE_MS = 400;
+const storageKeys = { key: BIS_LISTS_STORAGE_KEY, legacyKey: LEGACY_BIS_LISTS_STORAGE_KEY };
 
 /**
  * BiS presets domain: built-in + local lists, selection, and slot maps.
  * Mutations must go through functional updates (`applyLocalUpdate` /
  * `setLocalState(prev => …)`) so rapid select/save/delete cannot clobber each other.
- * Persistence is debounced; unmount flushes the latest in-memory state.
+ * Persistence follows committed edits.
  */
 export function useBisListsDomain() {
-  const [localState, setLocalState] = useState<LocalBisListsState>(() =>
-    loadLocalBisListsState(),
-  );
-  const [storageError, setStorageError] = useState<string | null>(null);
+  const [initialLoad] = useState(() => loadLocalSave(storageKeys, parseLocalBisListsState));
+  const [localState, setLocalState] = useState(initialLoad.state);
+  const { storageError, storageOriginal, exportStorageDraft, recoverStorage } =
+    useLocalSave(storageKeys, initialLoad, localState, JSON.stringify);
   const localStateRef = useRef(localState);
 
   useEffect(() => {
     localStateRef.current = localState;
   }, [localState]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      saveLocalBisListsState(localState, (errorMessage) => {
-        setStorageError(errorMessage);
-      });
-    }, BIS_LISTS_SAVE_DEBOUNCE_MS);
-    return () => clearTimeout(timeout);
-  }, [localState]);
-
-  useEffect(() => {
-    return () => {
-      saveLocalBisListsState(localStateRef.current);
-    };
-  }, []);
 
   /** Prefer this over reading `localState` inside mutation callbacks. */
   const applyLocalUpdate = useCallback(
@@ -238,6 +221,9 @@ export function useBisListsDomain() {
       clearAllLocalPresets,
       hasAnyLocalBisPresets,
       storageError,
+      storageOriginal,
+      exportStorageDraft,
+      recoverStorage,
     }),
     [
       clearAllLocalPresets,
@@ -249,6 +235,9 @@ export function useBisListsDomain() {
       savePresetByName,
       selectPreset,
       storageError,
+      storageOriginal,
+      exportStorageDraft,
+      recoverStorage,
       updateSelectedLocalPresetSlots,
     ],
   );

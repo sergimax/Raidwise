@@ -4,6 +4,7 @@ import { ItemTooltipLocaleProvider } from "./contexts/item-tooltip-locale-provid
 import { WowDataProvider } from "./contexts/wow-data-provider.tsx";
 import { RaidWorkspaceSessionProvider } from "./contexts/raid-workspace-session-provider.tsx";
 import { AppRouteContent } from "./components/app-route-content/index.tsx";
+import { WowDataNotice } from "./components/wow-data-notice/index.tsx";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 
@@ -15,6 +16,7 @@ function App() {
           <RaidTrackerProvider>
             <BisListsProvider>
               <RaidWorkspaceSessionProvider>
+                <WowDataNotice />
                 <AppRouteContent />
               </RaidWorkspaceSessionProvider>
             </BisListsProvider>

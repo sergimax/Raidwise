@@ -1,6 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DungeonList } from "../data/dungeons.ts";
-import { loadRaidTrackerState, saveRaidTrackerState } from "../storage/index.ts";
+import { LEGACY_STORAGE_KEY, STORAGE_KEY } from "../storage/constants.ts";
+import { parseRaidTrackerState } from "../storage/parse.ts";
+import { serializeRaidTrackerState } from "../storage/persist.ts";
+import { loadLocalSave, useLocalSave } from "./use-local-save.ts";
 import type { CharacterRecord, CharacterSpecGearUpdate } from "../types/characters.ts";
 import type {
   DungeonCustomizationUpdate,
@@ -17,10 +20,13 @@ import {
 import { moveCharacterInList } from "../utils/move-character.ts";
 import { resolveAlsoOwnedItemIds } from "../utils/resolve-also-owned-item-ids.ts";
 import { generateUUID } from "../uuid.ts";
+import { resolveDungeonRaidKey } from "../utils/resolve-dungeon-raid-key.ts";
+
+const storageKeys = { key: STORAGE_KEY, legacyKey: LEGACY_STORAGE_KEY };
 
 /** Domain state: characters, dungeons, toggles, persistence, and mutations. */
 export function useTrackerDomain() {
-  const [initialLoad] = useState(loadRaidTrackerState);
+  const [initialLoad] = useState(() => loadLocalSave(storageKeys, parseRaidTrackerState));
   const [characters, setCharacters] = useState<CharacterRecord[]>(
     initialLoad.state.characters,
   );
@@ -30,21 +36,12 @@ export function useTrackerDomain() {
   const [dungeonToggles, setDungeonToggles] = useState<DungeonToggles>(
     initialLoad.state.dungeonToggles,
   );
-  const [storageError, setStorageError] = useState<string | null>(
-    initialLoad.loadWarning,
+  const state = useMemo(
+    () => ({ characters, dungeons, dungeonToggles }),
+    [characters, dungeons, dungeonToggles],
   );
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      saveRaidTrackerState(
-        { characters, dungeons, dungeonToggles },
-        (errorMessage) => {
-          setStorageError(errorMessage);
-        },
-      );
-    }, 400);
-    return () => clearTimeout(timeout);
-  }, [characters, dungeons, dungeonToggles]);
+  const { storageError, storageOriginal, exportStorageDraft, recoverStorage } =
+    useLocalSave(storageKeys, initialLoad, state, serializeRaidTrackerState);
 
   const addCharacter = useCallback((character: CharacterRecord) => {
     setCharacters((previous) => [...previous, character]);
@@ -102,14 +99,23 @@ export function useTrackerDomain() {
           if (dungeon.id !== dungeonId) {
             return dungeon;
           }
+          const previousRaidKey = resolveDungeonRaidKey(dungeon);
+          const raidKey = resolveDungeonRaidKey(customization) ?? previousRaidKey;
+          const variantChanged = raidKey !== previousRaidKey ||
+            dungeon.size !== customization.size || dungeon.difficulty !== customization.difficulty;
+          const template = variantChanged && raidKey && DungeonList.find((entry) =>
+            entry.raidKey === raidKey && entry.size === customization.size &&
+            entry.difficulty === customization.difficulty,
+          );
           const next: DungeonRecord = {
             id: dungeon.id,
             name: customization.name,
             size: customization.size,
-            itemLevel: dungeon.itemLevel,
+            itemLevel: template ? template.itemLevel : dungeon.itemLevel,
             difficulty: customization.difficulty,
             ...(customization.shortName ? { shortName: customization.shortName } : {}),
             ...(customization.emblem ? { emblem: customization.emblem } : {}),
+            ...(raidKey ? { raidKey } : {}),
           };
           return next;
         }),
@@ -189,6 +195,9 @@ export function useTrackerDomain() {
       dungeons,
       dungeonToggles,
       storageError,
+      storageOriginal,
+      exportStorageDraft,
+      recoverStorage,
       addCharacter,
       updateCharacter,
       moveCharacter,
@@ -221,6 +230,9 @@ export function useTrackerDomain() {
       handleResetCharacterToggles,
       moveCharacter,
       storageError,
+      storageOriginal,
+      exportStorageDraft,
+      recoverStorage,
       updateCharacter,
       updateDungeon,
     ],

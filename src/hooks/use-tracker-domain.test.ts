@@ -2,23 +2,22 @@ import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DungeonList } from "../data/dungeons.ts";
 import { loadRaidTrackerState } from "../storage/index.ts";
-import { STORAGE_KEY } from "../storage/constants.ts";
+import { LOAD_WARNING_CORRUPTED_SAVE, LOAD_WARNING_UNSUPPORTED_SAVE, STORAGE_CONFLICT, STORAGE_KEY } from "../storage/constants.ts";
 import { createTestCharacter, createTestDungeon } from "../test/fixtures.ts";
 import { DungeonDifficulty } from "../types/dungeons.ts";
 import { useTrackerDomain } from "./use-tracker-domain.ts";
+import { getLocalizedDungeonDisplayName } from "../i18n/localized-domain.ts";
 
 describe("useTrackerDomain", () => {
   beforeEach(() => {
     localStorage.clear();
-    vi.useFakeTimers();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.useRealTimers();
   });
 
-  it("saves the latest changes after the debounce and restores them on mount", () => {
+  it("saves changes immediately and restores them on mount", () => {
     const character = createTestCharacter({ id: "alpha", name: "Alpha" });
     const dungeon = createTestDungeon({
       id: "icc",
@@ -33,14 +32,7 @@ describe("useTrackerDomain", () => {
       result.current.handleDungeonToggle(character.id, dungeon.id);
     });
 
-    act(() => {
-      vi.advanceTimersByTime(399);
-    });
-    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
 
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
     expect(loadRaidTrackerState().state).toEqual({
       characters: [character],
       dungeons: [dungeon],
@@ -147,6 +139,55 @@ describe("useTrackerDomain", () => {
     expect(result.current.dungeons.map((dungeon) => dungeon.id)).toEqual(firstIds);
   });
 
+  it.each([
+    ["{broken", LOAD_WARNING_CORRUPTED_SAVE],
+    [JSON.stringify({ schemaVersion: 999, data: "keep me" }), LOAD_WARNING_UNSUPPORTED_SAVE],
+  ])("preserves unreadable tracker data until replacement is requested", (raw, warning) => {
+    localStorage.setItem(STORAGE_KEY, raw);
+    const { result } = renderHook(() => useTrackerDomain());
+    act(() => result.current.addCharacter(createTestCharacter()));
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);
+    expect(result.current.storageOriginal).toBe(raw);
+    expect(result.current.storageError).toBe(warning);
+
+    act(() => result.current.recoverStorage?.());
+    expect(result.current.storageError).toBeNull();
+    expect(loadRaidTrackerState().state.characters).toHaveLength(1);
+  });
+
+  it("preserves a stale tab's working copy without overwriting another tab", () => {
+    const first = renderHook(() => useTrackerDomain());
+    const second = renderHook(() => useTrackerDomain());
+    act(() => first.result.current.addCharacter(createTestCharacter()));
+    act(() => second.result.current.addDungeon(createTestDungeon()));
+
+    expect(second.result.current.storageError).toBe(STORAGE_CONFLICT);
+    expect(JSON.parse(second.result.current.exportStorageDraft()).dungeons).toHaveLength(1);
+    expect(loadRaidTrackerState().state.characters).toHaveLength(1);
+    expect(loadRaidTrackerState().state.dungeons).toHaveLength(0);
+  });
+
+  it("keeps template loot on a custom rename and updates it for a recognized replacement", () => {
+    const { result } = renderHook(() => useTrackerDomain());
+    const raid = createTestDungeon({
+      name: "Icecrown Citadel",
+      raidKey: "icecrownCitadel",
+      itemLevel: [264, 271],
+    });
+    const variant = { size: raid.size, difficulty: raid.difficulty };
+    act(() => result.current.addDungeon(raid));
+    act(() => result.current.updateDungeon(raid.id, { ...variant, name: "Friday team" }));
+    const renamed = loadRaidTrackerState().state.dungeons[0]!;
+    expect(renamed.raidKey).toBe("icecrownCitadel");
+    expect(getLocalizedDungeonDisplayName(renamed, "ru", false)).toBe("Friday team");
+
+    act(() => result.current.updateDungeon(raid.id, { ...variant, name: "The Ruby Sanctum" }));
+    expect(loadRaidTrackerState().state.dungeons[0]).toMatchObject({
+      raidKey: "rubySanctum",
+      itemLevel: [271],
+    });
+  });
+
   it("reports a failed save and clears the error after a successful retry", () => {
     const { result } = renderHook(() => useTrackerDomain());
     const write = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
@@ -156,9 +197,6 @@ describe("useTrackerDomain", () => {
     act(() => {
       result.current.addCharacter(createTestCharacter({ id: "alpha" }));
     });
-    act(() => {
-      vi.advanceTimersByTime(400);
-    });
     expect(result.current.storageError).toBe(
       "Storage quota exceeded. Please free up space.",
     );
@@ -166,9 +204,6 @@ describe("useTrackerDomain", () => {
     write.mockRestore();
     act(() => {
       result.current.addDungeon(createTestDungeon({ id: "icc" }));
-    });
-    act(() => {
-      vi.advanceTimersByTime(400);
     });
     expect(result.current.storageError).toBeNull();
     expect(loadRaidTrackerState().state.dungeons).toHaveLength(1);

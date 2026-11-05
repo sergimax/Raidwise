@@ -26,6 +26,19 @@ describe("getLocalStorageItemMigrating", () => {
     expect(getLocalStorageItemMigrating("raidwise", "my-raid-cds")).toBeNull();
   });
 
+  it("reads legacy data even when copying it fails", () => {
+    localStorage.setItem("my-raid-cds", "legacy-payload");
+    const write = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage full", "QuotaExceededError");
+    });
+    try {
+      expect(getLocalStorageItemMigrating("raidwise", "my-raid-cds")).toBe("legacy-payload");
+      expect(localStorage.getItem("my-raid-cds")).toBe("legacy-payload");
+    } finally {
+      write.mockRestore();
+    }
+  });
+
   it("returns null when localStorage throws", () => {
     vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("quota");

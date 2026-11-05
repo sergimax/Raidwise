@@ -7,4 +7,7 @@ export const LEGACY_STORAGE_KEY = "my-raid-cds";
 export const CURRENT_SCHEMA_VERSION = 6;
 
 export const LOAD_WARNING_CORRUPTED_SAVE =
-  "Saved data was corrupted and has been reset. Your previous tracker data could not be loaded.";
+  "corrupt-save";
+export const LOAD_WARNING_UNSUPPORTED_SAVE = "unsupported-save";
+export const STORAGE_CONFLICT = "storage-conflict";
+export const STORAGE_READ_FAILED = "storage-read-failed";

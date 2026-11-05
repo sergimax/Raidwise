@@ -45,7 +45,10 @@ export function AppRouteContent() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to={APP_ROUTES.raids} replace />} />
-      <Route path="raids/*" element={<TrackerLayout />} />
+      {[
+        APP_ROUTES.raids, APP_ROUTES.characterPick, APP_ROUTES.gearPick,
+        APP_ROUTES.bisLists, APP_ROUTES.addCharacter, APP_ROUTES.addRaid, APP_ROUTES.raidSettings,
+      ].map((path) => <Route key={path} path={path} caseSensitive element={<TrackerLayout />} />)}
       <Route path="settings" element={<AppSettingsPage />} />
       <Route path="changelog" element={<Navigate to={APP_ROUTES.settings} replace />} />
       <Route path="reputation" element={<ComingSoonPage title="appNavigation.reputation" />} />

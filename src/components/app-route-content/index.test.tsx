@@ -78,10 +78,10 @@ describe("AppRouteContent", () => {
     expect(screen.getByRole("table")).toBeInTheDocument();
   });
 
-  it("shows a not found page for an unknown URL", () => {
-    renderRoute("/unknown");
+  it.each(["/unknown", "/raids/typo"])("shows a not found page for %s", (path) => {
+    renderRoute(path);
 
-    expect(screen.getByTestId("current-path")).toHaveTextContent("/unknown");
+    expect(screen.getByTestId("current-path")).toHaveTextContent(path);
     expect(screen.getByRole("heading", { name: "Page not found" })).toBeInTheDocument();
   });
 

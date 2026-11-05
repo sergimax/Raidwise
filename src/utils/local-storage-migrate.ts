@@ -15,8 +15,12 @@ export function getLocalStorageItemMigrating(
     if (legacy === null) {
       return null;
     }
-    localStorage.setItem(key, legacy);
-    localStorage.removeItem(legacyKey);
+    try {
+      localStorage.setItem(key, legacy);
+      localStorage.removeItem(legacyKey);
+    } catch {
+      // Reading the old value succeeded even if the browser refused the move.
+    }
     return legacy;
   } catch {
     return null;

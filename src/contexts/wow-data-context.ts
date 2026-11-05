@@ -5,6 +5,8 @@ export type WowDataContextValue = {
   coreReady: boolean;
   /** Stats / equip / drops / variants ready for gear-hint tints. */
   hintReady: boolean;
+  failed?: boolean;
+  retry?: () => void;
 };
 
 export const WowDataContext = createContext<WowDataContextValue>({
