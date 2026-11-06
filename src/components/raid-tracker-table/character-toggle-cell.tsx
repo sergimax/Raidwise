@@ -1,4 +1,4 @@
-import { Switch, TableCell, Tooltip, Box } from "@mui/material";
+import { TableCell, Tooltip, Box } from "@mui/material";
 import { useCallback, useMemo, useState, memo } from "react";
 import type { AppLocale } from "../../i18n/types.ts";
 import type { CharacterRecord } from "../../types/characters.ts";
@@ -24,53 +24,15 @@ import {
 } from "../../utils/gear-hint-display.ts";
 import { GearHintTooltipContent } from "../gear-hint-tooltip/index.tsx";
 import { CHARACTER_BODY_CELL_SX } from "./table-layout.ts";
+import { RaidToggleContent } from "./raid-toggle-content.tsx";
 
-function GearItemCounts({ hint, side }: {
-  hint?: GearUpgradeHint;
-  side: "left" | "right";
-}) {
-  const { t } = useTranslation();
-  if (!hint) return <Box component="span" />;
-
+function getGearCounts(hint?: GearUpgradeHint) {
+  if (!hint) return undefined;
   const bis = collectMissingBisLootItemIds(hint);
-  const counts = [
-    { kind: "bis" as const, count: new Set([...bis.exact, ...bis.variant]).size },
-    { kind: "ilvl" as const, count: collectMissingIlvlLootItemIds(hint).length },
-  ].filter(({ count }) => count > 0);
-
-  return (
-    <Box component="span" sx={{
-      position: "absolute",
-      insetBlock: 0,
-      left: side === "left" ? 0 : "50%",
-      width: "50%",
-      display: "grid",
-      gridTemplateRows: "repeat(2, 1fr)",
-      pointerEvents: "none",
-    }}>
-      {counts.map(({ kind, count }) => (
-        <Box
-          component="span"
-          key={kind}
-          aria-label={`${t(kind === "bis" ? "gearHint.kindLabelBis" : "gearHint.kindLabelUpgrades")}: ${count}`}
-          sx={{
-            gridRow: kind === "bis" ? 1 : 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "text.secondary",
-            opacity: 0.7,
-            fontSize: 13,
-            lineHeight: 1.2,
-            fontWeight: 400,
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          х{count}
-        </Box>
-      ))}
-    </Box>
-  );
+  return {
+    bis: new Set([...bis.exact, ...bis.variant]).size,
+    ilvl: collectMissingIlvlLootItemIds(hint).length,
+  };
 }
 
 type CharacterToggleCellProps = {
@@ -198,41 +160,17 @@ export const CharacterToggleCell = memo(function CharacterToggleCell({
     t,
   ]);
 
-  const toggleSwitch = (
-    <Switch
-      size="small"
+  const toggleWithCounts = (
+    <RaidToggleContent
       checked={isDungeonMarkedComplete}
       onChange={handleToggle}
-      slotProps={{
-        input: {
-          "aria-label": t("table.toggleAria", {
-            character: formatCharacterDisplayName(character.name),
-            dungeon: dungeonDisplayName,
-          }),
-        },
-      }}
+      label={t("table.toggleAria", {
+        character: formatCharacterDisplayName(character.name),
+        dungeon: dungeonDisplayName,
+      })}
+      main={isDungeonMarkedComplete ? undefined : getGearCounts(gearHintTints.main?.gearHint)}
+      off={isDungeonMarkedComplete ? undefined : getGearCounts(gearHintTints.off?.gearHint)}
     />
-  );
-
-  const toggleWithCounts = (
-    <Box component="span" sx={{
-      position: "relative",
-      minHeight: 36,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-    }}>
-      <GearItemCounts
-        side="left"
-        hint={isDungeonMarkedComplete ? undefined : gearHintTints.main?.gearHint}
-      />
-      {toggleSwitch}
-      <GearItemCounts
-        side="right"
-        hint={isDungeonMarkedComplete ? undefined : gearHintTints.off?.gearHint}
-      />
-    </Box>
   );
 
   return (

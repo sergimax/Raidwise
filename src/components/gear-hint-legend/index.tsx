@@ -1,7 +1,8 @@
 import { Alert, Box, Typography } from "@mui/material";
-import type { GearHintCellDisplay } from "../../utils/gear-upgrade-hint.ts";
+import type { GearHintCellDisplay, GearUpgradeHint, GearUpgradeHintLevel } from "../../utils/gear-upgrade-hint.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
-import { getGearHintKindColor } from "../../utils/gear-hint-display.ts";
+import { gearUpgradeHintBandsCellSx, getGearHintKindColor } from "../../utils/gear-hint-display.ts";
+import { RaidToggleContent } from "../raid-tracker-table/raid-toggle-content.tsx";
 
 type GearHintLegendProps = {
   onDismiss: () => void;
@@ -55,6 +56,25 @@ function GearHintKindLegendItem({
   );
 }
 
+function exampleHint(bis: GearUpgradeHintLevel, ilvl: GearUpgradeHintLevel): GearUpgradeHint {
+  return {
+    bis: { level: bis, upgradeSlotCount: bis, upgradeSlots: [] },
+    bisVariant: { level: 0, upgradeSlotCount: 0, upgradeSlots: [] },
+    ilvl: { level: ilvl, upgradeSlotCount: ilvl, upgradeSlots: [] },
+    equippedCount: 0,
+    peakDungeonItemLevel: 284,
+    slotAware: true,
+    bisListActive: true,
+  };
+}
+
+const EXAMPLE_BANDS_SX = gearUpgradeHintBandsCellSx(
+  exampleHint(2, 3),
+  exampleHint(1, 2),
+  [284],
+  true,
+);
+
 export function GearHintLegend({ onDismiss }: GearHintLegendProps) {
   const { t } = useTranslation();
 
@@ -86,34 +106,61 @@ export function GearHintLegend({ onDismiss }: GearHintLegendProps) {
         },
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 0.75,
-          rowGap: 0.25,
-        }}
-      >
-        <GearHintKindLegendItem
-          hintKind="bis"
-          labelKey="gearHint.kindLabelBis"
-          meaningKey="gearHint.legendBisMeaning"
-        />
-        <Typography
-          component="span"
-          variant="caption"
-          color="text.secondary"
+      <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1.25 }}>
+        <Box
+          inert
           aria-hidden
-          sx={{ lineHeight: 1.5 }}
+          sx={[
+            {
+              width: 130,
+              flexShrink: 0,
+              bgcolor: "background.paper",
+              border: 1,
+              borderColor: "divider",
+              borderRadius: 0.5,
+              color: "text.primary",
+            },
+            EXAMPLE_BANDS_SX,
+          ]}
         >
-          ·
-        </Typography>
-        <GearHintKindLegendItem
-          hintKind="ilvl"
-          labelKey="gearHint.kindLabelUpgrades"
-          meaningKey="gearHint.legendUpgradesMeaning"
-        />
+          <Box sx={{ position: "relative", zIndex: 1 }}>
+            <RaidToggleContent checked={false} main={{ bis: 2, ilvl: 4 }} off={{ bis: 1, ilvl: 3 }} />
+          </Box>
+        </Box>
+        <Box sx={{ flex: "1 1 240px", minWidth: 0 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 0.75,
+              rowGap: 0.25,
+            }}
+          >
+            <GearHintKindLegendItem
+              hintKind="bis"
+              labelKey="gearHint.kindLabelBis"
+              meaningKey="gearHint.legendBisMeaning"
+            />
+            <Typography
+              component="span"
+              variant="caption"
+              color="text.secondary"
+              aria-hidden
+              sx={{ lineHeight: 1.5 }}
+            >
+              ·
+            </Typography>
+            <GearHintKindLegendItem
+              hintKind="ilvl"
+              labelKey="gearHint.kindLabelUpgrades"
+              meaningKey="gearHint.legendUpgradesMeaning"
+            />
+          </Box>
+          <Typography component="p" variant="caption" color="text.secondary">
+            {t("gearHint.legendCellLayout")}
+          </Typography>
+        </Box>
       </Box>
     </Alert>
   );

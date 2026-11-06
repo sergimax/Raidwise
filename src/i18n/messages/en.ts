@@ -39,6 +39,8 @@ export const enMessages = {
     scenarioAStep1:
       "{{addDungeon}} — or {{addFromTemplate}} when the list is empty",
     scenarioAStep2: "{{addCharacter}}",
+    cooldownMarked: "Locked",
+    cooldownUnmarked: "Available",
     scenarioAStep3: "Mark which raids each character has completed",
     scenarioAOutcome:
       "A cooldown map for your characters — who is free for which raid",
@@ -474,6 +476,7 @@ export const enMessages = {
   gearHint: {
     kindLabelBis: "BiS",
     kindLabelUpgrades: "Upgrades",
+    legendCellLayout: "The coral top band shows BiS, and the teal bottom band shows ilvl upgrades. Main spec is on the left, off-spec on the right. The numbers count items in each band. Marking a raid complete hides the hints.",
     legendBisMeaning: "missing BiS targets from selected list",
     legendUpgradesMeaning: "stat-filtered ilvl upgrades",
     legendDismissAria: "Dismiss gear hint legend",
