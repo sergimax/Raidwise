@@ -12,6 +12,7 @@ import { isRecord } from "./guards.ts";
 import { getWriteError, readSnapshot, sameSnapshot, saveLockName, type SaveError, type SaveSnapshot } from "./local-save.ts";
 import { parseRaidTrackerState } from "./parse.ts";
 import { serializeRaidTrackerState } from "./persist.ts";
+import { withSaveVisibility } from "./save-visibility.ts";
 import type { PersistedTrackerState } from "./types.ts";
 import type { LocalBisListsState } from "../types/bis-lists.ts";
 import { writeWorkspaceSave, type WorkspaceSave } from "./workspace-save.ts";
@@ -96,7 +97,7 @@ export async function restoreWorkspaceBackup(
   if (!locks) return STORAGE_LOCK_UNAVAILABLE;
   try {
     return await locks.request(saveLockName(TRACKER_STORAGE_KEYS.key), () =>
-      locks.request(saveLockName(BIS_LISTS_STORAGE_KEYS.key), () => {
+      locks.request(saveLockName(BIS_LISTS_STORAGE_KEYS.key), () => withSaveVisibility(locks, (commit) => {
         if (!sameWorkspace(getCurrent(), expected)) return STORAGE_CONFLICT;
 
         let saved: WorkspaceSnapshots;
@@ -112,7 +113,7 @@ export async function restoreWorkspaceBackup(
         }
 
         // One setItem is the commit point. Old keys become irrelevant only after it succeeds.
-        writeWorkspaceSave(backup.save);
+        commit(() => writeWorkspaceSave(backup.save));
         for (const { key, legacyKey } of [TRACKER_STORAGE_KEYS, BIS_LISTS_STORAGE_KEYS]) {
           try {
             localStorage.removeItem(key);
@@ -122,7 +123,7 @@ export async function restoreWorkspaceBackup(
           }
         }
         return null;
-      }),
+      })),
     );
   } catch (error) {
     return getWriteError(error);

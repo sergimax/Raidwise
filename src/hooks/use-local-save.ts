@@ -10,6 +10,7 @@ import {
   durableDraftPrefix, listDurableSaves, readDurableSave, readPendingSave, removeDurableSave,
   samePendingSave, writeDurableSave, writePendingSave, type DurableSave, type WorkingSave,
 } from "../storage/pending-save.ts";
+import { withSaveVisibility } from "../storage/save-visibility.ts";
 import { WORKSPACE_SAVE_KEY, WORKSPACE_SAVE_LOCK, workspaceSection } from "../storage/workspace-save.ts";
 import { generateUUID } from "../uuid.ts";
 
@@ -50,19 +51,23 @@ export function useLocalSave<T>(
     }
 
     const keys = { key, legacyKey };
-    const reportFailure = (error: unknown) => {
-      scheduled.current = false;
-      setSaving(false);
-      setSaveError(getWriteError(error));
-    };
-
-    const flush = () => {
-      scheduled.current = false;
-      setSaving(false);
-      const draft = pending.current;
-      if (!draft) return;
-
-      try {
+    const requestWrite = () => {
+      let draft = pending.current;
+      const finish = () => {
+        if (pending.current && pending.current !== draft) {
+          requestWrite();
+        } else {
+          scheduled.current = false;
+          setSaving(false);
+        }
+      };
+      const reportFailure = (error: unknown) => {
+        setSaveError(getWriteError(error));
+        finish();
+      };
+      const write = (commit: (write: () => void) => void) => {
+        draft = pending.current;
+        if (!draft) return;
         const snapshot = readSnapshot(keys);
         // A remount may have staged a newer draft while this lock was queued.
         const sessionDraft = readPendingSave(keys);
@@ -79,31 +84,58 @@ export function useLocalSave<T>(
             setSaveError(STORAGE_CONFLICT);
             return;
           }
-          writeSnapshot(keys, snapshot, draft.raw);
+          const raw = draft.raw;
+          commit(() => writeSnapshot(keys, snapshot, raw));
         }
         expected.current = { current: draft.raw, legacy: null };
-        pending.current = null;
-        try {
-          if (ownsSession) {
-            writePendingSave(keys, null);
-            journal.current = null;
+        const repair = draft.repair;
+        return () => {
+          if (repair) setLoadWarning(null);
+          if (pending.current !== draft) return;
+          pending.current = null;
+          try {
+            if (ownsSession && samePendingSave(readPendingSave(keys), journal.current)) {
+              writePendingSave(keys, null);
+              journal.current = null;
+            }
+          } catch {
+            // A replay of an already committed draft is safe.
           }
-        } catch {
-          // A replay of an already committed draft is safe.
+          const completedIds = new Set([durableId.current, resumedId.current]);
+          for (const id of completedIds) {
+            if (!id) continue;
+            try { removeDurableSave(key, id); } catch { /* The committed copy remains available. */ }
+          }
+          durableId.current = undefined;
+          resumedId.current = undefined;
+          setDrafts((previous) => previous.filter(({ id }) => !completedIds.has(id)));
+          setHasDraft(false);
+          setVolatileDraft(false);
+          setTabOnlyDraft(false);
+          setSaveError(null);
+        };
+      };
+      const flush = () => {
+        const complete = (acknowledge: ReturnType<typeof write>) => {
+          acknowledge?.();
+          finish();
+        };
+        try {
+          const result = withSaveVisibility(locks, write);
+          if (result instanceof Promise) return result.then(complete);
+          complete(result);
+        } catch (error) {
+          reportFailure(error);
         }
-        const completedIds = new Set([durableId.current, resumedId.current]);
-        for (const id of completedIds) {
-          if (!id) continue;
-          try { removeDurableSave(key, id); } catch { /* The committed copy remains available. */ }
-        }
-        durableId.current = undefined;
-        resumedId.current = undefined;
-        setDrafts((previous) => previous.filter(({ id }) => !completedIds.has(id)));
-        setHasDraft(false);
-        setVolatileDraft(false);
-        setTabOnlyDraft(false);
-        setSaveError(null);
-        if (draft.repair) setLoadWarning(null);
+      };
+
+      try {
+        void locks.request(saveLockName(key), () => {
+          if (workspaceSection(key) && localStorage.getItem(WORKSPACE_SAVE_KEY) !== null) {
+            return locks.request(WORKSPACE_SAVE_LOCK, flush);
+          }
+          return flush();
+        }).catch(reportFailure);
       } catch (error) {
         reportFailure(error);
       }
@@ -111,16 +143,7 @@ export function useLocalSave<T>(
 
     scheduled.current = true;
     setSaving(true);
-    try {
-      void locks.request(saveLockName(key), () => {
-        if (workspaceSection(key) && localStorage.getItem(WORKSPACE_SAVE_KEY) !== null) {
-          return locks.request(WORKSPACE_SAVE_LOCK, flush);
-        }
-        return flush();
-      }).catch(reportFailure);
-    } catch (error) {
-      reportFailure(error);
-    }
+    requestWrite();
   }, [key, legacyKey]);
 
   const stage = useCallback((value: T, repair = false) => {

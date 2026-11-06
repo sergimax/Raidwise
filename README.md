@@ -170,6 +170,7 @@ Reloading the same tab reopens its draft.
 After closing the tab, use **Open draft** in the tracker or BiS panel to recover pending changes from the same browser profile.
 If another tab changes the shared save first, Raidwise keeps the working copy and lets you download it or explicitly discard it and load the saved version. Save failures can be retried from the warning.
 Shared saves require Web Locks over HTTPS or on localhost.
+Raidwise uses IndexedDB to check that a tab can see the latest shared save before writing.
 If the browser cannot store a draft outside the current tab, Raidwise warns before leaving and offers to download the working copy.
 
 If a save is damaged, Raidwise pauses writes and shows the records it can recover. The warning lets you download the original or confirm a replacement with the working copy.

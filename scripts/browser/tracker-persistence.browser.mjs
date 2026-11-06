@@ -42,6 +42,16 @@ async function waitForSavedRow(page, name) {
   }
 }
 
+async function lockClientId(page) {
+  return page.evaluate(() => {
+    const probe = `raidwise:test-client:${crypto.randomUUID()}`;
+    return navigator.locks.request(probe, async () => {
+      const { held } = await navigator.locks.query();
+      return held.find(({ name }) => name === probe)?.clientId;
+    });
+  });
+}
+
 async function holdSaveLock(page, key) {
   const name = `raidwise:save:${key}`;
   await page.evaluate((lockName) => new Promise((ready) => {
@@ -51,20 +61,40 @@ async function holdSaveLock(page, key) {
     }));
   }), name);
   return {
-    waitForWriters: (count) => page.waitForFunction(async (lockName, expected) => {
-      const { pending } = await navigator.locks.query();
-      return pending.filter(({ name }) => name === lockName).length === expected;
-    }, { polling: 50 }, name, count),
+    waitForWriters: async (...tabs) => {
+      const clients = await Promise.all(tabs.map(lockClientId));
+      assert.ok(clients.every(Boolean), "each writer must have a lock client ID");
+      // A reload replaces the document and its lock client. The queue must contain
+      // the new document's request, even if the previous one has not been removed yet.
+      await page.waitForFunction(async (lockName, expected) => {
+        const { pending } = await navigator.locks.query();
+        const writers = pending.filter(({ name }) => name === lockName);
+        return writers.length === expected.length && writers.every(({ clientId }, index) => clientId === expected[index]);
+      }, { polling: 50 }, name, clients);
+    },
     release: () => page.evaluate(() => { window.releaseTestLock(); }),
   };
 }
 
 async function waitForConflict(page) {
-  await page.waitForFunction(() =>
-    [...document.querySelectorAll('[role="alert"]')].some(
-      (alert) => alert.textContent.includes("The saved data changed in another tab."),
-    ),
-  );
+  await page.bringToFront();
+  try {
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll('[role="alert"]')].some(
+        (alert) => alert.textContent.includes("The saved data changed in another tab."),
+      ),
+    { polling: 50 });
+  } catch (error) {
+    const details = await page.evaluate(async () => ({
+      alerts: [...document.querySelectorAll('[role="alert"]')].map((alert) => alert.textContent),
+      tracker: localStorage.getItem("raidwise"),
+      bis: localStorage.getItem("raidwise-bis-lists"),
+      pendingTracker: sessionStorage.getItem("raidwise:pending"),
+      pendingBis: sessionStorage.getItem("raidwise-bis-lists:pending"),
+      locks: await navigator.locks.query(),
+    }));
+    throw new Error(`Missing conflict warning: ${JSON.stringify(details)}`, { cause: error });
+  }
 }
 
 async function chooseBackup(page, contents) {
@@ -136,18 +166,18 @@ test("tracker and BiS restore queued edits and reject concurrent stale writes", 
       const lock = await holdSaveLock(guard, "raidwise");
       await page.bringToFront();
       await page.click(toggleSelector);
-      await lock.waitForWriters(1);
+      await lock.waitForWriters(page);
       await page.reload({ waitUntil: "domcontentloaded" });
       await waitForSavedRow(page, "Smoke Raid");
       await waitForSavedRow(page, "Smokehero");
       await page.waitForSelector(toggleSelector);
       assert.equal(await page.$eval(toggleSelector, (input) => input.checked), true);
-      await lock.waitForWriters(1);
+      await lock.waitForWriters(page);
 
       await staleTab.bringToFront();
       await staleTab.click('form button[type="submit"]');
       await waitForSavedRow(staleTab, "Stale Tab Raid");
-      await lock.waitForWriters(2);
+      await lock.waitForWriters(page, staleTab);
       await lock.release();
       await waitForConflict(staleTab);
       await staleTab.reload({ waitUntil: "domcontentloaded" });
@@ -219,12 +249,12 @@ test("tracker and BiS restore queued edits and reject concurrent stale writes", 
       const lock = await holdSaveLock(guard, "raidwise-bis-lists");
 
       await saveList(page, "Queued First");
-      await lock.waitForWriters(1);
+      await lock.waitForWriters(page);
       await page.reload({ waitUntil: "domcontentloaded" });
       await waitForList(page, "Queued First");
-      await lock.waitForWriters(1);
+      await lock.waitForWriters(page);
       await saveList(other, "Queued Second");
-      await lock.waitForWriters(2);
+      await lock.waitForWriters(page, other);
       await lock.release();
       await waitForConflict(other);
       await other.reload({ waitUntil: "domcontentloaded" });
@@ -313,19 +343,32 @@ test("tracker and BiS restore queued edits and reject concurrent stale writes", 
         try {
           await restore.bringToFront();
           await restore.click('input[type="checkbox"][aria-label="Smokehero — Smoke Raid"]');
+          await lock.waitForWriters(restore);
           await editor.bringToFront();
           await clickTextButton(editor, "Delete all custom lists");
           await editor.waitForSelector('[role="dialog"]');
           await clickTextButton(editor, "Delete");
-          await lock.waitForWriters(2);
+          await lock.waitForWriters(restore, editor);
         } finally {
           await lock.release();
         }
-        await writer.waitForFunction(() => {
-          const { tracker, bisLists } = JSON.parse(localStorage.getItem("raidwise-workspace"));
-          return JSON.parse(tracker).dungeonToggles.smoke.raid === false &&
-            Object.keys(JSON.parse(bisLists).entries).length === 0;
-        }, { polling: 50 });
+        await writer.bringToFront();
+        try {
+          await writer.waitForFunction(() => {
+            const { tracker, bisLists } = JSON.parse(localStorage.getItem("raidwise-workspace"));
+            return JSON.parse(tracker).dungeonToggles.smoke.raid === false &&
+              Object.keys(JSON.parse(bisLists).entries).length === 0;
+          }, { polling: 50 });
+        } catch (error) {
+          const details = await Promise.all([writer, restore, editor].map((tab) => tab.evaluate(async () => ({
+            workspace: localStorage.getItem("raidwise-workspace"),
+            pendingTracker: sessionStorage.getItem("raidwise:pending"),
+            pendingBis: sessionStorage.getItem("raidwise-bis-lists:pending"),
+            alerts: [...document.querySelectorAll('[role="alert"]')].map((alert) => alert.textContent),
+            locks: await navigator.locks.query(),
+          }))));
+          throw new Error(`Workspace edits did not both commit: ${JSON.stringify(details)}`, { cause: error });
+        }
 
         await writer.evaluate(() => {
           const workspace = JSON.parse(localStorage.getItem("raidwise-workspace"));
@@ -372,7 +415,7 @@ test("tracker and BiS restore queued edits and reject concurrent stale writes", 
             const editing = await context.newPage();
             await editing.goto(url + route, { waitUntil: "domcontentloaded" });
             await edit(editing);
-            await lock.waitForWriters(1);
+            await lock.waitForWriters(editing);
             await editing.close();
           } finally {
             await lock.release();
