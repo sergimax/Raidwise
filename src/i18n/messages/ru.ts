@@ -41,6 +41,8 @@ export const ruMessages: Messages = {
     scenarioAStep1:
       "{{addDungeon}} — или {{addFromTemplate}}, если список пуст",
     scenarioAStep2: "{{addCharacter}}",
+    cooldownMarked: "КД отмечено",
+    cooldownUnmarked: "Без КД",
     scenarioAStep3: "Отметьте, какие рейды пройдены на каком персонаже",
     scenarioAOutcome:
       "Карта КД ваших персонажей — кто свободен на какой рейд",
@@ -476,6 +478,7 @@ export const ruMessages: Messages = {
   gearHint: {
     kindLabelBis: "BiS",
     kindLabelUpgrades: "Улучшения",
+    legendCellLayout: "Верхняя коралловая полоса показывает BiS, нижняя бирюзовая — улучшения по ilvl. Слева основной спек, справа второй. Числа показывают количество предметов в каждой полосе. После отметки КД подсказки скрываются.",
     legendBisMeaning: "нет BiS по выбранному списку",
     legendUpgradesMeaning: "улучшения по ilvl (с примерным учётом статов)",
     legendDismissAria: "Скрыть подсказку о цветах",

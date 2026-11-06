@@ -3,6 +3,8 @@ import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import type { MessageKey } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { FilterSection } from "../filter-unit/filter-section.tsx";
+import { GearHintCellExample } from "../raid-tracker-table/gear-hint-cell-example.tsx";
+import { RaidToggleContent } from "../raid-tracker-table/raid-toggle-content.tsx";
 import type { AppIntroProps } from "./types.ts";
 import { renderIntroRichText } from "./render-intro-rich-text.tsx";
 
@@ -44,6 +46,35 @@ const INTRO_SCENARIOS: IntroScenario[] = [
     outcomeKey: "intro.scenarioCOutcome",
   },
 ];
+
+function CooldownExamples() {
+  const { t } = useTranslation();
+
+  return (
+    <Stack direction="row" useFlexGap sx={{ flexWrap: "wrap", gap: 0.75, my: 0.5 }}>
+      {([false, true] as const).map((checked) => (
+        <Box
+          key={String(checked)}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            pr: 0.75,
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 0.5,
+          }}
+        >
+          <Box inert aria-hidden>
+            <RaidToggleContent checked={checked} />
+          </Box>
+          <Typography component="span" variant="caption">
+            {t(checked ? "intro.cooldownMarked" : "intro.cooldownUnmarked")}
+          </Typography>
+        </Box>
+      ))}
+    </Stack>
+  );
+}
 
 export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
   const { t } = useTranslation();
@@ -146,6 +177,14 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
                       sx={{ lineHeight: 1.55 }}
                     >
                       {renderIntroRichText(t(stepKey), t)}
+                      {(stepKey === "intro.scenarioBStep4" || stepKey === "intro.scenarioBStep5") && (
+                        <Box sx={{ my: 0.5 }}>
+                          <GearHintCellExample checked={stepKey === "intro.scenarioBStep5"} />
+                        </Box>
+                      )}
+                      {stepKey === "intro.scenarioAStep3" && (
+                        <CooldownExamples />
+                      )}
                     </Typography>
                   ))}
                 </Box>

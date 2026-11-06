@@ -2,6 +2,7 @@ import { Alert, Box, Typography } from "@mui/material";
 import type { GearHintCellDisplay } from "../../utils/gear-upgrade-hint.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { getGearHintKindColor } from "../../utils/gear-hint-display.ts";
+import { GearHintCellExample } from "../raid-tracker-table/gear-hint-cell-example.tsx";
 
 type GearHintLegendProps = {
   onDismiss: () => void;
@@ -86,34 +87,42 @@ export function GearHintLegend({ onDismiss }: GearHintLegendProps) {
         },
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 0.75,
-          rowGap: 0.25,
-        }}
-      >
-        <GearHintKindLegendItem
-          hintKind="bis"
-          labelKey="gearHint.kindLabelBis"
-          meaningKey="gearHint.legendBisMeaning"
-        />
-        <Typography
-          component="span"
-          variant="caption"
-          color="text.secondary"
-          aria-hidden
-          sx={{ lineHeight: 1.5 }}
-        >
-          ·
-        </Typography>
-        <GearHintKindLegendItem
-          hintKind="ilvl"
-          labelKey="gearHint.kindLabelUpgrades"
-          meaningKey="gearHint.legendUpgradesMeaning"
-        />
+      <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1.25 }}>
+        <GearHintCellExample />
+        <Box sx={{ flex: "1 1 240px", minWidth: 0 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 0.75,
+              rowGap: 0.25,
+            }}
+          >
+            <GearHintKindLegendItem
+              hintKind="bis"
+              labelKey="gearHint.kindLabelBis"
+              meaningKey="gearHint.legendBisMeaning"
+            />
+            <Typography
+              component="span"
+              variant="caption"
+              color="text.secondary"
+              aria-hidden
+              sx={{ lineHeight: 1.5 }}
+            >
+              ·
+            </Typography>
+            <GearHintKindLegendItem
+              hintKind="ilvl"
+              labelKey="gearHint.kindLabelUpgrades"
+              meaningKey="gearHint.legendUpgradesMeaning"
+            />
+          </Box>
+          <Typography component="p" variant="caption" color="text.secondary">
+            {t("gearHint.legendCellLayout")}
+          </Typography>
+        </Box>
       </Box>
     </Alert>
   );
