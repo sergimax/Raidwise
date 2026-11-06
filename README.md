@@ -40,12 +40,13 @@ Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with conf
 **Workspace backup** downloads one JSON file with characters and their gear, raids, cooldown marks, custom BiS lists, and BiS selections from the current tab.
 Choose a file up to 10 MiB to compare its contents with the current workspace.
 Confirming replaces both data sections and reloads the app.
-Language, theme, and panel filters are local to the browser session or profile.
+If the workspace changes after you choose the file, load the latest save and preview the backup again.
+The backup excludes language, theme, and panel filters.
 
 ### Settings
 
 The header version links to the GitHub repository. The About section shows the app version and a labeled source-code link.
-What's new shows all changes for the latest published version, with a link to the full changelog.
+What's new shows the latest version entry from the [changelog](CHANGELOG.md).
 
 ### Character pick for a raid
 
@@ -84,6 +85,8 @@ Light/dark mode saved locally, with a system preference fallback when browser st
 
 ## Development
 
+Archived desktop Lighthouse scores from August 2026. [Reports and measurement commands](docs/lighthouse/README.md).
+
 ![Lighthouse Performance](https://img.shields.io/badge/Performance-93-%230cce6b?logo=lighthouse&logoColor=white)
 ![Lighthouse Accessibility](https://img.shields.io/badge/Accessibility-98-%230cce6b?logo=lighthouse&logoColor=white)
 ![Lighthouse Best Practices](https://img.shields.io/badge/Best_Practices-100-%230cce6b?logo=lighthouse&logoColor=white)
@@ -94,33 +97,37 @@ React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
 Locally, `npm run ci` runs lint + tests with coverage + build; `npm run test:browser` runs the browser smoke checks separately.
-On push/PR to `main`, GitHub Actions runs **Lint**, **Test and coverage**, **Build**, and **Browser smoke** in parallel, then **Release files** (checks CHANGELOG / README badges / lockfile when `package.json` was bumped; skips this check when the version is unchanged) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
+On pushes and PRs targeting `main` or `master`, GitHub Actions runs **Lint**, **Test and coverage**, **Build**, and **Browser smoke** in parallel. **Release files** then validates the changelog, README badges, and lockfile when the version changes. Pushes to either branch also upload a `dist` artifact. [CI workflow](.github/workflows/ci.yml) · [Build artifacts workflow](.github/workflows/build-artifacts.yml).
 
 **Layout:**
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
 
 **Performance:**
 WoW item data loads after the app shell as separate JSON files.
-A failed request can be retried while the raid tracker stays available. 
+A failed request can be retried while the raid tracker stays available.
 BiS and Soft pick wait for the data they need.
 If the current build refers to a missing file, the app offers a reload.
 Fonts are self-hosted under `public/fonts/` and class/spec icons are 32×32 WebP.
-External item tooltips load when you focus or hover over an item link. 
+External item tooltips load when you focus or hover over an item link.
 After a failed request, the next interaction retries it.
 
-Contributor and agent conventions: [`AGENTS.md`](AGENTS.md).
+### Project documentation
 
-**Planned features:**
-[docs/roadmap.md](docs/roadmap.md).
+- [Roadmap](docs/roadmap.md) and [release notes](CHANGELOG.md).
+- [Web app audit](docs/audits/2026-11-05/README.md), with findings, implementation plan, and follow-up checks.
+- [Design system](docs/design/design-system.md), with design tokens and links to the concept galleries.
+- [Contributor and agent conventions](AGENTS.md).
 
 ### Quick start
 
+Use Node.js 22.19+ in the Node.js 22 release line to match GitHub Actions.
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Open [http://localhost:5173/raidwise/](http://localhost:5173/raidwise/).
 
 | Command | Description |
 |---------|-------------|
@@ -144,9 +151,9 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run lighthouse:mobile` | Same with the mobile preset |
 
 The CI test job uploads the `coverage-report` artifact. Coverage includes all runtime TypeScript files under `src/`, including files outside the test imports. Tests and test helpers are excluded. The full run requires 87% line coverage, 86% statement and function coverage, and 80% branch coverage. Browser smoke checks run separately.
+Vitest uses up to four workers to limit contention during jsdom and coverage runs.
 
-Built-in BiS lists are authored in `scripts/bis/bis-list-sources.md` (Titans + community) and `scripts/bis/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
-Regenerate TypeScript presets after editing the markdown.
+Built-in BiS lists are authored in [Titans and community sources](scripts/bis/bis-list-sources.md) and [Kingdom lists](scripts/bis/bis-list-mix.md). The Kingdom source supports numbered weapons and `N-M` slot alternatives. Run `npm run generate:bis-presets` after editing either file.
 
 ### Persistence
 
@@ -167,10 +174,10 @@ Character names: new names are letters only (Unicode `\p{L}+`); display capitali
 
 Tracker and BiS edits are staged before taking the browser save lock.
 Reloading the same tab reopens its draft.
-After closing the tab, use **Open draft** in the tracker or BiS panel to recover pending changes from the same browser profile.
+If the browser saved the draft outside the tab, use **Open draft** in the tracker or BiS panel after closing the tab to recover it in the same browser profile.
 If another tab changes the shared save first, Raidwise keeps the working copy and lets you download it or explicitly discard it and load the saved version. Save failures can be retried from the warning.
 Shared saves require Web Locks over HTTPS or on localhost.
-Raidwise uses IndexedDB to check that a tab can see the latest shared save before writing.
+Raidwise compares the `localStorage` save revision with the latest revision recorded in IndexedDB before writing. If the tab cannot confirm that it sees the latest save, it reports an error and keeps the draft.
 If the browser cannot store a draft outside the current tab, Raidwise warns before leaving and offers to download the working copy.
 
 If a save is damaged, Raidwise pauses writes and shows the records it can recover. The warning lets you download the original or confirm a replacement with the working copy.

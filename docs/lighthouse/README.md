@@ -1,6 +1,8 @@
 # Lighthouse reports
 
-JSON/HTML audits for local preview and production. Generated manually — not part of CI.
+Run Lighthouse manually against a local preview or production URL. CI runs a separate browser smoke suite.
+
+The reports committed here are archived desktop measurements from August 2026. They used a local build under the former `/my-raid-cds/` base path. The latest archived [HTML report](localhost-desktop-20260807T012013.report.html) and its [JSON data](localhost-desktop-20260807T012013.report.json) are the source of the README badges.
 
 ## Local (production build)
 

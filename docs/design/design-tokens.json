@@ -32,8 +32,8 @@
     "domain": {
       "bisReady": "ok",
       "defect": "danger",
-      "missingBisHints": "warning",
-      "ilvlUpgradeHints": "info"
+      "missingBisHints": "coral",
+      "ilvlUpgradeHints": "teal"
     }
   },
   "typography": {
@@ -374,12 +374,16 @@
     },
     "gearHintAlphas": {
       "bis": {
-        "light": [0, 0.22, 0.32, 0.44],
-        "dark": [0, 0.26, 0.38, 0.5]
+        "lightColor": "#e11d48",
+        "darkColor": "#fb7185",
+        "light": [0, 0.08, 0.13, 0.19],
+        "dark": [0, 0.1, 0.16, 0.23]
       },
       "ilvl": {
-        "light": [0, 0.18, 0.28, 0.4],
-        "dark": [0, 0.22, 0.34, 0.46]
+        "lightColor": "#0d9488",
+        "darkColor": "#2dd4bf",
+        "light": [0, 0.06, 0.11, 0.17],
+        "dark": [0, 0.08, 0.14, 0.21]
       }
     },
     "itemLevelTier": {
@@ -415,7 +419,8 @@
     "panelMaxWidthsPx": {
       "newRaid": 1280,
       "narrow": 480,
-      "dataControls": 680,
+      "character": 1600,
+      "dataControls": 1280,
       "wide": 1280,
       "unitGrid": 1920
     },
