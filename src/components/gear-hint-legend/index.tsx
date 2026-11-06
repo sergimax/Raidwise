@@ -1,8 +1,8 @@
 import { Alert, Box, Typography } from "@mui/material";
-import type { GearHintCellDisplay, GearUpgradeHint, GearUpgradeHintLevel } from "../../utils/gear-upgrade-hint.ts";
+import type { GearHintCellDisplay } from "../../utils/gear-upgrade-hint.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
-import { gearUpgradeHintBandsCellSx, getGearHintKindColor } from "../../utils/gear-hint-display.ts";
-import { RaidToggleContent } from "../raid-tracker-table/raid-toggle-content.tsx";
+import { getGearHintKindColor } from "../../utils/gear-hint-display.ts";
+import { GearHintCellExample } from "../raid-tracker-table/gear-hint-cell-example.tsx";
 
 type GearHintLegendProps = {
   onDismiss: () => void;
@@ -56,25 +56,6 @@ function GearHintKindLegendItem({
   );
 }
 
-function exampleHint(bis: GearUpgradeHintLevel, ilvl: GearUpgradeHintLevel): GearUpgradeHint {
-  return {
-    bis: { level: bis, upgradeSlotCount: bis, upgradeSlots: [] },
-    bisVariant: { level: 0, upgradeSlotCount: 0, upgradeSlots: [] },
-    ilvl: { level: ilvl, upgradeSlotCount: ilvl, upgradeSlots: [] },
-    equippedCount: 0,
-    peakDungeonItemLevel: 284,
-    slotAware: true,
-    bisListActive: true,
-  };
-}
-
-const EXAMPLE_BANDS_SX = gearUpgradeHintBandsCellSx(
-  exampleHint(2, 3),
-  exampleHint(1, 2),
-  [284],
-  true,
-);
-
 export function GearHintLegend({ onDismiss }: GearHintLegendProps) {
   const { t } = useTranslation();
 
@@ -107,26 +88,7 @@ export function GearHintLegend({ onDismiss }: GearHintLegendProps) {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1.25 }}>
-        <Box
-          inert
-          aria-hidden
-          sx={[
-            {
-              width: 130,
-              flexShrink: 0,
-              bgcolor: "background.paper",
-              border: 1,
-              borderColor: "divider",
-              borderRadius: 0.5,
-              color: "text.primary",
-            },
-            EXAMPLE_BANDS_SX,
-          ]}
-        >
-          <Box sx={{ position: "relative", zIndex: 1 }}>
-            <RaidToggleContent checked={false} main={{ bis: 2, ilvl: 4 }} off={{ bis: 1, ilvl: 3 }} />
-          </Box>
-        </Box>
+        <GearHintCellExample />
         <Box sx={{ flex: "1 1 240px", minWidth: 0 }}>
           <Box
             sx={{

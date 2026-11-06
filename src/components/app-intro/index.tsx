@@ -3,6 +3,7 @@ import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import type { MessageKey } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { FilterSection } from "../filter-unit/filter-section.tsx";
+import { GearHintCellExample } from "../raid-tracker-table/gear-hint-cell-example.tsx";
 import { RaidToggleContent } from "../raid-tracker-table/raid-toggle-content.tsx";
 import type { AppIntroProps } from "./types.ts";
 import { renderIntroRichText } from "./render-intro-rich-text.tsx";
@@ -176,7 +177,12 @@ export function AppIntro({ visible = true, onDismiss }: AppIntroProps) {
                       sx={{ lineHeight: 1.55 }}
                     >
                       {renderIntroRichText(t(stepKey), t)}
-                      {(stepKey === "intro.scenarioAStep3" || stepKey === "intro.scenarioBStep5") && (
+                      {(stepKey === "intro.scenarioBStep4" || stepKey === "intro.scenarioBStep5") && (
+                        <Box sx={{ my: 0.5 }}>
+                          <GearHintCellExample checked={stepKey === "intro.scenarioBStep5"} />
+                        </Box>
+                      )}
+                      {stepKey === "intro.scenarioAStep3" && (
                         <CooldownExamples />
                       )}
                     </Typography>

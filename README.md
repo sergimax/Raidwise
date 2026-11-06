@@ -71,7 +71,7 @@ T9/T10 sources in the BiS list show Emblems of Frost, or Vault of Archavon for h
 
 ### Gear hints
 
-The gear hint legend shows a sample cell, and the usage intro illustrates both cooldown states.
+The gear hint legend shows a sample cell, and the usage intro illustrates available upgrades and both cooldown states.
 CD cells use color gradients fading from the center toward the edges: main spec on the left, off spec on the right; BiS (coral, including variants) on top and ordinary ilvl upgrades (teal) below. Each band has independent strength based on upgrade slots; empty bands stay untinted and marked CDs hide the hints.
 Cells show unique BiS counts (including variants) and ordinary upgrade counts beside the toggle: main spec on the left, off spec on the right. Counts hide when CD is marked.
 Boss-grouped tooltips show unique item counts for each BiS, BiS variant, and ordinary upgrade category and include tier tokens; also-owned items count without being on the WowSims export.
