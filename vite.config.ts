@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { availableParallelism } from "node:os";
 import react from "@vitejs/plugin-react";
 import { configDefaults, defineConfig } from "vitest/config";
 
@@ -12,6 +13,8 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
   test: {
+    // Concurrent jsdom startup and coverage can exhaust the UI tests' time budget.
+    maxWorkers: Math.max(1, Math.min(4, availableParallelism() - 1)),
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     projects: [
