@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.1] - 2026-11-06
+
+### Changed
+
+- **Raid tracker guidance:** The gear hint legend uses a sample cell to explain BiS and item-level upgrade counts for both specs. The usage guide shows cooldown states and illustrates how marking a raid complete hides upgrade hints.
+
 ## [2.12.0] - 2026-11-06
 
 ### Added
