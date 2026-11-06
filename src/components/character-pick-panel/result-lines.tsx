@@ -7,19 +7,20 @@ import {
   TableCell,
   TableRow,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useClipboard } from "../../hooks/use-clipboard.ts";
+import { ClipboardFallback } from "../clipboard-fallback/index.tsx";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   formatExportLineCopyText,
   type BuildExportStatusResult,
   type ExportStatusLine,
 } from "../../utils/build-export-status.ts";
-import { CHARACTER_PICK_RESULT_MAX_HEIGHT } from "./constants.ts";
+import { CHARACTER_PICK_RESULT_MAX_HEIGHT, CHARACTER_PICK_SIDE_BY_SIDE_MQ } from "./constants.ts";
 import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { RaidIcon } from "../filter-unit/raid-icon.tsx";
 import { CharacterPickResultFormatActions } from "./result-format-actions.tsx";
-import { useCharacterPickPanelSideBySide } from "./use-character-pick-panel-side-by-side.ts";
 
 type CharacterPickResultLinesProps = {
   result: BuildExportStatusResult;
@@ -28,15 +29,6 @@ type CharacterPickResultLinesProps = {
   onIncludeSpecsChange: (includeSpecs: boolean) => void;
   onIncludeGearScoreChange: (includeGearScore: boolean) => void;
 };
-
-async function copyTextToClipboard(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 const resultTableCellSx = {
   borderBottom: 1,
@@ -58,18 +50,8 @@ function CharacterPickResultLineRow({
   isLast,
 }: CharacterPickResultLineRowProps) {
   const { t } = useTranslation();
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = useCallback(async () => {
-    const didCopy = await copyTextToClipboard(formatExportLineCopyText(line));
-    if (!didCopy) {
-      return;
-    }
-    setCopied(true);
-    window.setTimeout(() => {
-      setCopied(false);
-    }, 1500);
-  }, [line]);
+  const copyText = formatExportLineCopyText(line);
+  const { copied, copyFailed, copy } = useClipboard(copyText);
 
   const cellSx = {
     ...resultTableCellSx,
@@ -117,7 +99,7 @@ function CharacterPickResultLineRow({
           variant={emphasizeCopy ? "contained" : "outlined"}
           startIcon={<ContentCopyIcon fontSize="small" />}
           onClick={() => {
-            void handleCopy();
+            void copy();
           }}
           aria-label={t("characterPickPanel.copyLineAria", { raid: line.raidLabel })}
           sx={{ whiteSpace: "nowrap" }}
@@ -139,6 +121,7 @@ function CharacterPickResultLineRow({
         >
           {line.charactersLabel}
         </Typography>
+        {copyFailed && <ClipboardFallback text={copyText} />}
       </TableCell>
     </TableRow>
   );
@@ -152,7 +135,7 @@ export function CharacterPickResultLines({
   onIncludeGearScoreChange,
 }: CharacterPickResultLinesProps) {
   const { t } = useTranslation();
-  const sideBySide = useCharacterPickPanelSideBySide();
+  const sideBySide = useMediaQuery(CHARACTER_PICK_SIDE_BY_SIDE_MQ);
 
   const sectionLayoutSx = sideBySide
     ? { width: "100%", height: "100%", minHeight: 0, flex: 1 }

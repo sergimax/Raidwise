@@ -1,16 +1,19 @@
 import {
   getSpecStatProfile,
   type GsStatKey,
-  type GsStatWeights,
   type SpecStatProfile,
 } from "../data/spec-stat-priorities.ts";
 import { getWotlkItemEquipProps } from "../data/wotlk-item-equip-props.ts";
-import { WowSimsItemStat } from "../data/wowsims-item-stat.ts";
 import {
   getWotlkItemStats,
   type ItemStatFitContext,
-  type WotlkItemStatsSparse,
 } from "../data/wotlk-item-stats.ts";
+import {
+  getNormalizedItemStatsToGs,
+  scoreItemStats,
+  statValue,
+  type NormalizedGsStats,
+} from "./item-stat-score.ts";
 
 /** WowSims gear slot / item type (mirrors item-equip-restrictions.ts). */
 const GearSlotOffHand = 15;
@@ -83,74 +86,7 @@ const HealerOnlyProcTrinketItemIds = new Set([
   54589, // Glowing Twilight Scale (heroic)
 ]);
 
-type NormalizedGsStats = Partial<Record<GsStatKey, number>>;
-
 type RoleSignature = "TANK" | "HEALER" | "CASTER" | "RANGED" | "MELEE";
-
-const WOWSIMS_INDEX_TO_GS_STAT: Partial<Record<number, GsStatKey>> = {
-  [WowSimsItemStat.Strength]: "STR",
-  [WowSimsItemStat.Agility]: "AGI",
-  [WowSimsItemStat.Stamina]: "STA",
-  [WowSimsItemStat.Intellect]: "INT",
-  [WowSimsItemStat.Spirit]: "SPI",
-  [WowSimsItemStat.SpellPower]: "SP",
-  [WowSimsItemStat.MP5]: "MP5",
-  [WowSimsItemStat.SpellHit]: "HIT",
-  [WowSimsItemStat.SpellCrit]: "CRIT",
-  [WowSimsItemStat.SpellHaste]: "HASTE",
-  [WowSimsItemStat.AttackPower]: "AP",
-  [WowSimsItemStat.MeleeHit]: "HIT",
-  [WowSimsItemStat.MeleeCrit]: "CRIT",
-  [WowSimsItemStat.MeleeHaste]: "HASTE",
-  [WowSimsItemStat.ArmorPenetration]: "ARP",
-  [WowSimsItemStat.Expertise]: "EXPERTISE",
-  [WowSimsItemStat.RangedAttackPower]: "RAP",
-  [WowSimsItemStat.Defense]: "DEFENSE",
-  [WowSimsItemStat.Block]: "BLOCK",
-  [WowSimsItemStat.BlockValue]: "BLOCKVALUE",
-  [WowSimsItemStat.Dodge]: "DODGE",
-  [WowSimsItemStat.Parry]: "PARRY",
-};
-
-function statValue(stats: NormalizedGsStats, key: GsStatKey): number {
-  return stats[key] ?? 0;
-}
-
-function normalizeItemStatsToGs(sparse: WotlkItemStatsSparse): NormalizedGsStats {
-  const normalized: NormalizedGsStats = {};
-
-  for (const [indexStr, value] of Object.entries(sparse)) {
-    if (value <= 0) {
-      continue;
-    }
-
-    const gsKey = WOWSIMS_INDEX_TO_GS_STAT[Number(indexStr)];
-    if (!gsKey) {
-      continue;
-    }
-
-    normalized[gsKey] = (normalized[gsKey] ?? 0) + value;
-  }
-
-  return normalized;
-}
-
-/** Cached GS-normalized stats by item id (sparse JSON is immutable at runtime). */
-const normalizedGsStatsByItemId = new Map<number, NormalizedGsStats>();
-
-function getNormalizedItemStatsToGs(
-  itemId: number,
-  sparse: WotlkItemStatsSparse,
-): NormalizedGsStats {
-  const cached = normalizedGsStatsByItemId.get(itemId);
-  if (cached) {
-    return cached;
-  }
-
-  const normalized = normalizeItemStatsToGs(sparse);
-  normalizedGsStatsByItemId.set(itemId, normalized);
-  return normalized;
-}
 
 /** Mirrors GearScore2 `GS_GetRoleSignatureKind` (stat-only subset). */
 function getRoleSignatureKind(stats: NormalizedGsStats): RoleSignature | undefined {
@@ -318,19 +254,6 @@ function isItemStatCompatible(stats: NormalizedGsStats, profile: SpecStatProfile
   }
 
   return true;
-}
-
-function scoreItemStats(stats: NormalizedGsStats, weights: GsStatWeights): number {
-  let total = 0;
-
-  for (const [statKey, weight] of Object.entries(weights) as [GsStatKey, number][]) {
-    const value = statValue(stats, statKey);
-    if (value > 0) {
-      total += value * weight;
-    }
-  }
-
-  return total;
 }
 
 function hasTankAvoidanceStats(stats: NormalizedGsStats): boolean {

@@ -16,6 +16,7 @@ import {
   FILTER_UNIT_WIDTH,
 } from "./constants.ts";
 import { DataControlsBlock } from "./data-controls-block.tsx";
+import { WorkspaceBackupControls } from "./workspace-backup-controls.tsx";
 
 const DATA_CONTROLS_ACTIONS_SX = {
   display: "flex",
@@ -223,6 +224,8 @@ export function DataControlsPanel({
           </FilterSection>
         </DataControlsBlock>
       </Box>
+
+      <WorkspaceBackupControls />
 
       {confirmCopy ? (
         <DeleteConfirmDialog

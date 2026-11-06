@@ -2,6 +2,7 @@ import type { RaidKey } from "./raid-names.ts";
 import { DungeonDifficulty, type DungeonSize } from "../types/dungeons.ts";
 import { buildItemIdMap } from "./build-item-id-map.ts";
 import { createLazyJsonLoader } from "./lazy-json.ts";
+import dataUrl from "./wotlk-item-drop-sources.json?url&no-inline";
 
 /** Compact drop source row from bundled WowSims data (`wotlk-item-drop-sources.json`). */
 export type BundledItemDropSourceRow = {
@@ -36,7 +37,7 @@ let dropSourcesByItemId = new Map<number, readonly ItemDropSource[]>();
 const EMPTY_DROP_SOURCES: readonly ItemDropSource[] = [];
 
 export const ensureItemDropSourcesLoaded = createLazyJsonLoader(
-  () => import("./wotlk-item-drop-sources.json"),
+  dataUrl,
   (data) => {
     const bundledRowsByItemId = buildItemIdMap(
       data as Record<string, BundledItemDropSourceRow[]>,

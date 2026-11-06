@@ -181,7 +181,7 @@ function migrateToV6(payload: StoredPayload): StoredPayload {
  * Walk `schemaVersion` from the stored value (or 0 if missing) up to
  * {@link CURRENT_SCHEMA_VERSION}, applying each step in order.
  *
- * Unknown future versions are clamped to current via the final stamp.
+ * Future versions are left intact. The reader reports them as unsupported.
  * Do not reorder or skip steps — older browsers may still hold mid-version JSON.
  */
 export function migrateStoredPayload(payload: StoredPayload): StoredPayload {
@@ -216,7 +216,8 @@ export function migrateStoredPayload(payload: StoredPayload): StoredPayload {
     version = 6;
   }
 
-  if (version !== CURRENT_SCHEMA_VERSION) {
+  // v7 adds an explicit null raidKey for detached rows. Missing legacy keys still infer by name.
+  if (version < CURRENT_SCHEMA_VERSION) {
     return { ...next, schemaVersion: CURRENT_SCHEMA_VERSION };
   }
 

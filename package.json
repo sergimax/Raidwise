@@ -1,7 +1,7 @@
 {
   "name": "raidwise",
   "private": true,
-  "version": "2.11.0",
+  "version": "2.12.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,12 +18,17 @@
     "compress:class-icons": "node scripts/assets/compress-class-icons.mjs",
     "lighthouse": "node scripts/lighthouse/run-lighthouse.mjs",
     "lighthouse:mobile": "node scripts/lighthouse/run-lighthouse.mjs --mobile",
-    "test:browser": "npm run build && node --test --test-concurrency=1 scripts/browser/theme.browser.mjs scripts/browser/tracker-persistence.browser.mjs",
+    "test:browser": "npm run build && node --test --test-concurrency=1 scripts/browser/theme.browser.mjs scripts/browser/tracker-persistence.browser.mjs scripts/browser/wow-data-recovery.browser.mjs",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage --coverage.thresholds.lines=87 --coverage.thresholds.statements=86 --coverage.thresholds.functions=86 --coverage.thresholds.branches=80",
     "test:coverage:changed": "vitest run --coverage --coverage.changed",
     "ci": "npm run lint && npm run test:coverage && npm run build",
     "check:release-files": "node scripts/release/check-release-files.mjs"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.4"
+    }
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { AppThemeProvider } from "./components/app-theme-provider/index.tsx";
+import { AppErrorBoundary } from "./components/app-error-boundary/index.tsx";
 import "./fonts.css";
 import "./index.css";
 import "./theme/links.css";
@@ -8,8 +9,10 @@ import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AppThemeProvider>
-      <App />
-    </AppThemeProvider>
+    <AppErrorBoundary>
+      <AppThemeProvider>
+        <App />
+      </AppThemeProvider>
+    </AppErrorBoundary>
   </StrictMode>,
 );

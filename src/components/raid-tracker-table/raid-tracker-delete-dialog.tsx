@@ -1,7 +1,7 @@
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { DeleteConfirmDialog } from "./delete-confirm-dialog.tsx";
 import { getRaidTrackerDeleteDialogProps } from "./raid-tracker-delete-dialog.ts";
-import type { RaidTrackerPendingDelete } from "./types.ts";
+import type { RaidTrackerPendingDelete } from "../../types/raid-tracker-table.ts";
 
 type RaidTrackerDeleteDialogProps = {
   pendingDelete: RaidTrackerPendingDelete | null;

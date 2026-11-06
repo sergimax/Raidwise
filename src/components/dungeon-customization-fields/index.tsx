@@ -16,11 +16,6 @@ import { MAX_DUNGEON_SHORT_NAME_LENGTH } from "../../constants/dungeon-form-defa
 import { useTranslation } from "../../i18n/use-translation.ts";
 import { getLocalizedDifficulty, getLocalizedEmblemLabel } from "../../i18n/localized-domain.ts";
 import {
-  defaultShortNameForDungeonName,
-  difficultyForRaidName,
-  raidNameForDifficulty,
-} from "../../utils/dungeon-short-name.ts";
-import {
   DungeonDifficulty,
   DungeonSizes,
   type DungeonDifficulty as DungeonDifficultyValue,
@@ -33,6 +28,7 @@ export type DungeonCustomizationFieldsProps = {
   size: DungeonSize;
   difficulty: DungeonDifficultyValue;
   emblem: EmblemKey | "";
+  fixedVariant: boolean;
   onNameChange: (name: string) => void;
   onShortNameChange: (shortName: string) => void;
   onSizeChange: (size: DungeonSize) => void;
@@ -46,6 +42,7 @@ export function DungeonCustomizationFields({
   size,
   difficulty,
   emblem,
+  fixedVariant,
   onNameChange,
   onShortNameChange,
   onSizeChange,
@@ -60,18 +57,7 @@ export function DungeonCustomizationFields({
         label={t("common.name")}
         name="dungeonName"
         value={name}
-        onChange={(event) => {
-          const nextName = event.target.value;
-          onNameChange(nextName);
-          const matchingDifficulty = difficultyForRaidName(nextName);
-          if (matchingDifficulty) {
-            onDifficultyChange(matchingDifficulty);
-          }
-          const shortName = defaultShortNameForDungeonName(nextName);
-          if (shortName) {
-            onShortNameChange(shortName);
-          }
-        }}
+        onChange={(event) => onNameChange(event.target.value)}
         required
         autoComplete="off"
       />
@@ -86,7 +72,7 @@ export function DungeonCustomizationFields({
         slotProps={{ htmlInput: { maxLength: MAX_DUNGEON_SHORT_NAME_LENGTH } }}
         autoComplete="off"
       />
-      <FormControl required>
+      <FormControl required disabled={fixedVariant}>
         <InputLabel id="dungeon-size-label">{t("common.size")}</InputLabel>
         <Select
           labelId="dungeon-size-label"
@@ -104,22 +90,14 @@ export function DungeonCustomizationFields({
           ))}
         </Select>
       </FormControl>
-      <FormControl>
+      <FormControl disabled={fixedVariant}>
         <InputLabel id="dungeon-difficulty-label">{t("common.mode")}</InputLabel>
         <Select
           labelId="dungeon-difficulty-label"
           label={t("common.mode")}
           name="dungeonDifficulty"
           value={difficulty}
-          onChange={(event) => {
-            const nextDifficulty = event.target.value as DungeonDifficultyValue;
-            const matchingName = raidNameForDifficulty(name, nextDifficulty, locale);
-            if (matchingName && matchingName !== name) {
-              onNameChange(matchingName);
-              onShortNameChange(defaultShortNameForDungeonName(matchingName) ?? "");
-            }
-            onDifficultyChange(nextDifficulty);
-          }}
+          onChange={(event) => onDifficultyChange(event.target.value as DungeonDifficultyValue)}
         >
           <MenuItem value={DungeonDifficulty.NORMAL}>
             {getLocalizedDifficulty(DungeonDifficulty.NORMAL, locale)}

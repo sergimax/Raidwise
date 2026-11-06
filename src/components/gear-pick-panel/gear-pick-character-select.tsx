@@ -3,7 +3,7 @@ import { getLocalizedSpecName } from "../../i18n/localized-domain.ts";
 import type { TranslateFn } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { CharacterRecord, CharacterSpecGear } from "../../types/characters.ts";
-import type { GearPickSpecSide } from "../../utils/build-gear-pick-items.ts";
+import type { GearPickCharacterSelection, GearPickSpecSide } from "../../types/gear-pick.ts";
 import {
   CharacterSpecListName,
   InactiveSpecTooltip,
@@ -15,11 +15,6 @@ import {
   getCharacterSpecListMaxHeight,
 } from "../filter-unit/constants.ts";
 import { CharacterSpecGearLabel } from "../spec-option-label/index.tsx";
-
-export type GearPickCharacterSelection = {
-  characterId: string;
-  side: GearPickSpecSide;
-};
 
 export type GearPickCharacterInactiveReason = "cooldown" | "noUpgrades";
 

@@ -1,26 +1,28 @@
-import { Alert, Stack } from "@mui/material";
-import { useCallback, useMemo } from "react";
+import { Stack, Typography } from "@mui/material";
+import { Suspense, useCallback, useMemo } from "react";
 import { useGearHintLegendDismissed } from "../../hooks/use-gear-hint-legend-dismissed.ts";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
-import { useRaidWorkspaceSessions } from "../../hooks/use-raid-workspace-sessions.ts";
 import type { TrackerFormsState } from "../../hooks/use-overlay-panels.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
-import type { TranslateFn } from "../../i18n/translate.ts";
-import { LOAD_WARNING_CORRUPTED_SAVE } from "../../storage/constants.ts";
+import { StorageProblem } from "../storage-problem/index.tsx";
 import { hideExternalWowTooltips } from "../../utils/hide-external-wow-tooltips.ts";
 import { AppIntro } from "../app-intro/index.tsx";
-import { BisListsPanel } from "../bis-lists-panel/index.tsx";
 import { CharacterForm } from "../character-form/index.tsx";
 import { DataControlsPanel } from "../data-controls-panel/index.tsx";
 import { DungeonForm } from "../dungeon-form/index.tsx";
-import { CharacterPickPanel } from "../character-pick-panel/index.tsx";
-import { ResetParametersActions } from "../filter-unit/reset-parameters-actions.tsx";
 import { GearHintLegend } from "../gear-hint-legend/index.tsx";
-import { GearPickPanel } from "../gear-pick-panel/index.tsx";
-import { RaidTrackerTable } from "../raid-tracker-table/index.tsx";
+import { WowDataGate } from "../wow-data-gate/index.tsx";
 import { TrackerToolbarPanel } from "../tracker-toolbar-panel/index.tsx";
 import { resolveToolbarPanelId } from "../tracker-toolbar-panel/resolve-toolbar-panel-id.ts";
 import { getToolbarPanelMeta } from "../tracker-toolbar-panel/toolbar-panel-meta.ts";
+import {
+  ResetCharacterPickFilters,
+  ResetGearPickFilters,
+  WorkspaceBisLists,
+  WorkspaceCharacterPick,
+  WorkspaceGearPick,
+  WorkspaceRaidTable,
+} from "./workspace-panels.tsx";
 
 type RaidTrackerMainProps = {
   forms: TrackerFormsState;
@@ -36,22 +38,6 @@ type RaidTrackerMainProps = {
   showDataControlsPanel: boolean;
   closeDataControlsPanel: () => void;
 };
-
-const STORAGE_QUOTA_MESSAGE = "Storage quota exceeded. Please free up space.";
-const STORAGE_SAVE_FAILED_MESSAGE = "Failed to save data. Please try again.";
-
-function localizeStorageMessage(message: string, t: TranslateFn): string {
-  if (message === LOAD_WARNING_CORRUPTED_SAVE) {
-    return t("storage.corrupted");
-  }
-  if (message === STORAGE_QUOTA_MESSAGE) {
-    return t("storage.quotaExceeded");
-  }
-  if (message === STORAGE_SAVE_FAILED_MESSAGE) {
-    return t("storage.saveFailed");
-  }
-  return message;
-}
 
 export function RaidTrackerMain({
   forms,
@@ -76,16 +62,6 @@ export function RaidTrackerMain({
     domain.characters.length > 0 &&
     domain.dungeons.length > 0;
 
-  const {
-    gearPick: gearPickSession,
-    characterPick: exportSession,
-    bisLists: bisListsSession,
-    table: tableState,
-  } = useRaidWorkspaceSessions();
-  const { resetAllFilters: resetExportSessionFilters } = exportSession;
-  const { resetAllFilters: resetGearPickSessionFilters } = gearPickSession;
-  const { setDungeonNameSearch } = tableState;
-
   const toolbarPanelId = resolveToolbarPanelId({
     showCharacterForm: forms.showCharacterForm,
     showDungeonForm: forms.showDungeonForm,
@@ -105,16 +81,6 @@ export function RaidTrackerMain({
     closeGearPickPanel();
   }, [closeGearPickPanel]);
 
-  const resetExportAllFilters = useCallback(() => {
-    resetExportSessionFilters();
-    setDungeonNameSearch("");
-  }, [resetExportSessionFilters, setDungeonNameSearch]);
-
-  const resetGearPickAllFilters = useCallback(() => {
-    resetGearPickSessionFilters();
-    setDungeonNameSearch("");
-  }, [resetGearPickSessionFilters, setDungeonNameSearch]);
-
   const toolbarPanelMeta = useMemo(() => {
     if (!toolbarPanelId) {
       return null;
@@ -132,18 +98,14 @@ export function RaidTrackerMain({
     if (toolbarPanelId === "characterPick") {
       return {
         ...meta,
-        headerActions: (
-          <ResetParametersActions onResetParameters={resetExportAllFilters} />
-        ),
+        headerActions: <ResetCharacterPickFilters />,
       };
     }
 
     if (toolbarPanelId === "gear") {
       return {
         ...meta,
-        headerActions: (
-          <ResetParametersActions onResetParameters={resetGearPickAllFilters} />
-        ),
+        headerActions: <ResetGearPickFilters />,
       };
     }
 
@@ -155,8 +117,6 @@ export function RaidTrackerMain({
     closeGearPickPanelWithTooltips,
     forms.closeCharacterForm,
     forms.closeDungeonForm,
-    resetExportAllFilters,
-    resetGearPickAllFilters,
     t,
     toolbarPanelId,
   ]);
@@ -165,11 +125,7 @@ export function RaidTrackerMain({
     <Stack spacing={2}>
       <AppIntro visible={introVisible} onDismiss={onDismissIntro} />
 
-      {domain.storageError ? (
-        <Alert severity="error">
-          {localizeStorageMessage(domain.storageError, t)}
-        </Alert>
-      ) : null}
+      <StorageProblem {...domain} filename="raidwise-tracker" />
 
       {toolbarPanelId && toolbarPanelMeta ? (
         <TrackerToolbarPanel panelId={toolbarPanelId} {...toolbarPanelMeta}>
@@ -215,31 +171,13 @@ export function RaidTrackerMain({
             />
           ) : null}
 
-          {showCharacterPickPanel ? (
-            <CharacterPickPanel
-              characters={domain.characters}
-              visibleDungeons={tableState.sortedDungeons}
-              dungeonToggles={domain.dungeonToggles}
-              dungeonNameSearch={tableState.dungeonNameSearch}
-              onDungeonNameSearchChange={tableState.setDungeonNameSearch}
-              totalDungeonCount={tableState.dungeonCount}
-              session={exportSession}
-            />
-          ) : null}
-
-          {showGearPickPanel ? (
-            <GearPickPanel
-              characters={domain.characters}
-              visibleDungeons={tableState.sortedDungeons}
-              dungeonToggles={domain.dungeonToggles}
-              dungeonNameSearch={tableState.dungeonNameSearch}
-              onDungeonNameSearchChange={tableState.setDungeonNameSearch}
-              totalDungeonCount={tableState.dungeonCount}
-              session={gearPickSession}
-            />
-          ) : null}
-
-          {showBisListsPanel ? <BisListsPanel session={bisListsSession} /> : null}
+          <Suspense fallback={<Typography role="status">{t("appNavigation.loadingRaidTool")}</Typography>}>
+            {showCharacterPickPanel ? <WorkspaceCharacterPick /> : null}
+            {showGearPickPanel ? (
+              <WowDataGate><WorkspaceGearPick /></WowDataGate>
+            ) : null}
+            {showBisListsPanel ? <WorkspaceBisLists /> : null}
+          </Suspense>
 
           {showDataControlsPanel ? (
             <DataControlsPanel onAddFromTemplate={onAddFromTemplate} />
@@ -251,8 +189,7 @@ export function RaidTrackerMain({
         <GearHintLegend onDismiss={dismissGearHintLegend} />
       ) : null}
 
-      <RaidTrackerTable
-        tableState={tableState}
+      <WorkspaceRaidTable
         onAddCharacter={forms.toggleCharacterForm}
         onAddDungeon={forms.toggleDungeonForm}
         characterFormOpen={forms.showCharacterForm}

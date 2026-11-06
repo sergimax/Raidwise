@@ -6,7 +6,7 @@ import {
   createTestDungeon,
   createTestToggles,
 } from "../test/fixtures.ts";
-import { STORAGE_KEY } from "./constants.ts";
+import { STORAGE_KEY, STORAGE_QUOTA_EXCEEDED } from "./constants.ts";
 import { loadRaidTrackerState } from "./parse.ts";
 import { saveRaidTrackerState } from "./persist.ts";
 
@@ -87,7 +87,7 @@ describe("saveRaidTrackerState", () => {
     );
 
     expect(onError).toHaveBeenCalledWith(
-      "Storage quota exceeded. Please free up space.",
+      STORAGE_QUOTA_EXCEEDED,
     );
     setItem.mockRestore();
   });

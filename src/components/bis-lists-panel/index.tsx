@@ -1,8 +1,6 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import SaveIcon from "@mui/icons-material/Save";
 import {
-  Alert,
   Box,
   Button,
   Chip,
@@ -11,12 +9,10 @@ import {
   MenuItem,
   Select,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { specsForClass } from "../../data/class-specs.ts";
-import type { TranslateFn } from "../../i18n/translate.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   getLocalizedClassName,
@@ -25,10 +21,10 @@ import {
 import { useBisListsContext } from "../../hooks/use-bis-lists-context.ts";
 import type { BisListsSessionState } from "../../hooks/use-bis-lists-session-state.ts";
 import { useBisListsEditorState } from "../../hooks/use-bis-lists-editor-state.ts";
-import {
-  BIS_LISTS_STORAGE_QUOTA_MESSAGE,
-  BIS_LISTS_STORAGE_SAVE_FAILED_MESSAGE,
-} from "../../storage/bis-lists/index.ts";
+import { StorageProblem } from "../storage-problem/index.tsx";
+import { WowDataGate } from "../wow-data-gate/index.tsx";
+import { useClipboard } from "../../hooks/use-clipboard.ts";
+import { ClipboardFallback } from "../clipboard-fallback/index.tsx";
 import { Classes, type ClassName as ClassNameType } from "../../types/characters.ts";
 import {
   hasBuiltInBisForSpec,
@@ -43,6 +39,7 @@ import { ClassOptionLabel } from "../class-option-label/index.tsx";
 import { FilterSection } from "../filter-unit/filter-section.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
 import { SpecOptionLabel } from "../spec-option-label/index.tsx";
+import { BisListSaveForm } from "./bis-list-save-form.tsx";
 import {
   BIS_ITEMS_CONTENT_MAX_HEIGHT_XS_PX,
   FILTER_UNIT_GRID_GAP_SPACING,
@@ -50,30 +47,6 @@ import {
   getBisListsContentMaxHeight,
   getBisListsGridTemplateColumns,
 } from "./constants.ts";
-
-function localizeBisStorageMessage(message: string, t: TranslateFn): string {
-  if (message === BIS_LISTS_STORAGE_QUOTA_MESSAGE) {
-    return t("storage.quotaExceeded");
-  }
-  if (message === BIS_LISTS_STORAGE_SAVE_FAILED_MESSAGE) {
-    return t("storage.saveFailed");
-  }
-  return message;
-}
-
-/** Save-step name errors from `resolveSaveLocalPresetByName` (shown on the list-name field). */
-function localizeBisSaveNameError(
-  message: string,
-  t: TranslateFn,
-): string | null {
-  if (message === "List name is required") {
-    return t("validation.bisListNameRequired");
-  }
-  if (message === "Use a custom name (not a built-in list name)") {
-    return t("validation.bisListNameBuiltin");
-  }
-  return null;
-}
 
 const bisClassSpecSelectSx = {
   "& .MuiSelect-select": {
@@ -111,7 +84,17 @@ export type BisListsPanelProps = {
   session: BisListsSessionState;
 };
 
-export function BisListsPanel({ session }: BisListsPanelProps) {
+export function BisListsPanel(props: BisListsPanelProps) {
+  const bisLists = useBisListsContext();
+  return (
+    <Stack spacing={1.25}>
+      <StorageProblem {...bisLists} filename="raidwise-bis-lists" />
+      <WowDataGate><BisListsEditor {...props} /></WowDataGate>
+    </Stack>
+  );
+}
+
+function BisListsEditor({ session }: BisListsPanelProps) {
   const { t, locale } = useTranslation();
   const bisLists = useBisListsContext();
   const { className, spec, setClassName, setSpec } = session;
@@ -192,8 +175,6 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
     [activeSpec, bisLists, className, clearError],
   );
 
-  const [listCopied, setListCopied] = useState(false);
-
   const copyListText = useMemo(
     () =>
       formatBisListCopyText({
@@ -206,20 +187,7 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
     [locale, slotDrafts],
   );
 
-  const handleCopyList = useCallback(async () => {
-    if (!copyListText) {
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(copyListText);
-    } catch {
-      return;
-    }
-    setListCopied(true);
-    window.setTimeout(() => {
-      setListCopied(false);
-    }, 1500);
-  }, [copyListText]);
+  const { copied: listCopied, copyFailed, copy } = useClipboard(copyListText);
 
   useEffect(() => () => hideExternalWowTooltips(), []);
 
@@ -310,7 +278,7 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
         disabled={!copyListText}
         aria-label={t("bisPanel.copyListAria")}
         onClick={() => {
-          void handleCopyList();
+          void copy();
         }}
       >
         {listCopied ? t("bisPanel.copied") : t("bisPanel.copyList")}
@@ -318,33 +286,17 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
     </Stack>
   );
 
-  const saveNameError = error ? localizeBisSaveNameError(error, t) : null;
-
   const saveListForm = (
-    <Stack spacing={1}>
-      <TextField
-        size="small"
-        label={t("bisPanel.listName")}
-        value={saveListName}
-        onChange={(event) => {
-          setSaveListName(event.target.value);
-          clearError();
-        }}
-        placeholder={t("bisPanel.listNamePlaceholder")}
-        error={Boolean(saveNameError)}
-        helperText={saveNameError ?? undefined}
-        fullWidth
-      />
-      <Button
-        variant="contained"
-        startIcon={<SaveIcon />}
-        onClick={handleSaveList}
-        disabled={hasSlotErrors || hasUnconfirmedSlots}
-        fullWidth
-      >
-        {t("bisPanel.saveList")}
-      </Button>
-    </Stack>
+    <BisListSaveForm
+      name={saveListName}
+      nameError={error?.kind === "name" ? error.code : undefined}
+      onNameChange={(name) => {
+        setSaveListName(name);
+        clearError();
+      }}
+      onSave={handleSaveList}
+      disabled={hasSlotErrors || hasUnconfirmedSlots}
+    />
   );
 
   const slotEditor = slotDrafts.length === 0 ? null : (
@@ -361,11 +313,7 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
 
   return (
     <Stack spacing={1.25}>
-      {bisLists.storageError ? (
-        <Alert severity="error">
-          {localizeBisStorageMessage(bisLists.storageError, t)}
-        </Alert>
-      ) : null}
+      {copyFailed && <ClipboardFallback text={copyListText} />}
       <Box
         sx={{
           display: "grid",
@@ -515,7 +463,7 @@ export function BisListsPanel({ session }: BisListsPanelProps) {
         </FilterSection>
       </Box>
 
-      {error && !saveNameError ? <FormErrorMessage message={error} /> : null}
+      {error?.kind === "slots" ? <FormErrorMessage message={error.message} /> : null}
     </Stack>
   );
 }

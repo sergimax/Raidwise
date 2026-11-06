@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.0] - 2026-11-06
+
+### Added
+
+- **Workspace backup:** Raid settings can export the tracker and BiS data in one JSON file. Import shows a comparison before replacing both sections in one operation.
+
+### Changed
+
+- **Tracker and BiS drafts:** Reopen pending edits after reloading the tab. If the browser saved the draft to local storage, you can also reopen it after closing the tab in the same browser profile. When another tab saves first, you can download the draft or discard it to load the saved version.
+- **Save recovery:** Damaged saves show recoverable data and pause automatic saving. You can download the original and explicitly restore a verified backup. Saves from unsupported versions are available for download and protected from replacement.
+- **Raid editing:** Renaming a raid keeps its loot template. Selecting another template applies that variant’s size, difficulty, and item levels. Removing the template keeps the current item levels.
+- **Startup:** Settings and the empty tracker open without downloading item data. Raid tools and their data load as needed, and a populated tracker still prefetches data for gear hints.
+
+### Fixed
+
+- **Concurrent saves:** Before saving tracker or BiS edits or restoring a backup, Raidwise checks that the tab sees the latest save revision. This prevents writes based on stale data and preserves independent edits to the two sections of a restored workspace.
+- **Storage errors:** A failed write can be retried without another edit. Legacy saves remain readable if moving them to the current key fails.
+- **BiS lists:** Rapidly created local lists receive distinct IDs and survive a reload.
+- **Item data, tooltips, and app recovery:** Failed item data and tooltip requests can be retried. The app offers a reload when a required data or JavaScript file cannot be loaded.
+- **Raid navigation:** Unknown raid URLs now show the not-found page.
+- **Copy and accessibility:** Character pick, Soft pick, and BiS offer selectable text when clipboard access fails. Soft reserve limit buttons have distinct accessible names.
+
+### Security
+
+- **Development tooling:** Updated the `minimatch` dependency used by TypeScript ESLint to address [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+
 ## [2.11.0] - 2026-11-05
 
 ### Added

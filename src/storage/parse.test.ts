@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { EmblemKey } from "../assets/emblems/emblem-icons.ts";
 import { RaidNames } from "../data/raid-names.ts";
 import { Classes } from "../types/characters.ts";
@@ -7,6 +7,7 @@ import {
   LEGACY_STORAGE_KEY,
   LOAD_WARNING_CORRUPTED_SAVE,
   STORAGE_KEY,
+  STORAGE_READ_FAILED,
 } from "./constants.ts";
 import { loadRaidTrackerState } from "./parse.ts";
 import type { StoredPayload } from "./types.ts";
@@ -18,13 +19,28 @@ function writeStoredPayload(payload: StoredPayload): void {
 
 describe("loadRaidTrackerState", () => {
   it("returns empty state when storage key is missing", () => {
-    expect(loadRaidTrackerState()).toEqual({
+    expect(loadRaidTrackerState()).toMatchObject({
       state: EMPTY_STATE,
       loadWarning: null,
     });
   });
 
-  it("migrates a legacy my-raid-cds payload to the raidwise key", () => {
+  it("distinguishes an inaccessible store from an empty store", () => {
+    const read = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new DOMException("Denied", "SecurityError");
+    });
+    try {
+      expect(loadRaidTrackerState()).toEqual({
+        state: EMPTY_STATE,
+        loadWarning: STORAGE_READ_FAILED,
+        snapshot: null,
+      });
+    } finally {
+      read.mockRestore();
+    }
+  });
+
+  it("reads legacy data without changing its key", () => {
     const payload: StoredPayload = {
       schemaVersion: 6,
       characters: [],
@@ -33,20 +49,34 @@ describe("loadRaidTrackerState", () => {
     };
     localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(payload));
 
-    expect(loadRaidTrackerState()).toEqual({
+    expect(loadRaidTrackerState()).toMatchObject({
       state: EMPTY_STATE,
       loadWarning: null,
     });
-    expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(payload));
-    expect(localStorage.getItem(LEGACY_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(LEGACY_STORAGE_KEY)).toBe(JSON.stringify(payload));
   });
 
   it("returns corrupted warning for invalid JSON", () => {
     localStorage.setItem(STORAGE_KEY, "{not-json");
-    expect(loadRaidTrackerState()).toEqual({
+    expect(loadRaidTrackerState()).toMatchObject({
       state: EMPTY_STATE,
       loadWarning: LOAD_WARNING_CORRUPTED_SAVE,
     });
+  });
+
+  it.each([undefined, 6])("recovers valid rows beside malformed rows in schema %s", (schemaVersion) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      schemaVersion,
+      characters: [null, { id: "one", name: "Alpha", className: Classes[0].name }],
+      dungeons: [null, { id: "raid", name: "Raid", size: 10, itemLevel: [200] }],
+      dungeonToggles: { one: { raid: true } },
+    }));
+    const { state, loadWarning } = loadRaidTrackerState();
+    expect(loadWarning).toBe(LOAD_WARNING_CORRUPTED_SAVE);
+    expect(state.characters.map(({ id }) => id)).toEqual(["one"]);
+    expect(state.dungeons.map(({ id }) => id)).toEqual(["raid"]);
+    expect(state.dungeonToggles).toEqual({ one: { raid: true } });
   });
 
   it("maps legacy mode to difficulty", () => {
@@ -182,6 +212,7 @@ describe("loadRaidTrackerState", () => {
     });
 
     const result = loadRaidTrackerState();
+    expect(result.loadWarning).toBe(LOAD_WARNING_CORRUPTED_SAVE);
     expect(result.state.characters[0]).toEqual({
       id: "character-1",
       name: "Alpha",
@@ -217,9 +248,37 @@ describe("loadRaidTrackerState", () => {
     });
 
     const result = loadRaidTrackerState();
+    expect(result.loadWarning).toBe(LOAD_WARNING_CORRUPTED_SAVE);
     expect(result.state.dungeonToggles).toEqual({
       "character-1": { "dungeon-1": true },
     });
+  });
+
+  it("recovers valid gear and rejects duplicate and reserved ids without changing the original", () => {
+    const character = {
+      id: "one",
+      name: "Alpha",
+      className: Classes[0].name,
+      mainSpec: { spec: "Blood", gearItems: [null, { slot: 1, id: 50426, gems: [123, "bad"] }] },
+    };
+    const raw = JSON.stringify({
+      schemaVersion: 6,
+      characters: [character, { ...character, name: "Duplicate" }, { ...character, id: "__proto__" }],
+      dungeons: [{ id: "raid", name: "Raid", size: 10, itemLevel: [200, null] }],
+      dungeonToggles: { one: { raid: true, missing: true }, unknown: { raid: true } },
+    });
+    localStorage.setItem(STORAGE_KEY, raw);
+    const loaded = loadRaidTrackerState();
+    expect(loaded.loadWarning).toBe(LOAD_WARNING_CORRUPTED_SAVE);
+    expect(loaded.state.characters).toHaveLength(1);
+    expect(loaded.state.characters[0]).toMatchObject({
+      name: "Alpha",
+      mainSpec: { gearItems: [{ slot: 1, id: 50426, gems: [123] }] },
+    });
+    expect(loaded.state.dungeons[0].itemLevel).toEqual([200]);
+    expect(loaded.state.dungeonToggles).toEqual({ one: { raid: true } });
+    expect(loaded.snapshot?.current).toBe(raw);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);
   });
 
   it("loads stored character gear items", () => {

@@ -3,6 +3,7 @@ import { memo, useCallback, useMemo, useState } from "react";
 import { CharacterEditDialog } from "../character-edit-dialog/index.tsx";
 import { DungeonEditDialog } from "../dungeon-edit-dialog/index.tsx";
 import { useRaidTrackerContext } from "../../hooks/use-raid-tracker-context.ts";
+import { useCompactLayout } from "../../hooks/use-compact-layout.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type { DungeonRecord } from "../../types/dungeons.ts";
 import { AddDungeonRow } from "./add-dungeon-row.tsx";
@@ -14,10 +15,11 @@ import { DeleteConfirmDialog } from "./delete-confirm-dialog.tsx";
 import { raidTrackerTableAriaLabel } from "./raid-tracker-table-empty-state.ts";
 import { RaidTrackerTableEmptyState } from "./raid-tracker-table-empty-state.tsx";
 import { RaidTrackerTableHead } from "./raid-tracker-table-head.tsx";
-import type { RaidTrackerTableState } from "./use-raid-tracker-table-state.ts";
+import type { RaidTrackerTableState } from "../../hooks/use-raid-tracker-table-state.ts";
+import { pinnedColumnsForLayout } from "./table-layout.ts";
 import "./styles.css";
 
-type RaidTrackerTableProps = {
+export type RaidTrackerTableProps = {
   tableState: RaidTrackerTableState;
   onAddCharacter: () => void;
   onAddDungeon: () => void;
@@ -33,6 +35,8 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
   dungeonFormOpen = false,
 }: RaidTrackerTableProps) {
   const { t } = useTranslation();
+  const compactTable = useCompactLayout();
+  const visiblePinnedColumns = useMemo(() => pinnedColumnsForLayout(compactTable, t), [compactTable, t]);
   const domain = useRaidTrackerContext();
   const {
     characters,
@@ -78,8 +82,6 @@ export const RaidTrackerTable = memo(function RaidTrackerTable({
   }, []);
 
   const {
-    compactTable,
-    visiblePinnedColumns,
     characterCount,
     sortKey,
     sortDirection,

@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.11.0-purple)
+![App version](https://img.shields.io/badge/App_version-2.12.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -17,6 +17,10 @@ Breadcrumbs at the top of each page show the current section or raid tool and li
 ### Characters & dungeons
 
 Add characters and raids manually (toolbar buttons or the dotted empty column/row on the table), or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
+In the raid editor, renaming a row keeps its loot template.
+Choose a different **Loot template** to apply that variant’s size, difficulty, and item levels.
+**No loot template** detaches the row and keeps its existing item levels.
+Cooldown marks stay with the row.
 The responsive MUI AppBar keeps app sections in a dropdown beside the logo and scrollable tracker actions in the same toolbar at every screen width; on mobile, the menu also contains these actions. The logo text hides below 1200px. The header **info** button shows or hides the usage intro (CDs, gear planning, or BiS-only). **Settings → Interface** controls the color theme. Both choices are saved locally.
 
 ### Cooldown toggles
@@ -33,10 +37,16 @@ Character columns use class-colored names and main/off GS; Complete is a progres
 
 Bulk reset CDs, or delete all characters / dungeons / local BiS lists (with confirm); when empty, **Add raids from template**.
 
+**Workspace backup** downloads one JSON file with characters and their gear, raids, cooldown marks, custom BiS lists, and BiS selections from the current tab.
+Choose a file up to 10 MiB to compare its contents with the current workspace.
+Confirming replaces both data sections and reloads the app.
+If the workspace changes after you choose the file, load the latest save and preview the backup again.
+The backup excludes language, theme, and panel filters.
+
 ### Settings
 
 The header version links to the GitHub repository. The About section shows the app version and a labeled source-code link.
-What's new shows all changes for the latest published version, with a link to the full changelog.
+What's new shows the latest version entry from the [changelog](CHANGELOG.md).
 
 ### Character pick for a raid
 
@@ -75,6 +85,8 @@ Light/dark mode saved locally, with a system preference fallback when browser st
 
 ## Development
 
+Archived desktop Lighthouse scores from August 2026. [Reports and measurement commands](docs/lighthouse/README.md).
+
 ![Lighthouse Performance](https://img.shields.io/badge/Performance-93-%230cce6b?logo=lighthouse&logoColor=white)
 ![Lighthouse Accessibility](https://img.shields.io/badge/Accessibility-98-%230cce6b?logo=lighthouse&logoColor=white)
 ![Lighthouse Best Practices](https://img.shields.io/badge/Best_Practices-100-%230cce6b?logo=lighthouse&logoColor=white)
@@ -85,27 +97,37 @@ React 19, TypeScript, Vite, MUI, Vitest + Testing Library.
 
 **CI:**
 Locally, `npm run ci` runs lint + tests with coverage + build; `npm run test:browser` runs the browser smoke checks separately.
-On push/PR to `main`, GitHub Actions runs **Lint**, **Test and coverage**, **Build**, and **Browser smoke** in parallel, then **Release files** (checks CHANGELOG / README badges / lockfile when `package.json` was bumped; skips this check when the version is unchanged) (`.github/workflows/ci.yml`); pushes to `main` also upload a `dist` artifact (`.github/workflows/build-artifacts.yml`).
+On pushes and PRs targeting `main` or `master`, GitHub Actions runs **Lint**, **Test and coverage**, **Build**, and **Browser smoke** in parallel. **Release files** then validates the changelog, README badges, and lockfile when the version changes. Pushes to either branch also upload a `dist` artifact. [CI workflow](.github/workflows/ci.yml) · [Build artifacts workflow](.github/workflows/build-artifacts.yml).
 
 **Layout:**
 `src/components/` (UI), `src/hooks/` (domain + overlay panels), `src/utils/`, `src/data/` (WoW bundles + BiS presets), `src/storage/`. Tests are colocated as `*.test.ts(x)`.
 
 **Performance:**
-WoW item JSON is code-split and loaded after the app shell (`WowDataProvider` / `ensure-wow-data`); fonts are self-hosted under `public/fonts/`; class/spec icons are 32×32 WebP; item tooltip scripts load on first item-link interaction for the active locale only.
+WoW item data loads after the app shell as separate JSON files.
+A failed request can be retried while the raid tracker stays available.
+BiS and Soft pick wait for the data they need.
+If the current build refers to a missing file, the app offers a reload.
+Fonts are self-hosted under `public/fonts/` and class/spec icons are 32×32 WebP.
+External item tooltips load when you focus or hover over an item link.
+After a failed request, the next interaction retries it.
 
-Contributor and agent conventions: [`AGENTS.md`](AGENTS.md).
+### Project documentation
 
-**Planned features:**
-[docs/roadmap.md](docs/roadmap.md).
+- [Roadmap](docs/roadmap.md) and [release notes](CHANGELOG.md).
+- [Web app audit](docs/audits/2026-11-05/README.md), with findings, implementation plan, and follow-up checks.
+- [Design system](docs/design/design-system.md), with design tokens and links to the concept galleries.
+- [Contributor and agent conventions](AGENTS.md).
 
 ### Quick start
 
+Use Node.js 22.19+ in the Node.js 22 release line to match GitHub Actions.
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Open [http://localhost:5173/raidwise/](http://localhost:5173/raidwise/).
 
 | Command | Description |
 |---------|-------------|
@@ -115,8 +137,8 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run lint` | ESLint |
 | `npm run test` / `npm run test:run` | Vitest (watch / single run) |
 | `npm run test:coverage` | Run Vitest with source coverage; see `coverage/index.html` for uncovered lines and branches |
-| `npm run test:coverage:changed` | Run all Vitest tests and report coverage for locally changed source files; use `npm run test:coverage -- --coverage.changed=<base>` to compare with a commit or branch |
-| `npm run test:browser` | Build and check theme first paint, appearance, accessibility, and raid data persistence in Chrome (set `CHROME_PATH` if Chrome is not in a standard location) |
+| `npm run test:coverage:changed` | Run all Vitest tests and report coverage for locally changed source files. Use `npm run test:run -- --coverage --coverage.changed=<base>` to compare with a commit or branch. |
+| `npm run test:browser` | Build and check theme, accessibility, save persistence, and item-data recovery in Chrome (set `CHROME_PATH` if needed) |
 | `npm run ci` | Lint + test:coverage + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
 | `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
@@ -128,27 +150,40 @@ Open [http://localhost:5173](http://localhost:5173).
 | `npm run lighthouse` | Desktop Lighthouse vs preview/production URL → `docs/lighthouse/` (run `preview` first for local) |
 | `npm run lighthouse:mobile` | Same with the mobile preset |
 
-The CI test job uploads the `coverage-report` artifact. Coverage includes all runtime TypeScript files under `src/`, including files not imported by tests; it excludes tests and test helpers. There is no minimum coverage threshold yet. Browser smoke checks run separately.
+The CI test job uploads the `coverage-report` artifact. Coverage includes all runtime TypeScript files under `src/`, including files outside the test imports. Tests and test helpers are excluded. The full run requires 87% line coverage, 86% statement and function coverage, and 80% branch coverage. Browser smoke checks run separately.
+Vitest uses up to four workers to limit contention during jsdom and coverage runs.
 
-Built-in BiS lists are authored in `scripts/bis/bis-list-sources.md` (Titans + community) and `scripts/bis/bis-list-mix.md` (Kingdom. With variants: numbered weapons + `N-M` slot alternatives).
-Regenerate TypeScript presets after editing the markdown.
+Built-in BiS lists are authored in [Titans and community sources](scripts/bis/bis-list-sources.md) and [Kingdom lists](scripts/bis/bis-list-mix.md). The Kingdom source supports numbered weapons and `N-M` slot alternatives. Run `npm run generate:bis-presets` after editing either file.
 
 ### Persistence
 
 | Key | Contents |
 |-----|----------|
-| `raidwise` | Characters, dungeons, toggles (`schemaVersion` 6) |
+| `raidwise` | Characters, dungeons, toggles (`schemaVersion` 7) |
 | `raidwise-bis-lists` | BiS preset selections and local lists (`schemaVersion` 1; malformed entries skipped on load) |
+| `raidwise-workspace` | Both saves after restoring a workspace backup (`version` 1) |
 | `raidwise-item-tooltip-locale` | `en` or `ru` (defaults to `ru`) |
 | `raidwise-color-mode` | Light/dark preference |
 | `raidwise-gear-hint-legend-dismissed` | Dismissed gear-hint legend above the table |
 
-Legacy `my-raid-cds*` keys are copied to the new names on first load, then removed.
+The tracker and BiS lists read legacy `my-raid-cds*` saves and move them to the current keys on the next successful save.
+
+Restoring a workspace backup commits both sections in one browser write. Subsequent edits use the combined save, which requires a Raidwise build with workspace backup support.
 
 Character names: new names are letters only (Unicode `\p{L}+`); display capitalizes the first letter. Legacy names with digits/symbols still load.
 
-Corrupted tracker data resets with an error alert.
-Legacy saves migrate on load.
+Tracker and BiS edits are staged before taking the browser save lock.
+Reloading the same tab reopens its draft.
+If the browser saved the draft outside the tab, use **Open draft** in the tracker or BiS panel after closing the tab to recover it in the same browser profile.
+If another tab changes the shared save first, Raidwise keeps the working copy and lets you download it or explicitly discard it and load the saved version. Save failures can be retried from the warning.
+Shared saves require Web Locks over HTTPS or on localhost.
+Raidwise compares the `localStorage` save revision with the latest revision recorded in IndexedDB before writing. If the tab cannot confirm that it sees the latest save, it reports an error and keeps the draft.
+If the browser cannot store a draft outside the current tab, Raidwise warns before leaving and offers to download the working copy.
+
+If a save is damaged, Raidwise pauses writes and shows the records it can recover. The warning lets you download the original or confirm a replacement with the working copy.
+If the shared workspace record is damaged, valid sections remain visible.
+Restore both sections from a verified backup in **Raid settings**.
+For an unsupported save version, download the original or open it in a compatible version of Raidwise. BiS warnings appear in **BiS builds**.
 
 ### Deployment (caching & HTTP)
 

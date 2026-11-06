@@ -1,10 +1,6 @@
-import {
-  type DungeonRecord,
-  type DungeonToggles,
-} from "../types/dungeons.ts";
+import type { DungeonRecord } from "../types/dungeons.ts";
 import { compareDungeonType } from "./dungeon-type.ts";
 import { getStartingItemLevel } from "./item-level-tier.ts";
-import { isCooldownOn } from "./dungeon-toggles.ts";
 
 export type DungeonSortKey =
   | "name"
@@ -62,34 +58,6 @@ export function sortDungeons(
         firstDungeon.name.localeCompare(secondDungeon.name) ||
         compareDungeonType(firstDungeon, secondDungeon);
     }
-    return direction === "asc" ? comparison : -comparison;
-  });
-  return sorted;
-}
-
-/** Sort dungeons by whether a character has CD on each row (on before off when desc).
- * TODO: check if character-toggle sort is still needed (header control removed). */
-export function sortDungeonsByCharacterToggle(
-  list: DungeonRecord[],
-  characterId: string,
-  direction: SortDirection,
-  dungeonToggles: DungeonToggles,
-): DungeonRecord[] {
-  const sorted = [...list].sort((firstDungeon, secondDungeon) => {
-    const firstValue = isCooldownOn(dungeonToggles, characterId, firstDungeon.id)
-      ? 1
-      : 0;
-    const secondValue = isCooldownOn(
-      dungeonToggles,
-      characterId,
-      secondDungeon.id,
-    )
-      ? 1
-      : 0;
-    const comparison =
-      firstValue - secondValue ||
-      firstDungeon.name.localeCompare(secondDungeon.name) ||
-      compareDungeonType(firstDungeon, secondDungeon);
     return direction === "asc" ? comparison : -comparison;
   });
   return sorted;

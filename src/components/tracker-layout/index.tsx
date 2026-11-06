@@ -10,7 +10,7 @@ import { useTranslation } from "../../i18n/use-translation.ts";
 import {
   RaidWorkspaceSessionProvider,
 } from "../../contexts/raid-workspace-session-provider.tsx";
-import { useOptionalRaidWorkspaceSessions } from "../../hooks/use-raid-workspace-sessions.ts";
+import { useHasRaidWorkspaceSession } from "../../hooks/use-raid-workspace-sessions.ts";
 import { AppHeader } from "../app-header/index.tsx";
 import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { DeleteConfirmDialog } from "../raid-tracker-table/delete-confirm-dialog.tsx";
@@ -136,8 +136,8 @@ function TrackerLayoutContents() {
 
 /** Keep standalone tracker renders self-contained; App provides a persistent workspace provider above routes. */
 export function TrackerLayout() {
-  const sessions = useOptionalRaidWorkspaceSessions();
-  if (sessions) return <TrackerLayoutContents />;
+  const hasSession = useHasRaidWorkspaceSession();
+  if (hasSession) return <TrackerLayoutContents />;
   return (
     <RaidWorkspaceSessionProvider>
       <TrackerLayoutContents />

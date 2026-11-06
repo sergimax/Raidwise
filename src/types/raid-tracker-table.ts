@@ -1,5 +1,5 @@
-import type { CharacterRecord } from "../../types/characters.ts";
-import type { DungeonRecord, DungeonToggles } from "../../types/dungeons.ts";
+import type { CharacterRecord } from "./characters.ts";
+import type { DungeonRecord, DungeonToggles } from "./dungeons.ts";
 
 export type RaidTrackerPendingDelete =
   | { kind: "character"; id: string; name: string }

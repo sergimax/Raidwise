@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import type { GearPickCharacterSelection } from "../components/gear-pick-panel/gear-pick-character-select.tsx";
+import type { GearPickCharacterSelection } from "../types/gear-pick.ts";
 import {
   clampAssignmentsToMaxSofts,
   clearAssignmentForItem,

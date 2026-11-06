@@ -21,7 +21,7 @@ export function createTemplateDungeon({
   difficulty,
   itemLevel,
   withEmblem = false,
-}: CreateTemplateDungeonOptions): Dungeon {
+}: CreateTemplateDungeonOptions): Dungeon & { raidKey: RaidKey } {
   const raid = RaidNames[raidKey];
   const nameVariant =
     difficulty === DungeonDifficultyValues.HEROIC && "heroic" in raid

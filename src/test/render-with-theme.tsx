@@ -4,13 +4,14 @@ import {
 } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { TestProviders } from "./test-providers.tsx";
+import type { AppLocale } from "../i18n/types.ts";
 
 export function renderWithTheme(
   ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">,
+  { locale, ...options }: Omit<RenderOptions, "wrapper"> & { locale?: AppLocale } = {},
 ) {
   return testingLibraryRender(ui, {
-    wrapper: TestProviders,
+    wrapper: ({ children }) => <TestProviders locale={locale}>{children}</TestProviders>,
     ...options,
   });
 }

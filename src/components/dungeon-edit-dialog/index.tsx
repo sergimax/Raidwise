@@ -4,11 +4,19 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
 } from "@mui/material";
 import type { SubmitEvent } from "react";
 import { useCallback, useState } from "react";
 import type { EmblemKey } from "../../assets/emblems/emblem-icons.ts";
+import { DungeonList } from "../../data/dungeon-list.ts";
+import { RaidNames } from "../../data/raid-names.ts";
+import { getLocalizedDifficulty, getLocalizedDungeonDisplayName } from "../../i18n/localized-domain.ts";
 import { useTranslation } from "../../i18n/use-translation.ts";
 import type {
   DungeonCustomizationUpdate,
@@ -22,6 +30,10 @@ import {
 } from "../../utils/validate-dungeon.ts";
 import { DungeonCustomizationFields } from "../dungeon-customization-fields/index.tsx";
 import { FormErrorMessage } from "../form-error-message/index.tsx";
+import { resolveDungeonRaidKey } from "../../utils/resolve-dungeon-raid-key.ts";
+
+const CUSTOM_VARIANT = "custom";
+const LEGACY_VARIANT = "legacy";
 
 type DungeonEditDialogProps = {
   dungeon: DungeonRecord | null;
@@ -50,6 +62,18 @@ function DungeonEditDialogContent({
   );
   const [emblem, setEmblem] = useState<EmblemKey | "">(initialValues.emblem);
   const [error, setError] = useState("");
+  const originalRaidKey = resolveDungeonRaidKey(dungeon);
+  const [variant, setVariant] = useState(() => {
+    if (!originalRaidKey) return CUSTOM_VARIANT;
+    const index = DungeonList.findIndex((row) => row.raidKey === originalRaidKey &&
+      row.size === dungeon.size && row.difficulty === dungeon.difficulty);
+    return index === -1 ? LEGACY_VARIANT : String(index);
+  });
+  const selectedTemplate = DungeonList[Number(variant)];
+  const linkedVariant = variant === LEGACY_VARIANT ? dungeon : selectedTemplate;
+  const raidKey = variant === LEGACY_VARIANT ? originalRaidKey ?? null : selectedTemplate?.raidKey ?? null;
+  const selectedSize = linkedVariant?.size ?? size;
+  const selectedDifficulty = linkedVariant?.difficulty ?? difficulty;
 
   const handleSubmit = useCallback(
     (event: SubmitEvent<HTMLFormElement>) => {
@@ -59,8 +83,8 @@ function DungeonEditDialogContent({
         {
           name,
           shortName,
-          size,
-          difficulty,
+          size: selectedSize,
+          difficulty: selectedDifficulty,
           emblem,
         },
         locale,
@@ -69,23 +93,58 @@ function DungeonEditDialogContent({
         setError(result.error);
         return;
       }
-      onSave(dungeon.id, result.fields);
+      onSave(dungeon.id, { ...result.fields, raidKey });
       onClose();
     },
-    [difficulty, dungeon.id, emblem, locale, name, onClose, onSave, shortName, size],
+    [dungeon.id, emblem, locale, name, onClose, onSave, raidKey, selectedDifficulty, selectedSize, shortName],
   );
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <DialogTitle>{t("dungeonEdit.title")}</DialogTitle>
+      <DialogTitle id="dungeon-edit-title">{t("dungeonEdit.title")}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
+          <FormControl>
+            <InputLabel id="raid-loot-template-label">{t("dungeonEdit.lootTemplate")}</InputLabel>
+            <Select
+              labelId="raid-loot-template-label"
+              label={t("dungeonEdit.lootTemplate")}
+              value={variant}
+              aria-describedby="raid-loot-template-help"
+              onChange={(event) => {
+                const nextVariant = event.target.value;
+                const nextTemplate = DungeonList[Number(nextVariant)];
+                if (nextTemplate && (!name.trim() ||
+                    (raidKey && resolveDungeonRaidKey({ name }) === raidKey))) {
+                  setName(getLocalizedDungeonDisplayName(nextTemplate, locale, false));
+                  setShortName(getLocalizedDungeonDisplayName(nextTemplate, locale, true));
+                }
+                setVariant(nextVariant);
+                setError("");
+              }}
+            >
+              <MenuItem value={CUSTOM_VARIANT}>{t("dungeonEdit.noLootTemplate")}</MenuItem>
+              {originalRaidKey && !DungeonList.some((row) => row.raidKey === originalRaidKey &&
+                row.size === dungeon.size && row.difficulty === dungeon.difficulty) && (
+                <MenuItem value={LEGACY_VARIANT}>
+                  {t("dungeonEdit.keepLootTemplate", { raid: RaidNames[originalRaidKey][locale] })}
+                </MenuItem>
+              )}
+              {DungeonList.map((row, index) => (
+                <MenuItem key={index} value={String(index)}>
+                  {getLocalizedDungeonDisplayName(row, locale, false)} · {row.size} · {getLocalizedDifficulty(row.difficulty, locale)}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText id="raid-loot-template-help">{t("dungeonEdit.lootTemplateHelp")}</FormHelperText>
+          </FormControl>
           <DungeonCustomizationFields
             name={name}
             shortName={shortName}
-            size={size}
-            difficulty={difficulty}
+            size={selectedSize}
+            difficulty={selectedDifficulty}
             emblem={emblem}
+            fixedVariant={Boolean(linkedVariant)}
             onNameChange={(value) => {
               setName(value);
               setError("");
@@ -126,7 +185,7 @@ export function DungeonEditDialog({
   onSave,
 }: DungeonEditDialogProps) {
   return (
-    <Dialog open={dungeon !== null} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={dungeon !== null} onClose={onClose} maxWidth="sm" fullWidth aria-labelledby="dungeon-edit-title">
       {dungeon ? (
         <DungeonEditDialogContent
           key={dungeon.id}

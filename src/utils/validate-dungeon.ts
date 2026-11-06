@@ -28,7 +28,7 @@ export type DungeonCustomizationValues = {
 };
 
 export type ParseDungeonCustomizationResult =
-  | { ok: true; fields: DungeonCustomizationUpdate }
+  | { ok: true; fields: Omit<DungeonCustomizationUpdate, "raidKey"> }
   | { ok: false; error: string };
 
 const VALID_EMBLEM_KEYS = new Set<string>(Object.values(EmblemKeyValues));
@@ -54,10 +54,6 @@ export function parseDungeonCustomizationForm(
   if (!trimmedName) {
     return { ok: false, error: t("validation.dungeonNameRequired") };
   }
-  const normalizedName =
-    raidNameForDifficulty(trimmedName, values.difficulty, locale) ?? trimmedName;
-  const normalizedDifficulty =
-    difficultyForRaidName(normalizedName) ?? values.difficulty;
   const trimmedShortName = values.shortName.trim();
   if (trimmedShortName.length > MAX_DUNGEON_SHORT_NAME_LENGTH) {
     return {
@@ -71,19 +67,14 @@ export function parseDungeonCustomizationForm(
   if (emblemValue && !VALID_EMBLEM_KEYS.has(emblemValue)) {
     return { ok: false, error: t("validation.invalidEmblem") };
   }
-  const shortName =
-    (normalizedName !== trimmedName
-      ? defaultShortNameForDungeonName(normalizedName)
-      : trimmedShortName || defaultShortNameForDungeonName(normalizedName)) ||
-    undefined;
   const emblem = emblemValue ? (emblemValue as EmblemKey) : undefined;
   return {
     ok: true,
     fields: {
-      name: normalizedName,
-      ...(shortName ? { shortName } : {}),
+      name: trimmedName,
+      ...(trimmedShortName ? { shortName: trimmedShortName } : {}),
       size: values.size,
-      difficulty: normalizedDifficulty,
+      difficulty: values.difficulty,
       ...(emblem ? { emblem } : {}),
     },
   };

@@ -1,15 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { DungeonDifficulty } from "../types/dungeons.ts";
-import {
-  defaultSortDirectionForKey,
-  sortDungeons,
-  sortDungeonsByCharacterToggle,
-} from "./sort-dungeons.ts";
-import {
-  createTestCharacter,
-  createTestDungeon,
-  createTestToggles,
-} from "../test/fixtures.ts";
+import { defaultSortDirectionForKey, sortDungeons } from "./sort-dungeons.ts";
+import { createTestDungeon } from "../test/fixtures.ts";
 
 describe("defaultSortDirectionForKey", () => {
   it("uses desc for item level, completions, and type", () => {
@@ -99,27 +91,5 @@ describe("sortDungeons", () => {
       many: 3,
     });
     expect(sorted.map((dungeon) => dungeon.id)).toEqual(["many", "few"]);
-  });
-});
-
-describe("sortDungeonsByCharacterToggle", () => {
-  it("sorts off toggles before on toggles ascending", () => {
-    const character = createTestCharacter({ id: "character-1" });
-    const dungeons = [
-      createTestDungeon({ id: "on", name: "On Raid" }),
-      createTestDungeon({ id: "off", name: "Off Raid" }),
-    ];
-    const toggles = createTestToggles([
-      { characterId: character.id, dungeonId: "on", on: true },
-      { characterId: character.id, dungeonId: "off", on: false },
-    ]);
-
-    const sorted = sortDungeonsByCharacterToggle(
-      dungeons,
-      character.id,
-      "asc",
-      toggles,
-    );
-    expect(sorted.map((dungeon) => dungeon.id)).toEqual(["off", "on"]);
   });
 });

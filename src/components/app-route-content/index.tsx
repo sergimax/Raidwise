@@ -1,12 +1,26 @@
 import { Container, Typography } from "@mui/material";
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useTranslation } from "../../i18n/use-translation.ts";
-import { APP_ROUTES } from "../../routing/app-route.ts";
+import { APP_ROUTES, RAID_WORKSPACE_ROUTES } from "../../routing/app-route.ts";
 import type { MessageKey } from "../../i18n/use-translation.ts";
 import { AppHeader } from "../app-header/index.tsx";
 import { AppBreadcrumbs } from "../app-breadcrumbs/index.tsx";
 import { AppSettingsPage } from "../app-settings-page/index.tsx";
-import { TrackerLayout } from "../tracker-layout/index.tsx";
+import { loadRouteModule } from "../../routing/load-route-module.ts";
+
+const TrackerLayout = lazy(() => loadRouteModule(async () => ({
+  default: (await import("../tracker-layout/index.tsx")).TrackerLayout,
+})));
+
+function RaidWorkspace() {
+  const { t } = useTranslation();
+  return (
+    <Suspense fallback={<Typography role="status">{t("appNavigation.loadingRaids")}</Typography>}>
+      <TrackerLayout />
+    </Suspense>
+  );
+}
 
 function ComingSoonPage({ title }: { title: MessageKey }) {
   const { t } = useTranslation();
@@ -45,7 +59,9 @@ export function AppRouteContent() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to={APP_ROUTES.raids} replace />} />
-      <Route path="raids/*" element={<TrackerLayout />} />
+      {RAID_WORKSPACE_ROUTES.map((path) => (
+        <Route key={path} path={path} caseSensitive element={<RaidWorkspace />} />
+      ))}
       <Route path="settings" element={<AppSettingsPage />} />
       <Route path="changelog" element={<Navigate to={APP_ROUTES.settings} replace />} />
       <Route path="reputation" element={<ComingSoonPage title="appNavigation.reputation" />} />

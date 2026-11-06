@@ -2,6 +2,7 @@ import type { EmblemKey } from "../assets/emblems/emblem-icons.ts";
 import type { RaidKey } from "../data/raid-names.ts";
 import type { CharacterRecord } from "../types/characters.ts";
 import type { DungeonRecord, DungeonToggles } from "../types/dungeons.ts";
+import type { ParsedSave } from "./local-save.ts";
 
 export type PersistedTrackerState = {
   characters: CharacterRecord[];
@@ -9,10 +10,7 @@ export type PersistedTrackerState = {
   dungeonToggles: DungeonToggles;
 };
 
-export type LoadRaidTrackerResult = {
-  state: PersistedTrackerState;
-  loadWarning: string | null;
-};
+export type LoadRaidTrackerResult = ParsedSave<PersistedTrackerState>;
 
 export type StoredCharacterSpecGear = {
   spec: string;
@@ -48,7 +46,7 @@ export type StoredDungeon = {
   size: DungeonRecord["size"];
   itemLevel: number[];
   emblem?: EmblemKey;
-  raidKey?: RaidKey;
+  raidKey?: RaidKey | null;
   /** Legacy key from older saves */
   mode?: string;
   difficulty?: string;
@@ -58,7 +56,7 @@ export type StoredPayload = {
   schemaVersion?: number;
   characters: StoredCharacter[];
   dungeons: StoredDungeon[];
-  dungeonToggles: Record<string, Record<string, boolean>>;
+  dungeonToggles: Record<string, unknown>;
 };
 
 export const EMPTY_STATE: PersistedTrackerState = {

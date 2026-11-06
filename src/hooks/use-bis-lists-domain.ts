@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { ClassName } from "../types/characters.ts";
 import type { BisListSlot, LocalBisListsState } from "../types/bis-lists.ts";
-import {
-  loadLocalBisListsState,
-  saveLocalBisListsState,
-} from "../storage/bis-lists/index.ts";
+import { loadLocalBisListsState, parseLocalBisListsState } from "../storage/bis-lists/index.ts";
+import { BIS_LISTS_STORAGE_KEYS } from "../storage/bis-lists/constants.ts";
+import { loadWorkingSave } from "../storage/pending-save.ts";
+import { useLocalSave } from "./use-local-save.ts";
 import { getBuiltInPresetsForSpec } from "../data/bis-presets/index.ts";
+import { generateUUID } from "../uuid.ts";
 import {
   clearAllLocalBisPresets,
   countLocalBisPresets,
@@ -16,53 +17,26 @@ import {
   resolveBisSlotMap,
   resolveSaveLocalPresetByName,
   specBisStorageKey,
+  type BisPresetNameError,
   type BisSlotMap,
   upsertLocalSpecEntry,
 } from "../utils/bis-lists.ts";
-
-/** Debounce window for BiS localStorage writes (mirror tracker domain). */
-export const BIS_LISTS_SAVE_DEBOUNCE_MS = 400;
 
 /**
  * BiS presets domain: built-in + local lists, selection, and slot maps.
  * Mutations must go through functional updates (`applyLocalUpdate` /
  * `setLocalState(prev => …)`) so rapid select/save/delete cannot clobber each other.
- * Persistence is debounced; unmount flushes the latest in-memory state.
+ * Persistence follows committed edits.
  */
 export function useBisListsDomain() {
-  const [localState, setLocalState] = useState<LocalBisListsState>(() =>
-    loadLocalBisListsState(),
-  );
-  const [storageError, setStorageError] = useState<string | null>(null);
-  const localStateRef = useRef(localState);
-
-  useEffect(() => {
-    localStateRef.current = localState;
-  }, [localState]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      saveLocalBisListsState(localState, (errorMessage) => {
-        setStorageError(errorMessage);
-      });
-    }, BIS_LISTS_SAVE_DEBOUNCE_MS);
-    return () => clearTimeout(timeout);
-  }, [localState]);
-
-  useEffect(() => {
-    return () => {
-      saveLocalBisListsState(localStateRef.current);
-    };
-  }, []);
+  const [initialLoad] = useState(() => loadWorkingSave(BIS_LISTS_STORAGE_KEYS, loadLocalBisListsState(), parseLocalBisListsState));
+  const [localState, setLocalState] = useState(initialLoad.state);
+  const storage = useLocalSave(BIS_LISTS_STORAGE_KEYS, initialLoad, localState, JSON.stringify);
 
   /** Prefer this over reading `localState` inside mutation callbacks. */
   const applyLocalUpdate = useCallback(
     (updater: (previous: LocalBisListsState) => LocalBisListsState) => {
-      setLocalState((previous) => {
-        const next = updater(previous);
-        localStateRef.current = next;
-        return next;
-      });
+      setLocalState(updater);
     },
     [],
   );
@@ -120,15 +94,16 @@ export function useBisListsDomain() {
       spec: string,
       name: string,
       slots: BisListSlot[],
-    ): { ok: true } | { ok: false; error: string } => {
+    ): { ok: true } | { ok: false; error: BisPresetNameError } => {
       const builtInPresets = getBuiltInPresetsForSpec(className, spec);
-      // Validate before scheduling state work. Do not capture the return value
-      // inside a `setState` updater — those run later and must stay pure.
+      const newPresetId = `local-${generateUUID()}`;
+      // Name validation is independent of local presets. Resolve the actual update against current state.
       const preview = resolveSaveLocalPresetByName(
-        getLocalPresetsForSpec(localStateRef.current, className, spec),
+        [],
         builtInPresets,
         name,
         slots,
+        newPresetId,
       );
       if ("error" in preview) {
         return { ok: false, error: preview.error };
@@ -140,6 +115,7 @@ export function useBisListsDomain() {
           builtInPresets,
           name,
           slots,
+          newPresetId,
         );
         if ("error" in resolved) {
           return previous;
@@ -237,7 +213,7 @@ export function useBisListsDomain() {
       updateSelectedLocalPresetSlots,
       clearAllLocalPresets,
       hasAnyLocalBisPresets,
-      storageError,
+      ...storage,
     }),
     [
       clearAllLocalPresets,
@@ -248,7 +224,7 @@ export function useBisListsDomain() {
       hasAnyLocalBisPresets,
       savePresetByName,
       selectPreset,
-      storageError,
+      storage,
       updateSelectedLocalPresetSlots,
     ],
   );

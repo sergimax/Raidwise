@@ -2,6 +2,7 @@ import {
   CURRENT_SCHEMA_VERSION,
   STORAGE_KEY,
 } from "./constants.ts";
+import { getWriteError, type SaveError } from "./local-save.ts";
 import { pruneToggles } from "../utils/dungeon-toggles.ts";
 import type { CharacterRecord } from "../types/characters.ts";
 import type { PersistedTrackerState, StoredCharacter, StoredCharacterSpecGear, StoredDungeon, StoredPayload } from "./types.ts";
@@ -19,10 +20,7 @@ function toStoredSpecGear(
   return stored;
 }
 
-export function saveRaidTrackerState(
-  state: PersistedTrackerState,
-  onError?: (message: string | null) => void,
-): void {
+export function serializeRaidTrackerState(state: PersistedTrackerState): string {
   const { characters, dungeons, dungeonToggles } = state;
   const characterIds = new Set(characters.map((character) => character.id));
   const dungeonIds = new Set(dungeons.map((dungeon) => dungeon.id));
@@ -46,7 +44,7 @@ export function saveRaidTrackerState(
     difficulty: dungeon.difficulty,
     ...(dungeon.shortName ? { shortName: dungeon.shortName } : {}),
     ...(dungeon.emblem ? { emblem: dungeon.emblem } : {}),
-    ...(dungeon.raidKey ? { raidKey: dungeon.raidKey } : {}),
+    ...(dungeon.raidKey !== undefined ? { raidKey: dungeon.raidKey } : {}),
   }));
 
   const storedToggles = pruneToggles(dungeonToggles, {
@@ -61,15 +59,17 @@ export function saveRaidTrackerState(
     dungeons: storedDungeons,
     dungeonToggles: storedToggles,
   };
+  return JSON.stringify(payload);
+}
 
+export function saveRaidTrackerState(
+  state: PersistedTrackerState,
+  onError?: (error: SaveError | null) => void,
+): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    localStorage.setItem(STORAGE_KEY, serializeRaidTrackerState(state));
     onError?.(null);
   } catch (error) {
-    const message =
-      error instanceof DOMException && error.name === "QuotaExceededError"
-        ? "Storage quota exceeded. Please free up space."
-        : "Failed to save data. Please try again.";
-    onError?.(message);
+    onError?.(getWriteError(error));
   }
 }

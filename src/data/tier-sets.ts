@@ -1,5 +1,6 @@
 import { buildItemIdMap } from "./build-item-id-map.ts";
 import { createLazyJsonLoader } from "./lazy-json.ts";
+import dataUrl from "./tier-sets-by-item-id.json?url&no-inline";
 import type { TierSetItemEntry, TierSetTier } from "../types/tier-sets.ts";
 
 let tierSetsByItemId = new Map<number, TierSetItemEntry>();
@@ -31,7 +32,7 @@ function rebuildTierSetIndexes(
 }
 
 export const ensureTierSetsLoaded = createLazyJsonLoader(
-  () => import("./tier-sets-by-item-id.json"),
+  dataUrl,
   (data) => {
     rebuildTierSetIndexes(
       buildItemIdMap(data as Record<string, TierSetItemEntry>),

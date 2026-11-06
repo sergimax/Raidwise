@@ -128,7 +128,7 @@ export const DungeonTableRow = memo(function DungeonTableRow({
   const { t, locale } = useTranslation();
   const { getBisSlotMapForSpec } = useBisListsContext();
   const dungeonDisplayName = getLocalizedDungeonDisplayName(dungeon, locale, false);
-  const raidBackgroundFile = raidRowBackgroundFile(dungeon.raidKey);
+  const raidBackgroundFile = raidRowBackgroundFile(dungeon.raidKey ?? undefined);
 
   const handleEdit = useCallback(() => {
     onEditDungeon(dungeon.id);

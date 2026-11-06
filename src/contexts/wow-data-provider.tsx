@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -7,47 +8,66 @@ import {
 import {
   ensureCoreItemDataLoaded,
   ensureWowHintDataLoaded,
+  isCoreItemDataReady,
   isWowHintDataReady,
 } from "../data/ensure-wow-data.ts";
+import { MissingWowDataAssetError } from "../data/lazy-json.ts";
+import type { ItemTooltipLocale } from "../constants/item-tooltips.ts";
 import { useItemTooltipLocale } from "../hooks/use-item-tooltip-locale.ts";
-import { WowDataContext, type WowDataContextValue } from "./wow-data-context.ts";
+import { WowDataContext, type WowDataContextValue, type WowDataStatus } from "./wow-data-context.ts";
+
+type Result = { attempt: number; status: Exclude<WowDataStatus, "loading"> };
+type WowDataDemand = "none" | "core" | "hints";
+
+function failureStatus(error: unknown): "missing" | "failed" {
+  return error instanceof MissingWowDataAssetError ? "missing" : "failed";
+}
 
 /** Starts deferred WoW JSON loads; exposes readiness for tint gating. */
-export function WowDataProvider({ children }: { children: ReactNode }) {
+export function WowDataProvider({ children, demand = "hints" }: { children: ReactNode; demand?: WowDataDemand }) {
   const { locale } = useItemTooltipLocale();
-  const [coreReadyLocale, setCoreReadyLocale] = useState<string | null>(null);
-  const [hintReady, setHintReady] = useState(() => isWowHintDataReady());
+  const [core, setCore] = useState<(Result & { locale: ItemTooltipLocale }) | null>(null);
+  const [hint, setHint] = useState<Result | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const retry = useCallback(() => {
+    setAttempt((previous) => previous + 1);
+  }, []);
+  const needsCore = demand !== "none";
+  const needsHints = demand === "hints";
 
   useEffect(() => {
+    if (!needsCore) return;
     let cancelled = false;
     void ensureCoreItemDataLoaded(locale).then(() => {
-      if (!cancelled) {
-        setCoreReadyLocale(locale);
-      }
+      if (!cancelled) setCore({ locale, attempt, status: "ready" });
+    }, (error: unknown) => {
+      if (!cancelled) setCore({ locale, attempt, status: failureStatus(error) });
     });
     return () => {
       cancelled = true;
     };
-  }, [locale]);
+  }, [locale, attempt, needsCore]);
 
   useEffect(() => {
+    if (!needsHints) return;
     let cancelled = false;
     void ensureWowHintDataLoaded().then(() => {
-      if (!cancelled) {
-        setHintReady(true);
-      }
+      if (!cancelled) setHint({ attempt, status: "ready" });
+    }, (error: unknown) => {
+      if (!cancelled) setHint({ attempt, status: failureStatus(error) });
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt, needsHints]);
 
+  const coreStatus = !needsCore ? "loading" : isCoreItemDataReady(locale)
+    ? "ready"
+    : core?.locale === locale && core.attempt === attempt ? core.status : "loading";
+  const hintStatus = !needsHints ? "loading" : isWowHintDataReady() ? "ready" : hint?.attempt === attempt ? hint.status : "loading";
   const value = useMemo<WowDataContextValue>(
-    () => ({
-      coreReady: coreReadyLocale === locale,
-      hintReady,
-    }),
-    [coreReadyLocale, hintReady, locale],
+    () => ({ coreStatus, hintStatus, retry }),
+    [coreStatus, hintStatus, retry],
   );
 
   return (

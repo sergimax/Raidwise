@@ -79,8 +79,8 @@ CSS variables mirror the MUI palette so non-MUI markup stays in sync.
 | Link spot | `#9a3412` | `--link-spot` | — |
 | Primary bg / fg | `#0a0a0a` / `#ffffff` | `--primary-bg` / `--primary-fg` | `primary.main` / contrast |
 | Shadow | `none` | `--shadow` | card / paper outlined |
-| Info (ilvl hints) | `#0284c7` | — | `info.main` (domain) |
-| Warning (BiS hints) | `#d97706` | — | `warning.main` (domain) |
+| Info | `#0284c7` | — | `info.main` |
+| Warning | `#d97706` | — | `warning.main` |
 | Scrollbar thumb | `#c4c4c0` → hover `#8a8a8a` | `--scrollbar-thumb*` | — |
 
 Action:
@@ -318,8 +318,8 @@ Port only if the target app needs the same semantics. Keep separate from core ch
 
 - BiS / ready → **ok** green (`success`)
 - Defect → **danger** red (`error`)
-- Missing BiS gear hints → **warning** amber (not brand orange)
-- Ilvl upgrade hints → **info** blue (not brand)
+- Missing BiS gear hints → coral
+- Item-level upgrade hints → teal
 
 ### Tooltip surface (inverted in light mode)
 
@@ -332,8 +332,14 @@ Item links on tooltip backgrounds always use the **dark** ilvl color set (`TOOLT
 
 ### Gear hint tints
 
-- BiS → `warning.main` alphas (light `0.22 / 0.32 / 0.44`, dark slightly stronger)
-- Ilvl upgrades → `info.main` alphas (light `0.18 / 0.28 / 0.4`)
+The cooldown cell uses radial gradients for both categories. BiS occupies the upper band and item-level upgrades the lower band. With two specs, the main spec uses the left half and the off spec the right. A single spec spans the full width. Empty bands and cells with a marked cooldown stay untinted.
+
+| Band | Light color | Dark color | Base opacity by level (light / dark) |
+| --- | --- | --- | --- |
+| BiS and its variants | `#e11d48` | `#fb7185` | `0.08 / 0.13 / 0.19` · `0.10 / 0.16 / 0.23` |
+| Item-level upgrades | `#0d9488` | `#2dd4bf` | `0.06 / 0.11 / 0.17` · `0.08 / 0.14 / 0.21` |
+
+The gradient uses these base opacities with stronger color near the center. [Tint implementation](../../src/utils/gear-hint-display.ts).
 
 ### Item level tier rainbow
 
