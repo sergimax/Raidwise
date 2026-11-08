@@ -1,5 +1,6 @@
 import { Alert, Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation, type MessageKey } from "../../i18n/use-translation.ts";
 import {
   LOAD_WARNING_CORRUPTED_SAVE,
@@ -67,7 +68,10 @@ export function StorageProblem({
   ) : null;
   if (!storageLoadWarning && !storageSaveError && !storageTabOnlyDraft) {
     if (availableDrafts) return availableDrafts;
-    return storageSaving ? <Alert severity="info" role="status">{t("storage.saving")}</Alert> : null;
+    return storageSaving ? createPortal(
+      <Alert severity="info" role="status" sx={{ position: "fixed", top: 8, right: 8, zIndex: "tooltip", py: 0, "& .MuiAlert-message": { py: 0.5 } }}>{t("storage.saving")}</Alert>,
+      document.body,
+    ) : null;
   }
   const conflict = storageSaveError === STORAGE_CONFLICT;
   const canDiscard = storageHasDraft && (conflict || (storageLoadWarning !== null && !recoverStorage));
