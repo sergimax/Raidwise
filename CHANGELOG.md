@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.2] - 2026-11-08
+
+### Fixed
+
+- **Raid tracker layout:** Saving status no longer shifts the table, and the raids header stays visible while the route loads.
+
 ## [2.12.1] - 2026-11-06
 
 ### Changed
