@@ -16,7 +16,7 @@ const TrackerLayout = lazy(() => loadRouteModule(async () => ({
 function RaidWorkspace() {
   const { t } = useTranslation();
   return (
-    <Suspense fallback={<Typography role="status">{t("appNavigation.loadingRaids")}</Typography>}>
+    <Suspense fallback={<div className="app-shell"><AppHeader /><Container component="main" className="app-page-main"><Typography role="status">{t("appNavigation.loadingRaids")}</Typography></Container></div>}>
       <TrackerLayout />
     </Suspense>
   );
