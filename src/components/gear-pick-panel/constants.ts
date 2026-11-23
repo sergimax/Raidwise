@@ -11,7 +11,7 @@ const GEAR_PICK_GRID_GAP_PX = FILTER_UNIT_GRID_GAP_SPACING * 8;
 
 /**
  * Soft pick panel grid areas.
- * Filter columns are fixed unit width; softs / copy are fixed 2-unit spans.
+ * Filter columns keep their unit width; softs / copy flex from half to full width.
  * Layout steps up by **available panel width** (container queries), not viewport:
  * - filters: raids + character + rules; softs and copy each on their own row
  * - md: softs beside filters when 2 filter units + softs fit; copy stays below
@@ -94,7 +94,7 @@ export function getGearPickMdLayoutMinWidth(
   return (
     getGearPickFiltersRowWidth(gridColumnGapPx) +
     gridColumnGapPx +
-    getGearPickSoftsBlockMaxWidth(gridColumnGapPx)
+    getGearPickSoftsBlockMaxWidth(gridColumnGapPx) / 2
   );
 }
 
@@ -105,7 +105,7 @@ export function getGearPickWideLayoutMinWidth(
   return (
     getGearPickMdLayoutMinWidth(gridColumnGapPx) +
     gridColumnGapPx +
-    getGearPickCopyBlockMaxWidth(gridColumnGapPx)
+    getGearPickCopyBlockMaxWidth(gridColumnGapPx) / 2
   );
 }
 
@@ -151,10 +151,13 @@ export function getGearPickGridTemplateAreas(layout: GearPickGridLayout): string
 export function getGearPickGridTemplateColumns(
   layout: GearPickGridLayout,
 ): string {
-  // Same shrinkable unit columns as Character pick (`filter-unit`).
-  const unitColumn = getFilterUnitColumnTemplate();
-  const softsColumn = `minmax(0, ${getGearPickSoftsBlockMaxWidth()}px)`;
-  const copyColumn = `minmax(0, ${getGearPickCopyBlockMaxWidth()}px)`;
+  // Keep filters full-size once the flexible content columns fit beside them.
+  const unitColumn =
+    layout === "filters"
+      ? getFilterUnitColumnTemplate()
+      : `${FILTER_UNIT_WIDTH}px`;
+  const softsColumn = `minmax(${getGearPickSoftsBlockMaxWidth() / 2}px, ${getGearPickSoftsBlockMaxWidth()}px)`;
+  const copyColumn = `minmax(${getGearPickCopyBlockMaxWidth() / 2}px, ${getGearPickCopyBlockMaxWidth()}px)`;
 
   if (layout === "wide") {
     return `${unitColumn} ${unitColumn} ${softsColumn} ${copyColumn}`;

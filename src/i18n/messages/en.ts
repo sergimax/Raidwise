@@ -149,6 +149,7 @@ export const enMessages = {
   },
   characterEdit: {
     title: "Edit character details",
+    swapSpecs: "Swap specs",
     mainSpecGear: "Main spec gear",
     offSpecGear: "Off spec gear",
     storedGear: "Stored gear",

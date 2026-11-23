@@ -151,6 +151,7 @@ export const ruMessages: Messages = {
   },
   characterEdit: {
     title: "Редактировать персонажа",
+    swapSpecs: "Поменять спеки местами",
     mainSpecGear: "Экипировка основного спека",
     offSpecGear: "Экипировка второго спека",
     storedGear: "Сохранённая экипировка",

@@ -9,6 +9,7 @@ import { getBuiltInPresetsForSpec } from "../data/bis-presets/index.ts";
 import { generateUUID } from "../uuid.ts";
 import {
   clearAllLocalBisPresets,
+  compareBuiltInBisPresets,
   countLocalBisPresets,
   getLocalPresetsForSpec,
   getMergedPresetsForSpec,
@@ -147,7 +148,9 @@ export function useBisListsDomain() {
         const nextLocalPresets = existingEntry.presets.filter(
           (preset) => preset.id !== presetId,
         );
-        const builtInPresets = getBuiltInPresetsForSpec(className, spec);
+        const builtInPresets = [...getBuiltInPresetsForSpec(className, spec)].sort(
+          compareBuiltInBisPresets,
+        );
         const wasSelected = existingEntry.selectedPresetId === presetId;
         const nextSelectedPresetId = wasSelected
           ? (builtInPresets[0]?.id ?? nextLocalPresets[0]?.id ?? "default")

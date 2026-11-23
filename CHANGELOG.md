@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.0] - 2026-11-23
+
+### Added
+
+- **Character editor:** Swap main and off specs along with their GearScore and equipped items, then save the new order.
+- **BiS builds:** Added 41 Emity Phase 5 builds across 28 specializations. Emity lists appear first where available and are selected by default when there is no saved choice.
+
+### Changed
+
+- **Roll & Soft:** The item and soft-reserve list blocks resize beside the filters and wrap below when space is limited.
+
 ## [2.12.2] - 2026-11-08
 
 ### Fixed

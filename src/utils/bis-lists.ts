@@ -55,11 +55,14 @@ export type GetBisSlotMapForSpec = (
 const KINGDOM_PRESET_ID = "kingdom-with-variants";
 const TITANS_PRESET_ID = "titans";
 
-/** Kingdom first, then Titans, then other built-ins by name; locals stay after. */
+/** Emity, Kingdom, Titans, then other built-ins. Sort each group by name. */
 export function compareBuiltInBisPresets(
   left: BisListPreset,
   right: BisListPreset,
 ): number {
+  const leftIsEmity = left.id.startsWith("emity-");
+  const rightIsEmity = right.id.startsWith("emity-");
+  if (leftIsEmity !== rightIsEmity) return leftIsEmity ? -1 : 1;
   if (left.id === KINGDOM_PRESET_ID) return -1;
   if (right.id === KINGDOM_PRESET_ID) return 1;
   if (left.id === TITANS_PRESET_ID) return -1;

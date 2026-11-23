@@ -1,3 +1,4 @@
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import {
   Box,
   Button,
@@ -96,8 +97,24 @@ function CharacterEditDialogContent({
     () => character.alsoOwnedItemIds ?? [],
   );
   const [error, setError] = useState("");
+  const [specsSwapped, setSpecsSwapped] = useState(false);
 
   useEffect(() => () => hideExternalWowTooltips(), []);
+
+  const swapSpecs = () => {
+    setMainSpec(offSpec);
+    setOffSpec(mainSpec);
+    setMainGearScoreText(offGearScoreText);
+    setOffGearScoreText(mainGearScoreText);
+    setMainGearItems(offGearItems);
+    setOffGearItems(mainGearItems);
+    setMainGearLoadedForSpec(offGearLoadedForSpec);
+    setOffGearLoadedForSpec(mainGearLoadedForSpec);
+    setMainSyncBaseline(offSyncBaseline);
+    setOffSyncBaseline(mainSyncBaseline);
+    setSpecsSwapped((previous) => !previous);
+    setError("");
+  };
 
   const handleMainSpecChange = useCallback((value: string) => {
     if (value !== mainSpec) {
@@ -251,6 +268,18 @@ function CharacterEditDialogContent({
             />
           ) : null}
         </Box>
+        {character.class ? (
+          <Button
+            type="button"
+            size="small"
+            variant="outlined"
+            startIcon={<SwapHorizIcon />}
+            disabled={!mainSpec || !offSpec}
+            onClick={swapSpecs}
+          >
+            {t("characterEdit.swapSpecs")}
+          </Button>
+        ) : null}
         <CharacterTableOrderControl
           character={character}
           characters={characters}
@@ -274,6 +303,7 @@ function CharacterEditDialogContent({
               sx={{ alignItems: "stretch" }}
             >
               <CharacterSpecGearColumn
+                key={specsSwapped ? "original-off" : "original-main"}
                 roleLabel={t("characterForm.main")}
                 importSectionLabel={mainSpecLabel}
                 spec={mainSpec}
@@ -297,6 +327,7 @@ function CharacterEditDialogContent({
                 t={t}
               />
               <CharacterSpecGearColumn
+                key={specsSwapped ? "original-main" : "original-off"}
                 roleLabel={t("characterForm.off")}
                 importSectionLabel={offSpecLabel}
                 spec={offSpec}

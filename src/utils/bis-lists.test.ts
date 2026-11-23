@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ClassName } from "../types/characters.ts";
+import { BuiltInBisPresets } from "../data/bis-presets/index.ts";
 import { unholyDeathKnightBis } from "../data/bis-presets/unholy-death-knight.ts";
 import {
   buildBisSlotMap,
@@ -28,8 +29,10 @@ describe("buildBisSlotMap", () => {
 });
 
 describe("compareBuiltInBisPresets / getMergedPresetsForSpec", () => {
-  it("orders Kingdom before Titans before other built-ins", () => {
+  it("orders Emity first, then Kingdom, Titans, and other presets by name", () => {
     const ordered = [
+      { id: "emity-dk-frost-strength", name: "Emity · Strength", slots: [] },
+      { id: "emity-dk-frost-arp", name: "Emity · Armor penetration", slots: [] },
       { id: "zzz-guide", name: "Z Guide", slots: [] },
       { id: "titans", name: "Titans", slots: [] },
       { id: "kingdom-with-variants", name: "Kingdom. With variants", slots: [] },
@@ -37,6 +40,8 @@ describe("compareBuiltInBisPresets / getMergedPresetsForSpec", () => {
     ].sort(compareBuiltInBisPresets);
 
     expect(ordered.map((preset) => preset.id)).toEqual([
+      "emity-dk-frost-arp",
+      "emity-dk-frost-strength",
       "kingdom-with-variants",
       "titans",
       "aaa-guide",
@@ -44,12 +49,34 @@ describe("compareBuiltInBisPresets / getMergedPresetsForSpec", () => {
     ]);
   });
 
-  it("places Kingdom first for Unholy DK merged presets", () => {
+  it("exposes all 41 Emity builds across 28 specializations", () => {
+    const specs = BuiltInBisPresets.map(({ presets }) =>
+      presets.filter(({ id }) => id.startsWith("emity-")),
+    ).filter((presets) => presets.length > 0);
+    const ids = specs.flat().map(({ id }) => id);
+
+    expect(specs).toHaveLength(28);
+    expect(ids).toHaveLength(41);
+    expect(new Set(ids).size).toBe(41);
+  });
+
+  it("places Emity first for every specialization where it is available", () => {
+    for (const { className, spec, presets } of BuiltInBisPresets) {
+      if (!presets.some(({ id }) => id.startsWith("emity-"))) continue;
+      const merged = getMergedPresetsForSpec(className, spec, {
+        schemaVersion: 1,
+        entries: {},
+      });
+      expect(merged[0]?.id).toMatch(/^emity-/);
+    }
+  });
+
+  it("keeps Kingdom and Titans after Emity for Unholy DK merged presets", () => {
     const presets = getMergedPresetsForSpec(ClassName.DeathKnight, "Unholy", {
       schemaVersion: 1,
       entries: {},
     });
-    expect(presets[0]?.id).toBe("kingdom-with-variants");
+    expect(presets[0]?.id).toMatch(/^emity-/);
     expect(presets.some((preset) => preset.id === "titans")).toBe(true);
   });
 });

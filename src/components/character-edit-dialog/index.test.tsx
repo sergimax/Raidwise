@@ -57,6 +57,41 @@ describe("CharacterEditDialog", () => {
     localStorage.clear();
   });
 
+  it("swaps specs with their gear and unsaved edits, then saves the new order", async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn();
+    const character = {
+      ...initialCharacter,
+      mainSpec: { spec: "Enhancement", gearScore: 6200, gearItems: [{ slot: 0, id: 51197 }] },
+      offSpec: { spec: "Restoration", gearScore: 5900, gearItems: [{ slot: 1, id: 50452 }] },
+    };
+    renderWithTheme(
+      <CharacterEditDialog
+        character={character}
+        characters={[character]}
+        onSave={onSave}
+        onClose={vi.fn()}
+        onMoveCharacter={vi.fn()}
+      />,
+    );
+
+    const mainGearScore = screen.getAllByLabelText("Gear score")[0];
+    fireEvent.change(mainGearScore, { target: { value: "6300" } });
+    const importFields = () => screen.getAllByRole("textbox", { name: "WowSimsExporter JSON" });
+    fireEvent.change(importFields()[0], { target: { value: exportJson } });
+
+    await user.click(screen.getByRole("button", { name: "Swap specs" }));
+    expect(onSave).not.toHaveBeenCalled();
+    expect(importFields()[1]).toHaveValue(exportJson);
+
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    expect(onSave).toHaveBeenCalledWith("rhee", {
+      mainSpec: character.offSpec,
+      offSpec: { ...character.mainSpec, gearScore: 6300 },
+      alsoOwnedItemIds: [],
+    });
+  });
+
   it("imports gear, saves it with the spec, and restores it when reopened", async () => {
     const user = userEvent.setup();
     const onSave = vi.fn();

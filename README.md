@@ -6,7 +6,7 @@ Web app to track raid cooldowns per character and dungeon, with BiS gear hints a
 Data persists locally in `localStorage`.
 Live site: [sergimax.ru/raidwise](https://sergimax.ru/raidwise)
 
-![App version](https://img.shields.io/badge/App_version-2.12.2-purple)
+![App version](https://img.shields.io/badge/App_version-2.13.0-purple)
 ![Game version](https://img.shields.io/badge/WoW-3.3.5a-brown)
 
 ## Features
@@ -17,6 +17,7 @@ Breadcrumbs at the top of each page show the current section or raid tool and li
 ### Characters & dungeons
 
 Add characters and raids manually (toolbar buttons or the dotted empty column/row on the table), or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
+In the character editor, **Swap specs** exchanges the two specs along with their GearScore and gear. Click **Save** to apply the swap.
 In the raid editor, renaming a row keeps its loot template.
 Choose a different **Loot template** to apply that variant’s size, difficulty, and item levels.
 **No loot template** detaches the row and keeps its existing item levels.
@@ -56,6 +57,7 @@ Session-kept filters; **Reset parameters** clears them; click Selected raid chip
 ### Soft pick for a raid
 
 Plan soft reserves for one character + spec on BiS upgrades from filtered raids (**re-roll** or **+100**, configurable soft reserve maximum with no fixed upper bound), with competition colors, win-odds hints, and a pasteable call list.
+The item and call-list blocks flex between 306 and 612 px beside the filters, wrapping below when space is limited.
 For re-rolls, ordinary rolls count only when one player calls softs on an item; with multiple callers, only soft rolls count.
 The call list contains only your selected soft reserves. A toggle controls whether to show the number assigned to each item.
 The **All useful items** toggle (off by default) appends the remaining items from the useful-item list after your selected reserves.
@@ -65,7 +67,7 @@ Uses the active **BiS builds** list; other-spec gear counts as owned; session st
 
 ### BiS builds
 
-Built-in presets per spec (Kingdom first, then Titans/community); local copies are editable for gear-choice hints.
+Built-in presets per spec (Emity first where available, then Kingdom, Titans/community); local copies are editable for gear-choice hints. Emity is the default when no saved selection exists.
 Single-column gear slot list with alternatives (shirt and tabard omitted); **Copy** exports `Slot: Item` lines.
 T9/T10 sources in the BiS list show Emblems of Frost, or Vault of Archavon for hands and legs, plus ICC25H for upgrade tokens.
 
@@ -142,7 +144,7 @@ Open [http://localhost:5173/raidwise/](http://localhost:5173/raidwise/).
 | `npm run test:browser` | Build and check theme, accessibility, save persistence, and item-data recovery in Chrome (set `CHROME_PATH` if needed) |
 | `npm run ci` | Lint + test:coverage + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
-| `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
+| `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` + `scripts/bis/bis-lists-emity.md` |
 | `npm run comment:bis-presets` | Add slot comments to BiS preset files |
 | `npm run download:gear-slot-icons` | Regenerate WoW paper-doll slot placeholder PNGs in `src/assets/gear-slot-icons/` |
 | `npm run download:raid-icons` | Regenerate template-raid achievement icons in `src/assets/raid-icons/` |
@@ -154,7 +156,7 @@ Open [http://localhost:5173/raidwise/](http://localhost:5173/raidwise/).
 The CI test job uploads the `coverage-report` artifact. Coverage includes all runtime TypeScript files under `src/`, including files outside the test imports. Tests and test helpers are excluded. The full run requires 87% line coverage, 86% statement and function coverage, and 80% branch coverage. Browser smoke checks run separately.
 Vitest uses up to four workers to limit contention during jsdom and coverage runs.
 
-Built-in BiS lists are authored in [Titans and community sources](scripts/bis/bis-list-sources.md) and [Kingdom lists](scripts/bis/bis-list-mix.md). The Kingdom source supports numbered weapons and `N-M` slot alternatives. Run `npm run generate:bis-presets` after editing either file.
+Built-in BiS lists are authored in [Titans and community sources](scripts/bis/bis-list-sources.md), [Kingdom lists](scripts/bis/bis-list-mix.md), and [Emity Phase 5 lists](scripts/bis/bis-lists-emity.md). The Kingdom source supports numbered weapons and `N-M` slot alternatives. Run `npm run generate:bis-presets` after editing any of these files.
 
 ### Persistence
 
