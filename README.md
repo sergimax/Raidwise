@@ -56,6 +56,7 @@ Session-kept filters; **Reset parameters** clears them; click Selected raid chip
 ### Soft pick for a raid
 
 Plan soft reserves for one character + spec on BiS upgrades from filtered raids (**re-roll** or **+100**, configurable soft reserve maximum with no fixed upper bound), with competition colors, win-odds hints, and a pasteable call list.
+The item and call-list blocks flex between 306 and 612 px beside the filters, wrapping below when space is limited.
 For re-rolls, ordinary rolls count only when one player calls softs on an item; with multiple callers, only soft rolls count.
 The call list contains only your selected soft reserves. A toggle controls whether to show the number assigned to each item.
 The **All useful items** toggle (off by default) appends the remaining items from the useful-item list after your selected reserves.
