@@ -11,6 +11,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { formatPresetSlots } from "./bis-preset-format.mjs";
+import { generateEmityPresets } from "./generate-emity-presets.mjs";
 import {
   KINGDOM_PRESET_ID,
   parseMixEntries,
@@ -984,6 +985,7 @@ fs.writeFileSync(
 console.log("\nWrote scripts/bis/bis-list-mix-resolved.json");
 
 const allEntries = [...entries, ...mixEntries];
+generateEmityPresets();
 
 const grouped = new Map();
 for (const entry of allEntries) {

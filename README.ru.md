@@ -144,7 +144,7 @@ npm run dev
 | `npm run test:browser` | Сборка и проверки темы, доступности, сохранений и восстановления справочников в Chrome (при необходимости задайте `CHROME_PATH`) |
 | `npm run ci` | Lint + test:coverage + build (проверки перед push) |
 | `npm run build:wow-data` | Пересборка бандлов WoW JSON из `scripts/wow-data/wowsims-db.json` (в т.ч. лут тира VoA из метаданных сетов, если WowSims не отдаёт зону 4603) |
-| `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
+| `npm run generate:bis-presets` | Пересборка встроенных BiS из `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` + `scripts/bis/bis-lists-emity.md` |
 | `npm run comment:bis-presets` | Комментарии слотов в файлах BiS-пресетов |
 | `npm run download:gear-slot-icons` | PNG-заглушки слотов paper-doll в `src/assets/gear-slot-icons/` |
 | `npm run download:raid-icons` | Иконки шаблонных рейдов (achievement art) в `src/assets/raid-icons/` |
@@ -156,7 +156,7 @@ npm run dev
 Задание CI загружает артефакт `coverage-report`. Покрытие учитывает все рабочие файлы TypeScript в `src/`, в том числе файлы, которые тесты не импортируют. Тесты и тестовые утилиты исключены. Пороги полного прогона составляют 87% для строк, 86% для инструкций и функций, 80% для ветвей. Браузерные проверки запускаются отдельно.
 Vitest использует до четырёх воркеров, чтобы снизить нагрузку при запуске jsdom и сборе покрытия.
 
-Встроенные BiS собираются из [списков Titans и сообщества](scripts/bis/bis-list-sources.md) и [списков Kingdom](scripts/bis/bis-list-mix.md). Источник Kingdom поддерживает нумерованное оружие и альтернативы слотов `N-M`. После правок запустите `npm run generate:bis-presets`.
+Встроенные BiS собираются из [списков Titans и сообщества](scripts/bis/bis-list-sources.md), [списков Kingdom](scripts/bis/bis-list-mix.md) и [списков Emity для фазы 5](scripts/bis/bis-lists-emity.md). Источник Kingdom поддерживает нумерованное оружие и альтернативы слотов `N-M`. После правок любого из этих файлов запустите `npm run generate:bis-presets`.
 
 ### Хранение
 

@@ -142,7 +142,7 @@ Open [http://localhost:5173/raidwise/](http://localhost:5173/raidwise/).
 | `npm run test:browser` | Build and check theme, accessibility, save persistence, and item-data recovery in Chrome (set `CHROME_PATH` if needed) |
 | `npm run ci` | Lint + test:coverage + build (pre-push checks) |
 | `npm run build:wow-data` | Regenerate bundled WoW JSON from `scripts/wow-data/wowsims-db.json` (includes VoA tier loot derived from tier set metadata when WowSims omits zone 4603) |
-| `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` |
+| `npm run generate:bis-presets` | Regenerate built-in BiS presets from `scripts/bis/bis-list-sources.md` + `scripts/bis/bis-list-mix.md` + `scripts/bis/bis-lists-emity.md` |
 | `npm run comment:bis-presets` | Add slot comments to BiS preset files |
 | `npm run download:gear-slot-icons` | Regenerate WoW paper-doll slot placeholder PNGs in `src/assets/gear-slot-icons/` |
 | `npm run download:raid-icons` | Regenerate template-raid achievement icons in `src/assets/raid-icons/` |
@@ -154,7 +154,7 @@ Open [http://localhost:5173/raidwise/](http://localhost:5173/raidwise/).
 The CI test job uploads the `coverage-report` artifact. Coverage includes all runtime TypeScript files under `src/`, including files outside the test imports. Tests and test helpers are excluded. The full run requires 87% line coverage, 86% statement and function coverage, and 80% branch coverage. Browser smoke checks run separately.
 Vitest uses up to four workers to limit contention during jsdom and coverage runs.
 
-Built-in BiS lists are authored in [Titans and community sources](scripts/bis/bis-list-sources.md) and [Kingdom lists](scripts/bis/bis-list-mix.md). The Kingdom source supports numbered weapons and `N-M` slot alternatives. Run `npm run generate:bis-presets` after editing either file.
+Built-in BiS lists are authored in [Titans and community sources](scripts/bis/bis-list-sources.md), [Kingdom lists](scripts/bis/bis-list-mix.md), and [Emity Phase 5 lists](scripts/bis/bis-lists-emity.md). The Kingdom source supports numbered weapons and `N-M` slot alternatives. Run `npm run generate:bis-presets` after editing any of these files.
 
 ### Persistence
 

@@ -30,8 +30,9 @@ import { destructionWarlockBis } from "./destruction-warlock.ts";
 import { beastMasteryHunterBis } from "./beast-mastery-hunter.ts";
 import { survivalHunterBis } from "./survival-hunter.ts";
 import { frostMageBis } from "./frost-mage.ts";
+import { emityPresets } from "./emity.ts";
 
-export const BuiltInBisPresets: readonly BuiltInSpecBis[] = [
+const existingPresets: readonly BuiltInSpecBis[] = [
   bloodDeathKnightBis,
   unholyDeathKnightBis,
   furyWarriorBis,
@@ -63,6 +64,16 @@ export const BuiltInBisPresets: readonly BuiltInSpecBis[] = [
   restorationShamanBis,
   enhancementShamanBis,
 ];
+
+export const BuiltInBisPresets: readonly BuiltInSpecBis[] = existingPresets.map(
+  (entry) => ({
+    ...entry,
+    presets: [
+      ...entry.presets,
+      ...(emityPresets[`${entry.className}|${entry.spec}`] ?? []),
+    ],
+  }),
+);
 
 export function findBuiltInSpecBis(
   className: ClassName,
