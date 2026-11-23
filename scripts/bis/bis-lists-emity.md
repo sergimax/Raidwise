@@ -1,7 +1,5 @@
-в данном файле перечислены БИС листы от Эмайти - https://docs.google.com/spreadsheets/d/1IpWxB8-fbEPFrSY1XRPuEIsZuG3wSQuOzL9MjOb7F4I/edit?gid=2134639671#gid=2134639671
-
-
-
+БИС листы за авторством Эмайти
+ссылка: https://docs.google.com/spreadsheets/d/1IpWxB8-fbEPFrSY1XRPuEIsZuG3wSQuOzL9MjOb7F4I/edit?gid=2134639671#gid=2134639671
 
 # DK
 порядок слотов
