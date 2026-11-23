@@ -50,7 +50,7 @@ describe("BisListsPanel", () => {
   it("shows slot items for the default Unholy DK preset on open", () => {
     renderWithTheme(<BisListsPanelHarness />);
 
-    expect(screen.getAllByText(/Kingdom\. With variants/i).length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText("Emity · Morbidity (1H)").length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText(/Head/i)).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /Sanctified Scourgelord Helmet/i }),
@@ -120,7 +120,7 @@ describe("BisListsPanel", () => {
     await user.click(screen.getByRole("combobox", { name: /^Spec/ }));
     await user.click(screen.getByRole("option", { name: /Arms/ }));
 
-    expect(screen.getAllByText(/Arms \(icy-veins/i).length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText("Emity · With Shadowmourne").length).toBeGreaterThanOrEqual(2);
     expect(screen.getByRole("link", { name: /Shadowmourne/i })).toBeInTheDocument();
   });
 

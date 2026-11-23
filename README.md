@@ -65,7 +65,7 @@ Uses the active **BiS builds** list; other-spec gear counts as owned; session st
 
 ### BiS builds
 
-Built-in presets per spec (Kingdom first, then Titans/community); local copies are editable for gear-choice hints.
+Built-in presets per spec (Emity first where available, then Kingdom, Titans/community); local copies are editable for gear-choice hints. Emity is the default when no saved selection exists.
 Single-column gear slot list with alternatives (shirt and tabard omitted); **Copy** exports `Slot: Item` lines.
 T9/T10 sources in the BiS list show Emblems of Frost, or Vault of Archavon for hands and legs, plus ICC25H for upgrade tokens.
 

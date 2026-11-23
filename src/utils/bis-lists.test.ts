@@ -29,8 +29,9 @@ describe("buildBisSlotMap", () => {
 });
 
 describe("compareBuiltInBisPresets / getMergedPresetsForSpec", () => {
-  it("orders Kingdom and Titans first and keeps legacy presets ahead of Emity", () => {
+  it("orders Emity first, then Kingdom, Titans, and other presets by name", () => {
     const ordered = [
+      { id: "emity-dk-frost-strength", name: "Emity · Strength", slots: [] },
       { id: "emity-dk-frost-arp", name: "Emity · Armor penetration", slots: [] },
       { id: "zzz-guide", name: "Z Guide", slots: [] },
       { id: "titans", name: "Titans", slots: [] },
@@ -39,11 +40,12 @@ describe("compareBuiltInBisPresets / getMergedPresetsForSpec", () => {
     ].sort(compareBuiltInBisPresets);
 
     expect(ordered.map((preset) => preset.id)).toEqual([
+      "emity-dk-frost-arp",
+      "emity-dk-frost-strength",
       "kingdom-with-variants",
       "titans",
       "aaa-guide",
       "zzz-guide",
-      "emity-dk-frost-arp",
     ]);
   });
 
@@ -58,12 +60,23 @@ describe("compareBuiltInBisPresets / getMergedPresetsForSpec", () => {
     expect(new Set(ids).size).toBe(41);
   });
 
-  it("places Kingdom first for Unholy DK merged presets", () => {
+  it("places Emity first for every specialization where it is available", () => {
+    for (const { className, spec, presets } of BuiltInBisPresets) {
+      if (!presets.some(({ id }) => id.startsWith("emity-"))) continue;
+      const merged = getMergedPresetsForSpec(className, spec, {
+        schemaVersion: 1,
+        entries: {},
+      });
+      expect(merged[0]?.id).toMatch(/^emity-/);
+    }
+  });
+
+  it("keeps Kingdom and Titans after Emity for Unholy DK merged presets", () => {
     const presets = getMergedPresetsForSpec(ClassName.DeathKnight, "Unholy", {
       schemaVersion: 1,
       entries: {},
     });
-    expect(presets[0]?.id).toBe("kingdom-with-variants");
+    expect(presets[0]?.id).toMatch(/^emity-/);
     expect(presets.some((preset) => preset.id === "titans")).toBe(true);
   });
 });

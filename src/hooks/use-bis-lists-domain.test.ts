@@ -171,7 +171,7 @@ describe("useBisListsDomain", () => {
     expect(readPersistedBisLists().entries[storageKey].presets).toEqual([]);
   });
 
-  it("deleteLocalPreset removes a local preset and falls back to built-in", () => {
+  it("deleteLocalPreset removes a local preset and falls back to Emity", () => {
     const { result } = renderHook(() => useBisListsDomain());
 
     act(() => {
@@ -195,7 +195,7 @@ describe("useBisListsDomain", () => {
       ),
     ).toBe(false);
     expect(result.current.getSelectedPreset(ClassName.DeathKnight, "Unholy")?.id).toBe(
-      builtInPresetId,
+      "emity-dk-unholy-morbidity",
     );
   });
 
