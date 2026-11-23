@@ -17,6 +17,7 @@ Breadcrumbs at the top of each page show the current section or raid tool and li
 ### Characters & dungeons
 
 Add characters and raids manually (toolbar buttons or the dotted empty column/row on the table), or load the WotLK template when the list is empty; edit specs, WowSims gear, also-owned items, raid metadata, and column order later.
+In the character editor, **Swap specs** exchanges the two specs along with their GearScore and gear. Click **Save** to apply the swap.
 In the raid editor, renaming a row keeps its loot template.
 Choose a different **Loot template** to apply that variant’s size, difficulty, and item levels.
 **No loot template** detaches the row and keeps its existing item levels.
